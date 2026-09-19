@@ -10,6 +10,7 @@ import {
   stepReflexDynamics,
 } from "../src/reflex-dynamics";
 import { RuleBaselineProvider } from "../src/rule-provider";
+import { evaluateProvidersSameState } from "../src/semantic-probe";
 import { runShadowEpisode } from "../src/shadow-runner";
 
 describe("R0 semantic shadow apparatus", () => {
@@ -159,5 +160,37 @@ describe("R0 first counterfactual family", () => {
       }));
 
     expect(physical(addressed)).toEqual(physical(silent));
+  });
+});
+
+
+describe("R0 same-state semantic probe", () => {
+  it("gives every provider an equivalent isolated private-state snapshot", async () => {
+    const episode = createR0CounterfactualEpisode({ speechExposure: "addressed" });
+    const state = compilePrivateState(episode.frames[10]!, "task");
+    const seen: string[] = [];
+
+    const observingProvider = (id: string, mutate = false): ReflexProvider => ({
+      id,
+      evaluate(input) {
+        seen.push(JSON.stringify(input));
+        if (mutate) input.self.taskProgress = 999;
+        const evaluation = new RuleBaselineProvider().evaluate(input);
+        return { ...evaluation, providerId: id };
+      },
+    });
+
+    const canonicalBefore = JSON.stringify(state);
+    const results = await evaluateProvidersSameState(state, [
+      observingProvider("observer-a", true),
+      observingProvider("observer-b"),
+    ]);
+
+    expect(results.map((result) => result.providerId)).toEqual([
+      "observer-a",
+      "observer-b",
+    ]);
+    expect(seen[0]).toBe(seen[1]);
+    expect(JSON.stringify(state)).toBe(canonicalBefore);
   });
 });
