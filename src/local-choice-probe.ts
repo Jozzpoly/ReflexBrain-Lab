@@ -5,6 +5,7 @@ import type {
 } from "./contracts";
 
 export const LOCAL_QWEN_MODEL_ID = "onnx-community/Qwen3-0.6B-ONNX";
+export const LOCAL_QWEN_REVISION = "b1ece21c06dfce3839272e86b7fa12a985d97a7a";
 export const LOCAL_QWEN_DTYPE = "q4f16";
 
 export interface ChoiceOption {
@@ -22,16 +23,20 @@ export const IMMEDIATE_RESPONSE_OPTIONS: readonly ChoiceOption[] = [
 
 export interface LocalChoiceProbeResult {
   modelId: string;
+  modelRevision: string;
   distribution: ActionDistribution;
+  choiceMass: number;
+  bestAllowedRank: number;
+  topTokenId: number;
+  topTokenText: string;
   latencyMs: number;
   inputTokenCount: number;
   optionTokenSurfaces: readonly string[];
 }
 
 /**
- * Deliberately compact: this must represent only actor-private state, not World
- * debug truth. R0 keeps this explicit so we can audit whether the compiler
- * quietly becomes the real policy.
+ * Deliberately compact and neutral. This serializes only actor-private state.
+ * R0 must not quietly embed the desired policy in prompt prose.
  */
 export function buildImmediateResponsePrompt(state: ActorPrivateState): string {
   const perceptLines =
@@ -64,8 +69,6 @@ export function buildImmediateResponsePrompt(state: ActorPrivateState): string {
   return [
     "You are a fast semantic reflex evaluator for an embodied game actor.",
     "Use only the private state below. Do not invent hidden facts.",
-    "Prefer preserving the actor's own ongoing life unless the perceived situation gives a reason to redirect it.",
-    "/no_think",
     "",
     "PRIVATE STATE",
     "tick=" + state.tick,
@@ -86,29 +89,88 @@ export function buildImmediateResponsePrompt(state: ActorPrivateState): string {
   ].join("\n");
 }
 
-export function distributionFromSelectedLogits(
-  logits: readonly number[],
-): ActionDistribution {
-  if (logits.length !== IMMEDIATE_RESPONSE_OPTIONS.length) {
+export interface ChoiceScoreAnalysis {
+  distribution: ActionDistribution;
+  choiceMass: number;
+  bestAllowedRank: number;
+  topTokenId: number;
+}
+
+export function analyzeChoiceScores(
+  scores: ArrayLike<number>,
+  selectedTokenIds: readonly number[],
+): ChoiceScoreAnalysis {
+  if (selectedTokenIds.length !== IMMEDIATE_RESPONSE_OPTIONS.length) {
     throw new Error(
       "expected " +
         IMMEDIATE_RESPONSE_OPTIONS.length +
-        " selected logits, got " +
-        logits.length,
+        " selected token ids, got " +
+        selectedTokenIds.length,
     );
   }
 
-  const maximum = Math.max(...logits);
-  const weights = logits.map((value) => Math.exp(value - maximum));
-  const total = weights.reduce((sum, value) => sum + value, 0);
-  if (!Number.isFinite(total) || total <= 0) {
-    throw new Error("invalid selected-logit normalization");
+  if (new Set(selectedTokenIds).size !== selectedTokenIds.length) {
+    throw new Error("allowed response labels must map to distinct tokens");
   }
 
-  return Object.fromEntries(
-    IMMEDIATE_RESPONSE_OPTIONS.map((option, index) => [
-      option.id,
-      weights[index]! / total,
-    ]),
-  ) as ActionDistribution;
+  let maximum = -Infinity;
+  let topTokenId = -1;
+
+  for (let index = 0; index < scores.length; index += 1) {
+    const value = Number(scores[index]);
+    if (Number.isNaN(value) || value === Infinity) {
+      throw new Error("prediction scores contain invalid values");
+    }
+    if (value > maximum) {
+      maximum = value;
+      topTokenId = index;
+    }
+  }
+
+  if (!Number.isFinite(maximum) || topTokenId < 0) {
+    throw new Error("prediction scores contain no finite token");
+  }
+
+  let vocabularyWeight = 0;
+  for (let index = 0; index < scores.length; index += 1) {
+    const value = Number(scores[index]);
+    if (value !== -Infinity) vocabularyWeight += Math.exp(value - maximum);
+  }
+
+  const selectedScores = selectedTokenIds.map((tokenId) => {
+    if (!Number.isInteger(tokenId) || tokenId < 0 || tokenId >= scores.length) {
+      throw new Error("allowed response token id is outside the vocabulary");
+    }
+    return Number(scores[tokenId]);
+  });
+
+  const selectedWeights = selectedScores.map((value) =>
+    value === -Infinity ? 0 : Math.exp(value - maximum),
+  );
+  const selectedWeight = selectedWeights.reduce((sum, value) => sum + value, 0);
+
+  if (!Number.isFinite(vocabularyWeight) || vocabularyWeight <= 0) {
+    throw new Error("invalid vocabulary score normalization");
+  }
+  if (!Number.isFinite(selectedWeight) || selectedWeight <= 0) {
+    throw new Error("allowed responses have zero prediction mass");
+  }
+
+  const bestAllowedScore = Math.max(...selectedScores);
+  let bestAllowedRank = 1;
+  for (let index = 0; index < scores.length; index += 1) {
+    if (Number(scores[index]) > bestAllowedScore) bestAllowedRank += 1;
+  }
+
+  return {
+    distribution: Object.fromEntries(
+      IMMEDIATE_RESPONSE_OPTIONS.map((option, index) => [
+        option.id,
+        selectedWeights[index]! / selectedWeight,
+      ]),
+    ) as ActionDistribution,
+    choiceMass: selectedWeight / vocabularyWeight,
+    bestAllowedRank,
+    topTokenId,
+  };
 }
