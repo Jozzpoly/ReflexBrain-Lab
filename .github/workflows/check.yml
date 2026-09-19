@@ -15,5 +15,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install
-      - run: npm run check
+      - run: yarn install --non-interactive
+      - run: yarn run check
