@@ -196,7 +196,7 @@ function localControls(): string {
     return (
       '<button class="primary" data-load-model ' +
       (localBusy ? "disabled" : "") +
-      ">Load local Qwen 0.6B (~570 MB)</button>"
+      ">Load local Qwen 0.6B (adaptive q4f16/q8)</button>"
     );
   }
 
@@ -303,6 +303,11 @@ function modelComparison(
     "<span>Top token: <code>" +
       escapeHtml(JSON.stringify(local.topTokenText)) +
       "</code></span>",
+    "<span>Runtime: <strong>WebGPU / " +
+      escapeHtml(local.dtype) +
+      "</strong> · shader-f16=" +
+      String(local.shaderF16) +
+      "</span>",
     "<span>Revision: <code>" +
       escapeHtml(local.modelRevision.slice(0, 12)) +
       "</code></span>",
