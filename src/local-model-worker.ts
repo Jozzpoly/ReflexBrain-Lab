@@ -8,21 +8,27 @@ import {
 import {
   actionFromChoiceToken,
   analyzeChoiceScores,
+  buildAppraisalPrompt,
   buildImmediateResponsePrompt,
   buildSemanticResponsePrompt,
   chooseLocalQwenDtype,
+  getAppraisalSpec,
   getImmediateResponseOptions,
   getLocalModelBackend,
   IMMEDIATE_RESPONSE_OPTIONS,
   semanticActionFromToken,
   SEMANTIC_TOKEN_SPECS,
+  type AppraisalId,
+  type AppraisalPolarity,
   type ChoiceOrder,
+  type LocalAppraisalResult,
   type LocalChoiceOnlyResult,
   type LocalChoiceProbeResult,
   type LocalSemanticChoiceResult,
   type LocalModelBackendConfig,
   type LocalModelBackendId,
   type LocalQwenDtype,
+  type ResolvedBinaryToken,
   type ResolvedSemanticToken,
 } from "./local-choice-probe";
 import type {
@@ -70,6 +76,20 @@ async function handle(request: LocalModelRequest): Promise<void> {
       scope.postMessage({
         id: request.id,
         type: "semantic_choice_result",
+        result,
+      });
+      return;
+    }
+
+    if (request.type === "appraisal") {
+      const result = await runAppraisal(
+        request.state,
+        request.appraisalId,
+        request.polarity,
+      );
+      scope.postMessage({
+        id: request.id,
+        type: "appraisal_result",
         result,
       });
       return;
@@ -174,6 +194,95 @@ async function detectWebGpuRuntime(): Promise<{
     dtype: chooseLocalQwenDtype(shaderF16),
     shaderF16,
   };
+}
+
+async function runAppraisal(
+  state: import("./contracts").ActorPrivateState,
+  appraisalId: AppraisalId,
+  polarity: AppraisalPolarity,
+): Promise<LocalAppraisalResult> {
+  if (
+    runtimeDtype === null ||
+    runtimeShaderF16 === null ||
+    activeBackend === null
+  ) {
+    throw new Error("local model runtime metadata is unavailable");
+  }
+
+  const backend = activeBackend;
+  const spec = getAppraisalSpec(appraisalId);
+  const proposition =
+    polarity === "positive" ? spec.positive : spec.negative;
+  const binaryTokens = resolveBinaryAnswerTokens(tokenizer);
+  const prompt = buildAppraisalPrompt(state, spec, polarity);
+  const messages = [{ role: "user", content: prompt }];
+  const inputs = tokenizer.apply_chat_template(messages, {
+    tokenize: true,
+    return_dict: true,
+    add_generation_prompt: true,
+    enable_thinking: false,
+  });
+
+  const processor = new CapturingBinaryLogitsProcessor(binaryTokens);
+  const processors = new LogitsProcessorList();
+  processors.push(processor);
+
+  const started = performance.now();
+  const generated = await model.generate({
+    ...inputs,
+    max_new_tokens: 1,
+    do_sample: false,
+    logits_processor: processors,
+  });
+  const elapsed = performance.now() - started;
+
+  try {
+    const captured = processor.getCaptured();
+    const probabilityYes = probabilityOfYes(
+      captured.yesScore,
+      captured.noScore,
+    );
+
+    const sequences = generated.tolist();
+    const sequence = sequences[0] as Array<number | bigint> | undefined;
+    if (!sequence || sequence.length === 0) {
+      throw new Error("binary appraisal generation returned no sequence");
+    }
+
+    const selectedTokenId = Number(sequence[sequence.length - 1]);
+    const selectedToken = binaryTokens.find(
+      (token) => token.tokenId === selectedTokenId,
+    );
+    if (!selectedToken) {
+      throw new Error("binary appraisal selected token outside yes/no set");
+    }
+
+    return {
+      backendId: backend.id,
+      modelId: backend.modelId,
+      modelRevision: backend.modelRevision,
+      dtype: runtimeDtype,
+      shaderF16: runtimeShaderF16,
+      appraisalId,
+      polarity,
+      proposition,
+      selectedAnswer: selectedToken.answer,
+      probabilityYes,
+      positiveProbability:
+        polarity === "positive" ? probabilityYes : 1 - probabilityYes,
+      yesScore: captured.yesScore,
+      noScore: captured.noScore,
+      latencyMs: elapsed,
+      inputTokenCount: Number(inputs.input_ids?.dims?.at(-1) ?? 0),
+      binaryTokens,
+    };
+  } finally {
+    try {
+      generated.dispose?.();
+    } catch {
+      // Best-effort cleanup only.
+    }
+  }
 }
 
 async function runSemanticChoice(
@@ -441,6 +550,50 @@ async function runProbe(
   }
 }
 
+class CapturingBinaryLogitsProcessor extends LogitsProcessor {
+  private captured: { yesScore: number; noScore: number } | null = null;
+  private readonly yesTokenId: number;
+  private readonly noTokenId: number;
+
+  constructor(tokens: readonly ResolvedBinaryToken[]) {
+    super();
+    const yes = tokens.find((token) => token.answer === "yes");
+    const no = tokens.find((token) => token.answer === "no");
+    if (!yes || !no || yes.tokenId === no.tokenId) {
+      throw new Error("binary appraisal requires distinct yes/no tokens");
+    }
+    this.yesTokenId = yes.tokenId;
+    this.noTokenId = no.tokenId;
+  }
+
+  _call(_inputIds: bigint[][], logits: any) {
+    const batchSize = Number(logits.dims?.[0] ?? 0);
+    if (batchSize !== 1) {
+      throw new Error("binary appraisal currently requires batch size 1");
+    }
+
+    const row = logits[0];
+    const yesScore = Number(row.data[this.yesTokenId]);
+    const noScore = Number(row.data[this.noTokenId]);
+    if (!Number.isFinite(yesScore) || !Number.isFinite(noScore)) {
+      throw new Error("binary appraisal captured non-finite yes/no scores");
+    }
+    this.captured = { yesScore, noScore };
+
+    row.data.fill(-Infinity);
+    row.data[this.yesTokenId] = yesScore;
+    row.data[this.noTokenId] = noScore;
+    return logits;
+  }
+
+  getCaptured(): { yesScore: number; noScore: number } {
+    if (!this.captured) {
+      throw new Error("binary appraisal logits were not captured");
+    }
+    return this.captured;
+  }
+}
+
 class AllowedTokenLogitsProcessor extends LogitsProcessor {
   private readonly allowedTokenIds: readonly number[];
 
@@ -469,6 +622,49 @@ class AllowedTokenLogitsProcessor extends LogitsProcessor {
 
     return logits;
   }
+}
+
+function resolveBinaryAnswerTokens(
+  activeTokenizer: any,
+): ResolvedBinaryToken[] {
+  const resolved: ResolvedBinaryToken[] = [];
+  const used = new Set<number>();
+
+  for (const answer of ["yes", "no"] as const) {
+    let match: ResolvedBinaryToken | null = null;
+
+    for (const prefix of ["", " "]) {
+      const surface = prefix + answer;
+      const ids = activeTokenizer.encode(surface, {
+        add_special_tokens: false,
+      });
+      if (ids.length !== 1) continue;
+
+      const tokenId = Number(ids[0]);
+      if (!Number.isFinite(tokenId) || used.has(tokenId)) continue;
+
+      match = { answer, surface, tokenId };
+      break;
+    }
+
+    if (!match) {
+      throw new Error(
+        "no unique single-token surface for binary answer " + answer,
+      );
+    }
+
+    used.add(match.tokenId);
+    resolved.push(match);
+  }
+
+  return resolved;
+}
+
+function probabilityOfYes(yesScore: number, noScore: number): number {
+  const maximum = Math.max(yesScore, noScore);
+  const yesWeight = Math.exp(yesScore - maximum);
+  const noWeight = Math.exp(noScore - maximum);
+  return yesWeight / (yesWeight + noWeight);
 }
 
 function resolveSemanticActionTokens(
