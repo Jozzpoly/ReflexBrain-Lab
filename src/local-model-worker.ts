@@ -170,6 +170,7 @@ async function runChoice(
     throw new Error("local model runtime metadata is unavailable");
   }
 
+  const backend = activeBackend;
   const orderedOptions = getImmediateResponseOptions(choiceOrder);
   const prompt = buildImmediateResponsePrompt(state, orderedOptions);
   const messages = [{ role: "user", content: prompt }];
