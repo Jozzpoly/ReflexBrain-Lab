@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import type { ActorPrivateState, ReflexProvider } from "../src/contracts";
-import { createLowStakesAddressEpisode } from "../src/episode";
+import {
+  createLowStakesAddressEpisode,
+  createR0CounterfactualEpisode,
+} from "../src/episode";
+import { compilePrivateState } from "../src/private-state";
 import {
   initialReflexDynamicsState,
   stepReflexDynamics,
@@ -94,5 +98,66 @@ describe("R0 semantic shadow apparatus", () => {
     expect(afterDrop.scores.attentionPlayer).toBeGreaterThan(
       provider.evaluate(quiet).scores.attentionPlayer,
     );
+  });
+});
+
+describe("R0 first counterfactual family", () => {
+  it("changes social/interruption pressure when identical words are addressed vs overheard", async () => {
+    const provider = new RuleBaselineProvider();
+    const addressed = await runShadowEpisode(
+      createR0CounterfactualEpisode({ speechExposure: "addressed" }).frames,
+      provider,
+    );
+    const overheard = await runShadowEpisode(
+      createR0CounterfactualEpisode({ speechExposure: "overheard" }).frames,
+      provider,
+    );
+
+    const addressedFrame = addressed.find((frame) => frame.tick === 10)!;
+    const overheardFrame = overheard.find((frame) => frame.tick === 10)!;
+
+    expect(addressedFrame.privateState.percepts).toContainEqual(
+      expect.objectContaining({ kind: "speech", addressed: true }),
+    );
+    expect(overheardFrame.privateState.percepts).toContainEqual(
+      expect.objectContaining({ kind: "speech", addressed: false }),
+    );
+    expect(addressedFrame.provider.scores.socialRelevance).toBeGreaterThan(
+      overheardFrame.provider.scores.socialRelevance,
+    );
+    expect(addressedFrame.provider.scores.interruptCurrent).toBeGreaterThan(
+      overheardFrame.provider.scores.interruptCurrent,
+    );
+  });
+
+  it("does not let an unperceived World event change actor-private state", () => {
+    const quiet = createR0CounterfactualEpisode({
+      speechExposure: "none",
+      hiddenOpeningSpeech: false,
+    });
+    const hidden = createR0CounterfactualEpisode({
+      speechExposure: "none",
+      hiddenOpeningSpeech: true,
+    });
+
+    const quietState = compilePrivateState(quiet.frames[0]!, "task");
+    const hiddenState = compilePrivateState(hidden.frames[0]!, "task");
+
+    expect(hidden.frames[0]!.events).not.toEqual(quiet.frames[0]!.events);
+    expect(hiddenState).toEqual(quietState);
+  });
+
+  it("keeps the authoritative World trajectory identical across semantic exposure variants", () => {
+    const addressed = createR0CounterfactualEpisode({ speechExposure: "addressed" });
+    const silent = createR0CounterfactualEpisode({ speechExposure: "none" });
+
+    const physical = (episode: typeof addressed) =>
+      episode.frames.map((frame) => ({
+        tick: frame.tick,
+        actors: frame.actors,
+        taskProgress: frame.taskProgress,
+      }));
+
+    expect(physical(addressed)).toEqual(physical(silent));
   });
 });
