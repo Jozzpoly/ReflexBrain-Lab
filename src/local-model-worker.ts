@@ -118,14 +118,20 @@ async function runProbe(state: import("./contracts").ActorPrivateState): Promise
     typeof scoreTensor.getData === "function"
       ? await scoreTensor.getData()
       : scoreTensor.data;
-  const selected = tokenIds.map((tokenId) => Number(scoreData[tokenId]));
-  if (selected.some((value) => !Number.isFinite(value))) {
-    throw new Error("local model returned non-finite option logits");
-  }
+  const analysis = analyzeChoiceScores(scoreData, tokenIds);
+  const topTokenText = tokenizer.decode([analysis.topTokenId], {
+    skip_special_tokens: false,
+    clean_up_tokenization_spaces: false,
+  });
 
   return {
     modelId: LOCAL_QWEN_MODEL_ID,
-    distribution: distributionFromSelectedLogits(selected),
+    modelRevision: LOCAL_QWEN_REVISION,
+    distribution: analysis.distribution,
+    choiceMass: analysis.choiceMass,
+    bestAllowedRank: analysis.bestAllowedRank,
+    topTokenId: analysis.topTokenId,
+    topTokenText,
     latencyMs: elapsed,
     inputTokenCount: Number(inputs.input_ids?.dims?.at(-1) ?? 0),
     optionTokenSurfaces: tokenSurfaces,
