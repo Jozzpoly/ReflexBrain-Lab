@@ -1,6 +1,9 @@
 import type { ActorPrivateState } from "./contracts";
 import type {
+  AppraisalId,
+  AppraisalPolarity,
   ChoiceOrder,
+  LocalAppraisalResult,
   LocalChoiceOnlyResult,
   LocalChoiceProbeResult,
   LocalModelBackendId,
@@ -26,6 +29,13 @@ export type LocalModelRequestBody =
       backendId: LocalModelBackendId;
       state: ActorPrivateState;
       choiceOrder: ChoiceOrder;
+    }
+  | {
+      type: "appraisal";
+      backendId: LocalModelBackendId;
+      state: ActorPrivateState;
+      appraisalId: AppraisalId;
+      polarity: AppraisalPolarity;
     };
 
 export type LocalModelRequest =
@@ -50,6 +60,14 @@ export type LocalModelRequest =
       backendId: LocalModelBackendId;
       state: ActorPrivateState;
       choiceOrder: ChoiceOrder;
+    }
+  | {
+      id: number;
+      type: "appraisal";
+      backendId: LocalModelBackendId;
+      state: ActorPrivateState;
+      appraisalId: AppraisalId;
+      polarity: AppraisalPolarity;
     };
 
 export type LocalModelResponse =
@@ -67,5 +85,10 @@ export type LocalModelResponse =
       id: number;
       type: "semantic_choice_result";
       result: LocalSemanticChoiceResult;
+    }
+  | {
+      id: number;
+      type: "appraisal_result";
+      result: LocalAppraisalResult;
     }
   | { id: number; type: "error"; message: string };
