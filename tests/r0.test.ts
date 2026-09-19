@@ -15,12 +15,15 @@ import { createSemanticChallenges } from "../src/challenges";
 import {
   actionFromChoiceToken,
   analyzeChoiceScores,
+  APPRAISAL_SPECS,
+  buildAppraisalPrompt,
   buildImmediateResponsePrompt,
   buildSemanticResponsePrompt,
   chooseLocalQwenDtype,
   getImmediateResponseOptions,
   getLocalModelBackend,
   PERMUTATION_SWEEP_ORDERS,
+  probabilityYesFromScores,
   SEMANTIC_TOKEN_SPECS,
   semanticActionFromToken,
   isLocalModelBackendId,
@@ -361,6 +364,61 @@ describe("R0 local direct-choice contract", () => {
   });
 });
 
+
+describe("R0 independent binary appraisal contract", () => {
+  it("defines the initial appraisal surface explicitly", () => {
+    expect(APPRAISAL_SPECS.map((spec) => spec.id)).toEqual([
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ]);
+
+    for (const spec of APPRAISAL_SPECS) {
+      expect(spec.positive).not.toBe(spec.negative);
+      expect(spec.positive.length).toBeGreaterThan(20);
+      expect(spec.negative.length).toBeGreaterThan(20);
+    }
+  });
+
+  it("builds polarity-controlled yes/no prompts from the same private state", () => {
+    const episode = createR0CounterfactualEpisode({
+      speechExposure: "addressed",
+    });
+    const state = compilePrivateState(episode.frames[10]!, "task");
+    const attention = APPRAISAL_SPECS.find(
+      (spec) => spec.id === "attention",
+    )!;
+
+    const positive = buildAppraisalPrompt(
+      state,
+      attention,
+      "positive",
+    );
+    const negative = buildAppraisalPrompt(
+      state,
+      attention,
+      "negative",
+    );
+
+    expect(positive).toContain(attention.positive);
+    expect(negative).toContain(attention.negative);
+    expect(positive).toContain("Answer exactly yes or no.");
+    expect(positive).not.toContain("ALLOWED ANSWERS");
+    expect(positive).not.toContain("ALLOWED ACTION KEYWORDS");
+  });
+
+  it("normalizes yes/no scores stably and symmetrically", () => {
+    expect(probabilityYesFromScores(0, 0)).toBeCloseTo(0.5, 12);
+    expect(probabilityYesFromScores(10, 0)).toBeGreaterThan(0.999);
+    expect(probabilityYesFromScores(0, 10)).toBeLessThan(0.001);
+
+    const forward = probabilityYesFromScores(2.75, -1.25);
+    const reversed = probabilityYesFromScores(-1.25, 2.75);
+    expect(forward + reversed).toBeCloseTo(1, 12);
+  });
+});
 
 describe("R0 semantic challenge suite", () => {
   it("keeps addressed vs overheard request as a one-fact semantic mutation", () => {
