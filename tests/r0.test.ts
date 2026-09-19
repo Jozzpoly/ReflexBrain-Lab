@@ -12,8 +12,8 @@ import {
 import { RuleBaselineProvider } from "../src/rule-provider";
 import { evaluateProvidersSameState } from "../src/semantic-probe";
 import {
+  analyzeChoiceScores,
   buildImmediateResponsePrompt,
-  distributionFromSelectedLogits,
 } from "../src/local-choice-probe";
 import { runShadowEpisode } from "../src/shadow-runner";
 
