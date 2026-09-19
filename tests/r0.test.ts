@@ -14,6 +14,7 @@ import { evaluateProvidersSameState } from "../src/semantic-probe";
 import {
   analyzeChoiceScores,
   buildImmediateResponsePrompt,
+  chooseLocalQwenDtype,
 } from "../src/local-choice-probe";
 import { runShadowEpisode } from "../src/shadow-runner";
 
@@ -201,6 +202,11 @@ describe("R0 same-state semantic probe", () => {
 
 
 describe("R0 local direct-choice contract", () => {
+  it("routes WebGPU dtype by shader-f16 capability", () => {
+    expect(chooseLocalQwenDtype(true)).toBe("q4f16");
+    expect(chooseLocalQwenDtype(false)).toBe("q8");
+  });
+
   it("serializes only the supplied actor-private state", () => {
     const episode = createR0CounterfactualEpisode({
       speechExposure: "none",
