@@ -9,20 +9,25 @@ import {
   actionFromChoiceToken,
   analyzeChoiceScores,
   buildAppraisalPrompt,
+  buildBipolarAppraisalPrompt,
   buildImmediateResponsePrompt,
   buildSemanticResponsePrompt,
   chooseLocalQwenDtype,
   getAppraisalSpec,
+  getBipolarAppraisalSpec,
   getImmediateResponseOptions,
   getLocalModelBackend,
   IMMEDIATE_RESPONSE_OPTIONS,
+  probabilityPositiveFromScores,
   probabilityYesFromScores,
   semanticActionFromToken,
   SEMANTIC_TOKEN_SPECS,
   type AppraisalId,
   type AppraisalPolarity,
+  type BipolarAppraisalOrder,
   type ChoiceOrder,
   type LocalAppraisalResult,
+  type LocalBipolarAppraisalResult,
   type LocalChoiceOnlyResult,
   type LocalChoiceProbeResult,
   type LocalSemanticChoiceResult,
@@ -30,6 +35,7 @@ import {
   type LocalModelBackendId,
   type LocalQwenDtype,
   type ResolvedBinaryToken,
+  type ResolvedBipolarToken,
   type ResolvedSemanticToken,
 } from "./local-choice-probe";
 import type {
@@ -91,6 +97,20 @@ async function handle(request: LocalModelRequest): Promise<void> {
       scope.postMessage({
         id: request.id,
         type: "appraisal_result",
+        result,
+      });
+      return;
+    }
+
+    if (request.type === "bipolar_appraisal") {
+      const result = await runBipolarAppraisal(
+        request.state,
+        request.appraisalId,
+        request.order,
+      );
+      scope.postMessage({
+        id: request.id,
+        type: "bipolar_appraisal_result",
         result,
       });
       return;
@@ -195,6 +215,93 @@ async function detectWebGpuRuntime(): Promise<{
     dtype: chooseLocalQwenDtype(shaderF16),
     shaderF16,
   };
+}
+
+async function runBipolarAppraisal(
+  state: import("./contracts").ActorPrivateState,
+  appraisalId: AppraisalId,
+  order: BipolarAppraisalOrder,
+): Promise<LocalBipolarAppraisalResult> {
+  if (
+    runtimeDtype === null ||
+    runtimeShaderF16 === null ||
+    activeBackend === null
+  ) {
+    throw new Error("local model runtime metadata is unavailable");
+  }
+
+  const backend = activeBackend;
+  const spec = getBipolarAppraisalSpec(appraisalId);
+  const tokens = resolveBipolarTokens(tokenizer, spec);
+  const prompt = buildBipolarAppraisalPrompt(state, spec, tokens, order);
+  const messages = [{ role: "user", content: prompt }];
+  const inputs = tokenizer.apply_chat_template(messages, {
+    tokenize: true,
+    return_dict: true,
+    add_generation_prompt: true,
+    enable_thinking: false,
+  });
+
+  const processor = new CapturingBipolarLogitsProcessor(tokens);
+  const processors = new LogitsProcessorList();
+  processors.push(processor);
+
+  const started = performance.now();
+  const generated = await model.generate({
+    ...inputs,
+    max_new_tokens: 1,
+    do_sample: false,
+    logits_processor: processors,
+  });
+  const elapsed = performance.now() - started;
+
+  try {
+    const captured = processor.getCaptured();
+    const probabilityPositive = probabilityPositiveFromScores(
+      captured.positiveScore,
+      captured.negativeScore,
+    );
+
+    const sequences = generated.tolist();
+    const sequence = sequences[0] as Array<number | bigint> | undefined;
+    if (!sequence || sequence.length === 0) {
+      throw new Error("bipolar appraisal generation returned no sequence");
+    }
+
+    const selectedTokenId = Number(sequence[sequence.length - 1]);
+    const selected = tokens.find((token) => token.tokenId === selectedTokenId);
+    if (!selected) {
+      throw new Error("bipolar appraisal selected token outside semantic poles");
+    }
+
+    const positive = tokens.find((token) => token.pole === "positive")!;
+    const negative = tokens.find((token) => token.pole === "negative")!;
+
+    return {
+      backendId: backend.id,
+      modelId: backend.modelId,
+      modelRevision: backend.modelRevision,
+      dtype: runtimeDtype,
+      shaderF16: runtimeShaderF16,
+      appraisalId,
+      order,
+      positiveKeyword: positive.keyword,
+      negativeKeyword: negative.keyword,
+      selectedPole: selected.pole,
+      probabilityPositive,
+      positiveScore: captured.positiveScore,
+      negativeScore: captured.negativeScore,
+      latencyMs: elapsed,
+      inputTokenCount: Number(inputs.input_ids?.dims?.at(-1) ?? 0),
+      tokens,
+    };
+  } finally {
+    try {
+      generated.dispose?.();
+    } catch {
+      // Best-effort cleanup only.
+    }
+  }
 }
 
 async function runAppraisal(
@@ -551,6 +658,53 @@ async function runProbe(
   }
 }
 
+class CapturingBipolarLogitsProcessor extends LogitsProcessor {
+  private captured: {
+    positiveScore: number;
+    negativeScore: number;
+  } | null = null;
+  private readonly positiveTokenId: number;
+  private readonly negativeTokenId: number;
+
+  constructor(tokens: readonly ResolvedBipolarToken[]) {
+    super();
+    const positive = tokens.find((token) => token.pole === "positive");
+    const negative = tokens.find((token) => token.pole === "negative");
+    if (!positive || !negative || positive.tokenId === negative.tokenId) {
+      throw new Error("bipolar appraisal requires distinct semantic pole tokens");
+    }
+    this.positiveTokenId = positive.tokenId;
+    this.negativeTokenId = negative.tokenId;
+  }
+
+  _call(_inputIds: bigint[][], logits: any) {
+    const batchSize = Number(logits.dims?.[0] ?? 0);
+    if (batchSize !== 1) {
+      throw new Error("bipolar appraisal currently requires batch size 1");
+    }
+
+    const row = logits[0];
+    const positiveScore = Number(row.data[this.positiveTokenId]);
+    const negativeScore = Number(row.data[this.negativeTokenId]);
+    if (!Number.isFinite(positiveScore) || !Number.isFinite(negativeScore)) {
+      throw new Error("bipolar appraisal captured non-finite pole scores");
+    }
+    this.captured = { positiveScore, negativeScore };
+
+    row.data.fill(-Infinity);
+    row.data[this.positiveTokenId] = positiveScore;
+    row.data[this.negativeTokenId] = negativeScore;
+    return logits;
+  }
+
+  getCaptured(): { positiveScore: number; negativeScore: number } {
+    if (!this.captured) {
+      throw new Error("bipolar appraisal logits were not captured");
+    }
+    return this.captured;
+  }
+}
+
 class CapturingBinaryLogitsProcessor extends LogitsProcessor {
   private captured: { yesScore: number; noScore: number } | null = null;
   private readonly yesTokenId: number;
@@ -623,6 +777,51 @@ class AllowedTokenLogitsProcessor extends LogitsProcessor {
 
     return logits;
   }
+}
+
+function resolveBipolarTokens(
+  activeTokenizer: any,
+  spec: ReturnType<typeof getBipolarAppraisalSpec>,
+): ResolvedBipolarToken[] {
+  const resolved: ResolvedBipolarToken[] = [];
+  const used = new Set<number>();
+
+  for (const pole of ["positive", "negative"] as const) {
+    const candidates =
+      pole === "positive" ? spec.positiveCandidates : spec.negativeCandidates;
+    let match: ResolvedBipolarToken | null = null;
+
+    candidateLoop:
+    for (const keyword of candidates) {
+      for (const prefix of ["", " "]) {
+        const surface = prefix + keyword;
+        const ids = activeTokenizer.encode(surface, {
+          add_special_tokens: false,
+        });
+        if (ids.length !== 1) continue;
+
+        const tokenId = Number(ids[0]);
+        if (!Number.isFinite(tokenId) || used.has(tokenId)) continue;
+
+        match = { pole, keyword, surface, tokenId };
+        break candidateLoop;
+      }
+    }
+
+    if (!match) {
+      throw new Error(
+        "no unique single-token semantic surface for bipolar " +
+          spec.id +
+          " / " +
+          pole,
+      );
+    }
+
+    used.add(match.tokenId);
+    resolved.push(match);
+  }
+
+  return resolved;
 }
 
 function resolveBinaryAnswerTokens(
