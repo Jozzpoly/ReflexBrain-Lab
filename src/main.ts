@@ -13,7 +13,7 @@ import {
   LocalModelClient,
   type LocalModelProgress,
 } from "./local-model-client";
-import { RuleBaselineProvider } from "./rule-provider";
+import { compilePrivateState } from "./private-state";\nimport { RuleBaselineProvider } from "./rule-provider";
 import { runShadowEpisode } from "./shadow-runner";
 import type {
   ActionDistribution,
@@ -69,6 +69,11 @@ function selectionKey(): string {
   return selectedExposure + ":" + selectedTick;
 }
 
+function selectedCanonicalPrivateState() {
+  // Deliberately independent from rule-provider reflex dynamics.
+  return compilePrivateState(selectedFrame().world, "task");
+}
+
 function render(): void {
   const specimen = selectedSpecimen();
   const frame = selectedFrame();
@@ -112,7 +117,7 @@ function render(): void {
     signalTable(frame.provider.scores, frame.stabilized.scores),
     "</section>",
     '<section class="panel"><h2>Local semantic choice probe</h2>',
-    '<p class="boundary">One local Qwen forward scores only five declared immediate responses from this exact actor-private state. The result is a <strong>conditional distribution over allowed answers</strong>, not calibrated confidence and not an action command.</p>',
+    '<p class="boundary">One local Qwen forward evaluates five declared immediate responses from a <strong>canonical provider-independent private state</strong>. We report both the conditional A–E distribution and how much full-vocabulary prediction mass A–E actually received. Neither is calibrated confidence or an action command.</p>',
     '<p class="status">' + escapeHtml(localStatus) + "</p>",
     localControls(),
     activeLocalResult
@@ -183,7 +188,7 @@ function localControls(): string {
     return (
       '<button class="primary" data-load-model ' +
       (localBusy ? "disabled" : "") +
-      ">Load local Qwen 0.6B (~570 MB)</button>"
+      ">Load local Qwen 0.6B (~570 MB)</button>
     );
   }
 
@@ -192,7 +197,7 @@ function localControls(): string {
     '<span class="ready">Model ready · ' + escapeHtml(LOCAL_QWEN_MODEL_ID) + "</span>" +
     '<button class="primary" data-run-probe ' +
     (localBusy ? "disabled" : "") +
-    ">Probe this exact private state</button>" +
+    ">Probe this exact private state</button> +
     "</div>"
   );
 }
@@ -222,7 +227,7 @@ async function runLocalProbe(): Promise<void> {
   if (!localModelReady || !localClient || localBusy) return;
 
   const keyAtStart = selectionKey();
-  const stateAtStart = structuredClone(selectedFrame().privateState);
+  const stateAtStart = structuredClone(selectedCanonicalPrivateState());
   localBusy = true;
   localStatus = "Running one-token direct-choice probe locally...";
   render();
@@ -279,6 +284,9 @@ function modelComparison(
     '<div class="result-meta">',
     "<span>Latency: <strong>" + local.latencyMs.toFixed(1) + " ms</strong></span>",
     "<span>Input: <strong>" + local.inputTokenCount + " tokens</strong></span>",
+    "<span>A–E full-vocab mass: <strong>" + formatPercent(local.choiceMass) + "</strong></span>",
+    "<span>Best allowed rank: <strong>#" + local.bestAllowedRank + "</strong></span>",
+    "<span>Top token: <code>" + escapeHtml(JSON.stringify(local.topTokenText)) + "</code></span>",
     "<span>Labels: <code>" +
       local.optionTokenSurfaces.map(escapeHtml).join(" · ") +
       "</code></span>",
@@ -335,6 +343,12 @@ function signalTable(raw: ReflexScores, stabilized: ReflexScores): string {
       .join("") +
     "</div>"
   );
+}
+
+function formatPercent(value: number): string {
+  if (value === 0) return "0%";
+  if (value < 0.0001) return (value * 100).toExponential(2) + "%";
+  return (value * 100).toFixed(3) + "%";
 }
 
 function signed(value: number): string {
