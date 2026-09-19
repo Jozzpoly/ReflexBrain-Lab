@@ -11,6 +11,10 @@ import {
 } from "../src/reflex-dynamics";
 import { RuleBaselineProvider } from "../src/rule-provider";
 import { evaluateProvidersSameState } from "../src/semantic-probe";
+import {
+  buildImmediateResponsePrompt,
+  distributionFromSelectedLogits,
+} from "../src/local-choice-probe";
 import { runShadowEpisode } from "../src/shadow-runner";
 
 describe("R0 semantic shadow apparatus", () => {
@@ -192,5 +196,36 @@ describe("R0 same-state semantic probe", () => {
     ]);
     expect(seen[0]).toBe(seen[1]);
     expect(JSON.stringify(state)).toBe(canonicalBefore);
+  });
+});
+
+
+describe("R0 local direct-choice contract", () => {
+  it("serializes only the supplied actor-private state", () => {
+    const episode = createR0CounterfactualEpisode({
+      speechExposure: "none",
+      hiddenOpeningSpeech: true,
+    });
+    const state = compilePrivateState(episode.frames[0]!, "task");
+    const prompt = buildImmediateResponsePrompt(state);
+
+    expect(prompt).toContain("current_task=sort_crates");
+    expect(prompt).toContain("percepts:\n- none");
+    expect(prompt).not.toContain("outside the resident's current sensory range");
+    expect(prompt).not.toContain("speech:hidden-opening");
+  });
+
+  it("normalizes only the declared action logits", () => {
+    const distribution = distributionFromSelectedLogits([0, 1, 2, 3, 4]);
+    const total = Object.values(distribution).reduce(
+      (sum, value) => sum + value,
+      0,
+    );
+
+    expect(total).toBeCloseTo(1, 10);
+    expect(distribution.withdraw).toBeGreaterThan(distribution.investigate);
+    expect(distribution.investigate).toBeGreaterThan(distribution.acknowledge);
+    expect(distribution.acknowledge).toBeGreaterThan(distribution.orient);
+    expect(distribution.orient).toBeGreaterThan(distribution.continue);
   });
 });
