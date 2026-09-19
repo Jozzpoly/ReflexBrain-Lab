@@ -84,7 +84,7 @@ function render(): void {
   const activeLocalResult =
     localResultKey === selectionKey() ? localResult : null;
 
-  app.innerHTML = [
+  app!.innerHTML = [
     '<main class="shell">',
     "<h1>ReflexBrain Lab · R0</h1>",
     "<p>Same deterministic world trajectory, different semantic exposure. All learned inference remains zero-authority.</p>",
