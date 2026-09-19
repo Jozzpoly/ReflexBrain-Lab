@@ -1,6 +1,7 @@
 import {
   AutoModelForCausalLM,
   AutoTokenizer,
+  Tensor,
 } from "@huggingface/transformers";
 import {
   analyzeChoiceScores,
@@ -142,45 +143,59 @@ async function runProbe(
   });
 
   const started = performance.now();
-  const generated = await model.generate({
+  const outputs = await model.forward({
     ...inputs,
-    max_new_tokens: 1,
-    do_sample: false,
-    output_scores: true,
-    return_dict_in_generate: true,
+    // Transformers.js generation uses the same scalar to compute only the
+    // trailing next-token logits when the ONNX session exposes this input.
+    num_logits_to_keep: new Tensor("int64", [1n], []),
   });
   const elapsed = performance.now() - started;
 
-  const scoreTensor = generated.scores?.[0];
-  if (!scoreTensor) {
-    throw new Error("local model did not return first-step generation scores");
+  if (!outputs?.logits) {
+    await disposeTensorTree(outputs);
+    throw new Error("local model forward did not return logits");
   }
 
-  const scoreData =
-    typeof scoreTensor.getData === "function"
-      ? await scoreTensor.getData()
-      : scoreTensor.data;
+  const logitsShape = Array.from(outputs.logits.dims, Number);
+  const lastLogits = outputs.logits.slice(null, -1, null).to("float32");
 
-  const analysis = analyzeChoiceScores(scoreData, tokenIds);
-  const topTokenText = tokenizer.decode([analysis.topTokenId], {
-    skip_special_tokens: false,
-    clean_up_tokenization_spaces: false,
-  });
+  try {
+    const scoreData =
+      typeof lastLogits.getData === "function"
+        ? await lastLogits.getData()
+        : lastLogits.data;
 
-  return {
-    modelId: LOCAL_QWEN_MODEL_ID,
-    modelRevision: LOCAL_QWEN_REVISION,
-    dtype: runtimeDtype,
-    shaderF16: runtimeShaderF16,
-    distribution: analysis.distribution,
-    choiceMass: analysis.choiceMass,
-    bestAllowedRank: analysis.bestAllowedRank,
-    topTokenId: analysis.topTokenId,
-    topTokenText,
-    latencyMs: elapsed,
-    inputTokenCount: Number(inputs.input_ids?.dims?.at(-1) ?? 0),
-    optionTokenSurfaces: tokenSurfaces,
-  };
+    const analysis = analyzeChoiceScores(scoreData, tokenIds);
+    const topTokenText = tokenizer.decode([analysis.topTokenId], {
+      skip_special_tokens: false,
+      clean_up_tokenization_spaces: false,
+    });
+
+    return {
+      modelId: LOCAL_QWEN_MODEL_ID,
+      modelRevision: LOCAL_QWEN_REVISION,
+      dtype: runtimeDtype,
+      shaderF16: runtimeShaderF16,
+      logitsShape,
+      distribution: analysis.distribution,
+      choiceMass: analysis.choiceMass,
+      bestAllowedRank: analysis.bestAllowedRank,
+      topTokenId: analysis.topTokenId,
+      topTokenText,
+      latencyMs: elapsed,
+      inputTokenCount: Number(inputs.input_ids?.dims?.at(-1) ?? 0),
+      optionTokenSurfaces: tokenSurfaces,
+    };
+  } finally {
+    if (lastLogits !== outputs.logits) {
+      try {
+        lastLogits.dispose?.();
+      } catch {
+        // Best-effort cleanup; the output tree is disposed below as well.
+      }
+    }
+    await disposeTensorTree(outputs);
+  }
 }
 
 function resolveOptionTokenSurfaces(activeTokenizer: any): string[] {
@@ -223,4 +238,30 @@ function asProgress(value: unknown): {
     file: typeof record.file === "string" ? record.file : null,
     progress: typeof record.progress === "number" ? record.progress : null,
   };
+}
+
+
+async function disposeTensorTree(
+  value: unknown,
+  seen = new Set<object>(),
+): Promise<void> {
+  if (!value || typeof value !== "object") return;
+
+  const objectValue = value as object;
+  if (seen.has(objectValue)) return;
+  seen.add(objectValue);
+
+  const disposable = value as { dispose?: () => void | Promise<void> };
+  if (typeof disposable.dispose === "function") {
+    try {
+      await disposable.dispose();
+    } catch {
+      // Runtime cleanup must never overwrite the primary experiment result.
+    }
+    return;
+  }
+
+  for (const child of Object.values(value as Record<string, unknown>)) {
+    await disposeTensorTree(child, seen);
+  }
 }
