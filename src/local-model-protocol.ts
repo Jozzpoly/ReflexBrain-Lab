@@ -3,24 +3,37 @@ import type {
   ChoiceOrder,
   LocalChoiceOnlyResult,
   LocalChoiceProbeResult,
+  LocalModelBackendId,
 } from "./local-choice-probe";
 
 export type LocalModelRequestBody =
-  | { type: "load" }
-  | { type: "probe"; state: ActorPrivateState; choiceOrder: ChoiceOrder }
-  | { type: "choice"; state: ActorPrivateState; choiceOrder: ChoiceOrder };
+  | { type: "load"; backendId: LocalModelBackendId }
+  | {
+      type: "probe";
+      backendId: LocalModelBackendId;
+      state: ActorPrivateState;
+      choiceOrder: ChoiceOrder;
+    }
+  | {
+      type: "choice";
+      backendId: LocalModelBackendId;
+      state: ActorPrivateState;
+      choiceOrder: ChoiceOrder;
+    };
 
 export type LocalModelRequest =
-  | { id: number; type: "load" }
+  | { id: number; type: "load"; backendId: LocalModelBackendId }
   | {
       id: number;
       type: "probe";
+      backendId: LocalModelBackendId;
       state: ActorPrivateState;
       choiceOrder: ChoiceOrder;
     }
   | {
       id: number;
       type: "choice";
+      backendId: LocalModelBackendId;
       state: ActorPrivateState;
       choiceOrder: ChoiceOrder;
     };
