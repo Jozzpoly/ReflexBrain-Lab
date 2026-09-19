@@ -4,6 +4,7 @@ import type {
   LocalChoiceOnlyResult,
   LocalChoiceProbeResult,
   LocalModelBackendId,
+  LocalSemanticChoiceResult,
 } from "./local-choice-probe";
 
 export type LocalModelRequestBody =
@@ -16,6 +17,12 @@ export type LocalModelRequestBody =
     }
   | {
       type: "choice";
+      backendId: LocalModelBackendId;
+      state: ActorPrivateState;
+      choiceOrder: ChoiceOrder;
+    }
+  | {
+      type: "semantic_choice";
       backendId: LocalModelBackendId;
       state: ActorPrivateState;
       choiceOrder: ChoiceOrder;
@@ -36,6 +43,13 @@ export type LocalModelRequest =
       backendId: LocalModelBackendId;
       state: ActorPrivateState;
       choiceOrder: ChoiceOrder;
+    }
+  | {
+      id: number;
+      type: "semantic_choice";
+      backendId: LocalModelBackendId;
+      state: ActorPrivateState;
+      choiceOrder: ChoiceOrder;
     };
 
 export type LocalModelResponse =
@@ -49,4 +63,9 @@ export type LocalModelResponse =
   | { id: number; type: "ready" }
   | { id: number; type: "probe_result"; result: LocalChoiceProbeResult }
   | { id: number; type: "choice_result"; result: LocalChoiceOnlyResult }
+  | {
+      id: number;
+      type: "semantic_choice_result";
+      result: LocalSemanticChoiceResult;
+    }
   | { id: number; type: "error"; message: string };
