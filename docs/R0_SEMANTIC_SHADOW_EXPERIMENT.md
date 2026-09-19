@@ -54,6 +54,15 @@ R0 records both:
 
 This lets us identify whether failures come from semantic judgement or temporal realization.
 
+## Two comparison modes
+
+R0 deliberately separates two evidence modes:
+
+1. **same-state semantic probe** — multiple providers receive byte-equivalent cloned private state, with no temporal feedback; use this for clean baseline/model A-B judgement;
+2. **temporal shadow loop** — each provider's stabilized reflex state may feed its own next-frame reflex context; use this to expose persistence, hysteresis and divergence over time.
+
+Do not confuse a later closed-loop divergence with a first-frame semantic difference.
+
 ## Shadow invariant
 
 Provider evaluation must not mutate:
@@ -109,4 +118,6 @@ R0 should be considered negative or reframed if:
 5. shadow trace;
 6. non-interference and temporal-stability tests;
 7. browser workbench;
-8. only then local WebGPU model integration.
+8. same-state multi-provider probe;
+9. first counterfactual family;
+10. only then local model integration.
