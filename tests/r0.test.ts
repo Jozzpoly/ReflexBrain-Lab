@@ -213,19 +213,24 @@ describe("R0 local direct-choice contract", () => {
     expect(prompt).toContain("percepts:\n- none");
     expect(prompt).not.toContain("outside the resident's current sensory range");
     expect(prompt).not.toContain("speech:hidden-opening");
+    expect(prompt).not.toContain("Prefer preserving");
+    expect(prompt).not.toContain("/no_think");
   });
 
-  it("normalizes only the declared action logits", () => {
-    const distribution = distributionFromSelectedLogits([0, 1, 2, 3, 4]);
-    const total = Object.values(distribution).reduce(
+  it("keeps conditional choice preference separate from full-vocabulary mass", () => {
+    const scores = [-2, -1, 0, 1, 2, 8, 7];
+    const analysis = analyzeChoiceScores(scores, [0, 1, 2, 3, 4]);
+    const total = Object.values(analysis.distribution).reduce(
       (sum, value) => sum + value,
       0,
     );
 
     expect(total).toBeCloseTo(1, 10);
-    expect(distribution.withdraw).toBeGreaterThan(distribution.investigate);
-    expect(distribution.investigate).toBeGreaterThan(distribution.acknowledge);
-    expect(distribution.acknowledge).toBeGreaterThan(distribution.orient);
-    expect(distribution.orient).toBeGreaterThan(distribution.continue);
+    expect(analysis.distribution.withdraw).toBeGreaterThan(
+      analysis.distribution.investigate,
+    );
+    expect(analysis.choiceMass).toBeLessThan(0.01);
+    expect(analysis.bestAllowedRank).toBe(3);
+    expect(analysis.topTokenId).toBe(5);
   });
 });
