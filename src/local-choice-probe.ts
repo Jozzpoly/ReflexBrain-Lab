@@ -27,12 +27,24 @@ export const IMMEDIATE_RESPONSE_OPTIONS: readonly ChoiceOption[] = [
   { id: "withdraw", label: "create distance from the player" },
 ];
 
+export type ChoiceOrder = "canonical" | "reverse";
+
+export function getImmediateResponseOptions(
+  order: ChoiceOrder,
+): readonly ChoiceOption[] {
+  return order === "reverse"
+    ? [...IMMEDIATE_RESPONSE_OPTIONS].reverse()
+    : IMMEDIATE_RESPONSE_OPTIONS;
+}
+
 export interface LocalChoiceProbeResult {
   modelId: string;
   modelRevision: string;
   dtype: LocalQwenDtype;
   shaderF16: boolean;
   logitsShape: readonly number[];
+  choiceOrder: ChoiceOrder;
+  optionOrder: readonly ReflexAction[];
   distribution: ActionDistribution;
   choiceMass: number;
   bestAllowedRank: number;
@@ -47,7 +59,10 @@ export interface LocalChoiceProbeResult {
  * Deliberately compact and neutral. This serializes only actor-private state.
  * R0 must not quietly embed the desired policy in prompt prose.
  */
-export function buildImmediateResponsePrompt(state: ActorPrivateState): string {
+export function buildImmediateResponsePrompt(
+  state: ActorPrivateState,
+  options: readonly ChoiceOption[] = IMMEDIATE_RESPONSE_OPTIONS,
+): string {
   const perceptLines =
     state.percepts.length === 0
       ? ["- none"]
@@ -70,7 +85,7 @@ export function buildImmediateResponsePrompt(state: ActorPrivateState): string {
           ].join(" ");
         });
 
-  const options = IMMEDIATE_RESPONSE_OPTIONS.map(
+  const optionLines = options.map(
     (option, index) =>
       String.fromCharCode(65 + index) + ". " + option.label,
   );
@@ -92,7 +107,7 @@ export function buildImmediateResponsePrompt(state: ActorPrivateState): string {
     "Which immediate response best fits this exact moment?",
     "",
     "ALLOWED ANSWERS",
-    ...options,
+    ...optionLines,
     "",
     "Answer with exactly one letter: A, B, C, D, or E.",
   ].join("\n");
@@ -108,11 +123,12 @@ export interface ChoiceScoreAnalysis {
 export function analyzeChoiceScores(
   scores: ArrayLike<number>,
   selectedTokenIds: readonly number[],
+  options: readonly ChoiceOption[] = IMMEDIATE_RESPONSE_OPTIONS,
 ): ChoiceScoreAnalysis {
-  if (selectedTokenIds.length !== IMMEDIATE_RESPONSE_OPTIONS.length) {
+  if (selectedTokenIds.length !== options.length) {
     throw new Error(
       "expected " +
-        IMMEDIATE_RESPONSE_OPTIONS.length +
+        options.length +
         " selected token ids, got " +
         selectedTokenIds.length,
     );
@@ -173,7 +189,7 @@ export function analyzeChoiceScores(
 
   return {
     distribution: Object.fromEntries(
-      IMMEDIATE_RESPONSE_OPTIONS.map((option, index) => [
+      options.map((option, index) => [
         option.id,
         selectedWeights[index]! / selectedWeight,
       ]),
