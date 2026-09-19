@@ -17,6 +17,8 @@ import {
   buildImmediateResponsePrompt,
   chooseLocalQwenDtype,
   getImmediateResponseOptions,
+  getLocalModelBackend,
+  isLocalModelBackendId,
 } from "../src/local-choice-probe";
 import { runShadowEpisode } from "../src/shadow-runner";
 
@@ -204,6 +206,17 @@ describe("R0 same-state semantic probe", () => {
 
 
 describe("R0 local direct-choice contract", () => {
+  it("keeps benchmark backends explicit and pinned", () => {
+    expect(isLocalModelBackendId("qwen3-0.6b")).toBe(true);
+    expect(isLocalModelBackendId("smollm2-135m")).toBe(true);
+    expect(isLocalModelBackendId("unknown")).toBe(false);
+
+    expect(getLocalModelBackend("qwen3-0.6b").modelRevision).toHaveLength(40);
+    expect(getLocalModelBackend("smollm2-135m").modelRevision).toBe(
+      "b8a5c0f183b78c55955a5364f610c36668b5e681",
+    );
+  });
+
   it("routes WebGPU dtype by shader-f16 capability", () => {
     expect(chooseLocalQwenDtype(true)).toBe("q4f16");
     expect(chooseLocalQwenDtype(false)).toBe("q8");
