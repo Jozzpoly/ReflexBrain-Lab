@@ -69,7 +69,7 @@ export class LocalModelClient {
   }
 
   private request<T>(
-    request: Omit<LocalModelRequest, "id">,
+    request: LocalModelRequestBody,
     progress?: (value: LocalModelProgress) => void,
   ): Promise<T> {
     const id = ++this.sequence;
