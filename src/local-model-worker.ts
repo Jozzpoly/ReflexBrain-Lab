@@ -5,11 +5,12 @@ import {
 import {
   analyzeChoiceScores,
   buildImmediateResponsePrompt,
+  chooseLocalQwenDtype,
   IMMEDIATE_RESPONSE_OPTIONS,
-  LOCAL_QWEN_DTYPE,
   LOCAL_QWEN_MODEL_ID,
   LOCAL_QWEN_REVISION,
   type LocalChoiceProbeResult,
+  type LocalQwenDtype,
 } from "./local-choice-probe";
 import type {
   LocalModelRequest,
@@ -24,6 +25,8 @@ const scope = globalThis as unknown as {
 let tokenizer: any = null;
 let model: any = null;
 let loadPromise: Promise<void> | null = null;
+let runtimeDtype: LocalQwenDtype | null = null;
+let runtimeShaderF16: boolean | null = null;
 
 scope.onmessage = (event) => {
   void handle(event.data);
@@ -65,6 +68,10 @@ async function ensureLoaded(requestId: number): Promise<void> {
         });
       };
 
+      const runtime = await detectWebGpuRuntime();
+      runtimeDtype = runtime.dtype;
+      runtimeShaderF16 = runtime.shaderF16;
+
       [tokenizer, model] = await Promise.all([
         AutoTokenizer.from_pretrained(LOCAL_QWEN_MODEL_ID, {
           revision: LOCAL_QWEN_REVISION,
@@ -72,7 +79,7 @@ async function ensureLoaded(requestId: number): Promise<void> {
         }),
         AutoModelForCausalLM.from_pretrained(LOCAL_QWEN_MODEL_ID, {
           revision: LOCAL_QWEN_REVISION,
-          dtype: LOCAL_QWEN_DTYPE,
+          dtype: runtime.dtype,
           device: "webgpu",
           progress_callback: progressCallback,
         }),
@@ -81,6 +88,8 @@ async function ensureLoaded(requestId: number): Promise<void> {
       loadPromise = null;
       tokenizer = null;
       model = null;
+      runtimeDtype = null;
+      runtimeShaderF16 = null;
       throw error;
     });
   }
@@ -88,9 +97,34 @@ async function ensureLoaded(requestId: number): Promise<void> {
   await loadPromise;
 }
 
+async function detectWebGpuRuntime(): Promise<{
+  dtype: LocalQwenDtype;
+  shaderF16: boolean;
+}> {
+  const gpu = (globalThis.navigator as any)?.gpu;
+  if (!gpu || typeof gpu.requestAdapter !== "function") {
+    throw new Error("WebGPU adapter API is unavailable in the model worker");
+  }
+
+  const adapter = await gpu.requestAdapter();
+  if (!adapter) {
+    throw new Error("WebGPU did not provide an adapter");
+  }
+
+  const shaderF16 = Boolean(adapter.features?.has?.("shader-f16"));
+  return {
+    dtype: chooseLocalQwenDtype(shaderF16),
+    shaderF16,
+  };
+}
+
 async function runProbe(
   state: import("./contracts").ActorPrivateState,
 ): Promise<LocalChoiceProbeResult> {
+  if (runtimeDtype === null || runtimeShaderF16 === null) {
+    throw new Error("local model runtime metadata is unavailable");
+  }
+
   const prompt = buildImmediateResponsePrompt(state);
   const messages = [{ role: "user", content: prompt }];
 
@@ -136,6 +170,8 @@ async function runProbe(
   return {
     modelId: LOCAL_QWEN_MODEL_ID,
     modelRevision: LOCAL_QWEN_REVISION,
+    dtype: runtimeDtype,
+    shaderF16: runtimeShaderF16,
     distribution: analysis.distribution,
     choiceMass: analysis.choiceMass,
     bestAllowedRank: analysis.bestAllowedRank,
@@ -162,7 +198,8 @@ function resolveOptionTokenSurfaces(activeTokenizer: any): string[] {
           ids.length === 1 && Number.isFinite(Number(ids[0])),
       )
     ) {
-      return surfaces;
+      const ids = encoded.map((value: readonly unknown[]) => Number(value[0]));
+      if (new Set(ids).size === ids.length) return surfaces;
     }
   }
 
