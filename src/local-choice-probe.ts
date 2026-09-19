@@ -148,6 +148,19 @@ export interface ResolvedBinaryToken {
   tokenId: number;
 }
 
+export function probabilityYesFromScores(
+  yesScore: number,
+  noScore: number,
+): number {
+  if (!Number.isFinite(yesScore) || !Number.isFinite(noScore)) {
+    throw new Error("binary appraisal scores must be finite");
+  }
+  const maximum = Math.max(yesScore, noScore);
+  const yesWeight = Math.exp(yesScore - maximum);
+  const noWeight = Math.exp(noScore - maximum);
+  return yesWeight / (yesWeight + noWeight);
+}
+
 export function semanticActionFromToken(
   selectedTokenId: number,
   tokens: readonly ResolvedSemanticToken[],
