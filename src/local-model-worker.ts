@@ -16,6 +16,7 @@ import {
   getImmediateResponseOptions,
   getLocalModelBackend,
   IMMEDIATE_RESPONSE_OPTIONS,
+  probabilityYesFromScores,
   semanticActionFromToken,
   SEMANTIC_TOKEN_SPECS,
   type AppraisalId,
@@ -238,7 +239,7 @@ async function runAppraisal(
 
   try {
     const captured = processor.getCaptured();
-    const probabilityYes = probabilityOfYes(
+    const probabilityYes = probabilityYesFromScores(
       captured.yesScore,
       captured.noScore,
     );
@@ -658,13 +659,6 @@ function resolveBinaryAnswerTokens(
   }
 
   return resolved;
-}
-
-function probabilityOfYes(yesScore: number, noScore: number): number {
-  const maximum = Math.max(yesScore, noScore);
-  const yesWeight = Math.exp(yesScore - maximum);
-  const noWeight = Math.exp(noScore - maximum);
-  return yesWeight / (yesWeight + noWeight);
 }
 
 function resolveSemanticActionTokens(
