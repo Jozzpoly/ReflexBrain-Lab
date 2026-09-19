@@ -239,7 +239,7 @@ async function runLocalProbe(): Promise<void> {
   const keyAtStart = selectionKey();
   const stateAtStart = structuredClone(selectedCanonicalPrivateState());
   localBusy = true;
-  localStatus = "Running one-step semantic choice probe locally...";
+  localStatus = "Running one direct next-token forward locally...";
   render();
 
   try {
@@ -308,6 +308,9 @@ function modelComparison(
       "</strong> · shader-f16=" +
       String(local.shaderF16) +
       "</span>",
+    "<span>Logits shape: <code>[" +
+      local.logitsShape.join(", ") +
+      "]</code></span>",
     "<span>Revision: <code>" +
       escapeHtml(local.modelRevision.slice(0, 12)) +
       "</code></span>",
