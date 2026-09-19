@@ -3,11 +3,12 @@ import {
   AutoTokenizer,
 } from "@huggingface/transformers";
 import {
+  analyzeChoiceScores,
   buildImmediateResponsePrompt,
-  distributionFromSelectedLogits,
   IMMEDIATE_RESPONSE_OPTIONS,
   LOCAL_QWEN_DTYPE,
   LOCAL_QWEN_MODEL_ID,
+  LOCAL_QWEN_REVISION,
   type LocalChoiceProbeResult,
 } from "./local-choice-probe";
 import type {
@@ -50,6 +51,7 @@ async function handle(request: LocalModelRequest): Promise<void> {
 
 async function ensureLoaded(requestId: number): Promise<void> {
   if (tokenizer && model) return;
+
   if (!loadPromise) {
     loadPromise = (async () => {
       const progressCallback = (progress: unknown) => {
@@ -65,9 +67,11 @@ async function ensureLoaded(requestId: number): Promise<void> {
 
       [tokenizer, model] = await Promise.all([
         AutoTokenizer.from_pretrained(LOCAL_QWEN_MODEL_ID, {
+          revision: LOCAL_QWEN_REVISION,
           progress_callback: progressCallback,
         }),
         AutoModelForCausalLM.from_pretrained(LOCAL_QWEN_MODEL_ID, {
+          revision: LOCAL_QWEN_REVISION,
           dtype: LOCAL_QWEN_DTYPE,
           device: "webgpu",
           progress_callback: progressCallback,
@@ -80,12 +84,16 @@ async function ensureLoaded(requestId: number): Promise<void> {
       throw error;
     });
   }
+
   await loadPromise;
 }
 
-async function runProbe(state: import("./contracts").ActorPrivateState): Promise<LocalChoiceProbeResult> {
+async function runProbe(
+  state: import("./contracts").ActorPrivateState,
+): Promise<LocalChoiceProbeResult> {
   const prompt = buildImmediateResponsePrompt(state);
   const messages = [{ role: "user", content: prompt }];
+
   const inputs = tokenizer.apply_chat_template(messages, {
     tokenize: true,
     return_dict: true,
@@ -118,6 +126,7 @@ async function runProbe(state: import("./contracts").ActorPrivateState): Promise
     typeof scoreTensor.getData === "function"
       ? await scoreTensor.getData()
       : scoreTensor.data;
+
   const analysis = analyzeChoiceScores(scoreData, tokenIds);
   const topTokenText = tokenizer.decode([analysis.topTokenId], {
     skip_special_tokens: false,
@@ -146,13 +155,19 @@ function resolveOptionTokenSurfaces(activeTokenizer: any): string[] {
     const encoded = surfaces.map((surface) =>
       activeTokenizer.encode(surface, { add_special_tokens: false }),
     );
-    if (encoded.every((ids: readonly unknown[]) => ids.length === 1)) {
+
+    if (
+      encoded.every(
+        (ids: readonly unknown[]) =>
+          ids.length === 1 && Number.isFinite(Number(ids[0])),
+      )
+    ) {
       return surfaces;
     }
   }
 
   throw new Error(
-    "A-E labels are not single tokens for this tokenizer; direct readout contract is invalid",
+    "A-E labels are not distinct single-token surfaces for this tokenizer",
   );
 }
 
