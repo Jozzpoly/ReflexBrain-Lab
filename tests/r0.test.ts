@@ -15,6 +15,7 @@ import {
   analyzeChoiceScores,
   buildImmediateResponsePrompt,
   chooseLocalQwenDtype,
+  getImmediateResponseOptions,
 } from "../src/local-choice-probe";
 import { runShadowEpisode } from "../src/shadow-runner";
 
@@ -207,6 +208,18 @@ describe("R0 local direct-choice contract", () => {
     expect(chooseLocalQwenDtype(false)).toBe("q8");
   });
 
+  it("reverses labels without changing the semantic option set", () => {
+    const canonical = getImmediateResponseOptions("canonical");
+    const reverse = getImmediateResponseOptions("reverse");
+
+    expect(reverse.map((option) => option.id)).toEqual(
+      [...canonical].reverse().map((option) => option.id),
+    );
+    expect(new Set(reverse.map((option) => option.id))).toEqual(
+      new Set(canonical.map((option) => option.id)),
+    );
+  });
+
   it("serializes only the supplied actor-private state", () => {
     const episode = createR0CounterfactualEpisode({
       speechExposure: "none",
@@ -221,6 +234,18 @@ describe("R0 local direct-choice contract", () => {
     expect(prompt).not.toContain("speech:hidden-opening");
     expect(prompt).not.toContain("Prefer preserving");
     expect(prompt).not.toContain("/no_think");
+  });
+
+  it("maps letter scores back onto semantic actions under reversed order", () => {
+    const reverse = getImmediateResponseOptions("reverse");
+    const analysis = analyzeChoiceScores(
+      [8, 3, 2, 1, 0, -1],
+      [0, 1, 2, 3, 4],
+      reverse,
+    );
+
+    expect(analysis.distribution.withdraw).toBeGreaterThan(0.98);
+    expect(analysis.distribution.continue).toBeLessThan(0.001);
   });
 
   it("keeps conditional choice preference separate from full-vocabulary mass", () => {
