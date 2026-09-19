@@ -1,22 +1,43 @@
 import "./style.css";
-import { createLowStakesAddressEpisode } from "./episode";
+import {
+  createR0CounterfactualEpisode,
+  type Episode,
+  type SpeechExposure,
+} from "./episode";
 import { RuleBaselineProvider } from "./rule-provider";
 import { runShadowEpisode } from "./shadow-runner";
-import type { ReflexScores } from "./contracts";
+import type { ReflexScores, ShadowTraceFrame } from "./contracts";
 
-const episode = createLowStakesAddressEpisode();
-const trace = await runShadowEpisode(
-  episode.frames,
-  new RuleBaselineProvider(),
-);
+interface Specimen {
+  exposure: SpeechExposure;
+  episode: Episode;
+  trace: readonly ShadowTraceFrame[];
+}
+
+const provider = new RuleBaselineProvider();
+const exposures: readonly SpeechExposure[] = ["addressed", "overheard", "none"];
+const specimens: Specimen[] = [];
+
+for (const exposure of exposures) {
+  const episode = createR0CounterfactualEpisode({ speechExposure: exposure });
+  specimens.push({
+    exposure,
+    episode,
+    trace: await runShadowEpisode(episode.frames, provider),
+  });
+}
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) throw new Error("missing #app");
 
-let selectedTick = 0;
+let selectedExposure: SpeechExposure = "addressed";
+let selectedTick = 10;
 
 function render(): void {
-  const frame = trace[selectedTick]!;
+  const specimen = specimens.find(
+    (candidate) => candidate.exposure === selectedExposure,
+  )!;
+  const frame = specimen.trace[selectedTick]!;
   const speech = frame.privateState.percepts.find(
     (percept) => percept.kind === "speech",
   );
@@ -24,23 +45,41 @@ function render(): void {
   app!.innerHTML = [
     '<main class="shell">',
     "<h1>ReflexBrain Lab · R0</h1>",
-    "<p>" + episode.title + "</p>",
+    "<p>Same deterministic world trajectory, different semantic exposure. Provider remains zero-authority.</p>",
+    '<section class="panel"><h2>Counterfactual family</h2><div class="variants">',
+    specimens
+      .map(
+        (candidate) =>
+          '<button class="' +
+          (candidate.exposure === selectedExposure ? "active" : "") +
+          '" data-exposure="' +
+          candidate.exposure +
+          '">' +
+          candidate.exposure +
+          "</button>",
+      )
+      .join(""),
+    "</div></section>",
     '<section class="panel">',
-    "<h2>Tick " + frame.tick + " · zero-authority shadow</h2>",
-    "<p>Authoritative baseline action: <strong>" +
+    "<h2>" + specimen.episode.title + "</h2>",
+    "<p>Tick <strong>" + frame.tick + "</strong> · authoritative baseline action: <strong>" +
       frame.baselineAction +
       "</strong></p>",
     "<p>Reflex focus: <strong>" + frame.stabilized.focus + "</strong></p>",
     "<p>Task progress: " + frame.world.taskProgress.toFixed(2) + "</p>",
     speech && speech.kind === "speech"
-      ? "<p>Private speech percept: “" + speech.text + "”</p>"
+      ? "<p>Private speech percept: “" + escapeHtml(speech.text) +
+        "” · addressed=<strong>" + String(speech.addressed) + "</strong></p>"
       : "<p>No speech percept this tick.</p>",
     "</section>",
     '<section class="panel"><h2>Raw → stabilized signals</h2>',
     signalTable(frame.provider.scores, frame.stabilized.scores),
     "</section>",
+    '<section class="panel"><h2>Cross-variant snapshot at tick 10</h2>',
+    comparisonTable(),
+    "</section>",
     '<section class="panel"><h2>Timeline</h2><div class="timeline">',
-    trace
+    specimen.trace
       .map(
         (entry) =>
           '<button class="' +
@@ -66,6 +105,42 @@ function render(): void {
       render();
     };
   });
+
+  document
+    .querySelectorAll<HTMLButtonElement>("[data-exposure]")
+    .forEach((button) => {
+      button.onclick = () => {
+        selectedExposure = button.dataset.exposure as SpeechExposure;
+        render();
+      };
+    });
+}
+
+function comparisonTable(): string {
+  const rows = specimens.map((specimen) => {
+    const frame = specimen.trace[10]!;
+    return (
+      "<tr><td>" +
+      specimen.exposure +
+      "</td><td>" +
+      frame.provider.scores.attentionPlayer.toFixed(2) +
+      "</td><td>" +
+      frame.provider.scores.socialRelevance.toFixed(2) +
+      "</td><td>" +
+      frame.provider.scores.interruptCurrent.toFixed(2) +
+      "</td><td>" +
+      frame.provider.scores.deeperCognition.toFixed(2) +
+      "</td></tr>"
+    );
+  });
+
+  return (
+    '<div class="table-wrap"><table><thead><tr>' +
+    "<th>Exposure</th><th>Attention</th><th>Social</th><th>Interrupt</th><th>Deep cognition</th>" +
+    "</tr></thead><tbody>" +
+    rows.join("") +
+    "</tbody></table></div>"
+  );
 }
 
 function signalTable(raw: ReflexScores, stabilized: ReflexScores): string {
@@ -85,6 +160,19 @@ function signalTable(raw: ReflexScores, stabilized: ReflexScores): string {
       .join("") +
     "</div>"
   );
+}
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => {
+    const entities: Record<string, string> = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;",
+    };
+    return entities[character]!;
+  });
 }
 
 render();
