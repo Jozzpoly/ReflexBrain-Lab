@@ -29,6 +29,13 @@ interface Specimen {
   trace: readonly ShadowTraceFrame[];
 }
 
+interface MatrixProbe {
+  exposure: SpeechExposure;
+  order: ChoiceOrder;
+  repetition: number;
+  result: LocalChoiceProbeResult;
+}
+
 const provider = new RuleBaselineProvider();
 const exposures: readonly SpeechExposure[] = ["addressed", "overheard", "none"];
 const specimens: Specimen[] = [];
@@ -57,6 +64,7 @@ let localStatus = webGpuAvailable
 let localResult: LocalChoiceProbeResult | null = null;
 let localResultKey: string | null = null;
 let localChoiceOrder: ChoiceOrder = "canonical";
+let matrixProbes: MatrixProbe[] = [];
 
 function selectedSpecimen(): Specimen {
   return specimens.find(
@@ -135,6 +143,7 @@ function render(): void {
     activeLocalResult
       ? modelComparison(frame.provider.actions, activeLocalResult)
       : '<p class="muted">No local-model result for the currently selected canonical state.</p>',
+    matrixProbes.length > 0 ? matrixTable() : "",
     "</section>",
     '<section class="panel"><h2>Rule baseline · cross-variant snapshot at tick 10</h2>',
     comparisonTable(),
@@ -338,6 +347,87 @@ function modelComparison(
   ].join("");
 }
 
+function matrixTable(): string {
+  const rows = matrixProbes.map((probe) => {
+    const entries = Object.entries(probe.result.distribution)
+      .sort((a, b) => b[1] - a[1]);
+    const [topAction, topProbability] = entries[0]!;
+
+    return (
+      "<tr><td>" +
+      probe.exposure +
+      "</td><td>" +
+      probe.order +
+      "</td><td>" +
+      probe.repetition +
+      "</td><td>" +
+      probe.result.latencyMs.toFixed(1) +
+      " ms</td><td>" +
+      formatPercent(probe.result.choiceMass) +
+      "</td><td>" +
+      escapeHtml(topAction) +
+      "</td><td>" +
+      topProbability.toFixed(4) +
+      "</td></tr>"
+    );
+  });
+
+  return (
+    '<div class="table-wrap"><table><thead><tr>' +
+    "<th>Exposure</th><th>Order</th><th>Rep</th><th>Latency</th><th>A–E mass</th><th>Top semantic action</th><th>P</th>" +
+    "</tr></thead><tbody>" +
+    rows.join("") +
+    "</tbody></table></div>"
+  );
+}
+
+async function runSemanticMatrix(): Promise<void> {
+  if (!localModelReady || !localClient || localBusy) return;
+
+  matrixProbes = [];
+  const orders: readonly ChoiceOrder[] = ["canonical", "reverse"];
+  const repetitions = 2;
+  let completed = 0;
+  const total = exposures.length * orders.length * repetitions;
+
+  for (let repetition = 1; repetition <= repetitions; repetition += 1) {
+    for (const exposure of exposures) {
+      const specimen = specimens.find(
+        (candidate) => candidate.exposure === exposure,
+      )!;
+      const state = compilePrivateState(specimen.trace[10]!.world, "task");
+
+      for (const order of orders) {
+        localBusy = true;
+        localStatus =
+          "Semantic matrix " +
+          completed +
+          "/" +
+          total +
+          " complete · running " +
+          exposure +
+          " / " +
+          order +
+          " / rep " +
+          repetition +
+          ".";
+        render();
+
+        const result = await localClient.probe(structuredClone(state), order);
+        matrixProbes.push({ exposure, order, repetition, result });
+        completed += 1;
+      }
+    }
+  }
+
+  localBusy = false;
+  localStatus =
+    "Semantic matrix complete: " +
+    completed +
+    " direct forwards in one loaded-model session.";
+  render();
+}
+
 function comparisonTable(): string {
   const rows = specimens.map((specimen) => {
     const frame = specimen.trace[10]!;
@@ -419,19 +509,26 @@ void autoRunSmokeIfRequested();
 async function autoRunSmokeIfRequested(): Promise<void> {
   const params = new URLSearchParams(window.location.search);
   const mode = params.get("autorun");
-  if (mode !== "smoke") return;
+  if (mode !== "smoke" && mode !== "matrix") return;
 
   const requestedOrder = params.get("order");
   localChoiceOrder =
     requestedOrder === "reverse" ? "reverse" : "canonical";
 
   localStatus =
-    "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once with " +
-    localChoiceOrder +
-    " label order.";
+    mode === "matrix"
+      ? "Autorun semantic matrix requested: loading the pinned local model."
+      : "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once with " +
+        localChoiceOrder +
+        " label order.";
   render();
 
   await loadLocalModel();
   if (!localModelReady) return;
-  await runLocalProbe();
+
+  if (mode === "matrix") {
+    await runSemanticMatrix();
+  } else {
+    await runLocalProbe();
+  }
 }
