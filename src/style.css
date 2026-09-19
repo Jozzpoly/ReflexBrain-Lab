@@ -57,3 +57,35 @@ th, td {
   white-space: nowrap;
 }
 th { color: #9da7b3; font-weight: 600; }
+
+.boundary,
+.muted,
+.status {
+  color: #9da7b3;
+}
+.boundary strong { color: #e6edf3; }
+.primary {
+  background: #1f6feb;
+  color: white;
+  border: 1px solid #388bfd;
+  border-radius: 7px;
+  padding: 9px 12px;
+  cursor: pointer;
+}
+.primary:disabled,
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.probe-controls,
+.result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+.result-meta {
+  margin: 14px 0 8px;
+  color: #9da7b3;
+}
+.ready { color: #7ee787; }
