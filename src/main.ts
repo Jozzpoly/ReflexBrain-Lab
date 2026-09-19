@@ -162,6 +162,21 @@ function render(): void {
     button.onclick = () => {
       selectedTick = Number(button.dataset.tick ?? 0);
       render();
+
+void autoRunSmokeIfRequested();
+
+async function autoRunSmokeIfRequested(): Promise<void> {
+  const mode = new URLSearchParams(window.location.search).get("autorun");
+  if (mode !== "smoke") return;
+
+  localStatus =
+    "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once.";
+  render();
+
+  await loadLocalModel();
+  if (!localModelReady) return;
+  await runLocalProbe();
+}
     };
   });
 
