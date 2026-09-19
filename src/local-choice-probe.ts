@@ -63,14 +63,37 @@ export const IMMEDIATE_RESPONSE_OPTIONS: readonly ChoiceOption[] = [
   { id: "withdraw", label: "create distance from the player" },
 ];
 
-export type ChoiceOrder = "canonical" | "reverse";
+export type ChoiceOrder =
+  | "canonical"
+  | "reverse"
+  | "rotate1"
+  | "rotate2"
+  | "rotate3"
+  | "rotate4";
+
+export const PERMUTATION_SWEEP_ORDERS: readonly ChoiceOrder[] = [
+  "canonical",
+  "rotate1",
+  "rotate2",
+  "rotate3",
+  "rotate4",
+];
 
 export function getImmediateResponseOptions(
   order: ChoiceOrder,
 ): readonly ChoiceOption[] {
-  return order === "reverse"
-    ? [...IMMEDIATE_RESPONSE_OPTIONS].reverse()
-    : IMMEDIATE_RESPONSE_OPTIONS;
+  if (order === "canonical") return IMMEDIATE_RESPONSE_OPTIONS;
+  if (order === "reverse") return [...IMMEDIATE_RESPONSE_OPTIONS].reverse();
+
+  const offset = Number(order.slice("rotate".length));
+  if (!Number.isInteger(offset) || offset < 1 || offset >= IMMEDIATE_RESPONSE_OPTIONS.length) {
+    throw new Error("invalid choice order: " + order);
+  }
+
+  return [
+    ...IMMEDIATE_RESPONSE_OPTIONS.slice(offset),
+    ...IMMEDIATE_RESPONSE_OPTIONS.slice(0, offset),
+  ];
 }
 
 export interface LocalChoiceOnlyResult {
