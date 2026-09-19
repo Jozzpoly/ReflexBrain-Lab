@@ -180,3 +180,82 @@ Longer-term alternatives if semantic-token generation remains unstable:
 - dedicated learned decision/readout head;
 - LoRA / task-specific local reflex model;
 - non-browser runtime if WebGPU overhead remains dominant.
+
+
+## Semantic-token permutation sweep
+
+The next hypothesis removed arbitrary A–E labels entirely.
+
+Runtime dynamically resolved five distinct single-token semantic surfaces on Qwen:
+
+- `work` -> continue
+- `look` -> orient
+- `reply` -> acknowledge
+- `inspect` -> investigate
+- `leave` -> withdraw
+
+All five resolved as bare one-token surfaces on the live Qwen tokenizer.
+
+The same two situations were tested across the five cyclic presentation orders.
+
+### silent-pass
+
+| order | selected keyword | selected action | latency |
+| --- | --- | --- | ---: |
+| canonical | work | continue | 3299.1 ms |
+| rotate1 | look | orient | 3019.4 ms |
+| rotate2 | look | orient | 2971.8 ms |
+| rotate3 | look | orient | 3060.3 ms |
+| rotate4 | look | orient | 3076.8 ms |
+
+### urgent-warning
+
+| order | selected keyword | selected action | latency |
+| --- | --- | --- | ---: |
+| canonical | reply | acknowledge | 3193.9 ms |
+| rotate1 | look | orient | 3157.9 ms |
+| rotate2 | reply | acknowledge | 3128.7 ms |
+| rotate3 | look | orient | 3088.1 ms |
+| rotate4 | leave | withdraw | 3114.6 ms |
+
+Latency:
+- mean: **3111.1 ms**
+- median: **3101.4 ms**
+- range: **2971.8–3299.1 ms**
+
+### Interpretation
+
+Removing A–E removes the arbitrary letter-token failure mode, but it does **not** make single-choice action selection robust.
+
+The same private state changes its selected semantic action when only the presentation order changes. The model carries real semantic information, but the single mutually-exclusive choice interface remains materially confounded by contextual / presentation-order effects.
+
+**Verdict: semantic-token single-choice path is NOT ADEQUATE as a trusted ReflexBrain action selector.**
+
+This strengthens a broader architectural correction:
+
+> R0 should stop treating “pick the next action” as the primary primitive.
+
+The original ReflexBrain hypothesis was richer: fast independent appraisal signals such as attention, interruption pressure, threat, social relevance and deeper-cognition pressure. Those signals should not need to suppress one another inside one five-way softmax.
+
+## Revised next hypothesis — independent semantic judgements
+
+Next experiment should be closer to Jev Noul / appraisal than Jev Choice:
+
+- evaluate bounded semantic propositions independently;
+- use direct semantic `yes / no` token identities rather than arbitrary letters;
+- capture the pre-mask yes/no logits inside the generation logits processor;
+- convert the two captured values to a bounded conditional probability;
+- keep each judgement independent from the other judgement labels;
+- test proposition inversion / counterfactual pairs to expose yes/no or framing bias.
+
+Initial candidate judgements:
+
+- player deserves attention;
+- current task should be interrupted;
+- situation is socially relevant;
+- situation may be immediately dangerous;
+- deeper cognition is warranted.
+
+This is not yet a claim that these are the final ReflexBrain dimensions. They are an R0 probe surface.
+
+Important implementation opportunity: Transformers.js generation already computes only the next-token logits for sampling. A custom logits processor can capture the allowed `yes/no` scores **before masking**, avoiding the sequence-wide direct-forward tensor used by the earlier diagnostic path.
