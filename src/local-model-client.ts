@@ -2,6 +2,7 @@ import type { ActorPrivateState } from "./contracts";
 import type {
   ChoiceOrder,
   LocalChoiceOnlyResult,
+  LocalModelBackendId,
   LocalChoiceProbeResult,
 } from "./local-choice-probe";
 import type {
@@ -17,21 +18,7 @@ export interface LocalModelProgress {
 }
 
 export class LocalModelClient {
-  private readonly worker = new Worker(
-    new URL("./local-model-worker.ts", import.meta.url),
-    { type: "module" },
-  );
-  private sequence = 0;
-  private readonly pending = new Map<
-    number,
-    {
-      resolve: (value: unknown) => void;
-      reject: (reason: unknown) => void;
-      progress?: (value: LocalModelProgress) => void;
-    }
-  >();
-
-  constructor() {
+  constructor(private readonly backendId: LocalModelBackendId) {
     this.worker.onmessage = (event: MessageEvent<LocalModelResponse>) => {
       const message = event.data;
       const pending = this.pending.get(message.id);
@@ -59,8 +46,22 @@ export class LocalModelClient {
     };
   }
 
+  private readonly worker = new Worker(
+    new URL("./local-model-worker.ts", import.meta.url),
+    { type: "module" },
+  );
+  private sequence = 0;
+  private readonly pending = new Map<
+    number,
+    {
+      resolve: (value: unknown) => void;
+      reject: (reason: unknown) => void;
+      progress?: (value: LocalModelProgress) => void;
+    }
+  >();
+
   load(progress?: (value: LocalModelProgress) => void): Promise<void> {
-    return this.request<void>({ type: "load" }, progress);
+    return this.request<void>({ type: "load", backendId: this.backendId }, progress);
   }
 
   probe(
@@ -71,6 +72,7 @@ export class LocalModelClient {
     return this.request<LocalChoiceProbeResult>(
       {
         type: "probe",
+        backendId: this.backendId,
         state: structuredClone(state),
         choiceOrder,
       },
@@ -86,6 +88,7 @@ export class LocalModelClient {
     return this.request<LocalChoiceOnlyResult>(
       {
         type: "choice",
+        backendId: this.backendId,
         state: structuredClone(state),
         choiceOrder,
       },
