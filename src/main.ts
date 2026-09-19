@@ -4,9 +4,22 @@ import {
   type Episode,
   type SpeechExposure,
 } from "./episode";
+import {
+  IMMEDIATE_RESPONSE_OPTIONS,
+  LOCAL_QWEN_MODEL_ID,
+  type LocalChoiceProbeResult,
+} from "./local-choice-probe";
+import {
+  LocalModelClient,
+  type LocalModelProgress,
+} from "./local-model-client";
 import { RuleBaselineProvider } from "./rule-provider";
 import { runShadowEpisode } from "./shadow-runner";
-import type { ReflexScores, ShadowTraceFrame } from "./contracts";
+import type {
+  ActionDistribution,
+  ReflexScores,
+  ShadowTraceFrame,
+} from "./contracts";
 
 interface Specimen {
   exposure: SpeechExposure;
@@ -30,22 +43,45 @@ for (const exposure of exposures) {
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) throw new Error("missing #app");
 
+const webGpuAvailable = "gpu" in navigator;
 let selectedExposure: SpeechExposure = "addressed";
 let selectedTick = 10;
+let localClient: LocalModelClient | null = null;
+let localModelReady = false;
+let localBusy = false;
+let localStatus = webGpuAvailable
+  ? "Local model is not loaded. No model bytes have been downloaded."
+  : "WebGPU is not available in this browser.";
+let localResult: LocalChoiceProbeResult | null = null;
+let localResultKey: string | null = null;
 
-function render(): void {
-  const specimen = specimens.find(
+function selectedSpecimen(): Specimen {
+  return specimens.find(
     (candidate) => candidate.exposure === selectedExposure,
   )!;
-  const frame = specimen.trace[selectedTick]!;
+}
+
+function selectedFrame(): ShadowTraceFrame {
+  return selectedSpecimen().trace[selectedTick]!;
+}
+
+function selectionKey(): string {
+  return selectedExposure + ":" + selectedTick;
+}
+
+function render(): void {
+  const specimen = selectedSpecimen();
+  const frame = selectedFrame();
   const speech = frame.privateState.percepts.find(
     (percept) => percept.kind === "speech",
   );
+  const activeLocalResult =
+    localResultKey === selectionKey() ? localResult : null;
 
   app!.innerHTML = [
     '<main class="shell">',
     "<h1>ReflexBrain Lab · R0</h1>",
-    "<p>Same deterministic world trajectory, different semantic exposure. Provider remains zero-authority.</p>",
+    "<p>Same deterministic world trajectory, different semantic exposure. All learned inference remains zero-authority.</p>",
     '<section class="panel"><h2>Counterfactual family</h2><div class="variants">',
     specimens
       .map(
@@ -72,10 +108,18 @@ function render(): void {
         "” · addressed=<strong>" + String(speech.addressed) + "</strong></p>"
       : "<p>No speech percept this tick.</p>",
     "</section>",
-    '<section class="panel"><h2>Raw → stabilized signals</h2>',
+    '<section class="panel"><h2>Rule baseline · raw → stabilized signals</h2>',
     signalTable(frame.provider.scores, frame.stabilized.scores),
     "</section>",
-    '<section class="panel"><h2>Cross-variant snapshot at tick 10</h2>',
+    '<section class="panel"><h2>Local semantic choice probe</h2>',
+    '<p class="boundary">One local Qwen forward scores only five declared immediate responses from this exact actor-private state. The result is a <strong>conditional distribution over allowed answers</strong>, not calibrated confidence and not an action command.</p>',
+    '<p class="status">' + escapeHtml(localStatus) + "</p>",
+    localControls(),
+    activeLocalResult
+      ? modelComparison(frame.provider.actions, activeLocalResult)
+      : '<p class="muted">No local-model result for the currently selected state.</p>',
+    "</section>",
+    '<section class="panel"><h2>Rule baseline · cross-variant snapshot at tick 10</h2>',
     comparisonTable(),
     "</section>",
     '<section class="panel"><h2>Timeline</h2><div class="timeline">',
@@ -114,6 +158,137 @@ function render(): void {
         render();
       };
     });
+
+  const loadButton = document.querySelector<HTMLButtonElement>("[data-load-model]");
+  if (loadButton) {
+    loadButton.onclick = () => {
+      void loadLocalModel();
+    };
+  }
+
+  const probeButton = document.querySelector<HTMLButtonElement>("[data-run-probe]");
+  if (probeButton) {
+    probeButton.onclick = () => {
+      void runLocalProbe();
+    };
+  }
+}
+
+function localControls(): string {
+  if (!webGpuAvailable) {
+    return '<button disabled>WebGPU unavailable</button>';
+  }
+
+  if (!localModelReady) {
+    return (
+      '<button class="primary" data-load-model ' +
+      (localBusy ? "disabled" : "") +
+      ">Load local Qwen 0.6B (~570 MB)</button>"
+    );
+  }
+
+  return (
+    '<div class="probe-controls">' +
+    '<span class="ready">Model ready · ' + escapeHtml(LOCAL_QWEN_MODEL_ID) + "</span>" +
+    '<button class="primary" data-run-probe ' +
+    (localBusy ? "disabled" : "") +
+    ">Probe this exact private state</button>" +
+    "</div>"
+  );
+}
+
+async function loadLocalModel(): Promise<void> {
+  if (!webGpuAvailable || localBusy || localModelReady) return;
+
+  localBusy = true;
+  localStatus =
+    "Preparing local model worker. The model is downloaded on demand and cached by the browser.";
+  render();
+
+  try {
+    localClient ??= new LocalModelClient();
+    await localClient.load(updateLoadProgress);
+    localModelReady = true;
+    localStatus = "Local Qwen is ready. It has no World or reflex authority.";
+  } catch (error) {
+    localStatus = "Local model load failed: " + errorMessage(error);
+  } finally {
+    localBusy = false;
+    render();
+  }
+}
+
+async function runLocalProbe(): Promise<void> {
+  if (!localModelReady || !localClient || localBusy) return;
+
+  const keyAtStart = selectionKey();
+  const stateAtStart = structuredClone(selectedFrame().privateState);
+  localBusy = true;
+  localStatus = "Running one-token direct-choice probe locally...";
+  render();
+
+  try {
+    const result = await localClient.probe(stateAtStart);
+    localResult = result;
+    localResultKey = keyAtStart;
+    localStatus =
+      "Probe complete in " +
+      result.latencyMs.toFixed(1) +
+      " ms over " +
+      result.inputTokenCount +
+      " input tokens. Scores were renormalized only across the five allowed responses.";
+  } catch (error) {
+    localStatus = "Local probe failed: " + errorMessage(error);
+  } finally {
+    localBusy = false;
+    render();
+  }
+}
+
+function updateLoadProgress(progress: LocalModelProgress): void {
+  const progressText =
+    progress.progress === null
+      ? ""
+      : " · " + progress.progress.toFixed(1) + "%";
+  const fileText = progress.file ? " · " + progress.file : "";
+  localStatus = progress.status + progressText + fileText;
+  render();
+}
+
+function modelComparison(
+  baseline: ActionDistribution,
+  local: LocalChoiceProbeResult,
+): string {
+  const rows = IMMEDIATE_RESPONSE_OPTIONS.map((option) => {
+    const baselineValue = baseline[option.id];
+    const modelValue = local.distribution[option.id];
+    return (
+      "<tr><td>" +
+      escapeHtml(option.label) +
+      "</td><td>" +
+      baselineValue.toFixed(3) +
+      "</td><td>" +
+      modelValue.toFixed(3) +
+      "</td><td>" +
+      signed(modelValue - baselineValue) +
+      "</td></tr>"
+    );
+  });
+
+  return [
+    '<div class="result-meta">',
+    "<span>Latency: <strong>" + local.latencyMs.toFixed(1) + " ms</strong></span>",
+    "<span>Input: <strong>" + local.inputTokenCount + " tokens</strong></span>",
+    "<span>Labels: <code>" +
+      local.optionTokenSurfaces.map(escapeHtml).join(" · ") +
+      "</code></span>",
+    "</div>",
+    '<div class="table-wrap"><table><thead><tr>',
+    "<th>Allowed response</th><th>Rule baseline</th><th>Local Qwen</th><th>Δ</th>",
+    "</tr></thead><tbody>",
+    rows.join(""),
+    "</tbody></table></div>",
+  ].join("");
 }
 
 function comparisonTable(): string {
@@ -160,6 +335,14 @@ function signalTable(raw: ReflexScores, stabilized: ReflexScores): string {
       .join("") +
     "</div>"
   );
+}
+
+function signed(value: number): string {
+  return (value >= 0 ? "+" : "") + value.toFixed(3);
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 function escapeHtml(value: string): string {
