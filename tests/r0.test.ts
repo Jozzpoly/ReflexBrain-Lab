@@ -16,13 +16,16 @@ import {
   actionFromChoiceToken,
   analyzeChoiceScores,
   APPRAISAL_SPECS,
+  BIPOLAR_APPRAISAL_SPECS,
   buildAppraisalPrompt,
+  buildBipolarAppraisalPrompt,
   buildImmediateResponsePrompt,
   buildSemanticResponsePrompt,
   chooseLocalQwenDtype,
   getImmediateResponseOptions,
   getLocalModelBackend,
   PERMUTATION_SWEEP_ORDERS,
+  probabilityPositiveFromScores,
   probabilityYesFromScores,
   SEMANTIC_TOKEN_SPECS,
   semanticActionFromToken,
@@ -417,6 +420,79 @@ describe("R0 independent binary appraisal contract", () => {
     const forward = probabilityYesFromScores(2.75, -1.25);
     const reversed = probabilityYesFromScores(-1.25, 2.75);
     expect(forward + reversed).toBeCloseTo(1, 12);
+  });
+});
+
+describe("R0 bipolar semantic appraisal contract", () => {
+  it("defines one opposed semantic pair for every appraisal dimension", () => {
+    expect(BIPOLAR_APPRAISAL_SPECS.map((spec) => spec.id)).toEqual([
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ]);
+
+    for (const spec of BIPOLAR_APPRAISAL_SPECS) {
+      expect(spec.positiveMeaning).not.toBe(spec.negativeMeaning);
+      expect(spec.positiveCandidates.length).toBeGreaterThan(0);
+      expect(spec.negativeCandidates.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("counterbalances semantic pole presentation without changing pole identity", () => {
+    const episode = createR0CounterfactualEpisode({
+      speechExposure: "addressed",
+    });
+    const state = compilePrivateState(episode.frames[10]!, "task");
+    const spec = BIPOLAR_APPRAISAL_SPECS.find(
+      (candidate) => candidate.id === "threat",
+    )!;
+    const tokens = [
+      {
+        pole: "positive" as const,
+        keyword: "danger",
+        surface: " danger",
+        tokenId: 10,
+      },
+      {
+        pole: "negative" as const,
+        keyword: "safe",
+        surface: " safe",
+        tokenId: 11,
+      },
+    ];
+
+    const positiveFirst = buildBipolarAppraisalPrompt(
+      state,
+      spec,
+      tokens,
+      "positive-first",
+    );
+    const negativeFirst = buildBipolarAppraisalPrompt(
+      state,
+      spec,
+      tokens,
+      "negative-first",
+    );
+
+    expect(positiveFirst).toContain("danger — " + spec.positiveMeaning);
+    expect(positiveFirst).toContain("safe — " + spec.negativeMeaning);
+    expect(negativeFirst.indexOf("safe —")).toBeLessThan(
+      negativeFirst.indexOf("danger —"),
+    );
+    expect(positiveFirst.indexOf("danger —")).toBeLessThan(
+      positiveFirst.indexOf("safe —"),
+    );
+    expect(positiveFirst).not.toContain("yes or no");
+  });
+
+  it("normalizes opposed semantic pole scores symmetrically", () => {
+    expect(probabilityPositiveFromScores(0, 0)).toBeCloseTo(0.5, 12);
+    const positive = probabilityPositiveFromScores(4, -1);
+    const reversed = probabilityPositiveFromScores(-1, 4);
+    expect(positive).toBeGreaterThan(0.99);
+    expect(positive + reversed).toBeCloseTo(1, 12);
   });
 });
 
