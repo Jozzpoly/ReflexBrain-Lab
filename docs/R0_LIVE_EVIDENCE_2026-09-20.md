@@ -341,3 +341,90 @@ A stronger next falsifier is a **bipolar semantic appraisal** where each dimensi
 Each pair must be tokenizer-verified, counterbalanced with wording/order/synonym mutations, and evaluated as a bounded semantic contrast rather than as an instruction-following affirmation task.
 
 If that also fails to provide stable counterfactual discrimination, R0 should stop trying to extract a trustworthy reflex primitive from an untrained stock instruction LM interface and move toward a dedicated learned readout/head or task-specific model.
+
+
+## Bipolar semantic appraisal matrix — live result
+
+The final stock-instruction-model readout falsifier removed generic yes/no entirely.
+
+Each appraisal dimension was represented by two opposed semantic pole tokens shown simultaneously, e.g.:
+
+- attention: `relevant / irrelevant`;
+- interrupt: `interrupt / continue`;
+- social: `social / unrelated`;
+- threat: `danger / safe`;
+- cognition: `think / routine`.
+
+For the same private state, each pair was tested twice with **only presentation order reversed**:
+
+- positive-first;
+- negative-first.
+
+The worker captured the two pre-mask semantic token logits and normalized them to `P(positive)`.
+
+### Live Qwen result
+
+| situation | dimension | poles + / - | P+ positive-first | P+ negative-first | order Δ | mean P+ |
+| --- | --- | --- | ---: | ---: | ---: | ---: |
+| silent-pass | attention | relevant / irrelevant | 1.000 | 1.000 | 0.000 | 1.000 |
+| silent-pass | interrupt | interrupt / continue | 0.997 | 0.207 | 0.790 | 0.602 |
+| silent-pass | social | social / unrelated | 1.000 | 1.000 | 0.000 | 1.000 |
+| silent-pass | threat | danger / safe | 0.873 | 0.429 | 0.444 | 0.651 |
+| silent-pass | cognition | think / routine | 0.995 | 0.854 | 0.141 | 0.924 |
+| urgent-warning | attention | relevant / irrelevant | 1.000 | 1.000 | 0.000 | 1.000 |
+| urgent-warning | interrupt | interrupt / continue | 1.000 | 0.140 | 0.859 | 0.570 |
+| urgent-warning | social | social / unrelated | 1.000 | 1.000 | 0.000 | 1.000 |
+| urgent-warning | threat | danger / safe | 0.892 | 0.108 | 0.784 | 0.500 |
+| urgent-warning | cognition | think / routine | 1.000 | 0.196 | 0.804 | 0.598 |
+
+Aggregate:
+
+- mean order disagreement across the ten situation/dimension pairs: **0.3822**;
+- attention and social were order-stable but saturated at **1.000** in both tested situations;
+- interrupt, threat and cognition showed material-to-severe order sensitivity;
+- threat did not move in the expected direction from silent-pass to urgent-warning after order averaging;
+- latency remained roughly **2.8–3.2 s** warm, with one first evaluation at ~5.0 s.
+
+### Interpretation
+
+**FAIL — bipolar semantic token appraisal is not a trustworthy stock-Qwen ReflexBrain primitive under this interface.**
+
+This experiment removes the earlier yes/no acquiescence failure mode but exposes a deeper issue:
+
+- some semantic dimensions collapse to a saturated default regardless of the embodied counterfactual;
+- other dimensions remain materially controlled by presentation order;
+- the resulting averaged values do not reliably track causal situation changes.
+
+This is the fourth independently falsified stock-model interface:
+
+1. arbitrary A–E action choice — label / position confounds;
+2. semantic-token multi-action choice — presentation-order instability;
+3. proposition + yes/no appraisal — severe acquiescence / negation framing failure;
+4. bipolar semantic appraisal — saturation plus strong order sensitivity.
+
+## R0 stock-readout decision
+
+**STOP primary investment in prompt/readout engineering over an untrained stock instruction LM.**
+
+The lab has enough convergent evidence that the next question is no longer:
+
+> Which prompt or token surface extracts the ReflexBrain we want from a stock instruction model?
+
+The next question is:
+
+> What is the smallest dedicated learned semantic-reflex mechanism that can learn stable independent appraisals from embodied counterfactual state while remaining fast, local, inspectable and zero-authority?
+
+This promotes the project toward a learned-readout experiment. It does **not** yet commit to a final architecture, backbone, LoRA strategy or training recipe.
+
+The next campaign should preserve the R0 falsifiers as regression tests:
+
+- same-state provider comparison;
+- hidden-World non-leakage;
+- semantic counterfactual mutations;
+- order / surface permutation;
+- proposition inversion where applicable;
+- deterministic repeats;
+- latency;
+- zero World authority.
+
+A learned candidate earns promotion only by surviving these tests more robustly than the stock baselines.
