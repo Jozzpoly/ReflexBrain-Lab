@@ -10,11 +10,14 @@ import {
   type SpeechExposure,
 } from "./episode";
 import {
+  DEFAULT_LOCAL_MODEL_BACKEND,
+  getLocalModelBackend,
   IMMEDIATE_RESPONSE_OPTIONS,
-  LOCAL_QWEN_MODEL_ID,
+  isLocalModelBackendId,
   type ChoiceOrder,
   type LocalChoiceOnlyResult,
   type LocalChoiceProbeResult,
+  type LocalModelBackendId,
 } from "./local-choice-probe";
 import {
   LocalModelClient,
@@ -59,6 +62,15 @@ for (const exposure of exposures) {
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) throw new Error("missing #app");
+
+const pageParams = new URLSearchParams(window.location.search);
+const requestedBackendId = pageParams.get("backend");
+const selectedBackendId: LocalModelBackendId = isLocalModelBackendId(
+  requestedBackendId,
+)
+  ? requestedBackendId
+  : DEFAULT_LOCAL_MODEL_BACKEND;
+const selectedBackend = getLocalModelBackend(selectedBackendId);
 
 const webGpuAvailable = "gpu" in navigator;
 let selectedExposure: SpeechExposure = "addressed";
@@ -217,14 +229,16 @@ function localControls(): string {
     return (
       '<button class="primary" data-load-model ' +
       (localBusy ? "disabled" : "") +
-      ">Load local Qwen 0.6B (adaptive q4f16/q8)</button>"
+      ">Load " +
+      escapeHtml(selectedBackendId) +
+      " (adaptive q4f16/q8)</button>"
     );
   }
 
   return (
     '<div class="probe-controls">' +
     '<span class="ready">Model ready · ' +
-    escapeHtml(LOCAL_QWEN_MODEL_ID) +
+    escapeHtml(selectedBackend.modelId) +
     "</span>" +
     '<button class="primary" data-run-probe ' +
     (localBusy ? "disabled" : "") +
@@ -238,14 +252,19 @@ async function loadLocalModel(): Promise<void> {
 
   localBusy = true;
   localStatus =
-    "Preparing local model worker. The pinned model revision is downloaded on demand and cached by the browser.";
+    "Preparing local model worker · " +
+    selectedBackendId +
+    ". The pinned model revision is downloaded on demand and cached by the browser.";
   render();
 
   try {
-    localClient ??= new LocalModelClient();
+    localClient ??= new LocalModelClient(selectedBackendId);
     await localClient.load(updateLoadProgress);
     localModelReady = true;
-    localStatus = "Local Qwen is ready. It has no World or reflex authority.";
+    localStatus =
+      "Local backend ready · " +
+      selectedBackendId +
+      ". It has no World or reflex authority.";
   } catch (error) {
     localStatus = "Local model load failed: " + errorMessage(error);
   } finally {
