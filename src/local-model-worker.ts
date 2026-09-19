@@ -217,9 +217,9 @@ async function runChoice(
     });
 
     return {
-      backendId: activeBackend.id,
-      modelId: activeBackend.modelId,
-      modelRevision: activeBackend.modelRevision,
+      backendId: backend.id,
+      modelId: backend.modelId,
+      modelRevision: backend.modelRevision,
       dtype: runtimeDtype,
       shaderF16: runtimeShaderF16,
       choiceOrder,
@@ -244,10 +244,15 @@ async function runProbe(
   state: import("./contracts").ActorPrivateState,
   choiceOrder: ChoiceOrder,
 ): Promise<LocalChoiceProbeResult> {
-  if (runtimeDtype === null || runtimeShaderF16 === null) {
+  if (
+    runtimeDtype === null ||
+    runtimeShaderF16 === null ||
+    activeBackend === null
+  ) {
     throw new Error("local model runtime metadata is unavailable");
   }
 
+  const backend = activeBackend;
   const orderedOptions = getImmediateResponseOptions(choiceOrder);
   const prompt = buildImmediateResponsePrompt(state, orderedOptions);
   const messages = [{ role: "user", content: prompt }];
