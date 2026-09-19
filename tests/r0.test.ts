@@ -16,10 +16,13 @@ import {
   actionFromChoiceToken,
   analyzeChoiceScores,
   buildImmediateResponsePrompt,
+  buildSemanticResponsePrompt,
   chooseLocalQwenDtype,
   getImmediateResponseOptions,
   getLocalModelBackend,
   PERMUTATION_SWEEP_ORDERS,
+  SEMANTIC_TOKEN_SPECS,
+  semanticActionFromToken,
   isLocalModelBackendId,
 } from "../src/local-choice-probe";
 import { runShadowEpisode } from "../src/shadow-runner";
@@ -266,6 +269,56 @@ describe("R0 local direct-choice contract", () => {
     expect(prompt).not.toContain("speech:hidden-opening");
     expect(prompt).not.toContain("Prefer preserving");
     expect(prompt).not.toContain("/no_think");
+  });
+
+  it("defines one semantic-token candidate family for every reflex action", () => {
+    expect(SEMANTIC_TOKEN_SPECS.map((spec) => spec.id)).toEqual([
+      "continue",
+      "orient",
+      "acknowledge",
+      "investigate",
+      "withdraw",
+    ]);
+    for (const spec of SEMANTIC_TOKEN_SPECS) {
+      expect(spec.candidates.length).toBeGreaterThan(0);
+      expect(spec.candidates.every((candidate) => candidate.length > 0)).toBe(true);
+    }
+  });
+
+  it("maps a semantic token id directly to its semantic action", () => {
+    const tokens = [
+      { action: "continue" as const, keyword: "work", surface: " work", tokenId: 10 },
+      { action: "orient" as const, keyword: "look", surface: " look", tokenId: 11 },
+      { action: "acknowledge" as const, keyword: "reply", surface: " reply", tokenId: 12 },
+      { action: "investigate" as const, keyword: "inspect", surface: " inspect", tokenId: 13 },
+      { action: "withdraw" as const, keyword: "leave", surface: " leave", tokenId: 14 },
+    ];
+
+    expect(semanticActionFromToken(13, tokens)).toBe("investigate");
+    expect(() => semanticActionFromToken(99, tokens)).toThrow(
+      "outside the semantic action token set",
+    );
+  });
+
+  it("builds semantic-token prompts without arbitrary letter labels", () => {
+    const episode = createR0CounterfactualEpisode({
+      speechExposure: "addressed",
+    });
+    const state = compilePrivateState(episode.frames[10]!, "task");
+    const tokens = [
+      { action: "continue" as const, keyword: "work", surface: " work", tokenId: 10 },
+      { action: "orient" as const, keyword: "look", surface: " look", tokenId: 11 },
+      { action: "acknowledge" as const, keyword: "reply", surface: " reply", tokenId: 12 },
+      { action: "investigate" as const, keyword: "inspect", surface: " inspect", tokenId: 13 },
+      { action: "withdraw" as const, keyword: "leave", surface: " leave", tokenId: 14 },
+    ];
+    const prompt = buildSemanticResponsePrompt(state, tokens);
+
+    expect(prompt).toContain("work — continue the current task");
+    expect(prompt).toContain("leave — create distance from the player");
+    expect(prompt).toContain("Answer with exactly one action keyword.");
+    expect(prompt).not.toContain("A. ");
+    expect(prompt).not.toContain("B. ");
   });
 
   it("maps a constrained generated token back to the semantic action", () => {
