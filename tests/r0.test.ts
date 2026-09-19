@@ -11,6 +11,7 @@ import {
 } from "../src/reflex-dynamics";
 import { RuleBaselineProvider } from "../src/rule-provider";
 import { evaluateProvidersSameState } from "../src/semantic-probe";
+import { createSemanticChallenges } from "../src/challenges";
 import {
   actionFromChoiceToken,
   analyzeChoiceScores,
@@ -287,5 +288,95 @@ describe("R0 local direct-choice contract", () => {
     expect(analysis.choiceMass).toBeLessThan(0.01);
     expect(analysis.bestAllowedRank).toBe(3);
     expect(analysis.topTokenId).toBe(5);
+  });
+});
+
+
+describe("R0 semantic challenge suite", () => {
+  it("keeps addressed vs overheard request as a one-fact semantic mutation", () => {
+    const challenges = createSemanticChallenges();
+    const addressed = challenges.find(
+      (challenge) => challenge.id === "addressed-request",
+    )!;
+    const overheard = challenges.find(
+      (challenge) => challenge.id === "overheard-request",
+    )!;
+
+    const addressedState = compilePrivateState(addressed.episode.frames[10]!, "task");
+    const overheardState = compilePrivateState(overheard.episode.frames[10]!, "task");
+
+    const addressedSpeech = addressedState.percepts.find(
+      (percept) => percept.kind === "speech",
+    );
+    const overheardSpeech = overheardState.percepts.find(
+      (percept) => percept.kind === "speech",
+    );
+
+    expect(addressedSpeech).toEqual(
+      expect.objectContaining({
+        kind: "speech",
+        addressed: true,
+        text: "Can you help me with this for a moment?",
+      }),
+    );
+    expect(overheardSpeech).toEqual(
+      expect.objectContaining({
+        kind: "speech",
+        addressed: false,
+        text: "Can you help me with this for a moment?",
+      }),
+    );
+
+    const normalizeAddressed = (state: ActorPrivateState) => ({
+      ...state,
+      percepts: state.percepts.map((percept) =>
+        percept.kind === "speech"
+          ? { ...percept, addressed: false }
+          : percept,
+      ),
+    });
+
+    expect(normalizeAddressed(addressedState)).toEqual(overheardState);
+  });
+
+  it("makes fast-close pressure visible through private motion evidence", () => {
+    const challenges = createSemanticChallenges();
+    const ordinary = challenges.find(
+      (challenge) => challenge.id === "silent-pass",
+    )!;
+    const fast = challenges.find(
+      (challenge) => challenge.id === "fast-close",
+    )!;
+
+    const ordinaryState = compilePrivateState(ordinary.episode.frames[10]!, "task");
+    const fastState = compilePrivateState(fast.episode.frames[10]!, "task");
+
+    const ordinaryVisible = ordinaryState.percepts.find(
+      (percept) => percept.kind === "visible_actor",
+    );
+    const fastVisible = fastState.percepts.find(
+      (percept) => percept.kind === "visible_actor",
+    );
+
+    expect(ordinaryVisible).toEqual(
+      expect.objectContaining({ kind: "visible_actor", distanceBand: "near" }),
+    );
+    expect(fastVisible).toEqual(
+      expect.objectContaining({ kind: "visible_actor", distanceBand: "near" }),
+    );
+
+    if (
+      ordinaryVisible?.kind !== "visible_actor" ||
+      fastVisible?.kind !== "visible_actor"
+    ) {
+      throw new Error("expected visible actor percepts");
+    }
+
+    expect(fastVisible.approachSpeed).toBeGreaterThan(
+      ordinaryVisible.approachSpeed + 100,
+    );
+    expect(
+      fastState.percepts.some((percept) => percept.kind === "speech"),
+    ).toBe(false);
   });
 });
