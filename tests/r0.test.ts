@@ -584,3 +584,58 @@ describe("R0 semantic challenge suite", () => {
     ).toBe(false);
   });
 });
+
+
+describe("R1 counterfactual supervision seed", () => {
+  it("uses relational supervision rather than invented absolute scores", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const suite = createR1CounterfactualSuite();
+
+    expect(suite.states.length).toBeGreaterThanOrEqual(7);
+    expect(suite.constraints.length).toBeGreaterThanOrEqual(11);
+    expect(
+      suite.constraints.every((constraint) =>
+        constraint.relation === "greater" || constraint.relation === "equal",
+      ),
+    ).toBe(true);
+  });
+
+  it("encodes hidden-World non-observability as a hard equality on every dimension", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const suite = createR1CounterfactualSuite();
+    const hidden = suite.states.find((state) => state.id === "epistemic-hidden")!;
+    const control = suite.states.find((state) => state.id === "epistemic-control")!;
+    const equalities = suite.constraints.filter(
+      (constraint) => constraint.familyId === "hidden-world-invariance",
+    );
+
+    expect(hidden.state).toEqual(control.state);
+    expect(equalities).toHaveLength(5);
+    expect(equalities.every((constraint) => constraint.relation === "equal")).toBe(true);
+    expect(
+      new Set(equalities.map((constraint) => constraint.dimension)),
+    ).toEqual(
+      new Set(["attention", "interrupt", "social", "threat", "cognition"]),
+    );
+  });
+
+  it("keeps addressed-vs-overheard supervision tied to the one-fact mutation", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const suite = createR1CounterfactualSuite();
+    const social = suite.constraints.find(
+      (constraint) => constraint.id === "addressed-social-over-overheard",
+    )!;
+
+    expect(social.relation).toBe("greater");
+    expect(social.dimension).toBe("social");
+    expect(social.leftStateId).toBe("addressed-request");
+    expect(social.rightStateId).toBe("overheard-request");
+    expect(social.strength).toBe("directional");
+  });
+});
