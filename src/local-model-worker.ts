@@ -11,12 +11,13 @@ import {
   buildImmediateResponsePrompt,
   chooseLocalQwenDtype,
   getImmediateResponseOptions,
+  getLocalModelBackend,
   IMMEDIATE_RESPONSE_OPTIONS,
-  LOCAL_QWEN_MODEL_ID,
-  LOCAL_QWEN_REVISION,
   type ChoiceOrder,
   type LocalChoiceOnlyResult,
   type LocalChoiceProbeResult,
+  type LocalModelBackendConfig,
+  type LocalModelBackendId,
   type LocalQwenDtype,
 } from "./local-choice-probe";
 import type {
@@ -34,6 +35,7 @@ let model: any = null;
 let loadPromise: Promise<void> | null = null;
 let runtimeDtype: LocalQwenDtype | null = null;
 let runtimeShaderF16: boolean | null = null;
+let activeBackend: LocalModelBackendConfig | null = null;
 
 scope.onmessage = (event) => {
   void handle(event.data);
@@ -42,12 +44,12 @@ scope.onmessage = (event) => {
 async function handle(request: LocalModelRequest): Promise<void> {
   try {
     if (request.type === "load") {
-      await ensureLoaded(request.id);
+      await ensureLoaded(request.id, request.backendId);
       scope.postMessage({ id: request.id, type: "ready" });
       return;
     }
 
-    await ensureLoaded(request.id);
+    await ensureLoaded(request.id, request.backendId);
 
     if (request.type === "choice") {
       const result = await runChoice(request.state, request.choiceOrder);
@@ -66,10 +68,26 @@ async function handle(request: LocalModelRequest): Promise<void> {
   }
 }
 
-async function ensureLoaded(requestId: number): Promise<void> {
-  if (tokenizer && model) return;
+async function ensureLoaded(
+  requestId: number,
+  backendId: LocalModelBackendId,
+): Promise<void> {
+  if (tokenizer && model) {
+    if (activeBackend?.id !== backendId) {
+      throw new Error(
+        "local worker is already bound to backend " +
+          activeBackend?.id +
+          ", not " +
+          backendId,
+      );
+    }
+    return;
+  }
 
   if (!loadPromise) {
+    const backend = getLocalModelBackend(backendId);
+    activeBackend = backend;
+
     loadPromise = (async () => {
       const progressCallback = (progress: unknown) => {
         const value = asProgress(progress);
@@ -87,12 +105,12 @@ async function ensureLoaded(requestId: number): Promise<void> {
       runtimeShaderF16 = runtime.shaderF16;
 
       [tokenizer, model] = await Promise.all([
-        AutoTokenizer.from_pretrained(LOCAL_QWEN_MODEL_ID, {
-          revision: LOCAL_QWEN_REVISION,
+        AutoTokenizer.from_pretrained(backend.modelId, {
+          revision: backend.modelRevision,
           progress_callback: progressCallback,
         }),
-        AutoModelForCausalLM.from_pretrained(LOCAL_QWEN_MODEL_ID, {
-          revision: LOCAL_QWEN_REVISION,
+        AutoModelForCausalLM.from_pretrained(backend.modelId, {
+          revision: backend.modelRevision,
           dtype: runtime.dtype,
           device: "webgpu",
           progress_callback: progressCallback,
@@ -104,8 +122,16 @@ async function ensureLoaded(requestId: number): Promise<void> {
       model = null;
       runtimeDtype = null;
       runtimeShaderF16 = null;
+      activeBackend = null;
       throw error;
     });
+  } else if (activeBackend?.id !== backendId) {
+    throw new Error(
+      "local worker is loading backend " +
+        activeBackend?.id +
+        ", not " +
+        backendId,
+    );
   }
 
   await loadPromise;
@@ -136,7 +162,11 @@ async function runChoice(
   state: import("./contracts").ActorPrivateState,
   choiceOrder: ChoiceOrder,
 ): Promise<LocalChoiceOnlyResult> {
-  if (runtimeDtype === null || runtimeShaderF16 === null) {
+  if (
+    runtimeDtype === null ||
+    runtimeShaderF16 === null ||
+    activeBackend === null
+  ) {
     throw new Error("local model runtime metadata is unavailable");
   }
 
@@ -187,8 +217,9 @@ async function runChoice(
     });
 
     return {
-      modelId: LOCAL_QWEN_MODEL_ID,
-      modelRevision: LOCAL_QWEN_REVISION,
+      backendId: activeBackend.id,
+      modelId: activeBackend.modelId,
+      modelRevision: activeBackend.modelRevision,
       dtype: runtimeDtype,
       shaderF16: runtimeShaderF16,
       choiceOrder,
@@ -267,8 +298,9 @@ async function runProbe(
     });
 
     return {
-      modelId: LOCAL_QWEN_MODEL_ID,
-      modelRevision: LOCAL_QWEN_REVISION,
+      backendId: activeBackend.id,
+      modelId: activeBackend.modelId,
+      modelRevision: activeBackend.modelRevision,
       dtype: runtimeDtype,
       shaderF16: runtimeShaderF16,
       logitsShape,
