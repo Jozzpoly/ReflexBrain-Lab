@@ -32,6 +32,7 @@ export interface LocalChoiceProbeResult {
   modelRevision: string;
   dtype: LocalQwenDtype;
   shaderF16: boolean;
+  logitsShape: readonly number[];
   distribution: ActionDistribution;
   choiceMass: number;
   bestAllowedRank: number;
