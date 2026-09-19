@@ -12,6 +12,7 @@ import {
 import {
   IMMEDIATE_RESPONSE_OPTIONS,
   LOCAL_QWEN_MODEL_ID,
+  type ChoiceOrder,
   type LocalChoiceProbeResult,
 } from "./local-choice-probe";
 import {
@@ -55,6 +56,7 @@ let localStatus = webGpuAvailable
   : "WebGPU is not available in this browser.";
 let localResult: LocalChoiceProbeResult | null = null;
 let localResultKey: string | null = null;
+let localChoiceOrder: ChoiceOrder = "canonical";
 
 function selectedSpecimen(): Specimen {
   return specimens.find(
@@ -67,7 +69,7 @@ function selectedFrame(): ShadowTraceFrame {
 }
 
 function selectionKey(): string {
-  return selectedExposure + ":" + selectedTick;
+  return selectedExposure + ":" + selectedTick + ":" + localChoiceOrder;
 }
 
 function selectedCanonicalPrivateState() {
@@ -243,7 +245,10 @@ async function runLocalProbe(): Promise<void> {
   render();
 
   try {
-    const result = await localClient.probe(stateAtStart);
+    const result = await localClient.probe(
+      stateAtStart,
+      localChoiceOrder,
+    );
     localResult = result;
     localResultKey = keyAtStart;
     localStatus =
@@ -311,6 +316,13 @@ function modelComparison(
     "<span>Logits shape: <code>[" +
       local.logitsShape.join(", ") +
       "]</code></span>",
+    "<span>Choice order: <strong>" +
+      escapeHtml(local.choiceOrder) +
+      "</strong> · <code>" +
+      local.optionOrder
+        .map((action, index) => String.fromCharCode(65 + index) + "=" + action)
+        .join(" · ") +
+      "</code></span>",
     "<span>Revision: <code>" +
       escapeHtml(local.modelRevision.slice(0, 12)) +
       "</code></span>",
@@ -405,11 +417,18 @@ render();
 void autoRunSmokeIfRequested();
 
 async function autoRunSmokeIfRequested(): Promise<void> {
-  const mode = new URLSearchParams(window.location.search).get("autorun");
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get("autorun");
   if (mode !== "smoke") return;
 
+  const requestedOrder = params.get("order");
+  localChoiceOrder =
+    requestedOrder === "reverse" ? "reverse" : "canonical";
+
   localStatus =
-    "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once.";
+    "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once with " +
+    localChoiceOrder +
+    " label order.";
   render();
 
   await loadLocalModel();
