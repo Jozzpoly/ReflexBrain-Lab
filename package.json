@@ -1,0 +1,17 @@
+{
+  "name": "reflexbrain-lab",
+  "version": "0.1.0-r0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest run",
+    "check": "tsc -p tsconfig.json --noEmit && vitest run && vite build"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2",
+    "vite": "8.2.2",
+    "vitest": "5.0.0"
+  }
+}
