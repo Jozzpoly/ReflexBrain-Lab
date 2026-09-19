@@ -19,6 +19,7 @@ import {
   chooseLocalQwenDtype,
   getImmediateResponseOptions,
   getLocalModelBackend,
+  PERMUTATION_SWEEP_ORDERS,
   isLocalModelBackendId,
 } from "../src/local-choice-probe";
 import { runShadowEpisode } from "../src/shadow-runner";
@@ -221,6 +222,22 @@ describe("R0 local direct-choice contract", () => {
   it("routes WebGPU dtype by shader-f16 capability", () => {
     expect(chooseLocalQwenDtype(true)).toBe("q4f16");
     expect(chooseLocalQwenDtype(false)).toBe("q8");
+  });
+
+  it("cycles every semantic action through every label position exactly once", () => {
+    const placements = new Map<string, number[]>();
+
+    PERMUTATION_SWEEP_ORDERS.forEach((order) => {
+      getImmediateResponseOptions(order).forEach((option, index) => {
+        const indexes = placements.get(option.id) ?? [];
+        indexes.push(index);
+        placements.set(option.id, indexes);
+      });
+    });
+
+    for (const indexes of placements.values()) {
+      expect([...indexes].sort()).toEqual([0, 1, 2, 3, 4]);
+    }
   });
 
   it("reverses labels without changing the semantic option set", () => {
