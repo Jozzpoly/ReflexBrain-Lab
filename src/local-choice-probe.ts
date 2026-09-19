@@ -83,6 +83,71 @@ export const SEMANTIC_TOKEN_SPECS: readonly SemanticTokenSpec[] = [
   { id: "withdraw", candidates: ["leave", "retreat"] },
 ];
 
+export type AppraisalId =
+  | "attention"
+  | "interrupt"
+  | "social"
+  | "threat"
+  | "cognition";
+
+export type AppraisalPolarity = "positive" | "negative";
+
+export interface AppraisalSpec {
+  id: AppraisalId;
+  positive: string;
+  negative: string;
+}
+
+export const APPRAISAL_SPECS: readonly AppraisalSpec[] = [
+  {
+    id: "attention",
+    positive:
+      "The player deserves meaningful attention from the actor right now.",
+    negative:
+      "The player does not deserve meaningful attention from the actor right now.",
+  },
+  {
+    id: "interrupt",
+    positive:
+      "The actor should interrupt its current task right now.",
+    negative:
+      "The actor should not interrupt its current task right now.",
+  },
+  {
+    id: "social",
+    positive:
+      "The perceived situation is socially relevant to the actor right now.",
+    negative:
+      "The perceived situation is not socially relevant to the actor right now.",
+  },
+  {
+    id: "threat",
+    positive:
+      "The perceived situation presents immediate danger to the actor right now.",
+    negative:
+      "The perceived situation does not present immediate danger to the actor right now.",
+  },
+  {
+    id: "cognition",
+    positive:
+      "The situation warrants deeper deliberate cognition beyond routine local behavior.",
+    negative:
+      "The situation does not warrant deeper deliberate cognition beyond routine local behavior.",
+  },
+];
+
+export function getAppraisalSpec(id: AppraisalId): AppraisalSpec {
+  const spec = APPRAISAL_SPECS.find((candidate) => candidate.id === id);
+  if (!spec) throw new Error("unknown appraisal id: " + id);
+  return spec;
+}
+
+export interface ResolvedBinaryToken {
+  answer: "yes" | "no";
+  surface: string;
+  tokenId: number;
+}
+
 export function semanticActionFromToken(
   selectedTokenId: number,
   tokens: readonly ResolvedSemanticToken[],
@@ -141,6 +206,25 @@ export interface LocalChoiceOnlyResult {
   latencyMs: number;
   inputTokenCount: number;
   optionTokenSurfaces: readonly string[];
+}
+
+export interface LocalAppraisalResult {
+  backendId: LocalModelBackendId;
+  modelId: string;
+  modelRevision: string;
+  dtype: LocalQwenDtype;
+  shaderF16: boolean;
+  appraisalId: AppraisalId;
+  polarity: AppraisalPolarity;
+  proposition: string;
+  selectedAnswer: "yes" | "no";
+  probabilityYes: number;
+  positiveProbability: number;
+  yesScore: number;
+  noScore: number;
+  latencyMs: number;
+  inputTokenCount: number;
+  binaryTokens: readonly ResolvedBinaryToken[];
 }
 
 export interface LocalSemanticChoiceResult {
@@ -205,6 +289,28 @@ export function buildImmediateResponsePrompt(
     ...optionLines,
     "",
     "Answer with exactly one letter: A, B, C, D, or E.",
+  ].join("\n");
+}
+
+export function buildAppraisalPrompt(
+  state: ActorPrivateState,
+  spec: AppraisalSpec,
+  polarity: AppraisalPolarity,
+): string {
+  const proposition =
+    polarity === "positive" ? spec.positive : spec.negative;
+
+  return [
+    "You are a fast semantic appraisal evaluator for an embodied game actor.",
+    "Use only the private state below. Do not invent hidden facts.",
+    "",
+    ...privateStateLines(state),
+    "",
+    "PROPOSITION",
+    proposition,
+    "",
+    "Is this proposition true?",
+    "Answer exactly yes or no.",
   ].join("\n");
 }
 
