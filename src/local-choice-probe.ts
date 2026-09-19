@@ -142,6 +142,99 @@ export function getAppraisalSpec(id: AppraisalId): AppraisalSpec {
   return spec;
 }
 
+export type BipolarAppraisalOrder = "positive-first" | "negative-first";
+
+export interface BipolarSemanticSpec {
+  id: AppraisalId;
+  positiveMeaning: string;
+  negativeMeaning: string;
+  positiveCandidates: readonly string[];
+  negativeCandidates: readonly string[];
+}
+
+export const BIPOLAR_APPRAISAL_SPECS: readonly BipolarSemanticSpec[] = [
+  {
+    id: "attention",
+    positiveMeaning: "the player deserves meaningful attention right now",
+    negativeMeaning: "the player is currently irrelevant to the actor",
+    positiveCandidates: ["relevant", "important"],
+    negativeCandidates: ["irrelevant", "background"],
+  },
+  {
+    id: "interrupt",
+    positiveMeaning: "the actor should interrupt its current task right now",
+    negativeMeaning: "the actor should continue its current task right now",
+    positiveCandidates: ["interrupt", "pause"],
+    negativeCandidates: ["continue", "proceed"],
+  },
+  {
+    id: "social",
+    positiveMeaning: "the situation is socially relevant to the actor",
+    negativeMeaning: "the situation is socially unrelated to the actor",
+    positiveCandidates: ["social", "related"],
+    negativeCandidates: ["unrelated", "private"],
+  },
+  {
+    id: "threat",
+    positiveMeaning: "the situation presents immediate danger to the actor",
+    negativeMeaning: "the situation is immediately safe for the actor",
+    positiveCandidates: ["danger", "threat"],
+    negativeCandidates: ["safe", "harmless"],
+  },
+  {
+    id: "cognition",
+    positiveMeaning: "the situation warrants deeper deliberate cognition",
+    negativeMeaning: "routine local behavior is sufficient for the situation",
+    positiveCandidates: ["think", "deliberate"],
+    negativeCandidates: ["routine", "simple"],
+  },
+];
+
+export interface ResolvedBipolarToken {
+  pole: "positive" | "negative";
+  keyword: string;
+  surface: string;
+  tokenId: number;
+}
+
+export interface LocalBipolarAppraisalResult {
+  backendId: LocalModelBackendId;
+  modelId: string;
+  modelRevision: string;
+  dtype: LocalQwenDtype;
+  shaderF16: boolean;
+  appraisalId: AppraisalId;
+  order: BipolarAppraisalOrder;
+  positiveKeyword: string;
+  negativeKeyword: string;
+  selectedPole: "positive" | "negative";
+  probabilityPositive: number;
+  positiveScore: number;
+  negativeScore: number;
+  latencyMs: number;
+  inputTokenCount: number;
+  tokens: readonly ResolvedBipolarToken[];
+}
+
+export function getBipolarAppraisalSpec(id: AppraisalId): BipolarSemanticSpec {
+  const spec = BIPOLAR_APPRAISAL_SPECS.find((candidate) => candidate.id === id);
+  if (!spec) throw new Error("unknown bipolar appraisal id: " + id);
+  return spec;
+}
+
+export function probabilityPositiveFromScores(
+  positiveScore: number,
+  negativeScore: number,
+): number {
+  if (!Number.isFinite(positiveScore) || !Number.isFinite(negativeScore)) {
+    throw new Error("bipolar appraisal scores must be finite");
+  }
+  const maximum = Math.max(positiveScore, negativeScore);
+  const positiveWeight = Math.exp(positiveScore - maximum);
+  const negativeWeight = Math.exp(negativeScore - maximum);
+  return positiveWeight / (positiveWeight + negativeWeight);
+}
+
 export interface ResolvedBinaryToken {
   answer: "yes" | "no";
   surface: string;
@@ -324,6 +417,48 @@ export function buildAppraisalPrompt(
     "",
     "Is this proposition true?",
     "Answer exactly yes or no.",
+  ].join("\n");
+}
+
+export function buildBipolarAppraisalPrompt(
+  state: ActorPrivateState,
+  spec: BipolarSemanticSpec,
+  tokens: readonly ResolvedBipolarToken[],
+  order: BipolarAppraisalOrder,
+): string {
+  const positive = tokens.find((token) => token.pole === "positive");
+  const negative = tokens.find((token) => token.pole === "negative");
+  if (!positive || !negative) {
+    throw new Error("bipolar appraisal requires both semantic poles");
+  }
+
+  const ordered =
+    order === "positive-first"
+      ? [
+          { token: positive, meaning: spec.positiveMeaning },
+          { token: negative, meaning: spec.negativeMeaning },
+        ]
+      : [
+          { token: negative, meaning: spec.negativeMeaning },
+          { token: positive, meaning: spec.positiveMeaning },
+        ];
+
+  return [
+    "You are a fast semantic appraisal evaluator for an embodied game actor.",
+    "Use only the private state below. Do not invent hidden facts.",
+    "",
+    ...privateStateLines(state),
+    "",
+    "DIMENSION",
+    spec.id,
+    "",
+    "SEMANTIC POLES",
+    ...ordered.map(
+      (entry) => entry.token.keyword + " — " + entry.meaning,
+    ),
+    "",
+    "Which pole better describes this exact moment?",
+    "Answer with exactly one semantic pole keyword.",
   ].join("\n");
 }
 
