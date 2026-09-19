@@ -9,16 +9,21 @@ import {
   actionFromChoiceToken,
   analyzeChoiceScores,
   buildImmediateResponsePrompt,
+  buildSemanticResponsePrompt,
   chooseLocalQwenDtype,
   getImmediateResponseOptions,
   getLocalModelBackend,
   IMMEDIATE_RESPONSE_OPTIONS,
+  semanticActionFromToken,
+  SEMANTIC_TOKEN_SPECS,
   type ChoiceOrder,
   type LocalChoiceOnlyResult,
   type LocalChoiceProbeResult,
+  type LocalSemanticChoiceResult,
   type LocalModelBackendConfig,
   type LocalModelBackendId,
   type LocalQwenDtype,
+  type ResolvedSemanticToken,
 } from "./local-choice-probe";
 import type {
   LocalModelRequest,
@@ -54,6 +59,19 @@ async function handle(request: LocalModelRequest): Promise<void> {
     if (request.type === "choice") {
       const result = await runChoice(request.state, request.choiceOrder);
       scope.postMessage({ id: request.id, type: "choice_result", result });
+      return;
+    }
+
+    if (request.type === "semantic_choice") {
+      const result = await runSemanticChoice(
+        request.state,
+        request.choiceOrder,
+      );
+      scope.postMessage({
+        id: request.id,
+        type: "semantic_choice_result",
+        result,
+      });
       return;
     }
 
@@ -156,6 +174,96 @@ async function detectWebGpuRuntime(): Promise<{
     dtype: chooseLocalQwenDtype(shaderF16),
     shaderF16,
   };
+}
+
+async function runSemanticChoice(
+  state: import("./contracts").ActorPrivateState,
+  choiceOrder: ChoiceOrder,
+): Promise<LocalSemanticChoiceResult> {
+  if (
+    runtimeDtype === null ||
+    runtimeShaderF16 === null ||
+    activeBackend === null
+  ) {
+    throw new Error("local model runtime metadata is unavailable");
+  }
+
+  const backend = activeBackend;
+  const semanticTokens = resolveSemanticActionTokens(tokenizer);
+  const orderedOptions = getImmediateResponseOptions(choiceOrder);
+  const prompt = buildSemanticResponsePrompt(
+    state,
+    semanticTokens,
+    orderedOptions,
+  );
+  const messages = [{ role: "user", content: prompt }];
+  const inputs = tokenizer.apply_chat_template(messages, {
+    tokenize: true,
+    return_dict: true,
+    add_generation_prompt: true,
+    enable_thinking: false,
+  });
+
+  const tokenIds = semanticTokens.map((token) => token.tokenId);
+  const processors = new LogitsProcessorList();
+  processors.push(new AllowedTokenLogitsProcessor(tokenIds));
+
+  const started = performance.now();
+  const generated = await model.generate({
+    ...inputs,
+    max_new_tokens: 1,
+    do_sample: false,
+    logits_processor: processors,
+  });
+  const elapsed = performance.now() - started;
+
+  try {
+    const sequences = generated.tolist();
+    const sequence = sequences[0] as Array<number | bigint> | undefined;
+    if (!sequence || sequence.length === 0) {
+      throw new Error("semantic-token generation returned no sequence");
+    }
+
+    const selectedTokenId = Number(sequence[sequence.length - 1]);
+    const selectedAction = semanticActionFromToken(
+      selectedTokenId,
+      semanticTokens,
+    );
+    const selectedToken = semanticTokens.find(
+      (token) => token.tokenId === selectedTokenId,
+    );
+    if (!selectedToken) {
+      throw new Error("semantic-token result lost its token mapping");
+    }
+
+    const selectedTokenText = tokenizer.decode([selectedTokenId], {
+      skip_special_tokens: false,
+      clean_up_tokenization_spaces: false,
+    });
+
+    return {
+      backendId: backend.id,
+      modelId: backend.modelId,
+      modelRevision: backend.modelRevision,
+      dtype: runtimeDtype,
+      shaderF16: runtimeShaderF16,
+      choiceOrder,
+      optionOrder: orderedOptions.map((option) => option.id),
+      selectedAction,
+      selectedKeyword: selectedToken.keyword,
+      selectedTokenId,
+      selectedTokenText,
+      latencyMs: elapsed,
+      inputTokenCount: Number(inputs.input_ids?.dims?.at(-1) ?? 0),
+      semanticTokens,
+    };
+  } finally {
+    try {
+      generated.dispose?.();
+    } catch {
+      // Best-effort cleanup only.
+    }
+  }
 }
 
 async function runChoice(
@@ -361,6 +469,53 @@ class AllowedTokenLogitsProcessor extends LogitsProcessor {
 
     return logits;
   }
+}
+
+function resolveSemanticActionTokens(
+  activeTokenizer: any,
+): ResolvedSemanticToken[] {
+  const resolved: ResolvedSemanticToken[] = [];
+  const usedTokenIds = new Set<number>();
+
+  for (const spec of SEMANTIC_TOKEN_SPECS) {
+    let match: ResolvedSemanticToken | null = null;
+
+    candidateLoop:
+    for (const keyword of spec.candidates) {
+      for (const prefix of ["", " "]) {
+        const surface = prefix + keyword;
+        const ids = activeTokenizer.encode(surface, {
+          add_special_tokens: false,
+        });
+
+        if (ids.length !== 1) continue;
+
+        const tokenId = Number(ids[0]);
+        if (!Number.isFinite(tokenId) || usedTokenIds.has(tokenId)) {
+          continue;
+        }
+
+        match = {
+          action: spec.id,
+          keyword,
+          surface,
+          tokenId,
+        };
+        break candidateLoop;
+      }
+    }
+
+    if (!match) {
+      throw new Error(
+        "no unique single-token semantic surface for action " + spec.id,
+      );
+    }
+
+    usedTokenIds.add(match.tokenId);
+    resolved.push(match);
+  }
+
+  return resolved;
 }
 
 function resolveOptionTokenSurfaces(activeTokenizer: any): string[] {
