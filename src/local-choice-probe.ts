@@ -63,6 +63,37 @@ export const IMMEDIATE_RESPONSE_OPTIONS: readonly ChoiceOption[] = [
   { id: "withdraw", label: "create distance from the player" },
 ];
 
+export interface SemanticTokenSpec {
+  id: ReflexAction;
+  candidates: readonly string[];
+}
+
+export interface ResolvedSemanticToken {
+  action: ReflexAction;
+  keyword: string;
+  surface: string;
+  tokenId: number;
+}
+
+export const SEMANTIC_TOKEN_SPECS: readonly SemanticTokenSpec[] = [
+  { id: "continue", candidates: ["work"] },
+  { id: "orient", candidates: ["look"] },
+  { id: "acknowledge", candidates: ["reply", "answer"] },
+  { id: "investigate", candidates: ["inspect", "check"] },
+  { id: "withdraw", candidates: ["leave", "retreat"] },
+];
+
+export function semanticActionFromToken(
+  selectedTokenId: number,
+  tokens: readonly ResolvedSemanticToken[],
+): ReflexAction {
+  const match = tokens.find((token) => token.tokenId === selectedTokenId);
+  if (!match) {
+    throw new Error("generated token is outside the semantic action token set");
+  }
+  return match.action;
+}
+
 export type ChoiceOrder =
   | "canonical"
   | "reverse"
@@ -112,6 +143,23 @@ export interface LocalChoiceOnlyResult {
   optionTokenSurfaces: readonly string[];
 }
 
+export interface LocalSemanticChoiceResult {
+  backendId: LocalModelBackendId;
+  modelId: string;
+  modelRevision: string;
+  dtype: LocalQwenDtype;
+  shaderF16: boolean;
+  choiceOrder: ChoiceOrder;
+  optionOrder: readonly ReflexAction[];
+  selectedAction: ReflexAction;
+  selectedKeyword: string;
+  selectedTokenId: number;
+  selectedTokenText: string;
+  latencyMs: number;
+  inputTokenCount: number;
+  semanticTokens: readonly ResolvedSemanticToken[];
+}
+
 export interface LocalChoiceProbeResult {
   backendId: LocalModelBackendId;
   modelId: string;
@@ -139,6 +187,60 @@ export function buildImmediateResponsePrompt(
   state: ActorPrivateState,
   options: readonly ChoiceOption[] = IMMEDIATE_RESPONSE_OPTIONS,
 ): string {
+  const optionLines = options.map(
+    (option, index) =>
+      String.fromCharCode(65 + index) + ". " + option.label,
+  );
+
+  return [
+    "You are a fast semantic reflex evaluator for an embodied game actor.",
+    "Use only the private state below. Do not invent hidden facts.",
+    "",
+    ...privateStateLines(state),
+    "",
+    "QUESTION",
+    "Which immediate response best fits this exact moment?",
+    "",
+    "ALLOWED ANSWERS",
+    ...optionLines,
+    "",
+    "Answer with exactly one letter: A, B, C, D, or E.",
+  ].join("\n");
+}
+
+export function buildSemanticResponsePrompt(
+  state: ActorPrivateState,
+  tokens: readonly ResolvedSemanticToken[],
+  options: readonly ChoiceOption[] = IMMEDIATE_RESPONSE_OPTIONS,
+): string {
+  const tokenByAction = new Map(
+    tokens.map((token) => [token.action, token] as const),
+  );
+  const optionLines = options.map((option) => {
+    const token = tokenByAction.get(option.id);
+    if (!token) {
+      throw new Error("missing semantic token for action " + option.id);
+    }
+    return token.keyword + " — " + option.label;
+  });
+
+  return [
+    "You are a fast semantic reflex evaluator for an embodied game actor.",
+    "Use only the private state below. Do not invent hidden facts.",
+    "",
+    ...privateStateLines(state),
+    "",
+    "QUESTION",
+    "Which immediate response best fits this exact moment?",
+    "",
+    "ALLOWED ACTION KEYWORDS",
+    ...optionLines,
+    "",
+    "Answer with exactly one action keyword.",
+  ].join("\n");
+}
+
+function privateStateLines(state: ActorPrivateState): string[] {
   const perceptLines =
     state.percepts.length === 0
       ? ["- none"]
@@ -161,15 +263,7 @@ export function buildImmediateResponsePrompt(
           ].join(" ");
         });
 
-  const optionLines = options.map(
-    (option, index) =>
-      String.fromCharCode(65 + index) + ". " + option.label,
-  );
-
   return [
-    "You are a fast semantic reflex evaluator for an embodied game actor.",
-    "Use only the private state below. Do not invent hidden facts.",
-    "",
     "PRIVATE STATE",
     "tick=" + state.tick,
     "current_task=" + state.self.currentTask,
@@ -178,15 +272,7 @@ export function buildImmediateResponsePrompt(
     "recent_focus=" + state.recentFocus,
     "percepts:",
     ...perceptLines,
-    "",
-    "QUESTION",
-    "Which immediate response best fits this exact moment?",
-    "",
-    "ALLOWED ANSWERS",
-    ...optionLines,
-    "",
-    "Answer with exactly one letter: A, B, C, D, or E.",
-  ].join("\n");
+  ];
 }
 
 export function actionFromChoiceToken(
