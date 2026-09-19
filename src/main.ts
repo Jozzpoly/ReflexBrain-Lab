@@ -1,4 +1,9 @@
 import "./style.css";
+import type {
+  ActionDistribution,
+  ReflexScores,
+  ShadowTraceFrame,
+} from "./contracts";
 import {
   createR0CounterfactualEpisode,
   type Episode,
@@ -13,13 +18,9 @@ import {
   LocalModelClient,
   type LocalModelProgress,
 } from "./local-model-client";
-import { compilePrivateState } from "./private-state";\nimport { RuleBaselineProvider } from "./rule-provider";
+import { compilePrivateState } from "./private-state";
+import { RuleBaselineProvider } from "./rule-provider";
 import { runShadowEpisode } from "./shadow-runner";
-import type {
-  ActionDistribution,
-  ReflexScores,
-  ShadowTraceFrame,
-} from "./contracts";
 
 interface Specimen {
   exposure: SpeechExposure;
@@ -70,20 +71,20 @@ function selectionKey(): string {
 }
 
 function selectedCanonicalPrivateState() {
-  // Deliberately independent from rule-provider reflex dynamics.
   return compilePrivateState(selectedFrame().world, "task");
 }
 
 function render(): void {
   const specimen = selectedSpecimen();
   const frame = selectedFrame();
-  const speech = frame.privateState.percepts.find(
+  const canonicalState = selectedCanonicalPrivateState();
+  const speech = canonicalState.percepts.find(
     (percept) => percept.kind === "speech",
   );
   const activeLocalResult =
     localResultKey === selectionKey() ? localResult : null;
 
-  app!.innerHTML = [
+  app.innerHTML = [
     '<main class="shell">',
     "<h1>ReflexBrain Lab · R0</h1>",
     "<p>Same deterministic world trajectory, different semantic exposure. All learned inference remains zero-authority.</p>",
@@ -103,26 +104,35 @@ function render(): void {
     "</div></section>",
     '<section class="panel">',
     "<h2>" + specimen.episode.title + "</h2>",
-    "<p>Tick <strong>" + frame.tick + "</strong> · authoritative baseline action: <strong>" +
+    "<p>Tick <strong>" +
+      frame.tick +
+      "</strong> · authoritative baseline action: <strong>" +
       frame.baselineAction +
       "</strong></p>",
-    "<p>Reflex focus: <strong>" + frame.stabilized.focus + "</strong></p>",
+    "<p>Rule temporal focus: <strong>" +
+      frame.stabilized.focus +
+      "</strong> · local-model canonical focus: <strong>" +
+      canonicalState.recentFocus +
+      "</strong></p>",
     "<p>Task progress: " + frame.world.taskProgress.toFixed(2) + "</p>",
     speech && speech.kind === "speech"
-      ? "<p>Private speech percept: “" + escapeHtml(speech.text) +
-        "” · addressed=<strong>" + String(speech.addressed) + "</strong></p>"
-      : "<p>No speech percept this tick.</p>",
+      ? "<p>Canonical private speech percept: “" +
+        escapeHtml(speech.text) +
+        "” · addressed=<strong>" +
+        String(speech.addressed) +
+        "</strong></p>"
+      : "<p>No canonical speech percept this tick.</p>",
     "</section>",
     '<section class="panel"><h2>Rule baseline · raw → stabilized signals</h2>',
     signalTable(frame.provider.scores, frame.stabilized.scores),
     "</section>",
     '<section class="panel"><h2>Local semantic choice probe</h2>',
-    '<p class="boundary">One local Qwen forward evaluates five declared immediate responses from a <strong>canonical provider-independent private state</strong>. We report both the conditional A–E distribution and how much full-vocabulary prediction mass A–E actually received. Neither is calibrated confidence or an action command.</p>',
+    '<p class="boundary">One local Qwen forward evaluates five declared responses from a <strong>provider-independent canonical private state</strong>. We report the conditional A–E distribution plus how much full-vocabulary prediction mass those labels actually received. These values are not calibrated confidence and do not control the actor.</p>',
     '<p class="status">' + escapeHtml(localStatus) + "</p>",
     localControls(),
     activeLocalResult
       ? modelComparison(frame.provider.actions, activeLocalResult)
-      : '<p class="muted">No local-model result for the currently selected state.</p>',
+      : '<p class="muted">No local-model result for the currently selected canonical state.</p>',
     "</section>",
     '<section class="panel"><h2>Rule baseline · cross-variant snapshot at tick 10</h2>',
     comparisonTable(),
@@ -164,40 +174,40 @@ function render(): void {
       };
     });
 
-  const loadButton = document.querySelector<HTMLButtonElement>("[data-load-model]");
-  if (loadButton) {
-    loadButton.onclick = () => {
+  document
+    .querySelector<HTMLButtonElement>("[data-load-model]")
+    ?.addEventListener("click", () => {
       void loadLocalModel();
-    };
-  }
+    });
 
-  const probeButton = document.querySelector<HTMLButtonElement>("[data-run-probe]");
-  if (probeButton) {
-    probeButton.onclick = () => {
+  document
+    .querySelector<HTMLButtonElement>("[data-run-probe]")
+    ?.addEventListener("click", () => {
       void runLocalProbe();
-    };
-  }
+    });
 }
 
 function localControls(): string {
   if (!webGpuAvailable) {
-    return '<button disabled>WebGPU unavailable</button>';
+    return "<button disabled>WebGPU unavailable</button>";
   }
 
   if (!localModelReady) {
     return (
       '<button class="primary" data-load-model ' +
       (localBusy ? "disabled" : "") +
-      ">Load local Qwen 0.6B (~570 MB)</button>
+      ">Load local Qwen 0.6B (~570 MB)</button>"
     );
   }
 
   return (
     '<div class="probe-controls">' +
-    '<span class="ready">Model ready · ' + escapeHtml(LOCAL_QWEN_MODEL_ID) + "</span>" +
+    '<span class="ready">Model ready · ' +
+    escapeHtml(LOCAL_QWEN_MODEL_ID) +
+    "</span>" +
     '<button class="primary" data-run-probe ' +
     (localBusy ? "disabled" : "") +
-    ">Probe this exact private state</button> +
+    ">Probe this exact canonical state</button>" +
     "</div>"
   );
 }
@@ -207,7 +217,7 @@ async function loadLocalModel(): Promise<void> {
 
   localBusy = true;
   localStatus =
-    "Preparing local model worker. The model is downloaded on demand and cached by the browser.";
+    "Preparing local model worker. The pinned model revision is downloaded on demand and cached by the browser.";
   render();
 
   try {
@@ -229,7 +239,7 @@ async function runLocalProbe(): Promise<void> {
   const keyAtStart = selectionKey();
   const stateAtStart = structuredClone(selectedCanonicalPrivateState());
   localBusy = true;
-  localStatus = "Running one-token direct-choice probe locally...";
+  localStatus = "Running one-step semantic choice probe locally...";
   render();
 
   try {
@@ -241,7 +251,7 @@ async function runLocalProbe(): Promise<void> {
       result.latencyMs.toFixed(1) +
       " ms over " +
       result.inputTokenCount +
-      " input tokens. Scores were renormalized only across the five allowed responses.";
+      " input tokens.";
   } catch (error) {
     localStatus = "Local probe failed: " + errorMessage(error);
   } finally {
@@ -284,9 +294,18 @@ function modelComparison(
     '<div class="result-meta">',
     "<span>Latency: <strong>" + local.latencyMs.toFixed(1) + " ms</strong></span>",
     "<span>Input: <strong>" + local.inputTokenCount + " tokens</strong></span>",
-    "<span>A–E full-vocab mass: <strong>" + formatPercent(local.choiceMass) + "</strong></span>",
-    "<span>Best allowed rank: <strong>#" + local.bestAllowedRank + "</strong></span>",
-    "<span>Top token: <code>" + escapeHtml(JSON.stringify(local.topTokenText)) + "</code></span>",
+    "<span>A–E full-vocab mass: <strong>" +
+      formatPercent(local.choiceMass) +
+      "</strong></span>",
+    "<span>Best allowed rank: <strong>#" +
+      local.bestAllowedRank +
+      "</strong></span>",
+    "<span>Top token: <code>" +
+      escapeHtml(JSON.stringify(local.topTokenText)) +
+      "</code></span>",
+    "<span>Revision: <code>" +
+      escapeHtml(local.modelRevision.slice(0, 12)) +
+      "</code></span>",
     "<span>Labels: <code>" +
       local.optionTokenSurfaces.map(escapeHtml).join(" · ") +
       "</code></span>",
