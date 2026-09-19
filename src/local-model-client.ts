@@ -1,6 +1,7 @@
 import type { ActorPrivateState } from "./contracts";
 import type {
   ChoiceOrder,
+  LocalChoiceOnlyResult,
   LocalChoiceProbeResult,
 } from "./local-choice-probe";
 import type {
@@ -70,6 +71,21 @@ export class LocalModelClient {
     return this.request<LocalChoiceProbeResult>(
       {
         type: "probe",
+        state: structuredClone(state),
+        choiceOrder,
+      },
+      progress,
+    );
+  }
+
+  choose(
+    state: ActorPrivateState,
+    choiceOrder: ChoiceOrder = "canonical",
+    progress?: (value: LocalModelProgress) => void,
+  ): Promise<LocalChoiceOnlyResult> {
+    return this.request<LocalChoiceOnlyResult>(
+      {
+        type: "choice",
         state: structuredClone(state),
         choiceOrder,
       },
