@@ -1,9 +1,12 @@
 import {
   AutoModelForCausalLM,
   AutoTokenizer,
+  LogitsProcessor,
+  LogitsProcessorList,
   Tensor,
 } from "@huggingface/transformers";
 import {
+  actionFromChoiceToken,
   analyzeChoiceScores,
   buildImmediateResponsePrompt,
   chooseLocalQwenDtype,
@@ -12,6 +15,7 @@ import {
   LOCAL_QWEN_MODEL_ID,
   LOCAL_QWEN_REVISION,
   type ChoiceOrder,
+  type LocalChoiceOnlyResult,
   type LocalChoiceProbeResult,
   type LocalQwenDtype,
 } from "./local-choice-probe";
@@ -44,6 +48,13 @@ async function handle(request: LocalModelRequest): Promise<void> {
     }
 
     await ensureLoaded(request.id);
+
+    if (request.type === "choice") {
+      const result = await runChoice(request.state, request.choiceOrder);
+      scope.postMessage({ id: request.id, type: "choice_result", result });
+      return;
+    }
+
     const result = await runProbe(request.state, request.choiceOrder);
     scope.postMessage({ id: request.id, type: "probe_result", result });
   } catch (error) {
@@ -121,6 +132,83 @@ async function detectWebGpuRuntime(): Promise<{
   };
 }
 
+async function runChoice(
+  state: import("./contracts").ActorPrivateState,
+  choiceOrder: ChoiceOrder,
+): Promise<LocalChoiceOnlyResult> {
+  if (runtimeDtype === null || runtimeShaderF16 === null) {
+    throw new Error("local model runtime metadata is unavailable");
+  }
+
+  const orderedOptions = getImmediateResponseOptions(choiceOrder);
+  const prompt = buildImmediateResponsePrompt(state, orderedOptions);
+  const messages = [{ role: "user", content: prompt }];
+  const inputs = tokenizer.apply_chat_template(messages, {
+    tokenize: true,
+    return_dict: true,
+    add_generation_prompt: true,
+    enable_thinking: false,
+  });
+
+  const tokenSurfaces = resolveOptionTokenSurfaces(tokenizer);
+  const tokenIds = tokenSurfaces.map((surface) => {
+    const ids = tokenizer.encode(surface, { add_special_tokens: false });
+    return Number(ids[0]);
+  });
+
+  const processors = new LogitsProcessorList();
+  processors.push(new AllowedTokenLogitsProcessor(tokenIds));
+
+  const started = performance.now();
+  const generated = await model.generate({
+    ...inputs,
+    max_new_tokens: 1,
+    do_sample: false,
+    logits_processor: processors,
+  });
+  const elapsed = performance.now() - started;
+
+  try {
+    const sequences = generated.tolist();
+    const sequence = sequences[0] as Array<number | bigint> | undefined;
+    if (!sequence || sequence.length === 0) {
+      throw new Error("choice-only generation returned no sequence");
+    }
+
+    const selectedTokenId = Number(sequence[sequence.length - 1]);
+    const selectedAction = actionFromChoiceToken(
+      selectedTokenId,
+      tokenIds,
+      orderedOptions,
+    );
+    const selectedTokenText = tokenizer.decode([selectedTokenId], {
+      skip_special_tokens: false,
+      clean_up_tokenization_spaces: false,
+    });
+
+    return {
+      modelId: LOCAL_QWEN_MODEL_ID,
+      modelRevision: LOCAL_QWEN_REVISION,
+      dtype: runtimeDtype,
+      shaderF16: runtimeShaderF16,
+      choiceOrder,
+      optionOrder: orderedOptions.map((option) => option.id),
+      selectedAction,
+      selectedTokenId,
+      selectedTokenText,
+      latencyMs: elapsed,
+      inputTokenCount: Number(inputs.input_ids?.dims?.at(-1) ?? 0),
+      optionTokenSurfaces: tokenSurfaces,
+    };
+  } finally {
+    try {
+      generated.dispose?.();
+    } catch {
+      // Best-effort cleanup only.
+    }
+  }
+}
+
 async function runProbe(
   state: import("./contracts").ActorPrivateState,
   choiceOrder: ChoiceOrder,
@@ -149,8 +237,7 @@ async function runProbe(
   const started = performance.now();
   const outputs = await model.forward({
     ...inputs,
-    // Transformers.js generation uses the same scalar to compute only the
-    // trailing next-token logits when the ONNX session exposes this input.
+    // This is honored only when the underlying ONNX export exposes the input.
     num_logits_to_keep: new Tensor("int64", [1n], []),
   });
   const elapsed = performance.now() - started;
@@ -208,6 +295,36 @@ async function runProbe(
   }
 }
 
+class AllowedTokenLogitsProcessor extends LogitsProcessor {
+  private readonly allowedTokenIds: readonly number[];
+
+  constructor(allowedTokenIds: readonly number[]) {
+    super();
+    this.allowedTokenIds = [...allowedTokenIds];
+  }
+
+  _call(_inputIds: bigint[][], logits: any) {
+    const batchSize = Number(logits.dims?.[0] ?? 0);
+    if (!Number.isInteger(batchSize) || batchSize < 1) {
+      throw new Error("choice logits have invalid batch shape");
+    }
+
+    for (let batchIndex = 0; batchIndex < batchSize; batchIndex += 1) {
+      const row = logits[batchIndex];
+      const kept = this.allowedTokenIds.map((tokenId) =>
+        Number(row.data[tokenId]),
+      );
+
+      row.data.fill(-Infinity);
+      this.allowedTokenIds.forEach((tokenId, index) => {
+        row.data[tokenId] = kept[index]!;
+      });
+    }
+
+    return logits;
+  }
+}
+
 function resolveOptionTokenSurfaces(activeTokenizer: any): string[] {
   for (const prefix of ["", " "]) {
     const surfaces = IMMEDIATE_RESPONSE_OPTIONS.map(
@@ -249,7 +366,6 @@ function asProgress(value: unknown): {
     progress: typeof record.progress === "number" ? record.progress : null,
   };
 }
-
 
 async function disposeTensorTree(
   value: unknown,
