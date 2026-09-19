@@ -2,8 +2,10 @@ import type { ActorPrivateState } from "./contracts";
 import type {
   AppraisalId,
   AppraisalPolarity,
+  BipolarAppraisalOrder,
   ChoiceOrder,
   LocalAppraisalResult,
+  LocalBipolarAppraisalResult,
   LocalChoiceOnlyResult,
   LocalChoiceProbeResult,
   LocalModelBackendId,
@@ -36,7 +38,15 @@ export type LocalModelRequestBody =
       state: ActorPrivateState;
       appraisalId: AppraisalId;
       polarity: AppraisalPolarity;
-    };
+    }
+  | {
+      type: "bipolar_appraisal";
+      backendId: LocalModelBackendId;
+      state: ActorPrivateState;
+      appraisalId: AppraisalId;
+      order: BipolarAppraisalOrder;
+    }
+  ;
 
 export type LocalModelRequest =
   | { id: number; type: "load"; backendId: LocalModelBackendId }
@@ -68,6 +78,14 @@ export type LocalModelRequest =
       state: ActorPrivateState;
       appraisalId: AppraisalId;
       polarity: AppraisalPolarity;
+    }
+  | {
+      id: number;
+      type: "bipolar_appraisal";
+      backendId: LocalModelBackendId;
+      state: ActorPrivateState;
+      appraisalId: AppraisalId;
+      order: BipolarAppraisalOrder;
     };
 
 export type LocalModelResponse =
@@ -90,5 +108,10 @@ export type LocalModelResponse =
       id: number;
       type: "appraisal_result";
       result: LocalAppraisalResult;
+    }
+  | {
+      id: number;
+      type: "bipolar_appraisal_result";
+      result: LocalBipolarAppraisalResult;
     }
   | { id: number; type: "error"; message: string };
