@@ -19,6 +19,7 @@ import {
   type LocalChoiceOnlyResult,
   type LocalChoiceProbeResult,
   type LocalModelBackendId,
+  type LocalSemanticChoiceResult,
 } from "./local-choice-probe";
 import {
   LocalModelClient,
@@ -64,6 +65,13 @@ interface PermutationSweepProbe {
   result: LocalChoiceOnlyResult;
 }
 
+interface SemanticTokenSweepProbe {
+  challengeId: string;
+  challengeTitle: string;
+  order: ChoiceOrder;
+  result: LocalSemanticChoiceResult;
+}
+
 const provider = new RuleBaselineProvider();
 const exposures: readonly SpeechExposure[] = ["addressed", "overheard", "none"];
 const specimens: Specimen[] = [];
@@ -105,6 +113,7 @@ let matrixProbes: MatrixProbe[] = [];
 let choiceMatrixProbes: ChoiceMatrixProbe[] = [];
 let challengeMatrixProbes: ChallengeMatrixProbe[] = [];
 let permutationSweepProbes: PermutationSweepProbe[] = [];
+let semanticTokenSweepProbes: SemanticTokenSweepProbe[] = [];
 
 function selectedSpecimen(): Specimen {
   return specimens.find(
@@ -187,6 +196,7 @@ function render(): void {
     choiceMatrixProbes.length > 0 ? choiceMatrixTable() : "",
     challengeMatrixProbes.length > 0 ? challengeMatrixTable() : "",
     permutationSweepProbes.length > 0 ? permutationSweepTable() : "",
+    semanticTokenSweepProbes.length > 0 ? semanticTokenSweepTable() : "",
     "</section>",
     '<section class="panel"><h2>Rule baseline · cross-variant snapshot at tick 10</h2>',
     comparisonTable(),
@@ -761,6 +771,115 @@ async function runPermutationSweep(): Promise<void> {
   }
 }
 
+function semanticTokenSweepTable(): string {
+  const rows = semanticTokenSweepProbes.map((probe) => {
+    const tokenMap = probe.result.semanticTokens
+      .map(
+        (token) =>
+          token.keyword +
+          "=" +
+          token.action +
+          " [" +
+          JSON.stringify(token.surface) +
+          "]",
+      )
+      .join(" · ");
+
+    return (
+      "<tr><td>" +
+      escapeHtml(probe.challengeId) +
+      "</td><td>" +
+      escapeHtml(probe.challengeTitle) +
+      "</td><td>" +
+      probe.order +
+      "</td><td>" +
+      probe.result.latencyMs.toFixed(1) +
+      " ms</td><td>" +
+      escapeHtml(probe.result.selectedAction) +
+      "</td><td>" +
+      escapeHtml(probe.result.selectedKeyword) +
+      "</td><td><code>" +
+      escapeHtml(JSON.stringify(probe.result.selectedTokenText)) +
+      "</code></td><td><code>" +
+      escapeHtml(tokenMap) +
+      "</code></td></tr>"
+    );
+  });
+
+  return (
+    '<h3>Semantic-token permutation sweep</h3>' +
+    '<div class="table-wrap"><table><thead><tr>' +
+    "<th>Challenge</th><th>Situation</th><th>Order</th><th>Latency</th><th>Selected action</th><th>Keyword</th><th>Token</th><th>Resolved semantic tokens</th>" +
+    "</tr></thead><tbody>" +
+    rows.join("") +
+    "</tbody></table></div>"
+  );
+}
+
+async function runSemanticTokenSweep(): Promise<void> {
+  if (!localModelReady || !localClient || localBusy) return;
+
+  semanticTokenSweepProbes = [];
+  const wanted = new Set(["silent-pass", "urgent-warning"]);
+  const challenges = createSemanticChallenges().filter((challenge) =>
+    wanted.has(challenge.id),
+  );
+  let completed = 0;
+  const total = challenges.length * PERMUTATION_SWEEP_ORDERS.length;
+  localBusy = true;
+
+  try {
+    for (const challenge of challenges) {
+      const state = compilePrivateState(
+        challenge.episode.frames[10]!,
+        "task",
+      );
+
+      for (const order of PERMUTATION_SWEEP_ORDERS) {
+        localStatus =
+          "Semantic-token sweep " +
+          completed +
+          "/" +
+          total +
+          " complete · running " +
+          challenge.id +
+          " / " +
+          order +
+          ".";
+        render();
+
+        const result = await localClient.chooseSemantic(
+          structuredClone(state),
+          order,
+        );
+        semanticTokenSweepProbes.push({
+          challengeId: challenge.id,
+          challengeTitle: challenge.title,
+          order,
+          result,
+        });
+        completed += 1;
+      }
+    }
+
+    localStatus =
+      "Semantic-token sweep complete: " +
+      completed +
+      " constrained generations without A–E labels.";
+  } catch (error) {
+    localStatus =
+      "Semantic-token sweep failed after " +
+      completed +
+      "/" +
+      total +
+      ": " +
+      errorMessage(error);
+  } finally {
+    localBusy = false;
+    render();
+  }
+}
+
 function comparisonTable(): string {
   const rows = specimens.map((specimen) => {
     const frame = specimen.trace[10]!;
@@ -847,7 +966,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     mode !== "matrix" &&
     mode !== "choice-matrix" &&
     mode !== "challenge-matrix" &&
-    mode !== "permutation-sweep"
+    mode !== "permutation-sweep" &&
+    mode !== "semantic-token-sweep"
   ) {
     return;
   }
@@ -865,7 +985,9 @@ async function autoRunSmokeIfRequested(): Promise<void> {
           ? "Autorun semantic challenge matrix requested: loading the pinned local model."
           : mode === "permutation-sweep"
             ? "Autorun five-position permutation sweep requested: loading the pinned local model."
-            : "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once with " +
+            : mode === "semantic-token-sweep"
+              ? "Autorun semantic-token sweep requested: loading the pinned local model."
+              : "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once with " +
             localChoiceOrder +
             " label order.";
   render();
@@ -881,6 +1003,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     await runChallengeMatrix();
   } else if (mode === "permutation-sweep") {
     await runPermutationSweep();
+  } else if (mode === "semantic-token-sweep") {
+    await runSemanticTokenSweep();
   } else {
     await runLocalProbe();
   }
