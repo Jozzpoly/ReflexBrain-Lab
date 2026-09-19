@@ -12,6 +12,7 @@ import {
 import { RuleBaselineProvider } from "../src/rule-provider";
 import { evaluateProvidersSameState } from "../src/semantic-probe";
 import {
+  actionFromChoiceToken,
   analyzeChoiceScores,
   buildImmediateResponsePrompt,
   chooseLocalQwenDtype,
@@ -234,6 +235,16 @@ describe("R0 local direct-choice contract", () => {
     expect(prompt).not.toContain("speech:hidden-opening");
     expect(prompt).not.toContain("Prefer preserving");
     expect(prompt).not.toContain("/no_think");
+  });
+
+  it("maps a constrained generated token back to the semantic action", () => {
+    const reverse = getImmediateResponseOptions("reverse");
+    expect(actionFromChoiceToken(14, [10, 11, 12, 13, 14], reverse)).toBe(
+      "continue",
+    );
+    expect(() =>
+      actionFromChoiceToken(99, [10, 11, 12, 13, 14], reverse),
+    ).toThrow("outside the allowed choice labels");
   });
 
   it("maps letter scores back onto semantic actions under reversed order", () => {
