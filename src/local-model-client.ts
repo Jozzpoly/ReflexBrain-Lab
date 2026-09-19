@@ -2,6 +2,7 @@ import type { ActorPrivateState } from "./contracts";
 import type { LocalChoiceProbeResult } from "./local-choice-probe";
 import type {
   LocalModelRequest,
+  LocalModelRequestBody,
   LocalModelResponse,
 } from "./local-model-protocol";
 
