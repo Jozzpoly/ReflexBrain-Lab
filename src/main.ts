@@ -11,6 +11,7 @@ import {
 } from "./episode";
 import {
   APPRAISAL_SPECS,
+  BIPOLAR_APPRAISAL_SPECS,
   DEFAULT_LOCAL_MODEL_BACKEND,
   getLocalModelBackend,
   IMMEDIATE_RESPONSE_OPTIONS,
@@ -18,8 +19,10 @@ import {
   PERMUTATION_SWEEP_ORDERS,
   type AppraisalId,
   type AppraisalPolarity,
+  type BipolarAppraisalOrder,
   type ChoiceOrder,
   type LocalAppraisalResult,
+  type LocalBipolarAppraisalResult,
   type LocalChoiceOnlyResult,
   type LocalChoiceProbeResult,
   type LocalModelBackendId,
@@ -84,6 +87,14 @@ interface AppraisalMatrixProbe {
   result: LocalAppraisalResult;
 }
 
+interface BipolarMatrixProbe {
+  challengeId: string;
+  challengeTitle: string;
+  appraisalId: AppraisalId;
+  order: BipolarAppraisalOrder;
+  result: LocalBipolarAppraisalResult;
+}
+
 const provider = new RuleBaselineProvider();
 const exposures: readonly SpeechExposure[] = ["addressed", "overheard", "none"];
 const specimens: Specimen[] = [];
@@ -127,6 +138,7 @@ let challengeMatrixProbes: ChallengeMatrixProbe[] = [];
 let permutationSweepProbes: PermutationSweepProbe[] = [];
 let semanticTokenSweepProbes: SemanticTokenSweepProbe[] = [];
 let appraisalMatrixProbes: AppraisalMatrixProbe[] = [];
+let bipolarMatrixProbes: BipolarMatrixProbe[] = [];
 
 function selectedSpecimen(): Specimen {
   return specimens.find(
@@ -211,6 +223,7 @@ function render(): void {
     permutationSweepProbes.length > 0 ? permutationSweepTable() : "",
     semanticTokenSweepProbes.length > 0 ? semanticTokenSweepTable() : "",
     appraisalMatrixProbes.length > 0 ? appraisalMatrixTable() : "",
+    bipolarMatrixProbes.length > 0 ? bipolarMatrixTable() : "",
     "</section>",
     '<section class="panel"><h2>Rule baseline · cross-variant snapshot at tick 10</h2>',
     comparisonTable(),
@@ -894,6 +907,153 @@ async function runSemanticTokenSweep(): Promise<void> {
   }
 }
 
+function bipolarMatrixTable(): string {
+  const challengeIds = [...new Set(
+    bipolarMatrixProbes.map((probe) => probe.challengeId),
+  )];
+  const rows: string[] = [];
+
+  for (const challengeId of challengeIds) {
+    for (const spec of BIPOLAR_APPRAISAL_SPECS) {
+      const positiveFirst = bipolarMatrixProbes.find(
+        (probe) =>
+          probe.challengeId === challengeId &&
+          probe.appraisalId === spec.id &&
+          probe.order === "positive-first",
+      );
+      const negativeFirst = bipolarMatrixProbes.find(
+        (probe) =>
+          probe.challengeId === challengeId &&
+          probe.appraisalId === spec.id &&
+          probe.order === "negative-first",
+      );
+      if (!positiveFirst || !negativeFirst) continue;
+
+      const delta = Math.abs(
+        positiveFirst.result.probabilityPositive -
+          negativeFirst.result.probabilityPositive,
+      );
+      const mean =
+        (positiveFirst.result.probabilityPositive +
+          negativeFirst.result.probabilityPositive) /
+        2;
+
+      rows.push(
+        "<tr><td>" +
+          escapeHtml(challengeId) +
+          "</td><td>" +
+          escapeHtml(spec.id) +
+          "</td><td>" +
+          escapeHtml(positiveFirst.result.positiveKeyword) +
+          " / " +
+          escapeHtml(positiveFirst.result.negativeKeyword) +
+          "</td><td>" +
+          positiveFirst.result.probabilityPositive.toFixed(3) +
+          "</td><td>" +
+          negativeFirst.result.probabilityPositive.toFixed(3) +
+          "</td><td>" +
+          delta.toFixed(3) +
+          "</td><td>" +
+          mean.toFixed(3) +
+          "</td><td>" +
+          positiveFirst.result.selectedPole +
+          " / " +
+          negativeFirst.result.selectedPole +
+          "</td><td>" +
+          positiveFirst.result.latencyMs.toFixed(0) +
+          " / " +
+          negativeFirst.result.latencyMs.toFixed(0) +
+          " ms</td></tr>",
+      );
+    }
+  }
+
+  return (
+    '<h3>Bipolar semantic appraisal matrix</h3>' +
+    '<p class="muted">Each row uses the same private state and the same two semantic pole tokens. Only presentation order changes. Δ measures order sensitivity.</p>' +
+    '<div class="table-wrap"><table><thead><tr>' +
+    "<th>Situation</th><th>Dimension</th><th>Semantic poles + / −</th><th>P+ positive-first</th><th>P+ negative-first</th><th>Δ order</th><th>Mean P+</th><th>selected +first / −first</th><th>latency</th>" +
+    "</tr></thead><tbody>" +
+    rows.join("") +
+    "</tbody></table></div>"
+  );
+}
+
+async function runBipolarMatrix(): Promise<void> {
+  if (!localModelReady || !localClient || localBusy) return;
+
+  bipolarMatrixProbes = [];
+  const wanted = new Set(["silent-pass", "urgent-warning"]);
+  const challenges = createSemanticChallenges().filter((challenge) =>
+    wanted.has(challenge.id),
+  );
+  const orders: readonly BipolarAppraisalOrder[] = [
+    "positive-first",
+    "negative-first",
+  ];
+  let completed = 0;
+  const total =
+    challenges.length * BIPOLAR_APPRAISAL_SPECS.length * orders.length;
+  localBusy = true;
+
+  try {
+    for (const challenge of challenges) {
+      const state = compilePrivateState(
+        challenge.episode.frames[10]!,
+        "task",
+      );
+
+      for (const spec of BIPOLAR_APPRAISAL_SPECS) {
+        for (const order of orders) {
+          localStatus =
+            "Bipolar matrix " +
+            completed +
+            "/" +
+            total +
+            " complete · " +
+            challenge.id +
+            " / " +
+            spec.id +
+            " / " +
+            order +
+            ".";
+          render();
+
+          const result = await localClient.appraiseBipolar(
+            structuredClone(state),
+            spec.id,
+            order,
+          );
+          bipolarMatrixProbes.push({
+            challengeId: challenge.id,
+            challengeTitle: challenge.title,
+            appraisalId: spec.id,
+            order,
+            result,
+          });
+          completed += 1;
+        }
+      }
+    }
+
+    localStatus =
+      "Bipolar matrix complete: " +
+      completed +
+      " counterbalanced semantic-pole evaluations.";
+  } catch (error) {
+    localStatus =
+      "Bipolar matrix failed after " +
+      completed +
+      "/" +
+      total +
+      ": " +
+      errorMessage(error);
+  } finally {
+    localBusy = false;
+    render();
+  }
+}
+
 function appraisalMatrixTable(): string {
   const challengeIds = [...new Set(
     appraisalMatrixProbes.map((probe) => probe.challengeId),
@@ -1141,7 +1301,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     mode !== "challenge-matrix" &&
     mode !== "permutation-sweep" &&
     mode !== "semantic-token-sweep" &&
-    mode !== "appraisal-matrix"
+    mode !== "appraisal-matrix" &&
+    mode !== "bipolar-matrix"
   ) {
     return;
   }
@@ -1163,7 +1324,9 @@ async function autoRunSmokeIfRequested(): Promise<void> {
               ? "Autorun semantic-token sweep requested: loading the pinned local model."
               : mode === "appraisal-matrix"
                 ? "Autorun independent appraisal matrix requested: loading the pinned local model."
-                : "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once with " +
+                : mode === "bipolar-matrix"
+                  ? "Autorun bipolar semantic appraisal matrix requested: loading the pinned local model."
+                  : "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once with " +
             localChoiceOrder +
             " label order.";
   render();
@@ -1183,6 +1346,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     await runSemanticTokenSweep();
   } else if (mode === "appraisal-matrix") {
     await runAppraisalMatrix();
+  } else if (mode === "bipolar-matrix") {
+    await runBipolarMatrix();
   } else {
     await runLocalProbe();
   }
