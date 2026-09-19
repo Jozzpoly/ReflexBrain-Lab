@@ -1,6 +1,9 @@
 import type { ActorPrivateState } from "./contracts";
 import type {
+  AppraisalId,
+  AppraisalPolarity,
   ChoiceOrder,
+  LocalAppraisalResult,
   LocalChoiceOnlyResult,
   LocalModelBackendId,
   LocalChoiceProbeResult,
@@ -108,6 +111,24 @@ export class LocalModelClient {
         backendId: this.backendId,
         state: structuredClone(state),
         choiceOrder,
+      },
+      progress,
+    );
+  }
+
+  appraise(
+    state: ActorPrivateState,
+    appraisalId: AppraisalId,
+    polarity: AppraisalPolarity = "positive",
+    progress?: (value: LocalModelProgress) => void,
+  ): Promise<LocalAppraisalResult> {
+    return this.request<LocalAppraisalResult>(
+      {
+        type: "appraisal",
+        backendId: this.backendId,
+        state: structuredClone(state),
+        appraisalId,
+        polarity,
       },
       progress,
     );
