@@ -1,18 +1,26 @@
 import type { ActorPrivateState } from "./contracts";
 import type {
   ChoiceOrder,
+  LocalChoiceOnlyResult,
   LocalChoiceProbeResult,
 } from "./local-choice-probe";
 
 export type LocalModelRequestBody =
   | { type: "load" }
-  | { type: "probe"; state: ActorPrivateState; choiceOrder: ChoiceOrder };
+  | { type: "probe"; state: ActorPrivateState; choiceOrder: ChoiceOrder }
+  | { type: "choice"; state: ActorPrivateState; choiceOrder: ChoiceOrder };
 
 export type LocalModelRequest =
   | { id: number; type: "load" }
   | {
       id: number;
       type: "probe";
+      state: ActorPrivateState;
+      choiceOrder: ChoiceOrder;
+    }
+  | {
+      id: number;
+      type: "choice";
       state: ActorPrivateState;
       choiceOrder: ChoiceOrder;
     };
@@ -27,4 +35,5 @@ export type LocalModelResponse =
     }
   | { id: number; type: "ready" }
   | { id: number; type: "probe_result"; result: LocalChoiceProbeResult }
+  | { id: number; type: "choice_result"; result: LocalChoiceOnlyResult }
   | { id: number; type: "error"; message: string };
