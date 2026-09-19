@@ -7,9 +7,11 @@ import {
   analyzeChoiceScores,
   buildImmediateResponsePrompt,
   chooseLocalQwenDtype,
+  getImmediateResponseOptions,
   IMMEDIATE_RESPONSE_OPTIONS,
   LOCAL_QWEN_MODEL_ID,
   LOCAL_QWEN_REVISION,
+  type ChoiceOrder,
   type LocalChoiceProbeResult,
   type LocalQwenDtype,
 } from "./local-choice-probe";
@@ -42,7 +44,7 @@ async function handle(request: LocalModelRequest): Promise<void> {
     }
 
     await ensureLoaded(request.id);
-    const result = await runProbe(request.state);
+    const result = await runProbe(request.state, request.choiceOrder);
     scope.postMessage({ id: request.id, type: "probe_result", result });
   } catch (error) {
     scope.postMessage({
@@ -121,12 +123,14 @@ async function detectWebGpuRuntime(): Promise<{
 
 async function runProbe(
   state: import("./contracts").ActorPrivateState,
+  choiceOrder: ChoiceOrder,
 ): Promise<LocalChoiceProbeResult> {
   if (runtimeDtype === null || runtimeShaderF16 === null) {
     throw new Error("local model runtime metadata is unavailable");
   }
 
-  const prompt = buildImmediateResponsePrompt(state);
+  const orderedOptions = getImmediateResponseOptions(choiceOrder);
+  const prompt = buildImmediateResponsePrompt(state, orderedOptions);
   const messages = [{ role: "user", content: prompt }];
 
   const inputs = tokenizer.apply_chat_template(messages, {
@@ -165,7 +169,11 @@ async function runProbe(
         ? await lastLogits.getData()
         : lastLogits.data;
 
-    const analysis = analyzeChoiceScores(scoreData, tokenIds);
+    const analysis = analyzeChoiceScores(
+      scoreData,
+      tokenIds,
+      orderedOptions,
+    );
     const topTokenText = tokenizer.decode([analysis.topTokenId], {
       skip_special_tokens: false,
       clean_up_tokenization_spaces: false,
@@ -177,6 +185,8 @@ async function runProbe(
       dtype: runtimeDtype,
       shaderF16: runtimeShaderF16,
       logitsShape,
+      choiceOrder,
+      optionOrder: orderedOptions.map((option) => option.id),
       distribution: analysis.distribution,
       choiceMass: analysis.choiceMass,
       bestAllowedRank: analysis.bestAllowedRank,
