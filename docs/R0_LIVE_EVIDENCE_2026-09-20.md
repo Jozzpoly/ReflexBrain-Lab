@@ -259,3 +259,85 @@ Initial candidate judgements:
 This is not yet a claim that these are the final ReflexBrain dimensions. They are an R0 probe surface.
 
 Important implementation opportunity: Transformers.js generation already computes only the next-token logits for sampling. A custom logits processor can capture the allowed `yes/no` scores **before masking**, avoiding the sequence-wide direct-forward tensor used by the earlier diagnostic path.
+
+
+## Independent binary appraisal matrix — live result
+
+The first Noul-like appraisal experiment evaluated five independent semantic propositions:
+
+- attention;
+- interrupt;
+- social relevance;
+- threat;
+- deeper cognition.
+
+Two embodied situations were used:
+
+- `silent-pass`;
+- `urgent-warning`.
+
+Each appraisal was evaluated twice against the exact same private state:
+
+1. positive proposition framing;
+2. explicitly negated proposition framing.
+
+The worker captured the **pre-mask yes/no logits** and normalized them to `P(yes)`. For the negative framing, the workbench converts the result back onto `P(positive) = 1 - P(yes)`, so positive and negated formulations should approximately agree if the binary semantic judgement is stable.
+
+### Live Qwen result
+
+All 20 evaluations selected **yes** — both for every positive proposition and for every explicitly negated proposition.
+
+| situation | appraisal | P+ positive frame | P+ negative frame | framing Δ |
+| --- | --- | ---: | ---: | ---: |
+| silent-pass | attention | 0.963 | 0.001 | 0.962 |
+| silent-pass | interrupt | 0.977 | 0.000 | 0.977 |
+| silent-pass | social | 1.000 | 0.001 | 0.999 |
+| silent-pass | threat | 1.000 | 0.000 | 1.000 |
+| silent-pass | cognition | 1.000 | 0.056 | 0.944 |
+| urgent-warning | attention | 1.000 | 0.000 | 1.000 |
+| urgent-warning | interrupt | 0.995 | 0.000 | 0.995 |
+| urgent-warning | social | 1.000 | 0.001 | 0.999 |
+| urgent-warning | threat | 1.000 | 0.000 | 1.000 |
+| urgent-warning | cognition | 1.000 | 0.008 | 0.992 |
+
+Aggregate:
+
+- mean framing disagreement: **0.9868**;
+- mean normalized `P(positive)` across paired frames: **0.5001**;
+- latency mean: **2624.7 ms**;
+- latency median: **2638 ms**;
+- latency range: **2380–2963 ms**.
+
+### Interpretation
+
+**FAIL — proposition + yes/no is not presently a trustworthy appraisal primitive for this stock Qwen path.**
+
+The inversion test did exactly what it was intended to do: it exposed severe acquiescence / framing dependence that would have looked like extremely high confidence if only the positive prompts had been measured.
+
+This result does **not** falsify independent appraisals as an architecture. It falsifies this particular readout:
+
+`natural-language proposition -> is this true? -> yes/no logits`
+
+under the current stock Qwen3-0.6B instruction model and browser runtime.
+
+### Architectural consequence
+
+The broader R0 evidence now rejects three naive stock-model interfaces as trusted ReflexBrain primitives:
+
+1. arbitrary A–E multi-action choice — strong label / position confounds;
+2. semantic-token multi-action choice — presentation-order instability remains;
+3. independent proposition yes/no — severe acquiescence / negation framing failure.
+
+The remaining hypothesis should stay close to **independent semantic dimensions**, but remove the yes/no proposition framing itself.
+
+A stronger next falsifier is a **bipolar semantic appraisal** where each dimension is represented directly by opposed semantic token identities rather than a proposition plus generic yes/no answer, e.g.:
+
+- relevant / irrelevant;
+- interrupt / continue;
+- social / unrelated;
+- danger / safe;
+- think / routine.
+
+Each pair must be tokenizer-verified, counterbalanced with wording/order/synonym mutations, and evaluated as a bounded semantic contrast rather than as an instruction-following affirmation task.
+
+If that also fails to provide stable counterfactual discrimination, R0 should stop trying to extract a trustworthy reflex primitive from an untrained stock instruction LM interface and move toward a dedicated learned readout/head or task-specific model.
