@@ -6,7 +6,13 @@ import type {
 
 export const LOCAL_QWEN_MODEL_ID = "onnx-community/Qwen3-0.6B-ONNX";
 export const LOCAL_QWEN_REVISION = "b1ece21c06dfce3839272e86b7fa12a985d97a7a";
-export const LOCAL_QWEN_DTYPE = "q4f16";
+export type LocalQwenDtype = "q4f16" | "q8";
+export const LOCAL_QWEN_F16_DTYPE: LocalQwenDtype = "q4f16";
+export const LOCAL_QWEN_NO_F16_DTYPE: LocalQwenDtype = "q8";
+
+export function chooseLocalQwenDtype(shaderF16: boolean): LocalQwenDtype {
+  return shaderF16 ? LOCAL_QWEN_F16_DTYPE : LOCAL_QWEN_NO_F16_DTYPE;
+}
 
 export interface ChoiceOption {
   id: ReflexAction;
@@ -24,6 +30,8 @@ export const IMMEDIATE_RESPONSE_OPTIONS: readonly ChoiceOption[] = [
 export interface LocalChoiceProbeResult {
   modelId: string;
   modelRevision: string;
+  dtype: LocalQwenDtype;
+  shaderF16: boolean;
   distribution: ActionDistribution;
   choiceMass: number;
   bestAllowedRank: number;
