@@ -10,12 +10,16 @@ import {
   type SpeechExposure,
 } from "./episode";
 import {
+  APPRAISAL_SPECS,
   DEFAULT_LOCAL_MODEL_BACKEND,
   getLocalModelBackend,
   IMMEDIATE_RESPONSE_OPTIONS,
   isLocalModelBackendId,
   PERMUTATION_SWEEP_ORDERS,
+  type AppraisalId,
+  type AppraisalPolarity,
   type ChoiceOrder,
+  type LocalAppraisalResult,
   type LocalChoiceOnlyResult,
   type LocalChoiceProbeResult,
   type LocalModelBackendId,
@@ -72,6 +76,14 @@ interface SemanticTokenSweepProbe {
   result: LocalSemanticChoiceResult;
 }
 
+interface AppraisalMatrixProbe {
+  challengeId: string;
+  challengeTitle: string;
+  appraisalId: AppraisalId;
+  polarity: AppraisalPolarity;
+  result: LocalAppraisalResult;
+}
+
 const provider = new RuleBaselineProvider();
 const exposures: readonly SpeechExposure[] = ["addressed", "overheard", "none"];
 const specimens: Specimen[] = [];
@@ -114,6 +126,7 @@ let choiceMatrixProbes: ChoiceMatrixProbe[] = [];
 let challengeMatrixProbes: ChallengeMatrixProbe[] = [];
 let permutationSweepProbes: PermutationSweepProbe[] = [];
 let semanticTokenSweepProbes: SemanticTokenSweepProbe[] = [];
+let appraisalMatrixProbes: AppraisalMatrixProbe[] = [];
 
 function selectedSpecimen(): Specimen {
   return specimens.find(
@@ -197,6 +210,7 @@ function render(): void {
     challengeMatrixProbes.length > 0 ? challengeMatrixTable() : "",
     permutationSweepProbes.length > 0 ? permutationSweepTable() : "",
     semanticTokenSweepProbes.length > 0 ? semanticTokenSweepTable() : "",
+    appraisalMatrixProbes.length > 0 ? appraisalMatrixTable() : "",
     "</section>",
     '<section class="panel"><h2>Rule baseline · cross-variant snapshot at tick 10</h2>',
     comparisonTable(),
@@ -880,6 +894,165 @@ async function runSemanticTokenSweep(): Promise<void> {
   }
 }
 
+function appraisalMatrixTable(): string {
+  const challengeIds = [...new Set(
+    appraisalMatrixProbes.map((probe) => probe.challengeId),
+  )];
+  const rows: string[] = [];
+
+  for (const challengeId of challengeIds) {
+    for (const spec of APPRAISAL_SPECS) {
+      const positive = appraisalMatrixProbes.find(
+        (probe) =>
+          probe.challengeId === challengeId &&
+          probe.appraisalId === spec.id &&
+          probe.polarity === "positive",
+      );
+      const negative = appraisalMatrixProbes.find(
+        (probe) =>
+          probe.challengeId === challengeId &&
+          probe.appraisalId === spec.id &&
+          probe.polarity === "negative",
+      );
+      if (!positive || !negative) continue;
+
+      const disagreement = Math.abs(
+        positive.result.positiveProbability -
+          negative.result.positiveProbability,
+      );
+      const meanPositive =
+        (positive.result.positiveProbability +
+          negative.result.positiveProbability) /
+        2;
+
+      rows.push(
+        "<tr><td>" +
+          escapeHtml(challengeId) +
+          "</td><td>" +
+          escapeHtml(spec.id) +
+          "</td><td>" +
+          positive.result.positiveProbability.toFixed(3) +
+          "</td><td>" +
+          negative.result.positiveProbability.toFixed(3) +
+          "</td><td>" +
+          disagreement.toFixed(3) +
+          "</td><td>" +
+          meanPositive.toFixed(3) +
+          "</td><td>" +
+          positive.result.selectedAnswer +
+          " / " +
+          negative.result.selectedAnswer +
+          "</td><td>" +
+          positive.result.latencyMs.toFixed(0) +
+          " / " +
+          negative.result.latencyMs.toFixed(0) +
+          " ms</td></tr>",
+      );
+    }
+  }
+
+  const first = appraisalMatrixProbes[0]?.result;
+  const tokenSummary = first
+    ? first.binaryTokens
+        .map(
+          (token) =>
+            token.answer +
+            "=" +
+            JSON.stringify(token.surface) +
+            "#" +
+            token.tokenId,
+        )
+        .join(" · ")
+    : "";
+
+  return (
+    '<h3>Independent binary appraisal matrix</h3>' +
+    '<p class="muted">Each row compares the same semantic proposition under positive and explicitly negated framing. Both columns are normalized onto P(positive); Δ is framing disagreement. Binary tokenizer surfaces: <code>' +
+    escapeHtml(tokenSummary) +
+    "</code></p>" +
+    '<div class="table-wrap"><table><thead><tr>' +
+    "<th>Situation</th><th>Appraisal</th><th>P+ positive frame</th><th>P+ negative frame</th><th>Δ framing</th><th>Mean P+</th><th>answers + / −</th><th>latency + / −</th>" +
+    "</tr></thead><tbody>" +
+    rows.join("") +
+    "</tbody></table></div>"
+  );
+}
+
+async function runAppraisalMatrix(): Promise<void> {
+  if (!localModelReady || !localClient || localBusy) return;
+
+  appraisalMatrixProbes = [];
+  const wanted = new Set(["silent-pass", "urgent-warning"]);
+  const challenges = createSemanticChallenges().filter((challenge) =>
+    wanted.has(challenge.id),
+  );
+  const polarities: readonly AppraisalPolarity[] = [
+    "positive",
+    "negative",
+  ];
+  let completed = 0;
+  const total =
+    challenges.length * APPRAISAL_SPECS.length * polarities.length;
+  localBusy = true;
+
+  try {
+    for (const challenge of challenges) {
+      const state = compilePrivateState(
+        challenge.episode.frames[10]!,
+        "task",
+      );
+
+      for (const spec of APPRAISAL_SPECS) {
+        for (const polarity of polarities) {
+          localStatus =
+            "Appraisal matrix " +
+            completed +
+            "/" +
+            total +
+            " complete · " +
+            challenge.id +
+            " / " +
+            spec.id +
+            " / " +
+            polarity +
+            ".";
+          render();
+
+          const result = await localClient.appraise(
+            structuredClone(state),
+            spec.id,
+            polarity,
+          );
+          appraisalMatrixProbes.push({
+            challengeId: challenge.id,
+            challengeTitle: challenge.title,
+            appraisalId: spec.id,
+            polarity,
+            result,
+          });
+          completed += 1;
+        }
+      }
+    }
+
+    localStatus =
+      "Appraisal matrix complete: " +
+      completed +
+      " independent yes/no evaluations.";
+  } catch (error) {
+    localStatus =
+      "Appraisal matrix failed after " +
+      completed +
+      "/" +
+      total +
+      ": " +
+      errorMessage(error);
+  } finally {
+    localBusy = false;
+    render();
+  }
+}
+
 function comparisonTable(): string {
   const rows = specimens.map((specimen) => {
     const frame = specimen.trace[10]!;
@@ -967,7 +1140,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     mode !== "choice-matrix" &&
     mode !== "challenge-matrix" &&
     mode !== "permutation-sweep" &&
-    mode !== "semantic-token-sweep"
+    mode !== "semantic-token-sweep" &&
+    mode !== "appraisal-matrix"
   ) {
     return;
   }
@@ -987,7 +1161,9 @@ async function autoRunSmokeIfRequested(): Promise<void> {
             ? "Autorun five-position permutation sweep requested: loading the pinned local model."
             : mode === "semantic-token-sweep"
               ? "Autorun semantic-token sweep requested: loading the pinned local model."
-              : "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once with " +
+              : mode === "appraisal-matrix"
+                ? "Autorun independent appraisal matrix requested: loading the pinned local model."
+                : "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once with " +
             localChoiceOrder +
             " label order.";
   render();
@@ -1005,6 +1181,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     await runPermutationSweep();
   } else if (mode === "semantic-token-sweep") {
     await runSemanticTokenSweep();
+  } else if (mode === "appraisal-matrix") {
+    await runAppraisalMatrix();
   } else {
     await runLocalProbe();
   }
