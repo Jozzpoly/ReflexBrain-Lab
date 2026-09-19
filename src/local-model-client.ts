@@ -4,6 +4,7 @@ import type {
   LocalChoiceOnlyResult,
   LocalModelBackendId,
   LocalChoiceProbeResult,
+  LocalSemanticChoiceResult,
 } from "./local-choice-probe";
 import type {
   LocalModelRequest,
@@ -88,6 +89,22 @@ export class LocalModelClient {
     return this.request<LocalChoiceOnlyResult>(
       {
         type: "choice",
+        backendId: this.backendId,
+        state: structuredClone(state),
+        choiceOrder,
+      },
+      progress,
+    );
+  }
+
+  chooseSemantic(
+    state: ActorPrivateState,
+    choiceOrder: ChoiceOrder = "canonical",
+    progress?: (value: LocalModelProgress) => void,
+  ): Promise<LocalSemanticChoiceResult> {
+    return this.request<LocalSemanticChoiceResult>(
+      {
+        type: "semantic_choice",
         backendId: this.backendId,
         state: structuredClone(state),
         choiceOrder,
