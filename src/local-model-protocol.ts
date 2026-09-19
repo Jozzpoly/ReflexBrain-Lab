@@ -1,6 +1,10 @@
 import type { ActorPrivateState } from "./contracts";
 import type { LocalChoiceProbeResult } from "./local-choice-probe";
 
+export type LocalModelRequestBody =
+  | { type: "load" }
+  | { type: "probe"; state: ActorPrivateState };
+
 export type LocalModelRequest =
   | { id: number; type: "load" }
   | { id: number; type: "probe"; state: ActorPrivateState };
