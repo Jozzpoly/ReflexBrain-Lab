@@ -10,7 +10,20 @@ export interface Episode {
   readonly frames: readonly WorldSnapshot[];
 }
 
+export type SpeechExposure = "addressed" | "overheard" | "none";
+
+export interface R0EpisodeOptions {
+  speechExposure: SpeechExposure;
+  hiddenOpeningSpeech?: boolean;
+}
+
 export function createLowStakesAddressEpisode(): Episode {
+  return createR0CounterfactualEpisode({ speechExposure: "addressed" });
+}
+
+export function createR0CounterfactualEpisode(
+  options: R0EpisodeOptions,
+): Episode {
   let resident = actor(RESIDENT_ID, "resident", 0, 0, 0, 0);
   let player = actor(PLAYER_ID, "player", 520, 0, -80, 0);
   const frames: WorldSnapshot[] = [];
@@ -24,13 +37,25 @@ export function createLowStakesAddressEpisode(): Episode {
     if (tick === 7) player = actor(PLAYER_ID, "player", 210, 0, -40, 0);
     if (tick === 9) player = actor(PLAYER_ID, "player", 150, 0, 0, 0);
 
-    if (tick === 10) {
+    if (tick === 0 && options.hiddenOpeningSpeech) {
       events.push({
-        id: "speech:hello",
+        id: "speech:hidden-opening",
         tick,
         kind: "speech",
         sourceActorId: PLAYER_ID,
         targetActorId: RESIDENT_ID,
+        text: "This exists in World truth but is outside the resident's current sensory range.",
+      });
+    }
+
+    if (tick === 10 && options.speechExposure !== "none") {
+      events.push({
+        id: "speech:hello:" + options.speechExposure,
+        tick,
+        kind: "speech",
+        sourceActorId: PLAYER_ID,
+        targetActorId:
+          options.speechExposure === "addressed" ? RESIDENT_ID : null,
         text: "Hey, got a second?",
       });
     }
@@ -59,8 +84,14 @@ export function createLowStakesAddressEpisode(): Episode {
   }
 
   return {
-    id: "low-stakes-address",
-    title: "Own task vs low-stakes player interruption",
+    id: "low-stakes-" + options.speechExposure +
+      (options.hiddenOpeningSpeech ? "-hidden-opening" : ""),
+    title:
+      options.speechExposure === "addressed"
+        ? "Own task vs low-stakes addressed player interruption"
+        : options.speechExposure === "overheard"
+          ? "Own task vs identical overheard player speech"
+          : "Own task vs silent player pass-by",
     frames,
   };
 }
