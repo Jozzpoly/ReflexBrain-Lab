@@ -4,8 +4,44 @@ import type {
   ReflexAction,
 } from "./contracts";
 
-export const LOCAL_QWEN_MODEL_ID = "onnx-community/Qwen3-0.6B-ONNX";
-export const LOCAL_QWEN_REVISION = "b1ece21c06dfce3839272e86b7fa12a985d97a7a";
+export type LocalModelBackendId = "qwen3-0.6b" | "smollm2-135m";
+
+export interface LocalModelBackendConfig {
+  id: LocalModelBackendId;
+  modelId: string;
+  modelRevision: string;
+}
+
+export const LOCAL_MODEL_BACKENDS: Record<
+  LocalModelBackendId,
+  LocalModelBackendConfig
+> = {
+  "qwen3-0.6b": {
+    id: "qwen3-0.6b",
+    modelId: "onnx-community/Qwen3-0.6B-ONNX",
+    modelRevision: "b1ece21c06dfce3839272e86b7fa12a985d97a7a",
+  },
+  "smollm2-135m": {
+    id: "smollm2-135m",
+    modelId: "onnx-community/SmolLM2-135M-Instruct-ONNX",
+    modelRevision: "b8a5c0f183b78c55955a5364f610c36668b5e681",
+  },
+};
+
+export const DEFAULT_LOCAL_MODEL_BACKEND: LocalModelBackendId = "qwen3-0.6b";
+
+export function isLocalModelBackendId(
+  value: string | null,
+): value is LocalModelBackendId {
+  return value === "qwen3-0.6b" || value === "smollm2-135m";
+}
+
+export function getLocalModelBackend(
+  id: LocalModelBackendId,
+): LocalModelBackendConfig {
+  return LOCAL_MODEL_BACKENDS[id];
+}
+
 export type LocalQwenDtype = "q4f16" | "q8";
 export const LOCAL_QWEN_F16_DTYPE: LocalQwenDtype = "q4f16";
 export const LOCAL_QWEN_NO_F16_DTYPE: LocalQwenDtype = "q8";
@@ -38,6 +74,7 @@ export function getImmediateResponseOptions(
 }
 
 export interface LocalChoiceOnlyResult {
+  backendId: LocalModelBackendId;
   modelId: string;
   modelRevision: string;
   dtype: LocalQwenDtype;
@@ -53,6 +90,7 @@ export interface LocalChoiceOnlyResult {
 }
 
 export interface LocalChoiceProbeResult {
+  backendId: LocalModelBackendId;
   modelId: string;
   modelRevision: string;
   dtype: LocalQwenDtype;
