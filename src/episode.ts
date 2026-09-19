@@ -11,10 +11,15 @@ export interface Episode {
 }
 
 export type SpeechExposure = "addressed" | "overheard" | "none";
+export type PlayerMotionProfile = "ordinary" | "fast_close";
 
 export interface R0EpisodeOptions {
   speechExposure: SpeechExposure;
   hiddenOpeningSpeech?: boolean;
+  speechText?: string;
+  playerMotion?: PlayerMotionProfile;
+  idSuffix?: string;
+  title?: string;
 }
 
 export function createLowStakesAddressEpisode(): Episode {
@@ -24,6 +29,7 @@ export function createLowStakesAddressEpisode(): Episode {
 export function createR0CounterfactualEpisode(
   options: R0EpisodeOptions,
 ): Episode {
+  const motion = options.playerMotion ?? "ordinary";
   let resident = actor(RESIDENT_ID, "resident", 0, 0, 0, 0);
   let player = actor(PLAYER_ID, "player", 520, 0, -80, 0);
   const frames: WorldSnapshot[] = [];
@@ -35,7 +41,12 @@ export function createR0CounterfactualEpisode(
     if (tick === 0) player = actor(PLAYER_ID, "player", 520, 0, -80, 0);
     if (tick === 4) player = actor(PLAYER_ID, "player", 360, 0, -100, 0);
     if (tick === 7) player = actor(PLAYER_ID, "player", 210, 0, -40, 0);
-    if (tick === 9) player = actor(PLAYER_ID, "player", 150, 0, 0, 0);
+    if (tick === 9) {
+      player =
+        motion === "fast_close"
+          ? actor(PLAYER_ID, "player", 220, 0, -220, 0)
+          : actor(PLAYER_ID, "player", 150, 0, 0, 0);
+    }
 
     if (tick === 0 && options.hiddenOpeningSpeech) {
       events.push({
@@ -50,13 +61,13 @@ export function createR0CounterfactualEpisode(
 
     if (tick === 10 && options.speechExposure !== "none") {
       events.push({
-        id: "speech:hello:" + options.speechExposure,
+        id: "speech:tick10:" + options.speechExposure,
         tick,
         kind: "speech",
         sourceActorId: PLAYER_ID,
         targetActorId:
           options.speechExposure === "addressed" ? RESIDENT_ID : null,
-        text: "Hey, got a second?",
+        text: options.speechText ?? "Hey, got a second?",
       });
     }
 
@@ -83,15 +94,25 @@ export function createR0CounterfactualEpisode(
     player = integrate(player, DT);
   }
 
+  const suffix = options.idSuffix ? "-" + options.idSuffix : "";
+
   return {
-    id: "low-stakes-" + options.speechExposure +
+    id:
+      "r0-" +
+      options.speechExposure +
+      "-" +
+      motion +
+      suffix +
       (options.hiddenOpeningSpeech ? "-hidden-opening" : ""),
     title:
-      options.speechExposure === "addressed"
+      options.title ??
+      (options.speechExposure === "addressed"
         ? "Own task vs low-stakes addressed player interruption"
         : options.speechExposure === "overheard"
           ? "Own task vs identical overheard player speech"
-          : "Own task vs silent player pass-by",
+          : motion === "fast_close"
+            ? "Own task vs silent fast close approach"
+            : "Own task vs silent player pass-by"),
     frames,
   };
 }
