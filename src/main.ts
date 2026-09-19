@@ -24,6 +24,7 @@ import {
   type LocalModelProgress,
 } from "./local-model-client";
 import { compilePrivateState } from "./private-state";
+import { createSemanticChallenges } from "./challenges";
 import { RuleBaselineProvider } from "./rule-provider";
 import { runShadowEpisode } from "./shadow-runner";
 
@@ -44,6 +45,13 @@ interface ChoiceMatrixProbe {
   exposure: SpeechExposure;
   order: ChoiceOrder;
   repetition: number;
+  result: LocalChoiceOnlyResult;
+}
+
+interface ChallengeMatrixProbe {
+  challengeId: string;
+  challengeTitle: string;
+  order: ChoiceOrder;
   result: LocalChoiceOnlyResult;
 }
 
@@ -86,6 +94,7 @@ let localResultKey: string | null = null;
 let localChoiceOrder: ChoiceOrder = "canonical";
 let matrixProbes: MatrixProbe[] = [];
 let choiceMatrixProbes: ChoiceMatrixProbe[] = [];
+let challengeMatrixProbes: ChallengeMatrixProbe[] = [];
 
 function selectedSpecimen(): Specimen {
   return specimens.find(
@@ -166,6 +175,7 @@ function render(): void {
       : '<p class="muted">No local-model result for the currently selected canonical state.</p>',
     matrixProbes.length > 0 ? matrixTable() : "",
     choiceMatrixProbes.length > 0 ? choiceMatrixTable() : "",
+    challengeMatrixProbes.length > 0 ? challengeMatrixTable() : "",
     "</section>",
     '<section class="panel"><h2>Rule baseline · cross-variant snapshot at tick 10</h2>',
     comparisonTable(),
@@ -544,6 +554,99 @@ async function runChoiceMatrix(): Promise<void> {
   }
 }
 
+function challengeMatrixTable(): string {
+  const rows = challengeMatrixProbes.map((probe) =>
+    "<tr><td>" +
+    escapeHtml(probe.challengeId) +
+    "</td><td>" +
+    escapeHtml(probe.challengeTitle) +
+    "</td><td>" +
+    probe.order +
+    "</td><td>" +
+    probe.result.latencyMs.toFixed(1) +
+    " ms</td><td>" +
+    escapeHtml(probe.result.selectedAction) +
+    "</td><td><code>" +
+    escapeHtml(JSON.stringify(probe.result.selectedTokenText)) +
+    "</code></td><td>" +
+    probe.result.inputTokenCount +
+    "</td></tr>",
+  );
+
+  return (
+    '<h3>Semantic challenge matrix</h3>' +
+    '<div class="table-wrap"><table><thead><tr>' +
+    "<th>Challenge</th><th>Situation</th><th>Order</th><th>Latency</th><th>Selected action</th><th>Token</th><th>Input tokens</th>" +
+    "</tr></thead><tbody>" +
+    rows.join("") +
+    "</tbody></table></div>"
+  );
+}
+
+async function runChallengeMatrix(): Promise<void> {
+  if (!localModelReady || !localClient || localBusy) return;
+
+  challengeMatrixProbes = [];
+  const challenges = createSemanticChallenges();
+  const orders: readonly ChoiceOrder[] = ["canonical", "reverse"];
+  let completed = 0;
+  const total = challenges.length * orders.length;
+  localBusy = true;
+
+  try {
+    for (const challenge of challenges) {
+      const state = compilePrivateState(
+        challenge.episode.frames[10]!,
+        "task",
+      );
+
+      for (const order of orders) {
+        localStatus =
+          "Challenge matrix " +
+          completed +
+          "/" +
+          total +
+          " complete · running " +
+          challenge.id +
+          " / " +
+          order +
+          ".";
+        render();
+
+        const result = await localClient.choose(
+          structuredClone(state),
+          order,
+        );
+        challengeMatrixProbes.push({
+          challengeId: challenge.id,
+          challengeTitle: challenge.title,
+          order,
+          result,
+        });
+        completed += 1;
+      }
+    }
+
+    localStatus =
+      "Challenge matrix complete: " +
+      completed +
+      " constrained one-token generations across " +
+      challenges.length +
+      " embodied situations.";
+  } catch (error) {
+    localStatus =
+      "Challenge matrix failed after " +
+      completed +
+      "/" +
+      total +
+      ": " +
+      errorMessage(error);
+  } finally {
+    localBusy = false;
+    render();
+  }
+}
+
 function comparisonTable(): string {
   const rows = specimens.map((specimen) => {
     const frame = specimen.trace[10]!;
@@ -628,7 +731,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
   if (
     mode !== "smoke" &&
     mode !== "matrix" &&
-    mode !== "choice-matrix"
+    mode !== "choice-matrix" &&
+    mode !== "challenge-matrix"
   ) {
     return;
   }
@@ -642,9 +746,11 @@ async function autoRunSmokeIfRequested(): Promise<void> {
       ? "Autorun semantic matrix requested: loading the pinned local model."
       : mode === "choice-matrix"
         ? "Autorun choice-only matrix requested: loading the pinned local model."
-        : "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once with " +
-          localChoiceOrder +
-          " label order.";
+        : mode === "challenge-matrix"
+          ? "Autorun semantic challenge matrix requested: loading the pinned local model."
+          : "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once with " +
+            localChoiceOrder +
+            " label order.";
   render();
 
   await loadLocalModel();
@@ -654,6 +760,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     await runSemanticMatrix();
   } else if (mode === "choice-matrix") {
     await runChoiceMatrix();
+  } else if (mode === "challenge-matrix") {
+    await runChallengeMatrix();
   } else {
     await runLocalProbe();
   }
