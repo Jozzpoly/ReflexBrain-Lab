@@ -37,6 +37,21 @@ export function getImmediateResponseOptions(
     : IMMEDIATE_RESPONSE_OPTIONS;
 }
 
+export interface LocalChoiceOnlyResult {
+  modelId: string;
+  modelRevision: string;
+  dtype: LocalQwenDtype;
+  shaderF16: boolean;
+  choiceOrder: ChoiceOrder;
+  optionOrder: readonly ReflexAction[];
+  selectedAction: ReflexAction;
+  selectedTokenId: number;
+  selectedTokenText: string;
+  latencyMs: number;
+  inputTokenCount: number;
+  optionTokenSurfaces: readonly string[];
+}
+
 export interface LocalChoiceProbeResult {
   modelId: string;
   modelRevision: string;
@@ -111,6 +126,21 @@ export function buildImmediateResponsePrompt(
     "",
     "Answer with exactly one letter: A, B, C, D, or E.",
   ].join("\n");
+}
+
+export function actionFromChoiceToken(
+  selectedTokenId: number,
+  labelTokenIds: readonly number[],
+  options: readonly ChoiceOption[] = IMMEDIATE_RESPONSE_OPTIONS,
+): ReflexAction {
+  if (labelTokenIds.length !== options.length) {
+    throw new Error("choice token map length does not match semantic option count");
+  }
+  const index = labelTokenIds.indexOf(selectedTokenId);
+  if (index < 0) {
+    throw new Error("generated token is outside the allowed choice labels");
+  }
+  return options[index]!.id;
 }
 
 export interface ChoiceScoreAnalysis {
