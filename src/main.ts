@@ -13,6 +13,7 @@ import {
   IMMEDIATE_RESPONSE_OPTIONS,
   LOCAL_QWEN_MODEL_ID,
   type ChoiceOrder,
+  type LocalChoiceOnlyResult,
   type LocalChoiceProbeResult,
 } from "./local-choice-probe";
 import {
@@ -34,6 +35,13 @@ interface MatrixProbe {
   order: ChoiceOrder;
   repetition: number;
   result: LocalChoiceProbeResult;
+}
+
+interface ChoiceMatrixProbe {
+  exposure: SpeechExposure;
+  order: ChoiceOrder;
+  repetition: number;
+  result: LocalChoiceOnlyResult;
 }
 
 const provider = new RuleBaselineProvider();
@@ -65,6 +73,7 @@ let localResult: LocalChoiceProbeResult | null = null;
 let localResultKey: string | null = null;
 let localChoiceOrder: ChoiceOrder = "canonical";
 let matrixProbes: MatrixProbe[] = [];
+let choiceMatrixProbes: ChoiceMatrixProbe[] = [];
 
 function selectedSpecimen(): Specimen {
   return specimens.find(
@@ -144,6 +153,7 @@ function render(): void {
       ? modelComparison(frame.provider.actions, activeLocalResult)
       : '<p class="muted">No local-model result for the currently selected canonical state.</p>',
     matrixProbes.length > 0 ? matrixTable() : "",
+    choiceMatrixProbes.length > 0 ? choiceMatrixTable() : "",
     "</section>",
     '<section class="panel"><h2>Rule baseline · cross-variant snapshot at tick 10</h2>',
     comparisonTable(),
@@ -428,6 +438,93 @@ async function runSemanticMatrix(): Promise<void> {
   render();
 }
 
+function choiceMatrixTable(): string {
+  const rows = choiceMatrixProbes.map((probe) =>
+    "<tr><td>" +
+    probe.exposure +
+    "</td><td>" +
+    probe.order +
+    "</td><td>" +
+    probe.repetition +
+    "</td><td>" +
+    probe.result.latencyMs.toFixed(1) +
+    " ms</td><td>" +
+    escapeHtml(probe.result.selectedAction) +
+    "</td><td><code>" +
+    escapeHtml(JSON.stringify(probe.result.selectedTokenText)) +
+    "</code></td><td>" +
+    probe.result.inputTokenCount +
+    "</td></tr>",
+  );
+
+  return (
+    '<h3>Choice-only generation matrix</h3>' +
+    '<div class="table-wrap"><table><thead><tr>' +
+    "<th>Exposure</th><th>Order</th><th>Rep</th><th>Latency</th><th>Selected action</th><th>Token</th><th>Input tokens</th>" +
+    "</tr></thead><tbody>" +
+    rows.join("") +
+    "</tbody></table></div>"
+  );
+}
+
+async function runChoiceMatrix(): Promise<void> {
+  if (!localModelReady || !localClient || localBusy) return;
+
+  choiceMatrixProbes = [];
+  const orders: readonly ChoiceOrder[] = ["canonical", "reverse"];
+  const repetitions = 2;
+  let completed = 0;
+  const total = exposures.length * orders.length * repetitions;
+  localBusy = true;
+
+  try {
+    for (let repetition = 1; repetition <= repetitions; repetition += 1) {
+      for (const exposure of exposures) {
+        const specimen = specimens.find(
+          (candidate) => candidate.exposure === exposure,
+        )!;
+        const state = compilePrivateState(specimen.trace[10]!.world, "task");
+
+        for (const order of orders) {
+          localStatus =
+            "Choice matrix " +
+            completed +
+            "/" +
+            total +
+            " complete · running " +
+            exposure +
+            " / " +
+            order +
+            " / rep " +
+            repetition +
+            ".";
+          render();
+
+          const result = await localClient.choose(structuredClone(state), order);
+          choiceMatrixProbes.push({ exposure, order, repetition, result });
+          completed += 1;
+        }
+      }
+    }
+
+    localStatus =
+      "Choice matrix complete: " +
+      completed +
+      " constrained one-token generations in one loaded-model session.";
+  } catch (error) {
+    localStatus =
+      "Choice matrix failed after " +
+      completed +
+      "/" +
+      total +
+      ": " +
+      errorMessage(error);
+  } finally {
+    localBusy = false;
+    render();
+  }
+}
+
 function comparisonTable(): string {
   const rows = specimens.map((specimen) => {
     const frame = specimen.trace[10]!;
@@ -509,7 +606,13 @@ void autoRunSmokeIfRequested();
 async function autoRunSmokeIfRequested(): Promise<void> {
   const params = new URLSearchParams(window.location.search);
   const mode = params.get("autorun");
-  if (mode !== "smoke" && mode !== "matrix") return;
+  if (
+    mode !== "smoke" &&
+    mode !== "matrix" &&
+    mode !== "choice-matrix"
+  ) {
+    return;
+  }
 
   const requestedOrder = params.get("order");
   localChoiceOrder =
@@ -518,9 +621,11 @@ async function autoRunSmokeIfRequested(): Promise<void> {
   localStatus =
     mode === "matrix"
       ? "Autorun semantic matrix requested: loading the pinned local model."
-      : "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once with " +
-        localChoiceOrder +
-        " label order.";
+      : mode === "choice-matrix"
+        ? "Autorun choice-only matrix requested: loading the pinned local model."
+        : "Autorun smoke requested: loading the pinned local model, then probing the default canonical state once with " +
+          localChoiceOrder +
+          " label order.";
   render();
 
   await loadLocalModel();
@@ -528,6 +633,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
 
   if (mode === "matrix") {
     await runSemanticMatrix();
+  } else if (mode === "choice-matrix") {
+    await runChoiceMatrix();
   } else {
     await runLocalProbe();
   }
