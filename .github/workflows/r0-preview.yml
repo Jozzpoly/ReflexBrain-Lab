@@ -10,6 +10,7 @@ on:
       - experiment/r1-relation-geometry-audit-v1
       - experiment/r1-cognition-supervision-breadth-v1
       - experiment/r1-isolated-embedding-v1
+      - experiment/r1-expanded-representation-ab-v1
   workflow_dispatch:
 
 permissions:
