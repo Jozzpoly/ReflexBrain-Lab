@@ -6,9 +6,14 @@ import {
   R1_ENCODER_MODEL_REVISION,
   serializeR1PrivateState,
   type R1EncoderBenchmarkResult,
+  type R1LearnedHeadResult,
   type R1EncoderWorkerRequest,
   type R1EncoderWorkerResponse,
 } from "./encoder-contract";
+import {
+  evaluatePrototypeHeads,
+  learnPrototypeHeads,
+} from "./prototype-head";
 
 const scope = globalThis as unknown as {
   postMessage(message: R1EncoderWorkerResponse): void;
@@ -25,6 +30,17 @@ scope.onmessage = (event) => {
 async function handle(request: R1EncoderWorkerRequest): Promise<void> {
   try {
     const loadMs = await ensureLoaded(request.id);
+
+    if (request.type === "learned_head") {
+      const result = await runLearnedHead(request, loadMs);
+      scope.postMessage({
+        id: request.id,
+        type: "learned_head_result",
+        result,
+      });
+      return;
+    }
+
     const result = await runBenchmark(request, loadMs);
     scope.postMessage({
       id: request.id,
@@ -156,6 +172,89 @@ async function runBenchmark(
     batchSize: texts.length,
     embeddingDimensions: dimensions,
     pairs,
+  };
+}
+
+async function runLearnedHead(
+  request: Extract<R1EncoderWorkerRequest, { type: "learned_head" }>,
+  loadMs: number,
+): Promise<R1LearnedHeadResult> {
+  if (!extractor) throw new Error("R1 encoder is not loaded");
+  if (request.states.length === 0) {
+    throw new Error("R1 learned head has no states");
+  }
+
+  const texts = request.states.map((state) =>
+    serializeR1PrivateState(state.state),
+  );
+
+  const warmupStarted = performance.now();
+  const warmup = await extractor(texts[0], {
+    pooling: "mean",
+    normalize: true,
+  });
+  const warmupMs = performance.now() - warmupStarted;
+  dispose(warmup);
+
+  const embeddingById = new Map<string, number[]>();
+  const chunkSize = 8;
+  const embeddingStarted = performance.now();
+  let embeddingDimensions = 0;
+
+  for (let offset = 0; offset < texts.length; offset += chunkSize) {
+    const chunkTexts = texts.slice(offset, offset + chunkSize);
+    const chunkStates = request.states.slice(offset, offset + chunkSize);
+    const output = await extractor(chunkTexts, {
+      pooling: "mean",
+      normalize: true,
+    });
+
+    try {
+      const rows = output.tolist() as number[][];
+      if (rows.length !== chunkStates.length) {
+        throw new Error("R1 learned head encoder returned unexpected batch size");
+      }
+
+      for (let index = 0; index < rows.length; index += 1) {
+        const row = rows[index]!;
+        if (embeddingDimensions === 0) embeddingDimensions = row.length;
+        if (row.length !== embeddingDimensions) {
+          throw new Error("R1 learned head embedding dimension changed");
+        }
+        embeddingById.set(chunkStates[index]!.id, row);
+      }
+    } finally {
+      dispose(output);
+    }
+  }
+
+  const embeddingMs = performance.now() - embeddingStarted;
+  if (embeddingById.size !== request.states.length || embeddingDimensions <= 0) {
+    throw new Error("R1 learned head did not embed every state");
+  }
+
+  const headStarted = performance.now();
+  const heads = learnPrototypeHeads(embeddingById, request.constraints);
+  const evaluation = evaluatePrototypeHeads(
+    heads,
+    embeddingById,
+    request.constraints,
+  );
+  const headMs = performance.now() - headStarted;
+
+  return {
+    modelId: R1_ENCODER_MODEL_ID,
+    modelRevision: R1_ENCODER_MODEL_REVISION,
+    dtype: R1_ENCODER_DTYPE,
+    device: "webgpu",
+    loadMs,
+    warmupMs,
+    embeddingMs,
+    embeddingBatchSize: chunkSize,
+    embeddingDimensions,
+    headMs,
+    constraints: evaluation.constraints,
+    dimensions: evaluation.dimensions,
   };
 }
 
