@@ -1966,3 +1966,13 @@ describe("R1 cognition TRAIN breadth augmentation", () => {
     expect(leaks).toEqual([]);
   });
 });
+
+
+describe("R1 learned-head embedding isolation", () => {
+  it("pins correctness qualification to one state per encoder batch", async () => {
+    const { R1_LEARNED_HEAD_EMBEDDING_BATCH_SIZE } = await import(
+      "../src/r1/encoder-contract"
+    );
+    expect(R1_LEARNED_HEAD_EMBEDDING_BATCH_SIZE).toBe(1);
+  });
+});
