@@ -822,3 +822,136 @@ with the encoder still frozen and the same transparent head construction first.
 If expanded independent supervision fixes the quoted/currentness OOD relation, the representation likely contains useful information and the earlier failure was primarily supervision/head-direction poverty.
 
 If it remains failed, the next question becomes head capacity / representation geometry, at which point a tiny regularized linear or MLP readout is earned before any backbone adaptation.
+
+
+## R1 hardened semantic OOD + supervision-breadth A/B
+
+This checkpoint supersedes the earlier semantic OOD interpretation where several examples were later proven vulnerable to exact-token shortcuts.
+
+### Benchmark correction
+
+A dedicated negative-control gate evaluated every semantic OOD directional relation using the TRAIN-only surface memorizer.
+
+The first pass exposed real benchmark defects:
+
+- danger-decoy and indirect-warning pairs were solvable from exact TRAIN token presence;
+- expanded semantic TRAIN would additionally make the cognition pairs lexically solvable;
+- an earlier quoted-warning phrasing also reused a positively weighted TRAIN token.
+
+The benchmark was therefore corrected **before further MiniLM evaluation**.
+
+Four semantic pairs were rebuilt so left/right share the same binary token set while meaning changes through ordering / negation / temporal role:
+
+- active unsecured beam vs secured beam;
+- support-pin failure now vs the same failure earlier;
+- seal unconfirmed + checking required vs confirmed + checking not required;
+- clearance unestablished + review required vs established + review not required.
+
+The quoted-warning family keeps the exact same alarming quote on both sides but uses new, held-out pragmatic framing.
+
+Qualification on the hardened checkpoint:
+
+- 18 OOD states / 18 OOD relations;
+- all physical/addressee matching tests PASS;
+- hidden urgent World event remains actor-private identical;
+- OOD cannot update head weights;
+- **all 10 semantic OOD directional relations are unsolved by the exact-token memorizer under both base TRAIN and expanded TRAIN**.
+
+This is the current semantic benchmark authority. Earlier pre-hardening OOD pass rates remain historical evidence only.
+
+### Hardened live baseline
+
+On the same frozen MiniLM-L3 q8 encoder and original prototype-direction head:
+
+| representation / supervision | TRAIN | DEV | TEST | hardened OOD |
+| --- | ---: | ---: | ---: | ---: |
+| encoder-only / base | 11/11 | 11/11 | 10/11 | **10/18** |
+| hybrid / base | 11/11 | 11/11 | 11/11 | **10/18** |
+
+Hybrid still repairs the precise physical TEST/OOD threat relation through explicit actor-private kinematics, but it does not increase the aggregate hardened semantic OOD score.
+
+Representative hybrid/base hardened OOD margins:
+
+- same-token-beam interrupt: **-1.3347e-2 FAIL**;
+- same-token-beam threat: **-8.9998e-3 FAIL**;
+- current-vs-earlier interrupt: **-6.3510e-3 FAIL**;
+- current-vs-earlier threat: **-5.0537e-3 FAIL**;
+- revised quoted/current warning interrupt: **+2.8014e-3 PASS**;
+- revised quoted/current warning threat: **+3.4574e-3 PASS**;
+- negation interrupt: **-6.8066e-3 FAIL**;
+- negation threat: **-4.9289e-3 FAIL**;
+- seal cognition: **-4.3923e-3 FAIL**;
+- physical fast-close threat: **+7.1879e-1 PASS**.
+
+The hardened benchmark materially weakens the earlier claim that a single prototype direction already generalizes broadly. That earlier optimism was partly benchmark leakage.
+
+### Independent TRAIN semantic-breadth experiment
+
+A separate TRAIN-only augmentation added 6 states / 5 relations without copying hardened OOD surfaces:
+
+- active pressure failure > repaired pressure failure, interrupt + threat;
+- active uncontrolled hoist > serviced historical fault, interrupt + threat;
+- unresolved interlock > confirmed interlock, cognition.
+
+No encoder, representation, prototype-head math, DEV/TEST or OOD labels were changed.
+
+Hybrid + expanded TRAIN result:
+
+- TRAIN: **16/16**;
+- DEV: **11/11**;
+- TEST: **11/11**;
+- hardened OOD: **16/18**.
+
+Expanded hybrid margins:
+
+- same-token-beam interrupt: **+5.6070e-3 PASS**;
+- same-token-beam threat: **+5.1329e-3 PASS**;
+- current-vs-earlier interrupt: **+7.3006e-3 PASS**;
+- current-vs-earlier threat: **+6.1616e-3 PASS**;
+- quoted/current warning interrupt: **+2.5265e-2 PASS**;
+- quoted/current warning threat: **+2.3157e-2 PASS**;
+- negation interrupt: **+2.4343e-3 PASS**;
+- negation threat: **+2.0501e-3 PASS**;
+- seal cognition: **-4.4603e-3 FAIL**;
+- clearance cognition: **-8.8312e-3 FAIL**;
+- physical fast-close threat: **+4.8144e-1 PASS**;
+- hidden World equalities: exactly zero.
+
+An identical repeat returned the same displayed margins, so the remaining failures and small positive signs are repeatable at the current measurement precision.
+
+### Interpretation
+
+**MATERIAL FINDING: the frozen encoder contains more useful semantic structure than the base prototype direction exposed.**
+
+Independent supervision breadth changed hardened OOD from **10/18 to 16/18** without:
+
+- changing the backbone;
+- fitting DEV/TEST/OOD;
+- copying OOD wording;
+- giving the exact-token memorizer a shortcut.
+
+That supports the hypothesis that much of the earlier failure was supervision/readout poverty rather than absence of semantic information in MiniLM.
+
+But the current head is still not robust enough:
+
+- two cognition relations remain inverted;
+- several newly passing hazard relations have small margins around 0.002–0.007;
+- one normalized sum-of-deltas direction per dimension is now the likely bottleneck.
+
+### Earned next experiment
+
+Freeze:
+
+- MiniLM encoder revision;
+- q8 WebGPU execution;
+- hybrid 384D + 12 actor-private structured representation;
+- base + independent expanded TRAIN;
+- hardened DEV/TEST/OOD.
+
+Compare the current prototype-direction head against a **small deterministic regularized linear ranking head** trained only from TRAIN pairwise relations.
+
+Do not tune it on OOD. Use fixed training/regularization settings or select only from TRAIN/DEV if a selection step becomes necessary.
+
+If a linear ranking head improves cognition and increases semantic margins without degrading invariants, head capacity/training was the next bottleneck.
+
+If not, the next earned step becomes a tiny MLP/readout-capacity test while the encoder remains frozen. LoRA/backbone adaptation remains premature.
