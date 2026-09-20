@@ -1994,3 +1994,135 @@ describe("R1 learned-head embedding isolation", () => {
     expect(R1_LEARNED_HEAD_EMBEDDING_BATCH_SIZE).toBe(1);
   });
 });
+
+
+describe("R1 pragmatic TRAIN breadth augmentation", () => {
+  it("adds six TRAIN-only states and four interrupt/threat relations", async () => {
+    const { createR1PragmaticTrainingAugmentation } = await import(
+      "../src/r1/pragmatic-training-augmentation"
+    );
+    const suite = createR1PragmaticTrainingAugmentation();
+
+    expect(suite.states).toHaveLength(6);
+    expect(suite.constraints).toHaveLength(4);
+    expect(suite.states.every((state) => state.split === "train")).toBe(true);
+    expect(
+      suite.constraints.every(
+        (constraint) =>
+          constraint.split === "train" &&
+          constraint.relation === "greater" &&
+          (constraint.dimension === "interrupt" ||
+            constraint.dimension === "threat"),
+      ),
+    ).toBe(true);
+  });
+
+  it("keeps all pragmatic pairs physically/addressee matched and same-token-bag", async () => {
+    const { createR1PragmaticTrainingAugmentation } = await import(
+      "../src/r1/pragmatic-training-augmentation"
+    );
+    const suite = createR1PragmaticTrainingAugmentation();
+
+    const normalizeSpeechText = (state: ActorPrivateState) => ({
+      ...state,
+      percepts: state.percepts.map((percept) =>
+        percept.kind === "speech"
+          ? { ...percept, text: "<TEXT>" }
+          : percept,
+      ),
+    });
+    const speechText = (id: string) => {
+      const record = suite.states.find((state) => state.id === id)!;
+      const percept = record.state.percepts.find(
+        (candidate) => candidate.kind === "speech",
+      );
+      if (!percept || percept.kind !== "speech") {
+        throw new Error("missing pragmatic TRAIN speech for " + id);
+      }
+      return percept.text;
+    };
+    const tokenBag = (value: string) =>
+      [...new Set(value.toLowerCase().match(/[a-z]+/g) ?? [])].sort();
+
+    for (const [leftId, rightId] of [
+      ["train:active-directive", "train:retired-directive"],
+      ["train:circuit-unsafe", "train:circuit-safe"],
+      ["train:injury-immediate", "train:filing-immediate"],
+    ] as const) {
+      const left = suite.states.find((state) => state.id === leftId)!;
+      const right = suite.states.find((state) => state.id === rightId)!;
+
+      expect(normalizeSpeechText(left.state)).toEqual(
+        normalizeSpeechText(right.state),
+      );
+      expect(tokenBag(speechText(leftId))).toEqual(
+        tokenBag(speechText(rightId)),
+      );
+    }
+  });
+
+  it("keeps all semantic OOD v3 beyond exact-token memorization after pragmatic TRAIN expansion", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const { createR1OodRedTeamSuite } = await import(
+      "../src/r1/ood-red-team"
+    );
+    const { createR1SemanticTrainingAugmentation } = await import(
+      "../src/r1/semantic-training-augmentation"
+    );
+    const { createR1PragmaticTrainingAugmentation } = await import(
+      "../src/r1/pragmatic-training-augmentation"
+    );
+    const { score, trainSurfaceMemorizer } = await import(
+      "../src/r1/surface-baseline"
+    );
+
+    const base = createR1CounterfactualSuite();
+    const semantic = createR1SemanticTrainingAugmentation();
+    const pragmatic = createR1PragmaticTrainingAugmentation();
+    const trainSuite = {
+      states: [...base.states, ...semantic.states, ...pragmatic.states],
+      constraints: [
+        ...base.constraints,
+        ...semantic.constraints,
+        ...pragmatic.constraints,
+      ],
+    };
+    const model = trainSurfaceMemorizer(trainSuite);
+    const ood = createR1OodRedTeamSuite();
+    const byId = new Map(ood.states.map((state) => [state.id, state] as const));
+    const semanticFamilies = new Set([
+      "ood:danger-decoy",
+      "ood:indirect-warning",
+      "ood:quoted-warning",
+      "ood:negation-warning",
+      "ood:cognition-ambiguity",
+      "ood:resolved-uncertainty",
+      "ood:v3-conditional-hazard",
+      "ood:v3-operative-instruction",
+      "ood:v3-negation-scope",
+      "ood:v3-urgency-threat-disentangle",
+      "ood:v3-administrative-urgency",
+      "ood:v3-routing-uncertainty",
+    ]);
+    const leaks: string[] = [];
+
+    for (const constraint of ood.constraints.filter(
+      (candidate) =>
+        candidate.relation === "greater" &&
+        semanticFamilies.has(candidate.familyId),
+    )) {
+      const left = byId.get(constraint.leftStateId)!;
+      const right = byId.get(constraint.rightStateId)!;
+      const margin =
+        score(model, constraint.dimension, left.state) -
+        score(model, constraint.dimension, right.state);
+      if (margin > 0) {
+        leaks.push(constraint.id + ":" + margin.toFixed(6));
+      }
+    }
+
+    expect(leaks).toEqual([]);
+  });
+});
