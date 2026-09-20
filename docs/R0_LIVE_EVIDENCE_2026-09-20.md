@@ -1439,3 +1439,131 @@ Next experiment:
 If independent pragmatic supervision repairs those four relations without DEV/TEST regressions, the evidence favors supervision-geometry poverty.
 
 If it does not, representation geometry / appraisal ontology becomes the stronger bottleneck.
+
+
+## R1 pragmatic-breadth completion + TRAIN-direction coherence — consolidated checkpoint
+
+This section closes the interrupted pragmatic-supervision experiment on the latest qualified branch state.
+
+Qualified branch:
+
+- branch: `experiment/r1-expanded-representation-ab-v1`;
+- HEAD before this evidence-only append: `dddd7752406027c6b4cd51777f367ca088fb0c89`;
+- latest preview/check on that HEAD: **PASS**.
+
+The runtime remains on the isolated correctness path:
+
+- frozen MiniLM-L3 q8;
+- one state per encoder batch for learned-head qualification;
+- hybrid 384D semantic + 12 actor-private structured representation;
+- OOD v3 frozen at 30 states / 26 relations;
+- DEV/TEST frozen;
+- no World/body authority.
+
+### Pragmatic TRAIN breadth
+
+Independent TRAIN-only pragmatic augmentation adds four directional relations:
+
+- active directive > retired directive, `interrupt`;
+- unsafe circuit > safe circuit, `interrupt`;
+- unsafe circuit > safe circuit, `threat`;
+- immediate injury > immediate filing, `threat`.
+
+No routing/cognition supervision is added.
+
+#### Prototype result
+
+- TRAIN: **20/20**
+- DEV: **10/11**
+- TEST: **11/11**
+- OOD v3: **20/26**
+
+DEV regression:
+
+- `dev:warning-interrupt-over-request`: **-1.264e-2**
+
+OOD failures:
+
+- `ood:warning-interrupt-over-danger-decoy`: **-3.3122e-3**
+- `ood:warning-threat-over-danger-decoy`: **-1.0214e-2**
+- `ood:indirect-warning-threat-over-earlier-control`: **-2.4651e-3**
+- `ood:v3-operative-order-interrupt-over-archived`: **-7.1675e-4**
+- `ood:v3-hazard-threat-over-deadline`: **-6.7868e-3**
+- `ood:v3-routing-unknown-cognition-over-known`: **-1.4546e-3**
+
+The new pragmatic examples do materially improve some v3 failures, especially the v3 negation-scope relations, but they also rotate the aggregate interrupt/threat directions enough to regress older held-out relations.
+
+#### Regularized linear-ranking control
+
+The deterministic linear-ranking head on the same pragmatic TRAIN set yields the same aggregate result:
+
+- TRAIN: **20/20**
+- DEV: **10/11**
+- TEST: **11/11**
+- OOD v3: **20/26**
+
+DEV regression:
+
+- `dev:warning-interrupt-over-request`: **-1.086e-2**
+
+OOD failures:
+
+- `ood:warning-interrupt-over-danger-decoy`: **-3.7200e-3**
+- `ood:warning-threat-over-danger-decoy`: **-1.0370e-2**
+- `ood:indirect-warning-threat-over-earlier-control`: **-2.3132e-3**
+- `ood:v3-operative-order-interrupt-over-archived`: **-9.5869e-4**
+- `ood:v3-hazard-threat-over-deadline`: **-6.3553e-3**
+- `ood:v3-routing-unknown-cognition-over-known`: **-1.4546e-3**
+
+So the pragmatic result is not a peculiarity of equal-sum prototype averaging.
+
+### TRAIN-direction coherence
+
+The latest branch adds an evaluation-only pairwise cosine audit between normalized TRAIN deltas.
+
+For pragmatic-breadth supervision:
+
+| dimension | TRAIN directions | pairwise pairs | min cosine | mean cosine | max cosine |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| attention | 1 | 0 | n/a | n/a | n/a |
+| interrupt | 5 | 10 | **-0.090** | **+0.022** | **+0.183** |
+| social | 1 | 0 | n/a | n/a | n/a |
+| threat | 6 | 15 | **-0.090** | **+0.011** | **+0.169** |
+| cognition | 2 | 1 | **+0.166** | **+0.166** | **+0.166** |
+
+Examples of conflict inside the nominally same appraisal axis:
+
+- pressure-active interrupt ↔ circuit-unsafe interrupt: **-0.090**;
+- hoist-active interrupt ↔ circuit-unsafe interrupt: **-0.081**;
+- pressure-active threat ↔ circuit-unsafe threat: **-0.090**;
+- hoist-active threat ↔ circuit-unsafe threat: **-0.081**;
+- pressure-active threat ↔ injury-vs-filing threat: **-0.061**.
+
+This is not the geometry of a clean single semantic direction.
+
+### Consolidated interpretation
+
+The strongest current evidence is now:
+
+1. **the frozen tiny encoder is useful**, but not sufficient by itself for exact embodied facts;
+2. **explicit actor-private structured channels are justified** for exact kinematic/directness facts;
+3. **isolated per-state embedding is mandatory for correctness qualification** until batching has its own invariance proof;
+4. **independent semantic supervision can unlock real held-out information** already present in the frozen representation;
+5. **linear ranking does not materially outperform the prototype head** on the hard failures;
+6. **indiscriminate cognition breadth regresses DEV/TEST**;
+7. **indiscriminate pragmatic breadth also regresses DEV and old OOD relations**;
+8. the current `interrupt` and `threat` labels likely collapse several causally distinct appraisal concepts into one nominal axis.
+
+The next research question is therefore no longer simply “how do we train the same five scores better?”
+
+The earned next step is an **appraisal-ontology audit**:
+
+- recover what each current signal was originally meant to control;
+- separate semantic concepts from scheduler/executive consequences;
+- identify which current counterfactual families are actually commensurable;
+- test whether `interrupt` should be decomposed into constructs such as immediate-attention capture, task-switch pressure, operative-command relevance, and urgency;
+- test whether `threat` should separate perceived physical danger from generic urgency / caution / uncertainty;
+- preserve the useful frozen encoder + structured actor-private representation while changing only the semantic target ontology;
+- do not use OOD failures as direct TRAIN labels during this audit.
+
+No MLP, LoRA, larger backbone or integration into SPC/Companion is currently earned by the evidence.
