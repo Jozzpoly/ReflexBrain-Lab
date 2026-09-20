@@ -33,6 +33,12 @@ import {
   type LocalModelProgress,
 } from "./local-model-client";
 import { compilePrivateState } from "./private-state";
+import { createR1CounterfactualSuite } from "./r1/counterfactual-supervision";
+import {
+  R1EncoderBenchmarkClient,
+  type R1EncoderProgress,
+} from "./r1/encoder-client";
+import type { R1EncoderBenchmarkResult } from "./r1/encoder-contract";
 import { createSemanticChallenges } from "./challenges";
 import { RuleBaselineProvider } from "./rule-provider";
 import { runShadowEpisode } from "./shadow-runner";
@@ -139,6 +145,12 @@ let permutationSweepProbes: PermutationSweepProbe[] = [];
 let semanticTokenSweepProbes: SemanticTokenSweepProbe[] = [];
 let appraisalMatrixProbes: AppraisalMatrixProbe[] = [];
 let bipolarMatrixProbes: BipolarMatrixProbe[] = [];
+let r1EncoderClient: R1EncoderBenchmarkClient | null = null;
+let r1EncoderBusy = false;
+let r1EncoderStatus = webGpuAvailable
+  ? "R1 encoder benchmark has not run."
+  : "R1 encoder benchmark unavailable: WebGPU is not available.";
+let r1EncoderResult: R1EncoderBenchmarkResult | null = null;
 
 function selectedSpecimen(): Specimen {
   return specimens.find(
@@ -225,6 +237,12 @@ function render(): void {
     appraisalMatrixProbes.length > 0 ? appraisalMatrixTable() : "",
     bipolarMatrixProbes.length > 0 ? bipolarMatrixTable() : "",
     "</section>",
+    '<section class="panel"><h2>R1 tiny encoder benchmark</h2>',
+    '<p class="boundary">This path uses a small sentence encoder as a <strong>feature extractor only</strong>: no generation, no action selection and no World authority. The first gate is runtime cost plus representation sensitivity, not semantic correctness.</p>',
+    '<p class="status">' + escapeHtml(r1EncoderStatus) + "</p>",
+    r1EncoderControls(),
+    r1EncoderResult ? r1EncoderReportTable(r1EncoderResult) : "",
+    "</section>",
     '<section class="panel"><h2>Rule baseline · cross-variant snapshot at tick 10</h2>',
     comparisonTable(),
     "</section>",
@@ -275,6 +293,12 @@ function render(): void {
     .querySelector<HTMLButtonElement>("[data-run-probe]")
     ?.addEventListener("click", () => {
       void runLocalProbe();
+    });
+
+  document
+    .querySelector<HTMLButtonElement>("[data-run-r1-encoder]")
+    ?.addEventListener("click", () => {
+      void runR1EncoderBenchmark();
     });
 }
 
@@ -1213,6 +1237,159 @@ async function runAppraisalMatrix(): Promise<void> {
   }
 }
 
+function r1EncoderControls(): string {
+  if (!webGpuAvailable) {
+    return "<button disabled>R1 encoder requires WebGPU</button>";
+  }
+
+  return (
+    '<button class="primary" data-run-r1-encoder ' +
+    (r1EncoderBusy ? "disabled" : "") +
+    ">Run R1 MiniLM-L3 encoder benchmark</button>"
+  );
+}
+
+async function runR1EncoderBenchmark(): Promise<void> {
+  if (!webGpuAvailable || r1EncoderBusy) return;
+
+  const suite = createR1CounterfactualSuite();
+  const states = suite.states
+    .filter((state) => state.split === "test")
+    .map((state) => ({
+      id: state.id,
+      state: structuredClone(state.state),
+    }));
+
+  const pairs = [
+    {
+      id: "addressed-vs-overheard",
+      leftStateId: "test:addressed-request",
+      rightStateId: "test:overheard-request",
+    },
+    {
+      id: "warning-vs-request",
+      leftStateId: "test:urgent-warning",
+      rightStateId: "test:warning-control-request",
+    },
+    {
+      id: "fast-close-vs-pass",
+      leftStateId: "test:fast-close",
+      rightStateId: "test:ordinary-pass",
+    },
+    {
+      id: "hidden-vs-control",
+      leftStateId: "test:epistemic-hidden",
+      rightStateId: "test:epistemic-control",
+    },
+  ] as const;
+
+  r1EncoderBusy = true;
+  r1EncoderStatus =
+    "Loading pinned MiniLM-L3 q8 encoder in a separate WebGPU worker...";
+  r1EncoderResult = null;
+  render();
+
+  try {
+    r1EncoderClient ??= new R1EncoderBenchmarkClient();
+    r1EncoderResult = await r1EncoderClient.benchmark(
+      states,
+      pairs,
+      updateR1EncoderProgress,
+    );
+    r1EncoderStatus =
+      "R1 encoder benchmark complete: " +
+      r1EncoderResult.sequential.length +
+      " sequential embeddings + one batch.";
+  } catch (error) {
+    r1EncoderStatus = "R1 encoder benchmark failed: " + errorMessage(error);
+  } finally {
+    r1EncoderBusy = false;
+    render();
+  }
+}
+
+function updateR1EncoderProgress(progress: R1EncoderProgress): void {
+  const p =
+    progress.progress === null
+      ? ""
+      : " · " + progress.progress.toFixed(1) + "%";
+  const file = progress.file ? " · " + progress.file : "";
+  r1EncoderStatus = progress.status + p + file;
+  render();
+}
+
+function r1EncoderReportTable(result: R1EncoderBenchmarkResult): string {
+  const latencies = result.sequential.map((entry) => entry.latencyMs);
+  const sorted = [...latencies].sort((a, b) => a - b);
+  const mean =
+    latencies.reduce((sum, value) => sum + value, 0) / latencies.length;
+  const median =
+    sorted.length % 2 === 0
+      ? (sorted[sorted.length / 2 - 1]! + sorted[sorted.length / 2]!) / 2
+      : sorted[Math.floor(sorted.length / 2)]!;
+  const min = sorted[0]!;
+  const max = sorted[sorted.length - 1]!;
+  const perBatchState = result.batchMs / result.batchSize;
+
+  const pairRows = result.pairs
+    .map(
+      (pair) =>
+        "<tr><td>" +
+        escapeHtml(pair.id) +
+        "</td><td>" +
+        pair.cosineSimilarity.toFixed(6) +
+        "</td><td>" +
+        pair.cosineDistance.toFixed(6) +
+        "</td></tr>",
+    )
+    .join("");
+
+  return [
+    '<div class="result-meta">',
+    "<span>Model: <strong>" + escapeHtml(result.modelId) + "</strong></span>",
+    "<span>Revision: <code>" +
+      escapeHtml(result.modelRevision.slice(0, 12)) +
+      "</code></span>",
+    "<span>Runtime: <strong>" +
+      result.device +
+      " / " +
+      result.dtype +
+      "</strong></span>",
+    "<span>Embedding: <strong>" +
+      result.embeddingDimensions +
+      "d</strong></span>",
+    "</div>",
+    '<div class="table-wrap"><table><tbody>',
+    "<tr><th>Load/setup</th><td>" + result.loadMs.toFixed(1) + " ms</td></tr>",
+    "<tr><th>Warm-up inference</th><td>" +
+      result.warmupMs.toFixed(1) +
+      " ms</td></tr>",
+    "<tr><th>Sequential mean / median</th><td>" +
+      mean.toFixed(1) +
+      " / " +
+      median.toFixed(1) +
+      " ms</td></tr>",
+    "<tr><th>Sequential min / max</th><td>" +
+      min.toFixed(1) +
+      " / " +
+      max.toFixed(1) +
+      " ms</td></tr>",
+    "<tr><th>Batch " +
+      result.batchSize +
+      "</th><td>" +
+      result.batchMs.toFixed(1) +
+      " ms total · " +
+      perBatchState.toFixed(1) +
+      " ms/state</td></tr>",
+    "</tbody></table></div>",
+    '<div class="table-wrap"><table><thead><tr>',
+    "<th>Counterfactual pair</th><th>cosine similarity</th><th>cosine distance</th>",
+    "</tr></thead><tbody>",
+    pairRows,
+    "</tbody></table></div>",
+  ].join("");
+}
+
 function comparisonTable(): string {
   const rows = specimens.map((specimen) => {
     const frame = specimen.trace[10]!;
@@ -1302,8 +1479,14 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     mode !== "permutation-sweep" &&
     mode !== "semantic-token-sweep" &&
     mode !== "appraisal-matrix" &&
-    mode !== "bipolar-matrix"
+    mode !== "bipolar-matrix" &&
+    mode !== "r1-encoder-benchmark"
   ) {
+    return;
+  }
+
+  if (mode === "r1-encoder-benchmark") {
+    await runR1EncoderBenchmark();
     return;
   }
 
