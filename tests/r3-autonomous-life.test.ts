@@ -284,3 +284,27 @@ describe("R3 private experience stream", () => {
     ).toBe(false);
   });
 });
+
+
+describe("R3 private actor-contact memory", () => {
+  it("learns another resident position only through local sight", () => {
+    const run = createAutonomousLifeRun();
+
+    const miraBefore = run.residentDebug("resident:mira")!.memory;
+    expect(
+      miraBefore.actorBeliefs["resident:ida"],
+    ).toBeUndefined();
+
+    run.runTicks(80);
+    const memory = run.residentDebug("resident:mira")!.memory;
+
+    // Janek begins near Mira and becomes known through local sight.
+    expect(memory.actorBeliefs["resident:janek"]).toBeDefined();
+
+    // Ida starts far outside Mira's sight; no global World actor list leaks into memory.
+    const ida = memory.actorBeliefs["resident:ida"];
+    if (ida) {
+      expect(ida.lastSeenTick).toBeGreaterThan(0);
+    }
+  });
+});

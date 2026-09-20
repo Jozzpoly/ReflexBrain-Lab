@@ -65,8 +65,15 @@ export interface ObjectBelief {
   lastSeenTick: number;
 }
 
+export interface ActorContactBelief {
+  actorId: ResidentId;
+  lastKnownPosition: Vec2 | null;
+  lastSeenTick: number;
+}
+
 export interface ResidentPrivateMemory {
   objectBeliefs: Readonly<Record<string, ObjectBelief>>;
+  actorBeliefs: Readonly<Record<string, ActorContactBelief>>;
   heardEventIds: readonly string[];
 }
 

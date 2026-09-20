@@ -17,6 +17,10 @@ export interface ResidentAgentDebugState {
 export class AutonomousResidentAgent {
   private activityValue: ResidentActivity | null = null;
   private readonly objectBeliefs = new Map<string, ObjectBelief>();
+  private readonly actorBeliefs = new Map<
+    ResidentId,
+    import("./life-contracts").ActorContactBelief
+  >();
   private readonly heardEventIds: string[] = [];
 
   constructor(private readonly policy: ResidentPolicy) {}
@@ -52,6 +56,31 @@ export class AutonomousResidentAgent {
 
   private integrateObservation(observation: ResidentObservation): void {
     const visibleIds = new Set(observation.visibleObjects.map((object) => object.id));
+    const visibleActorIds = new Set(
+      observation.visibleActors.map((actor) => actor.id),
+    );
+
+    for (const actor of observation.visibleActors) {
+      this.actorBeliefs.set(actor.id, {
+        actorId: actor.id,
+        lastKnownPosition: { ...actor.position },
+        lastSeenTick: observation.tick,
+      });
+    }
+
+    for (const [actorId, belief] of this.actorBeliefs) {
+      if (visibleActorIds.has(actorId) || !belief.lastKnownPosition) continue;
+      const d = Math.hypot(
+        belief.lastKnownPosition.x - observation.self.position.x,
+        belief.lastKnownPosition.y - observation.self.position.y,
+      );
+      if (d <= 0.75) {
+        this.actorBeliefs.set(actorId, {
+          ...belief,
+          lastKnownPosition: null,
+        });
+      }
+    }
 
     for (const object of observation.visibleObjects) {
       this.objectBeliefs.set(object.id, {
@@ -98,8 +127,17 @@ export class AutonomousResidentAgent {
     for (const [id, belief] of this.objectBeliefs) {
       objectBeliefs[id] = structuredClone(belief);
     }
+    const actorBeliefs: Record<
+      string,
+      import("./life-contracts").ActorContactBelief
+    > = {};
+    for (const [id, belief] of this.actorBeliefs) {
+      actorBeliefs[id] = structuredClone(belief);
+    }
+
     return {
       objectBeliefs,
+      actorBeliefs,
       heardEventIds: [...this.heardEventIds],
     };
   }
