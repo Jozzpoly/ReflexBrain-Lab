@@ -215,7 +215,7 @@ function addQuotedWarning(
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
-          "The radio message is for us now: " + quote,
+          "Dispatch notice: " + quote + " applies presently to this room.",
         ...common,
         idSuffix: "ood-quoted-live-warning",
       }),
@@ -228,9 +228,9 @@ function addQuotedWarning(
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
-          "Yesterday's training transcript says " +
+          "Archive note: " +
           quote +
-          " The drill is over and the area is safe.",
+          " belonged to a completed rehearsal elsewhere.",
         ...common,
         idSuffix: "ood-quoted-old-drill",
       }),
