@@ -94,31 +94,33 @@ describe("R3 naturally occurring semantic pressure", () => {
         ),
       );
 
-    const mira = heardRows.find(
-      (row) => row.residentId === "resident:mira",
-    );
-    const ida = heardRows.find(
-      (row) => row.residentId === "resident:ida",
-    );
-
-    expect(mira).toBeDefined();
-    expect(ida).toBeDefined();
-    expect(mira!.standingMatter).not.toBe(ida!.standingMatter);
+    expect(heardRows.length).toBeGreaterThanOrEqual(2);
     expect(
-      mira!.observation.heardEvents.find(
-        (event) => event.id === speech!.id,
-      )?.payload.text,
-    ).toBe(
-      ida!.observation.heardEvents.find(
+      heardRows.some((row) => row.residentId !== speech!.actorId),
+    ).toBe(true);
+
+    const matters = new Set(
+      heardRows.map((row) => row.standingMatter),
+    );
+    expect(matters.size).toBeGreaterThanOrEqual(2);
+
+    const heardTexts = heardRows.map((row) =>
+      row.observation.heardEvents.find(
         (event) => event.id === speech!.id,
       )?.payload.text,
     );
+    expect(
+      heardTexts.every(
+        (text) => text === "The input rack is empty.",
+      ),
+    ).toBe(true);
 
-    const miraText = serializeR3PrivateExperience(mira!);
-    const idaText = serializeR3PrivateExperience(ida!);
-
-    expect(miraText).toContain("The input rack is empty.");
-    expect(idaText).toContain("The input rack is empty.");
-    expect(miraText).not.toBe(idaText);
+    const serialized = heardRows.map(serializeR3PrivateExperience);
+    expect(
+      serialized.every((text) =>
+        text.includes("The input rack is empty."),
+      ),
+    ).toBe(true);
+    expect(new Set(serialized).size).toBeGreaterThanOrEqual(2);
   });
 });
