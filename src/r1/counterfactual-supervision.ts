@@ -49,7 +49,7 @@ interface SplitRecipe {
 const RECIPES: readonly SplitRecipe[] = [
   {
     split: "train",
-    requestText: "Can you help me with this for a moment?",
+    requestText: "Please help with these crates.",
     warningText: "Watch out! Move away now!",
     speechX: 150,
     speechVx: 0,
@@ -61,8 +61,8 @@ const RECIPES: readonly SplitRecipe[] = [
   },
   {
     split: "dev",
-    requestText: "Could you give me a hand with this?",
-    warningText: "Careful! Get back right now!",
+    requestText: "Could you lend a hand here?",
+    warningText: "Careful! Get back before impact!",
     speechX: 165,
     speechVx: -10,
     passX: 160,
@@ -73,8 +73,8 @@ const RECIPES: readonly SplitRecipe[] = [
   },
   {
     split: "test",
-    requestText: "Would you help me with this, please?",
-    warningText: "Danger—step away immediately!",
+    requestText: "Kindly assist briefly.",
+    warningText: "Incoming! Clear the area!",
     speechX: 145,
     speechVx: 10,
     passX: 140,
