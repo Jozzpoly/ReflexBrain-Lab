@@ -70,7 +70,10 @@ export class ContactMessengerFixturePolicy implements ResidentPolicy {
     );
 
     if (this.returningToOwnWork) {
-      const ownWork = input.places.output;
+      // Deliberately leave the contact corridor after reporting. This gives
+      // Janek's independent patrol time to diverge from Ida's own work before
+      // she needs contact again.
+      const ownWork = input.places.source;
       if (near(self.position, ownWork.position)) {
         this.returningToOwnWork = false;
       } else {

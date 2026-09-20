@@ -102,17 +102,18 @@ describe("R3 second autonomous contact ecology", () => {
       .find(
         (row) =>
           row.residentId === "resident:ida" &&
-          !row.observation.visibleActors.some(
-            (actor) => actor.id === "resident:janek",
-          ) &&
-          row.memory.actorBeliefs["resident:janek"]
-            ?.lastKnownPosition !== null &&
-          row.memory.actorBeliefs["resident:janek"] !== undefined,
+          row.decision.activity.phase === "check_last_known_contact",
       );
 
     expect(staleContactRow).toBeDefined();
     expect(
-      staleContactRow!.decision.activity.phase,
-    ).toBe("check_last_known_contact");
+      staleContactRow!.observation.visibleActors.some(
+        (actor) => actor.id === "resident:janek",
+      ),
+    ).toBe(false);
+    expect(
+      staleContactRow!.memory.actorBeliefs["resident:janek"]
+        ?.lastKnownPosition,
+    ).not.toBeNull();
   });
 });
