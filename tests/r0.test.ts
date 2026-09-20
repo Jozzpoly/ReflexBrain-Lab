@@ -1126,3 +1126,75 @@ describe("R1 frozen-encoder prototype head", () => {
     expect(equality.passed).toBe(true);
   });
 });
+
+
+describe("R1 hybrid structured representation", () => {
+  it("keeps hard epistemic equality identical in structured channels", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const { structuredPrivateFeatures } = await import(
+      "../src/r1/structured-features"
+    );
+    const suite = createR1CounterfactualSuite();
+    const hidden = suite.states.find(
+      (state) => state.id === "test:epistemic-hidden",
+    )!;
+    const control = suite.states.find(
+      (state) => state.id === "test:epistemic-control",
+    )!;
+
+    expect(structuredPrivateFeatures(hidden.state)).toEqual(
+      structuredPrivateFeatures(control.state),
+    );
+  });
+
+  it("preserves fast-close kinematics explicitly instead of asking the language encoder to infer them", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const {
+      R1_STRUCTURED_FEATURE_NAMES,
+      structuredPrivateFeatures,
+    } = await import("../src/r1/structured-features");
+    const suite = createR1CounterfactualSuite();
+    const fast = suite.states.find(
+      (state) => state.id === "test:fast-close",
+    )!;
+    const pass = suite.states.find(
+      (state) => state.id === "test:ordinary-pass",
+    )!;
+    const index = R1_STRUCTURED_FEATURE_NAMES.indexOf(
+      "approach_speed_norm",
+    );
+
+    expect(index).toBeGreaterThanOrEqual(0);
+    expect(structuredPrivateFeatures(fast.state)[index]).toBeGreaterThan(
+      structuredPrivateFeatures(pass.state)[index]!,
+    );
+  });
+
+  it("appends bounded structured channels without altering encoder coordinates", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const {
+      hybridPrivateRepresentation,
+      R1_STRUCTURED_FEATURE_NAMES,
+    } = await import("../src/r1/structured-features");
+    const state = createR1CounterfactualSuite().states[0]!.state;
+    const embedding = [0.1, 0.2, 0.3];
+
+    const hybrid = hybridPrivateRepresentation(embedding, state);
+
+    expect(hybrid.slice(0, embedding.length)).toEqual(embedding);
+    expect(hybrid).toHaveLength(
+      embedding.length + R1_STRUCTURED_FEATURE_NAMES.length,
+    );
+    expect(
+      hybrid
+        .slice(embedding.length)
+        .every((value) => Number.isFinite(value) && value >= -1 && value <= 1),
+    ).toBe(true);
+  });
+});
