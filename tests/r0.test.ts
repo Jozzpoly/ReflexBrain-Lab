@@ -586,56 +586,151 @@ describe("R0 semantic challenge suite", () => {
 });
 
 
-describe("R1 counterfactual supervision seed", () => {
-  it("uses relational supervision rather than invented absolute scores", async () => {
+describe("R1 counterfactual supervision suite", () => {
+  it("keeps train/dev/test families disjoint and balanced", async () => {
     const { createR1CounterfactualSuite } = await import(
       "../src/r1/counterfactual-supervision"
     );
     const suite = createR1CounterfactualSuite();
 
-    expect(suite.states.length).toBeGreaterThanOrEqual(7);
-    expect(suite.constraints.length).toBeGreaterThanOrEqual(11);
+    expect(suite.states).toHaveLength(24);
+    expect(suite.constraints).toHaveLength(33);
+
+    for (const split of ["train", "dev", "test"] as const) {
+      expect(suite.states.filter((state) => state.split === split)).toHaveLength(8);
+      expect(
+        suite.constraints.filter((constraint) => constraint.split === split),
+      ).toHaveLength(11);
+    }
+
+    const familySplits = new Map<string, Set<string>>();
+    for (const state of suite.states) {
+      const splits = familySplits.get(state.familyId) ?? new Set<string>();
+      splits.add(state.split);
+      familySplits.set(state.familyId, splits);
+    }
     expect(
-      suite.constraints.every((constraint) =>
-        constraint.relation === "greater" || constraint.relation === "equal",
-      ),
+      [...familySplits.values()].every((splits) => splits.size === 1),
     ).toBe(true);
   });
 
-  it("encodes hidden-World non-observability as a hard equality on every dimension", async () => {
+  it("contains no exact private-state leakage across train/dev/test", async () => {
     const { createR1CounterfactualSuite } = await import(
       "../src/r1/counterfactual-supervision"
     );
     const suite = createR1CounterfactualSuite();
-    const hidden = suite.states.find((state) => state.id === "epistemic-hidden")!;
-    const control = suite.states.find((state) => state.id === "epistemic-control")!;
-    const equalities = suite.constraints.filter(
-      (constraint) => constraint.familyId === "hidden-world-invariance",
-    );
+    const owners = new Map<string, string>();
 
-    expect(hidden.state).toEqual(control.state);
-    expect(equalities).toHaveLength(5);
-    expect(equalities.every((constraint) => constraint.relation === "equal")).toBe(true);
-    expect(
-      new Set(equalities.map((constraint) => constraint.dimension)),
-    ).toEqual(
-      new Set(["attention", "interrupt", "social", "threat", "cognition"]),
-    );
+    for (const state of suite.states) {
+      const key = JSON.stringify(state.state);
+      const existing = owners.get(key);
+      if (existing && existing !== state.split) {
+        throw new Error(
+          "exact private state leaked across splits: " +
+            existing +
+            " -> " +
+            state.split +
+            " for " +
+            state.id,
+        );
+      }
+      owners.set(key, state.split);
+    }
   });
 
-  it("keeps addressed-vs-overheard supervision tied to the one-fact mutation", async () => {
+  it("keeps hidden World mutations as hard equalities in every split", async () => {
     const { createR1CounterfactualSuite } = await import(
       "../src/r1/counterfactual-supervision"
     );
     const suite = createR1CounterfactualSuite();
-    const social = suite.constraints.find(
-      (constraint) => constraint.id === "addressed-social-over-overheard",
-    )!;
 
-    expect(social.relation).toBe("greater");
-    expect(social.dimension).toBe("social");
-    expect(social.leftStateId).toBe("addressed-request");
-    expect(social.rightStateId).toBe("overheard-request");
-    expect(social.strength).toBe("directional");
+    for (const split of ["train", "dev", "test"] as const) {
+      const hidden = suite.states.find(
+        (state) => state.id === split + ":epistemic-hidden",
+      )!;
+      const control = suite.states.find(
+        (state) => state.id === split + ":epistemic-control",
+      )!;
+      expect(hidden.state).toEqual(control.state);
+
+      const equalities = suite.constraints.filter(
+        (constraint) =>
+          constraint.split === split &&
+          constraint.familyId === split + ":hidden-world-invariance",
+      );
+      expect(equalities).toHaveLength(5);
+      expect(
+        equalities.every(
+          (constraint) =>
+            constraint.relation === "equal" &&
+            constraint.strength === "hard_invariant",
+        ),
+      ).toBe(true);
+    }
+  });
+
+  it("forces a semantic warning-vs-request distinction with matched physics/addressee", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const suite = createR1CounterfactualSuite();
+
+    for (const split of ["train", "dev", "test"] as const) {
+      const warning = suite.states.find(
+        (state) => state.id === split + ":urgent-warning",
+      )!;
+      const request = suite.states.find(
+        (state) => state.id === split + ":warning-control-request",
+      )!;
+
+      const normalizeSpeechText = (state: ActorPrivateState) => ({
+        ...state,
+        percepts: state.percepts.map((percept) =>
+          percept.kind === "speech"
+            ? { ...percept, text: "<TEXT>" }
+            : percept,
+        ),
+      });
+
+      expect(normalizeSpeechText(warning.state)).toEqual(
+        normalizeSpeechText(request.state),
+      );
+
+      const semanticConstraints = suite.constraints.filter(
+        (constraint) =>
+          constraint.split === split &&
+          constraint.familyId === split + ":warning-semantics",
+      );
+      expect(
+        new Set(semanticConstraints.map((constraint) => constraint.dimension)),
+      ).toEqual(new Set(["interrupt", "threat", "cognition"]));
+    }
+  });
+
+  it("keeps addressed-vs-overheard as a one-field percept mutation within each split", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const suite = createR1CounterfactualSuite();
+
+    for (const split of ["train", "dev", "test"] as const) {
+      const addressed = suite.states.find(
+        (state) => state.id === split + ":addressed-request",
+      )!;
+      const overheard = suite.states.find(
+        (state) => state.id === split + ":overheard-request",
+      )!;
+
+      const normalizeAddressed = (state: ActorPrivateState) => ({
+        ...state,
+        percepts: state.percepts.map((percept) =>
+          percept.kind === "speech"
+            ? { ...percept, addressed: false }
+            : percept,
+        ),
+      });
+
+      expect(normalizeAddressed(addressed.state)).toEqual(overheard.state);
+    }
   });
 });
