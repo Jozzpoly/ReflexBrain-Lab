@@ -4,6 +4,8 @@ import type {
   R1EncoderStateInput,
   R1EncoderWorkerRequest,
   R1EncoderWorkerResponse,
+  R1LearnConstraintInput,
+  R1LearnedHeadResult,
 } from "./encoder-contract";
 
 export interface R1EncoderProgress {
@@ -24,9 +26,48 @@ export class R1EncoderBenchmarkClient {
     pairs: readonly R1EncoderPairInput[],
     progress?: (value: R1EncoderProgress) => void,
   ): Promise<R1EncoderBenchmarkResult> {
-    const id = ++this.sequence;
+    return this.request<R1EncoderBenchmarkResult>(
+      {
+        id: ++this.sequence,
+        type: "benchmark",
+        states: structuredClone(states),
+        pairs: structuredClone(pairs),
+      },
+      "benchmark_result",
+      progress,
+    );
+  }
 
-    return new Promise<R1EncoderBenchmarkResult>((resolve, reject) => {
+  learnedHead(
+    states: readonly R1EncoderStateInput[],
+    constraints: readonly R1LearnConstraintInput[],
+    progress?: (value: R1EncoderProgress) => void,
+  ): Promise<R1LearnedHeadResult> {
+    return this.request<R1LearnedHeadResult>(
+      {
+        id: ++this.sequence,
+        type: "learned_head",
+        states: structuredClone(states),
+        constraints: structuredClone(constraints),
+      },
+      "learned_head_result",
+      progress,
+    );
+  }
+
+  private request<T>(
+    request: R1EncoderWorkerRequest,
+    expectedType: "benchmark_result" | "learned_head_result",
+    progress?: (value: R1EncoderProgress) => void,
+  ): Promise<T> {
+    const id = request.id;
+
+    return new Promise<T>((resolve, reject) => {
+      const cleanup = () => {
+        this.worker.removeEventListener("message", onMessage);
+        this.worker.removeEventListener("error", onError);
+      };
+
       const onMessage = (event: MessageEvent<R1EncoderWorkerResponse>) => {
         const message = event.data;
         if (message.id !== id) return;
@@ -36,31 +77,35 @@ export class R1EncoderBenchmarkClient {
           return;
         }
 
-        this.worker.removeEventListener("message", onMessage);
-        this.worker.removeEventListener("error", onError);
+        cleanup();
 
         if (message.type === "error") {
           reject(new Error(message.message));
-        } else {
-          resolve(message.result);
+          return;
         }
+
+        if (message.type !== expectedType) {
+          reject(
+            new Error(
+              "R1 encoder worker returned " +
+                message.type +
+                ", expected " +
+                expectedType,
+            ),
+          );
+          return;
+        }
+
+        resolve(message.result as T);
       };
 
       const onError = (event: ErrorEvent) => {
-        this.worker.removeEventListener("message", onMessage);
-        this.worker.removeEventListener("error", onError);
+        cleanup();
         reject(new Error(event.message || "R1 encoder worker failed"));
       };
 
       this.worker.addEventListener("message", onMessage);
       this.worker.addEventListener("error", onError);
-
-      const request: R1EncoderWorkerRequest = {
-        id,
-        type: "benchmark",
-        states: structuredClone(states),
-        pairs: structuredClone(pairs),
-      };
       this.worker.postMessage(request);
     });
   }
