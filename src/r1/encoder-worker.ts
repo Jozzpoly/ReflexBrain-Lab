@@ -93,7 +93,7 @@ async function ensureLoaded(requestId: number): Promise<number> {
 }
 
 async function runBenchmark(
-  request: R1EncoderWorkerRequest,
+  request: Extract<R1EncoderWorkerRequest, { type: "benchmark" }>,
   loadMs: number,
 ): Promise<R1EncoderBenchmarkResult> {
   if (!extractor) throw new Error("R1 encoder is not loaded");
