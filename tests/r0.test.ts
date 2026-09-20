@@ -1297,12 +1297,12 @@ describe("R1 adversarial OOD red-team", () => {
     const speech = (state: ActorPrivateState) =>
       state.percepts.find((percept) => percept.kind === "speech");
 
-    expect(speech(live)).toEqual(
+    expect(speech(live.state)).toEqual(
       expect.objectContaining({
         text: expect.stringContaining("RUN, THE CEILING IS FALLING!"),
       }),
     );
-    expect(speech(drill)).toEqual(
+    expect(speech(drill.state)).toEqual(
       expect.objectContaining({
         text: expect.stringContaining("RUN, THE CEILING IS FALLING!"),
       }),
