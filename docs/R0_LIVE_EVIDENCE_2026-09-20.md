@@ -607,3 +607,117 @@ The next controlled experiment should therefore keep the encoder and training me
 2. encoder embedding + explicit normalized actor-private structured features.
 
 If the hybrid fixes the physical threat relation without degrading held-out semantic relations, that is evidence for a hybrid ReflexBrain substrate rather than a text-only brain.
+
+
+## R1 adversarial OOD red-team — encoder-only vs hybrid
+
+To avoid contaminating the shared execution branch, this campaign branched from the qualified hybrid checkpoint at:
+
+- base: `c5d937095ecc563a30d8334c6bb7e076ff7991bd`;
+- OOD branch: `experiment/r1-ood-red-team-v1`;
+- qualified/deployed code checkpoint for the margin readout: `91812657420b5e9d27a0f70b41069f1d8bb950ac`.
+
+The red-team adds an evaluation-only fourth split:
+
+- **10 OOD private states**;
+- **11 OOD causal relations**;
+- OOD labels never participate in head construction;
+- training remains the original TRAIN directional relations only.
+
+The OOD mirror includes:
+
+1. novel addressed vs overheard request;
+2. immediate warning vs a matched reassurance containing the literal word `DANGER`;
+3. novel unresolved-prerequisite vs clear instruction;
+4. alternate fast-closing vs pass-by kinematics;
+5. hidden urgent `DANGER! Run now!` World event outside actor perception, constrained equal on all five dimensions.
+
+The apparatus itself was qualified before live inference:
+
+- warning and danger-word reassurance differ only in speech content;
+- hidden urgent speech changes World events but leaves actor-private state identical;
+- serialized semantic input is identical for hidden/control;
+- structured channels are also identical for hidden/control;
+- OOD constraints provably do not update prototype-head weights.
+
+### Live A/B result
+
+Same frozen MiniLM encoder, same train-only prototype head construction, same 40 total states:
+
+| representation | TRAIN | DEV | TEST | OOD |
+| --- | ---: | ---: | ---: | ---: |
+| encoder-only 384d | 11/11 | 11/11 | 10/11 | 10/11 |
+| hybrid 384d + 12 structured | 11/11 | 11/11 | 11/11 | 11/11 |
+
+Encoder-only failed the same class of relation in both ordinary TEST and adversarial OOD:
+
+- TEST physical threat: `fast-close > pass`, margin about **-2.122e-3** in this run;
+- OOD physical threat: `fast-close > pass`, margin **-1.6302e-5**.
+
+Hybrid fixed both while preserving the held-out semantic relations.
+
+### OOD margin comparison
+
+| OOD relation | encoder-only | hybrid | interpretation |
+| --- | ---: | ---: | --- |
+| addressed social > overheard | +3.2022e-2 | +9.9808e-1 | explicit addressee channel dominates as intended |
+| addressed attention > overheard | +3.2022e-2 | +9.9808e-1 | explicit addressee channel dominates as intended |
+| warning interrupt > danger-word reassurance | +4.0324e-2 | +4.0324e-2 | semantic separation comes from encoder |
+| warning threat > danger-word reassurance | +4.5587e-2 | +3.1493e-2 | semantic relation survives hybrid, with reduced margin |
+| ambiguous cognition > clear instruction | +1.3254e-2 | +1.3254e-2 | semantic relation survives, but margin is small |
+| fast-close threat > pass | -1.6302e-5 FAIL | +7.1542e-1 | structured kinematics fix sentence-encoder blind spot |
+| hidden urgent danger equalities | exactly 0 on all five axes | exactly 0 on all five axes | epistemic boundary preserved |
+
+Runtime in these live 40-state passes remained sub-second for the embedding stage:
+
+- encoder-only embedding pass: **761.1 ms / 40 states**;
+- hybrid embedding pass: **742.2 ms / 40 states**;
+- head construction + all relation evaluation: roughly **1.2–1.3 ms**.
+
+The small timing difference between encoder-only and hybrid should be treated as run noise; structured concatenation is negligible compared with encoder inference.
+
+### Current interpretation
+
+**MATERIAL POSITIVE FINDING — STILL NOT A PROMOTED FINAL REFLEXBRAIN.**
+
+What is now supported:
+
+- a tiny frozen semantic encoder is fast enough to remain a serious local-browser substrate;
+- semantic relations can transfer beyond the lexical TRAIN surface;
+- explicit actor-private structured channels are materially better than forcing exact physical/perceptual facts through text;
+- hybrid representation repairs the repeated physical threat failure without breaking the current semantic OOD;
+- hidden World facts remain excluded exactly.
+
+What is not yet supported:
+
+- that five prototype directions are a sufficiently robust appraisal head;
+- that current semantic margins are wide enough for noisy temporal gameplay;
+- calibrated probabilities;
+- stability across many semantic paraphrase families;
+- generalization across richer actor roles, commitments, relations and environments;
+- temporal hysteresis / dynamics under live continuous streams;
+- any World or body authority.
+
+The semantic OOD margins are the limiting evidence now:
+
+- danger-decoy margins are positive but only ~0.03–0.04;
+- cognition is only ~0.013;
+- hybrid threat semantics lose some margin when physical structured supervision is added to the same threat direction.
+
+That last point matters: hybridization fixes physical truth, but a single normalized prototype direction per appraisal dimension can still trade semantic and physical geometry against each other.
+
+### Earned next gate
+
+Do **not** jump to LoRA, a larger backbone or agent integration yet.
+
+Next R1 work should stress and improve the learned appraisal surface itself:
+
+1. expand semantic OOD families rather than adding dimensions;
+2. include negation, quoted-danger, reported speech, indirect warnings, benign hazard vocabulary and ambiguous/non-ambiguous paraphrases;
+3. measure margin distributions, not only pass/fail;
+4. repeat across multiple independent TRAIN family seeds;
+5. compare prototype-direction heads with a tiny regularized learned linear/MLP head while the encoder remains frozen;
+6. preserve structured actor-private channels as explicit inputs;
+7. only after semantic robustness earns it, move into temporal Reflex Dynamics and embodied continuous episodes.
+
+This keeps the project aimed at the real question: whether a cheap local semantic reflex layer can remain useful and stable under embodied causal variation, not whether a toy benchmark can be made green.
