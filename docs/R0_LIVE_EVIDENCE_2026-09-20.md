@@ -1059,3 +1059,72 @@ against:
 If both OOD cognition deltas are poorly or negatively aligned with all available TRAIN cognition deltas, broader independent cognition supervision is the earned next experiment.
 
 If useful alignment exists but the scorer still points incorrectly, then head capacity becomes a stronger hypothesis.
+
+
+## R1 relation-geometry audit — cognition supervision is directionally wrong for OOD
+
+After the regularized linear ranker failed to improve the two remaining cognition relations, the frozen hybrid representation was audited directly.
+
+For every held-out directional relation:
+
+1. compute the normalized pairwise representation delta;
+2. compute cosine alignment to every same-dimension TRAIN normalized delta;
+3. report nearest and mean TRAIN alignment;
+4. report cosine to the prototype direction (normalized sum of TRAIN deltas).
+
+This diagnostic is evaluation-only and cannot update the head.
+
+### Cognition result
+
+Expanded TRAIN currently contains only two cognition directional relations:
+
+- `train:ambiguous-cognition-over-clear`;
+- `train:interlock-unresolved-cognition-over-confirmed`.
+
+For `ood:seal-unconfirmed-cognition-over-confirmed`:
+
+- vs base TRAIN ambiguity: **-0.070**;
+- vs expanded TRAIN interlock: **-0.021**;
+- nearest TRAIN cosine: **-0.021**;
+- mean TRAIN cosine: **-0.046**;
+- prototype cosine: **-0.061**.
+
+For `ood:clearance-unestablished-cognition-over-resolved`:
+
+- vs base TRAIN ambiguity: **-0.082**;
+- vs expanded TRAIN interlock: **-0.085**;
+- nearest TRAIN cosine: **-0.082**;
+- mean TRAIN cosine: **-0.084**;
+- prototype cosine: **-0.112**.
+
+Both hardened cognition OOD directions are therefore negatively aligned with **every cognition direction available to the learner**.
+
+Contrast with the physical threat relation:
+
+`ood:fast-close-threat-over-pass`
+
+- alignment to matching TRAIN fast-close threat: **+0.977**;
+- mean across four TRAIN threat deltas: **+0.247**;
+- prototype cosine: **+0.469**.
+
+This is exactly the geometry expected from the observed behavior: physical threat is strongly recoverable, while cognition is not represented by the available supervision directions.
+
+### Interpretation
+
+**The current evidence does not justify increasing head capacity.**
+
+A nonlinear head trained from only the current two cognition pairwise directions would receive no direct evidence that the held-out cognition directions should score positive. Increased capacity would primarily increase the ability to fit sparse supervision.
+
+The next earned experiment is broader independent cognition supervision while keeping all of the following frozen:
+
+- MiniLM encoder;
+- hybrid structured representation;
+- hardened OOD;
+- zero-authority boundary;
+- prototype and linear-ranking heads as existing A/B controls.
+
+Add several cognition TRAIN families with different nouns, phrasing and micro-situations that independently encode unresolved prerequisite / need-to-verify versus already-established prerequisite / no further deliberation.
+
+The existing exact-token negative-control gate must remain green after this expansion.
+
+Only after cognition TRAIN geometry spans held-out cognition more plausibly should head-capacity escalation be reconsidered.
