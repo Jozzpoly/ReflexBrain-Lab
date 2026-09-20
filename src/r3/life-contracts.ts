@@ -115,3 +115,15 @@ export interface AutonomousLifeStep {
   snapshot: LifeWorldPublicSnapshot;
   activities: Readonly<Record<string, ResidentActivity>>;
 }
+
+
+export interface ResidentPrivateExperience {
+  tick: number;
+  residentId: ResidentId;
+  standingMatter: string;
+  activityBefore: ResidentActivity | null;
+  observation: ResidentObservation;
+  memory: ResidentPrivateMemory;
+  decision: ResidentDecision;
+  factualOutcomeEvents: readonly LifeEvent[];
+}

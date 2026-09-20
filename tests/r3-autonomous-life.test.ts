@@ -213,3 +213,74 @@ describe("R3 autonomous life pressure host", () => {
     ).not.toContain(90);
   });
 });
+
+
+describe("R3 private experience stream", () => {
+  it("records autonomous actor-private trajectories without embedding World snapshots in model input", () => {
+    const run = createAutonomousLifeRun();
+    run.runTicks(500);
+
+    const rows = run.privateExperiences();
+    expect(rows.length).toBe(1500);
+
+    for (const row of rows.slice(0, 30)) {
+      expect(row.standingMatter.length).toBeGreaterThan(10);
+      expect("snapshot" in row).toBe(false);
+      expect("world" in row).toBe(false);
+      expect(row.observation.self.id).toBe(row.residentId);
+    }
+  });
+
+  it("preserves divergent private experience for residents sharing one World", () => {
+    const run = createAutonomousLifeRun();
+    run.runTicks(120);
+
+    const rows = run.privateExperiences();
+    const mira = rows.find(
+      (row) =>
+        row.residentId === "resident:mira" &&
+        row.observation.visibleObjects.length > 0,
+    );
+    const idaSameTick = mira
+      ? rows.find(
+          (row) =>
+            row.residentId === "resident:ida" &&
+            row.tick === mira.tick,
+        )
+      : undefined;
+
+    expect(mira).toBeDefined();
+    expect(idaSameTick).toBeDefined();
+
+    const miraIds = new Set(
+      mira!.observation.visibleObjects.map((object) => object.id),
+    );
+    const idaIds = new Set(
+      idaSameTick!.observation.visibleObjects.map((object) => object.id),
+    );
+
+    expect([...miraIds].some((id) => !idaIds.has(id))).toBe(true);
+  });
+
+  it("joins private decisions to factual same-tick World outcomes without making those outcomes input evidence", () => {
+    const run = createAutonomousLifeRun();
+    run.runTicks(800);
+
+    const rows = run.privateExperiences();
+    const pickup = rows.find((row) =>
+      row.factualOutcomeEvents.some((event) => event.kind === "pickup"),
+    );
+
+    expect(pickup).toBeDefined();
+    expect(
+      pickup!.factualOutcomeEvents.every(
+        (event) => event.actorId === pickup!.residentId,
+      ),
+    ).toBe(true);
+    expect(
+      pickup!.observation.heardEvents.some(
+        (event) => pickup!.factualOutcomeEvents.some((outcome) => outcome.id === event.id),
+      ),
+    ).toBe(false);
+  });
+});

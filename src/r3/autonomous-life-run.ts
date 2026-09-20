@@ -25,6 +25,7 @@ export interface AutonomousLifeRun {
   runTicks(count: number): readonly AutonomousLifeStep[];
   residentDebug(residentId: ResidentId): ReturnType<AutonomousResidentAgent["debugState"]> | null;
   allEvents(): readonly LifeEvent[];
+  privateExperiences(): readonly import("./life-contracts").ResidentPrivateExperience[];
 }
 
 export const R3_LIFE_PLACES: Readonly<Record<LifePlace["id"], LifePlace>> = {
@@ -86,6 +87,13 @@ export function createAutonomousLifeRun(
   }
 
   const history: LifeEvent[] = [];
+  const privateExperience: import("./life-contracts").ResidentPrivateExperience[] = [];
+
+  const standingMatter: Record<ResidentId, string> = {
+    "resident:mira": "keep the workshop input rack supplied with raw blanks",
+    "resident:janek": "turn available raw blanks into finished workshop parts",
+    "resident:ida": "carry finished workshop parts from output to the depot",
+  };
 
   return {
     world,
@@ -95,16 +103,28 @@ export function createAutonomousLifeRun(
         ResidentId,
         ReturnType<AutonomousResidentAgent["decide"]>
       >();
+      const privateInputs = new Map<
+        ResidentId,
+        {
+          activityBefore: import("./life-contracts").ResidentActivity | null;
+          observation: import("./life-contracts").ResidentObservation;
+          memory: import("./life-contracts").ResidentPrivateMemory;
+        }
+      >();
 
       for (const residentId of [...agents.keys()].sort((a, b) =>
         a.localeCompare(b),
       )) {
         const agent = agents.get(residentId)!;
+        const before = agent.debugState();
         const observation = world.perceive(residentId);
-        decisions.set(
-          residentId,
-          agent.decide(observation, R3_LIFE_PLACES),
-        );
+        const decision = agent.decide(observation, R3_LIFE_PLACES);
+        decisions.set(residentId, decision);
+        privateInputs.set(residentId, {
+          activityBefore: before.activity,
+          observation: structuredClone(observation),
+          memory: structuredClone(agent.debugState().memory),
+        });
       }
 
       const intents = new Map(
@@ -115,6 +135,24 @@ export function createAutonomousLifeRun(
       );
       const events = world.step(intents);
       history.push(...events.map((event) => structuredClone(event)));
+
+      for (const [residentId, decision] of decisions) {
+        const input = privateInputs.get(residentId)!;
+        privateExperience.push({
+          tick: input.observation.tick,
+          residentId,
+          standingMatter: standingMatter[residentId],
+          activityBefore: input.activityBefore
+            ? structuredClone(input.activityBefore)
+            : null,
+          observation: structuredClone(input.observation),
+          memory: structuredClone(input.memory),
+          decision: structuredClone(decision),
+          factualOutcomeEvents: events
+            .filter((event) => event.actorId === residentId)
+            .map((event) => structuredClone(event)),
+        });
+      }
 
       const activities: Record<string, ResidentActivity> = {};
       for (const [residentId, decision] of decisions) {
@@ -147,6 +185,10 @@ export function createAutonomousLifeRun(
 
     allEvents(): readonly LifeEvent[] {
       return history.map((event) => structuredClone(event));
+    },
+
+    privateExperiences() {
+      return privateExperience.map((entry) => structuredClone(entry));
     },
   };
 }
