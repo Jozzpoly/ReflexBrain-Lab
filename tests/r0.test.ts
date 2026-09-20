@@ -1828,3 +1828,141 @@ describe("R1 relation geometry diagnostic", () => {
     ).toEqual([]);
   });
 });
+
+
+describe("R1 cognition TRAIN breadth augmentation", () => {
+  it("adds six TRAIN-only states and three cognition relations", async () => {
+    const { createR1CognitionTrainingAugmentation } = await import(
+      "../src/r1/cognition-training-augmentation"
+    );
+    const suite = createR1CognitionTrainingAugmentation();
+
+    expect(suite.states).toHaveLength(6);
+    expect(suite.constraints).toHaveLength(3);
+    expect(suite.states.every((state) => state.split === "train")).toBe(true);
+    expect(
+      suite.constraints.every(
+        (constraint) =>
+          constraint.split === "train" &&
+          constraint.dimension === "cognition" &&
+          constraint.relation === "greater",
+      ),
+    ).toBe(true);
+  });
+
+  it("keeps every cognition augmentation pair physically and addressee matched", async () => {
+    const { createR1CognitionTrainingAugmentation } = await import(
+      "../src/r1/cognition-training-augmentation"
+    );
+    const suite = createR1CognitionTrainingAugmentation();
+
+    const normalizeSpeechText = (state: ActorPrivateState) => ({
+      ...state,
+      percepts: state.percepts.map((percept) =>
+        percept.kind === "speech"
+          ? { ...percept, text: "<TEXT>" }
+          : percept,
+      ),
+    });
+
+    for (const [leftId, rightId] of [
+      ["train:inspection-incomplete", "train:inspection-complete"],
+      ["train:corridor-clearance-unknown", "train:corridor-clearance-known"],
+      ["train:container-unidentified", "train:container-identified"],
+    ] as const) {
+      const left = suite.states.find((state) => state.id === leftId)!;
+      const right = suite.states.find((state) => state.id === rightId)!;
+
+      expect(normalizeSpeechText(left.state)).toEqual(
+        normalizeSpeechText(right.state),
+      );
+    }
+  });
+
+  it("uses identical binary token bags in the structural inspection pair", async () => {
+    const { createR1CognitionTrainingAugmentation } = await import(
+      "../src/r1/cognition-training-augmentation"
+    );
+    const suite = createR1CognitionTrainingAugmentation();
+
+    const speechText = (id: string) => {
+      const record = suite.states.find((state) => state.id === id)!;
+      const percept = record.state.percepts.find(
+        (candidate) => candidate.kind === "speech",
+      );
+      if (!percept || percept.kind !== "speech") {
+        throw new Error("missing cognition TRAIN speech for " + id);
+      }
+      return percept.text;
+    };
+    const tokenBag = (value: string) =>
+      [...new Set(value.toLowerCase().match(/[a-z]+/g) ?? [])].sort();
+
+    expect(tokenBag(speechText("train:inspection-incomplete"))).toEqual(
+      tokenBag(speechText("train:inspection-complete")),
+    );
+    expect(speechText("train:inspection-incomplete")).not.toBe(
+      speechText("train:inspection-complete"),
+    );
+  });
+
+  it("keeps hardened semantic OOD beyond exact-token memorization after cognition expansion", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const { createR1OodRedTeamSuite } = await import(
+      "../src/r1/ood-red-team"
+    );
+    const { createR1SemanticTrainingAugmentation } = await import(
+      "../src/r1/semantic-training-augmentation"
+    );
+    const { createR1CognitionTrainingAugmentation } = await import(
+      "../src/r1/cognition-training-augmentation"
+    );
+    const { score, trainSurfaceMemorizer } = await import(
+      "../src/r1/surface-baseline"
+    );
+
+    const base = createR1CounterfactualSuite();
+    const semantic = createR1SemanticTrainingAugmentation();
+    const cognition = createR1CognitionTrainingAugmentation();
+    const trainSuite = {
+      states: [...base.states, ...semantic.states, ...cognition.states],
+      constraints: [
+        ...base.constraints,
+        ...semantic.constraints,
+        ...cognition.constraints,
+      ],
+    };
+    const model = trainSurfaceMemorizer(trainSuite);
+    const ood = createR1OodRedTeamSuite();
+    const byId = new Map(ood.states.map((state) => [state.id, state] as const));
+    const semanticFamilies = new Set([
+      "ood:danger-decoy",
+      "ood:indirect-warning",
+      "ood:quoted-warning",
+      "ood:negation-warning",
+      "ood:cognition-ambiguity",
+      "ood:resolved-uncertainty",
+    ]);
+    const leaks: string[] = [];
+
+    for (const constraint of ood.constraints.filter(
+      (candidate) =>
+        candidate.relation === "greater" &&
+        semanticFamilies.has(candidate.familyId),
+    )) {
+      const left = byId.get(constraint.leftStateId)!;
+      const right = byId.get(constraint.rightStateId)!;
+      const margin =
+        score(model, constraint.dimension, left.state) -
+        score(model, constraint.dimension, right.state);
+
+      if (margin > 0) {
+        leaks.push(constraint.id + ":" + margin.toFixed(6));
+      }
+    }
+
+    expect(leaks).toEqual([]);
+  });
+});
