@@ -85,7 +85,7 @@ describe("R3 autonomous life pressure host", () => {
 
     expect(depotDelivery).toBeDefined();
 
-    const chain = [] as typeof events;
+    const chain: Array<(typeof events)[number]> = [];
     let cursor = depotDelivery!;
     const seen = new Set<string>();
     while (!seen.has(cursor.id)) {
