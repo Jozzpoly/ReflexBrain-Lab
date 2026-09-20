@@ -428,3 +428,54 @@ The next campaign should preserve the R0 falsifiers as regression tests:
 - zero World authority.
 
 A learned candidate earns promotion only by surviving these tests more robustly than the stock baselines.
+
+
+## R1 tiny encoder feasibility — MiniLM-L3 live result
+
+After closing the stock generative-readout route, R1 tested a fundamentally different local substrate:
+
+- model: `Xenova/paraphrase-MiniLM-L3-v2`;
+- pinned revision: `4b544e74dfc3256b2b56849ea5d7064fee1ac846`;
+- 3-layer BERT/MiniLM encoder, 384-dimensional pooled representation;
+- Transformers.js feature extraction only;
+- WebGPU / q8;
+- no decoding, no action selection, no authority.
+
+The benchmark used all eight held-out TEST private states from the R1 counterfactual suite.
+
+### Runtime
+
+- load/setup: **3123.3 ms**;
+- first warm-up inference: **447.5 ms**;
+- sequential mean: **88.0 ms**;
+- sequential median: **65.1 ms**;
+- sequential range: **55.2–244.3 ms**;
+- batch 8: **245.8 ms total = 30.7 ms/state**.
+
+This is one live run on the Owner browser/GPU and should not yet be treated as a final latency distribution. It is nevertheless a different execution regime from the earlier generative baselines (~seconds per judgement).
+
+### Representation sensitivity
+
+Cosine distances between matched held-out counterfactual private states:
+
+| pair | cosine similarity | distance |
+| --- | ---: | ---: |
+| addressed vs overheard | 0.995680 | 0.004320 |
+| warning vs ordinary request | 0.979798 | 0.020202 |
+| fast close vs ordinary pass | 0.993989 | 0.006011 |
+| hidden World event vs epistemic control | 1.000000 | 0.000000 |
+
+Interpretation:
+
+- **PASS — runtime feasibility worth pursuing.**
+- **PASS — hard epistemic equality survives serialization/encoding exactly in this run.**
+- Observable causal mutations create non-zero representation changes.
+- The largest tested separation is the semantic warning/request mutation, which is encouraging but is **not** evidence that the embedding direction already corresponds to our appraisal dimensions.
+
+The next earned experiment is therefore a frozen-encoder learned head:
+
+`private state -> frozen MiniLM embedding -> learned per-dimension appraisal head`
+
+trained only on R1 TRAIN relational constraints and evaluated untouched on DEV/TEST.
+
+The encoder itself should remain frozen for this first learned baseline. This isolates whether a cheap readout can recover the causal appraisal relations before introducing LoRA/backbone adaptation.
