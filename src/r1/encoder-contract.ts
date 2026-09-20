@@ -68,7 +68,8 @@ export interface R1LearnedHeadResult {
   warmupMs: number;
   embeddingMs: number;
   embeddingBatchSize: number;
-  embeddingDimensions: number;
+  encoderDimensions: number;
+  representationDimensions: number;
   headMs: number;
   constraints: readonly R1LearnedConstraintResult[];
   dimensions: readonly R1LearnedDimensionSummary[];
