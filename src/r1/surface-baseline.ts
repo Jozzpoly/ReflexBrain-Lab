@@ -2,7 +2,6 @@ import type { ActorPrivateState } from "../contracts";
 import type { AppraisalId } from "../local-choice-probe";
 import {
   createR1CounterfactualSuite,
-  type R1CounterfactualConstraint,
   type R1CounterfactualSuite,
   type R1Split,
 } from "./counterfactual-supervision";
