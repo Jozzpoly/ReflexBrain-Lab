@@ -2337,3 +2337,231 @@ describe("R1 prototype-bank head", () => {
     }
   });
 });
+
+
+describe("R1 paired-reason head", () => {
+  it("constructs local reasons from TRAIN directional relations only", async () => {
+    const { learnPairedReasonHeads } = await import(
+      "../src/r1/paired-reason-head"
+    );
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+    const embeddings = new Map<string, readonly number[]>();
+    const train: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const left = new Array<number>(5).fill(0);
+      left[index] = 1;
+      embeddings.set("train-left:" + dimension, left);
+      embeddings.set("train-right:" + dimension, new Array<number>(5).fill(0));
+      train.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "train-left:" + dimension,
+        rightStateId: "train-right:" + dimension,
+      });
+    });
+
+    embeddings.set("ood-left", [10, 10, 10, 10, 10]);
+    embeddings.set("ood-right", [-10, -10, -10, -10, -10]);
+    const ood: import("../src/r1/encoder-contract").R1LearnConstraintInput = {
+      id: "ood:contradiction",
+      familyId: "ood:contradiction",
+      split: "ood",
+      dimension: "threat",
+      relation: "greater",
+      leftStateId: "ood-left",
+      rightStateId: "ood-right",
+    };
+
+    const base = learnPairedReasonHeads(embeddings, train);
+    const withOod = learnPairedReasonHeads(embeddings, [...train, ood]);
+
+    expect(withOod).toEqual(base);
+    expect(withOod.trainingCounts).toEqual({
+      attention: 1,
+      interrupt: 1,
+      social: 1,
+      threat: 1,
+      cognition: 1,
+    });
+  });
+
+  it("scores each isolated TRAIN pair higher anchor at +1 and lower at -1", async () => {
+    const {
+      evaluatePairedReasonHeads,
+      learnPairedReasonHeads,
+    } = await import("../src/r1/paired-reason-head");
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+    const embeddings = new Map<string, readonly number[]>();
+    const constraints: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const high = new Array<number>(5).fill(0);
+      const low = new Array<number>(5).fill(0);
+      high[index] = 1;
+      low[index] = -1;
+      embeddings.set("high:" + dimension, high);
+      embeddings.set("low:" + dimension, low);
+      constraints.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "high:" + dimension,
+        rightStateId: "low:" + dimension,
+      });
+    });
+
+    const head = learnPairedReasonHeads(embeddings, constraints);
+    const result = evaluatePairedReasonHeads(head, embeddings, constraints);
+
+    expect(
+      result.constraints.every(
+        (row) => row.passed && Math.abs(row.margin - 2) < 1e-12,
+      ),
+    ).toBe(true);
+  });
+
+  it("preserves exact equality for identical held-out states", async () => {
+    const {
+      evaluatePairedReasonHeads,
+      learnPairedReasonHeads,
+    } = await import("../src/r1/paired-reason-head");
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+    const embeddings = new Map<string, readonly number[]>();
+    const constraints: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const high = new Array<number>(6).fill(0);
+      const low = new Array<number>(6).fill(0);
+      high[index] = 1;
+      low[index] = -1;
+      embeddings.set("high:" + dimension, high);
+      embeddings.set("low:" + dimension, low);
+      constraints.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "high:" + dimension,
+        rightStateId: "low:" + dimension,
+      });
+    });
+
+    const same = [0.3, -0.1, 0.7, 0, 0.2, -0.4];
+    embeddings.set("same-a", same);
+    embeddings.set("same-b", [...same]);
+    constraints.push({
+      id: "ood:equal",
+      familyId: "ood:equal",
+      split: "ood",
+      dimension: "interrupt",
+      relation: "equal",
+      leftStateId: "same-a",
+      rightStateId: "same-b",
+    });
+
+    const head = learnPairedReasonHeads(embeddings, constraints);
+    const result = evaluatePairedReasonHeads(head, embeddings, constraints);
+    const equality = result.constraints.find(
+      (row) => row.id === "ood:equal",
+    )!;
+
+    expect(equality.margin).toBe(0);
+    expect(equality.passed).toBe(true);
+  });
+
+  it("keeps two opposite local threat reasons separate by midpoint locality", async () => {
+    const {
+      evaluatePairedReasonHeads,
+      learnPairedReasonHeads,
+    } = await import("../src/r1/paired-reason-head");
+    const { learnPrototypeHeads } = await import(
+      "../src/r1/prototype-head"
+    );
+
+    const embeddings = new Map<string, readonly number[]>();
+    const constraints: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    for (const [dimension, y] of [
+      ["attention", 30],
+      ["interrupt", 40],
+      ["social", 50],
+      ["cognition", 60],
+    ] as const) {
+      embeddings.set("high:" + dimension, [1, y]);
+      embeddings.set("low:" + dimension, [-1, y]);
+      constraints.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "high:" + dimension,
+        rightStateId: "low:" + dimension,
+      });
+    }
+
+    embeddings.set("threat-a-high", [1, 0]);
+    embeddings.set("threat-a-low", [-1, 0]);
+    embeddings.set("threat-b-high", [-1, 10]);
+    embeddings.set("threat-b-low", [1, 10]);
+
+    constraints.push(
+      {
+        id: "train:threat-a",
+        familyId: "train:threat-a",
+        split: "train",
+        dimension: "threat",
+        relation: "greater",
+        leftStateId: "threat-a-high",
+        rightStateId: "threat-a-low",
+      },
+      {
+        id: "train:threat-b",
+        familyId: "train:threat-b",
+        split: "train",
+        dimension: "threat",
+        relation: "greater",
+        leftStateId: "threat-b-high",
+        rightStateId: "threat-b-low",
+      },
+    );
+
+    expect(() =>
+      learnPrototypeHeads(embeddings, constraints),
+    ).toThrow(/collapsed to zero/);
+
+    const head = learnPairedReasonHeads(embeddings, constraints);
+    const result = evaluatePairedReasonHeads(head, embeddings, constraints);
+
+    for (const id of ["train:threat-a", "train:threat-b"]) {
+      const row = result.constraints.find((candidate) => candidate.id === id)!;
+      expect(row.passed).toBe(true);
+      expect(row.margin).toBeCloseTo(2, 12);
+    }
+  });
+});
