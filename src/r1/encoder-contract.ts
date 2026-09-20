@@ -90,7 +90,7 @@ export interface R1TrainDirectionCoherence {
 }
 
 export type R1RepresentationMode = "encoder-only" | "hybrid";
-export type R1HeadMode = "prototype" | "linear-ranking";
+export type R1HeadMode = "prototype" | "linear-ranking" | "prototype-bank";
 
 export interface R1LearnedHeadResult {
   modelId: string;
