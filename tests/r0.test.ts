@@ -1198,3 +1198,141 @@ describe("R1 hybrid structured representation", () => {
     ).toBe(true);
   });
 });
+
+
+describe("R1 adversarial OOD red-team", () => {
+  it("defines one held-out 10-state / 11-relation mirror split", async () => {
+    const { createR1OodRedTeamSuite } = await import(
+      "../src/r1/ood-red-team"
+    );
+    const suite = createR1OodRedTeamSuite();
+
+    expect(suite.states).toHaveLength(10);
+    expect(suite.constraints).toHaveLength(11);
+    expect(suite.states.every((state) => state.split === "ood")).toBe(true);
+    expect(
+      suite.constraints.every((constraint) => constraint.split === "ood"),
+    ).toBe(true);
+  });
+
+  it("matches danger warning and danger-word reassurance except for speech meaning", async () => {
+    const { createR1OodRedTeamSuite } = await import(
+      "../src/r1/ood-red-team"
+    );
+    const suite = createR1OodRedTeamSuite();
+    const warning = suite.states.find(
+      (state) => state.id === "ood:urgent-warning",
+    )!;
+    const reassurance = suite.states.find(
+      (state) => state.id === "ood:danger-word-reassurance",
+    )!;
+
+    const normalizeSpeechText = (state: ActorPrivateState) => ({
+      ...state,
+      percepts: state.percepts.map((percept) =>
+        percept.kind === "speech"
+          ? { ...percept, text: "<TEXT>" }
+          : percept,
+      ),
+    });
+
+    expect(normalizeSpeechText(warning.state)).toEqual(
+      normalizeSpeechText(reassurance.state),
+    );
+    expect(
+      reassurance.state.percepts.find(
+        (percept) => percept.kind === "speech",
+      ),
+    ).toEqual(
+      expect.objectContaining({
+        kind: "speech",
+        addressed: true,
+        text: expect.stringContaining("DANGER"),
+      }),
+    );
+  });
+
+  it("keeps hidden urgent danger outside both semantic and structured actor-private channels", async () => {
+    const { createR1OodRedTeamSuite } = await import(
+      "../src/r1/ood-red-team"
+    );
+    const {
+      serializeR1PrivateState,
+    } = await import("../src/r1/encoder-contract");
+    const {
+      structuredPrivateFeatures,
+    } = await import("../src/r1/structured-features");
+
+    const suite = createR1OodRedTeamSuite();
+    const hidden = suite.states.find(
+      (state) => state.id === "ood:hidden-danger",
+    )!;
+    const control = suite.states.find(
+      (state) => state.id === "ood:hidden-control",
+    )!;
+
+    expect(hidden.state).toEqual(control.state);
+    expect(serializeR1PrivateState(hidden.state)).toBe(
+      serializeR1PrivateState(control.state),
+    );
+    expect(structuredPrivateFeatures(hidden.state)).toEqual(
+      structuredPrivateFeatures(control.state),
+    );
+    expect(serializeR1PrivateState(hidden.state)).not.toContain("DANGER");
+  });
+
+  it("keeps OOD constraints completely outside prototype-head learning", async () => {
+    const { learnPrototypeHeads } = await import(
+      "../src/r1/prototype-head"
+    );
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+    const embeddings = new Map<string, readonly number[]>();
+    const train: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const left = new Array<number>(5).fill(0);
+      left[index] = 1;
+      embeddings.set("train-left:" + dimension, left);
+      embeddings.set("train-right:" + dimension, new Array<number>(5).fill(0));
+      train.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "train-left:" + dimension,
+        rightStateId: "train-right:" + dimension,
+      });
+    });
+
+    embeddings.set("ood-left", [0, 0, -100, 0, 0]);
+    embeddings.set("ood-right", [0, 0, 100, 0, 0]);
+
+    const oodA: import("../src/r1/encoder-contract").R1LearnConstraintInput = {
+      id: "ood:a",
+      familyId: "ood:a",
+      split: "ood",
+      dimension: "social",
+      relation: "greater",
+      leftStateId: "ood-left",
+      rightStateId: "ood-right",
+    };
+    const oodB: import("../src/r1/encoder-contract").R1LearnConstraintInput = {
+      ...oodA,
+      id: "ood:b",
+      leftStateId: "ood-right",
+      rightStateId: "ood-left",
+    };
+
+    const withA = learnPrototypeHeads(embeddings, [...train, oodA]);
+    const withB = learnPrototypeHeads(embeddings, [...train, oodB]);
+
+    expect(withA.weights).toEqual(withB.weights);
+  });
+});
