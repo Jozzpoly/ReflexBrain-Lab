@@ -5,6 +5,7 @@ on:
     branches:
       - experiment/r0-semantic-shadow-bootstrap
       - experiment/r1-ood-red-team-v1
+      - experiment/r1-semantic-supervision-breadth-v1
   workflow_dispatch:
 
 permissions:
