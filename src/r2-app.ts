@@ -60,8 +60,8 @@ function render(): void {
     '<div class="start-marker">pickup</div>',
     '<div class="shelf-marker" style="left:' +
       xPercent(step.physical.destinationX) + '%">shelf</div>',
-    step.physical.hazardBlocksAisle
-      ? '<div class="beam" style="left:' + xPercent(5.2) + '%"><span>fallen beam</span></div>'
+    step.physical.hazardActive
+      ? '<div class="beam" style="left:' + xPercent(5.2) + '%"><span>falling beam</span></div>'
       : '',
     '<div class="actor" style="left:' + xPercent(step.physical.actorX) + '%"><span>Mira</span></div>',
     step.physical.carrying

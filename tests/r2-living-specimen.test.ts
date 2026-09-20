@@ -64,7 +64,7 @@ describe("R2 deterministic living specimen", () => {
     expect(resumed.decision.evidenceIds).toEqual(["obs:beam-cleared"]);
   });
 
-  it("stops physical progress while the hazard is believed active", () => {
+  it("stops physical progress because the private oracle holds, not because World motion is hard-blocked", () => {
     const x5 = run.steps.find((step) => step.frame.world.tick === 5)!.physical.actorX;
     const x6 = run.steps.find((step) => step.frame.world.tick === 6)!.physical.actorX;
     const x8 = run.steps.find((step) => step.frame.world.tick === 8)!.physical.actorX;
@@ -73,6 +73,48 @@ describe("R2 deterministic living specimen", () => {
     expect(x6).toBe(x5);
     expect(x8).toBe(x5);
     expect(x9).toBeGreaterThan(x8);
+
+    for (const tick of [6, 7, 8]) {
+      const step = run.steps.find(
+        (candidate) => candidate.frame.world.tick === tick,
+      )!;
+      expect(
+        step.frame.world.events.some(
+          (event) => event.kind === "body.carry_motion",
+        ),
+      ).toBe(false);
+    }
+
+    const resumedMotion = run.steps.find(
+      (candidate) => candidate.frame.world.tick === 9,
+    )!;
+    expect(
+      resumedMotion.frame.world.events.some(
+        (event) => event.kind === "body.carry_motion",
+      ),
+    ).toBe(true);
+  });
+
+  it("records physical progress as causal World events referenced by position facts", () => {
+    const movingStep = run.steps.find(
+      (step) =>
+        step.frame.world.events.some(
+          (event) => event.kind === "body.carry_motion",
+        ),
+    )!;
+    const motion = movingStep.frame.world.events.find(
+      (event) => event.kind === "body.carry_motion",
+    )!;
+
+    const actorPosition = movingStep.frame.world.facts.find(
+      (fact) => fact.id === "fact:mira-position",
+    )!;
+    const cratePosition = movingStep.frame.world.facts.find(
+      (fact) => fact.id === "fact:crate-position",
+    )!;
+
+    expect(actorPosition.provenanceEventIds).toContain(motion.id);
+    expect(cratePosition.provenanceEventIds).toContain(motion.id);
   });
 
   it("eventually completes the same assigned carry activity", () => {

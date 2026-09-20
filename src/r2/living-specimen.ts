@@ -33,7 +33,7 @@ export interface LivingSpecimenPhysicalState {
   crateX: number;
   destinationX: number;
   carrying: boolean;
-  hazardBlocksAisle: boolean;
+  hazardActive: boolean;
 }
 
 export interface LivingSpecimenStep {
@@ -67,7 +67,7 @@ interface MutablePhysicalState {
   crateX: number;
   destinationX: number;
   carrying: boolean;
-  hazardBlocksAisle: boolean;
+  hazardActive: boolean;
   completed: boolean;
 }
 
@@ -77,7 +77,7 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
     crateX: 1,
     destinationX: 9,
     carrying: false,
-    hazardBlocksAisle: false,
+    hazardActive: false,
     completed: false,
   };
 
@@ -89,6 +89,8 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
   const history: PrivateHistoryEntry[] = [];
   const steps: LivingSpecimenStep[] = [];
   const knownWorldEvents: WorldEvent[] = [];
+  let latestActorMotionEventId: string | null = null;
+  let latestCratePositionEventId: string | null = null;
 
   for (let tick = 0; tick <= 16; tick += 1) {
     const worldEvents: WorldEvent[] = [];
@@ -147,6 +149,7 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
         { object: CRATE_ID },
       );
       worldEvents.push(pickedUp);
+      latestCratePositionEventId = pickedUp.id;
       observations.push(
         observation(
           tick,
@@ -185,7 +188,7 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
     }
 
     if (tick === 6) {
-      physical.hazardBlocksAisle = true;
+      physical.hazardActive = true;
       const hazard = event(
         tick,
         "event:beam-falls",
@@ -214,7 +217,7 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
     }
 
     if (tick === 9) {
-      physical.hazardBlocksAisle = false;
+      physical.hazardActive = false;
       const resolved = event(
         tick,
         "event:beam-cleared",
@@ -252,12 +255,18 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
       activity,
     );
 
-    const resolved = resolveFixtureOracle(actorPrivateFrame, oracle, physical);
+    const resolved = resolveFixtureOracle(actorPrivateFrame, oracle);
     oracle = resolved.nextState;
 
     if (resolved.decision.behavior === "carry" ||
         resolved.decision.behavior === "resume_carry") {
-      advanceCarry(physical);
+      const motion = advanceCarry(physical, tick);
+      if (motion) {
+        worldEvents.push(motion);
+        knownWorldEvents.push(motion);
+        latestActorMotionEventId = motion.id;
+        latestCratePositionEventId = motion.id;
+      }
     }
 
     if (
@@ -283,6 +292,7 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
       );
       worldEvents.push(placed);
       knownWorldEvents.push(placed);
+      latestCratePositionEventId = placed.id;
       observations.push(
         observation(
           tick,
@@ -298,7 +308,13 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
       );
     }
 
-    const facts = worldFacts(tick, physical, knownWorldEvents);
+    const facts = worldFacts(
+      tick,
+      physical,
+      knownWorldEvents,
+      latestActorMotionEventId,
+      latestCratePositionEventId,
+    );
     const finalPrivate = privateFrame(
       tick,
       observations,
@@ -320,10 +336,7 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
     steps.push({
       frame,
       physical: snapshotPhysical(physical),
-      decision: {
-        ...resolved.decision,
-        behavior: physical.completed ? "completed" : resolved.decision.behavior,
-      },
+      decision: resolved.decision,
     });
   }
 
@@ -341,7 +354,6 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
 function resolveFixtureOracle(
   frame: ActorPrivateFrame,
   previous: FixtureOracleState,
-  physical: MutablePhysicalState,
 ): {
   decision: LivingSpecimenDecisionTrace;
   nextState: FixtureOracleState;
@@ -360,7 +372,7 @@ function resolveFixtureOracle(
     }
   }
 
-  if (physical.completed) {
+  if (frame.activity === null) {
     return {
       decision: {
         tick: frame.tick,
@@ -392,7 +404,9 @@ function resolveFixtureOracle(
   }
 
   const resumed =
-    previous.hazardBelievedActive && !hazardBelievedActive && physical.carrying;
+    previous.hazardBelievedActive &&
+    !hazardBelievedActive &&
+    frame.activity !== null;
 
   return {
     decision: {
@@ -410,10 +424,31 @@ function resolveFixtureOracle(
   };
 }
 
-function advanceCarry(state: MutablePhysicalState): void {
-  if (!state.carrying || state.hazardBlocksAisle) return;
-  state.actorX = Math.min(state.destinationX, state.actorX + 0.75);
-  state.crateX = state.actorX;
+function advanceCarry(
+  state: MutablePhysicalState,
+  tick: number,
+): WorldEvent | null {
+  if (!state.carrying) return null;
+
+  const fromX = state.actorX;
+  const toX = Math.min(state.destinationX, state.actorX + 0.75);
+  if (toX === fromX) return null;
+
+  state.actorX = toX;
+  state.crateX = toX;
+
+  return event(
+    tick,
+    "event:carry-motion:" + tick,
+    "body.carry_motion",
+    ACTOR_ID,
+    [ACTOR_ID, CRATE_ID],
+    {
+      object: CRATE_ID,
+      fromX,
+      toX,
+    },
+  );
 }
 
 function currentActivity(
@@ -441,6 +476,8 @@ function worldFacts(
   tick: number,
   physical: MutablePhysicalState,
   knownWorldEvents: readonly WorldEvent[],
+  latestActorMotionEventId: string | null,
+  latestCratePositionEventId: string | null,
 ): readonly WorldFact[] {
   const latestHazardEvent = [...knownWorldEvents]
     .reverse()
@@ -456,7 +493,7 @@ function worldFacts(
       tick,
       "body.position",
       ACTOR_ID,
-      [],
+      latestActorMotionEventId ? [latestActorMotionEventId] : [],
       { x: physical.actorX },
     ),
     fact(
@@ -464,7 +501,7 @@ function worldFacts(
       tick,
       "object.position",
       CRATE_ID,
-      [],
+      latestCratePositionEventId ? [latestCratePositionEventId] : [],
       { x: physical.crateX },
     ),
     fact(
@@ -473,7 +510,7 @@ function worldFacts(
       "world.hazard_state",
       BEAM_ID,
       latestHazardEvent ? [latestHazardEvent.id] : [],
-      { active: physical.hazardBlocksAisle },
+      { active: physical.hazardActive },
     ),
   ];
 }
@@ -573,6 +610,6 @@ function snapshotPhysical(
     crateX: physical.crateX,
     destinationX: physical.destinationX,
     carrying: physical.carrying,
-    hazardBlocksAisle: physical.hazardBlocksAisle,
+    hazardActive: physical.hazardActive,
   };
 }
