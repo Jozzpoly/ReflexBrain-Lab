@@ -1424,6 +1424,24 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
     })
     .join("");
 
+  const oodRows = result.constraints
+    .filter((constraint) => constraint.split === "ood")
+    .map(
+      (constraint) =>
+        "<tr><td>" +
+        escapeHtml(constraint.dimension) +
+        "</td><td>" +
+        escapeHtml(constraint.familyId) +
+        "</td><td><code>" +
+        escapeHtml(constraint.id) +
+        "</code></td><td>" +
+        constraint.margin.toExponential(4) +
+        "</td><td>" +
+        (constraint.passed ? "PASS" : "FAIL") +
+        "</td></tr>",
+    )
+    .join("");
+
   const heldOutFailures = result.constraints
     .filter(
       (constraint) =>
@@ -1471,6 +1489,11 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
     '<div class="table-wrap"><table><thead><tr><th>Dimension</th><th>TRAIN relations</th><th>TRAIN</th><th>DEV</th><th>TEST</th><th>OOD red-team</th></tr></thead><tbody>',
     dimensionRows,
     "</tbody></table></div>",
+    oodRows.length > 0
+      ? '<h4>OOD red-team margins</h4><div class="table-wrap"><table><thead><tr><th>Dimension</th><th>Family</th><th>Constraint</th><th>Margin</th><th>Result</th></tr></thead><tbody>' +
+          oodRows +
+          "</tbody></table></div>"
+      : "",
     heldOutFailures.length > 0
       ? '<h4>Held-out failures</h4><div class="table-wrap"><table><thead><tr><th>Split</th><th>Dimension</th><th>Family</th><th>Constraint</th><th>Margin</th></tr></thead><tbody>' +
           heldOutFailures +
