@@ -16,7 +16,10 @@ import {
   learnPrototypeHeads,
 } from "./prototype-head";
 import { learnRegularizedLinearHeads } from "./linear-ranking-head";
-import { analyzeRelationGeometry } from "./relation-geometry";
+import {
+  analyzeRelationGeometry,
+  analyzeTrainDirectionCoherence,
+} from "./relation-geometry";
 import { hybridPrivateRepresentation } from "./structured-features";
 
 const scope = globalThis as unknown as {
@@ -273,6 +276,10 @@ async function runLearnedHead(
     embeddingById,
     request.constraints,
   );
+  const trainCoherence = analyzeTrainDirectionCoherence(
+    embeddingById,
+    request.constraints,
+  );
   const headMs = performance.now() - headStarted;
 
   return {
@@ -293,6 +300,7 @@ async function runLearnedHead(
     constraints: evaluation.constraints,
     dimensions: evaluation.dimensions,
     geometry,
+    trainCoherence,
   };
 }
 
