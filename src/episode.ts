@@ -18,6 +18,9 @@ export interface R0EpisodeOptions {
   hiddenOpeningSpeech?: boolean;
   speechText?: string;
   playerMotion?: PlayerMotionProfile;
+  tick9PlayerX?: number;
+  tick9PlayerVx?: number;
+  hiddenSpeechTick?: number;
   idSuffix?: string;
   title?: string;
 }
@@ -42,13 +45,28 @@ export function createR0CounterfactualEpisode(
     if (tick === 4) player = actor(PLAYER_ID, "player", 360, 0, -100, 0);
     if (tick === 7) player = actor(PLAYER_ID, "player", 210, 0, -40, 0);
     if (tick === 9) {
-      player =
-        motion === "fast_close"
-          ? actor(PLAYER_ID, "player", 220, 0, -220, 0)
-          : actor(PLAYER_ID, "player", 150, 0, 0, 0);
+      if (
+        options.tick9PlayerX !== undefined ||
+        options.tick9PlayerVx !== undefined
+      ) {
+        player = actor(
+          PLAYER_ID,
+          "player",
+          options.tick9PlayerX ?? 150,
+          0,
+          options.tick9PlayerVx ?? 0,
+          0,
+        );
+      } else {
+        player =
+          motion === "fast_close"
+            ? actor(PLAYER_ID, "player", 220, 0, -220, 0)
+            : actor(PLAYER_ID, "player", 150, 0, 0, 0);
+      }
     }
 
-    if (tick === 0 && options.hiddenOpeningSpeech) {
+    const hiddenSpeechTick = options.hiddenSpeechTick ?? 0;
+    if (tick === hiddenSpeechTick && options.hiddenOpeningSpeech) {
       events.push({
         id: "speech:hidden-opening",
         tick,
