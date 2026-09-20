@@ -34,6 +34,7 @@ import {
 } from "./local-model-client";
 import { compilePrivateState } from "./private-state";
 import { createR1CounterfactualSuite } from "./r1/counterfactual-supervision";
+import { createR1OodRedTeamSuite } from "./r1/ood-red-team";
 import {
   R1EncoderBenchmarkClient,
   type R1EncoderProgress,
@@ -1293,7 +1294,12 @@ async function runR1LearnedHead(
     return;
   }
 
-  const suite = createR1CounterfactualSuite();
+  const baseSuite = createR1CounterfactualSuite();
+  const oodSuite = createR1OodRedTeamSuite();
+  const suite = {
+    states: [...baseSuite.states, ...oodSuite.states],
+    constraints: [...baseSuite.constraints, ...oodSuite.constraints],
+  };
   const states = suite.states.map((state) => ({
     id: state.id,
     state: structuredClone(state.state),
@@ -1328,15 +1334,23 @@ async function runR1LearnedHead(
     const testRows = r1LearnedHeadResult.constraints.filter(
       (constraint) => constraint.split === "test",
     );
-    const passed = testRows.filter((constraint) => constraint.passed).length;
+    const oodRows = r1LearnedHeadResult.constraints.filter(
+      (constraint) => constraint.split === "ood",
+    );
+    const testPassed = testRows.filter((constraint) => constraint.passed).length;
+    const oodPassed = oodRows.filter((constraint) => constraint.passed).length;
     r1LearnedHeadStatus =
       "R1 " +
       representation +
       " head complete · TEST " +
-      passed +
+      testPassed +
       "/" +
       testRows.length +
-      " causal relations passed.";
+      " · OOD " +
+      oodPassed +
+      "/" +
+      oodRows.length +
+      ".";
   } catch (error) {
     r1LearnedHeadStatus =
       "R1 learned head failed: " + errorMessage(error);
@@ -1357,7 +1371,7 @@ function updateR1LearnedHeadProgress(progress: R1EncoderProgress): void {
 }
 
 function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
-  const splitRows = (["train", "dev", "test"] as const)
+  const splitRows = (["train", "dev", "test", "ood"] as const)
     .map((split) => {
       const rows = result.constraints.filter(
         (constraint) => constraint.split === split,
@@ -1377,11 +1391,12 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
 
   const dimensionRows = result.dimensions
     .map((dimension) => {
-      const split = (name: "train" | "dev" | "test") =>
+      const split = (name: "train" | "dev" | "test" | "ood") =>
         dimension.splits.find((entry) => entry.split === name)!;
       const train = split("train");
       const dev = split("dev");
       const test = split("test");
+      const ood = split("ood");
 
       return (
         "<tr><td>" +
@@ -1400,6 +1415,10 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
         test.passed +
         "/" +
         test.total +
+        "</td><td>" +
+        ood.passed +
+        "/" +
+        ood.total +
         "</td></tr>"
       );
     })
@@ -1449,7 +1468,7 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
     '<div class="table-wrap"><table><thead><tr><th>Split</th><th>Relations passed</th></tr></thead><tbody>',
     splitRows,
     "</tbody></table></div>",
-    '<div class="table-wrap"><table><thead><tr><th>Dimension</th><th>TRAIN relations</th><th>TRAIN</th><th>DEV</th><th>TEST</th></tr></thead><tbody>',
+    '<div class="table-wrap"><table><thead><tr><th>Dimension</th><th>TRAIN relations</th><th>TRAIN</th><th>DEV</th><th>TEST</th><th>OOD red-team</th></tr></thead><tbody>',
     dimensionRows,
     "</tbody></table></div>",
     heldOutFailures.length > 0
