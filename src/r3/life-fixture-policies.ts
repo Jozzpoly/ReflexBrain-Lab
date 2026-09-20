@@ -11,6 +11,8 @@ import type {
 } from "./life-contracts";
 
 const ACTIVITY_SERIAL = new Map<ResidentId, number>();
+const WORKER_BLOCKED_REQUEST_AFTER_TICKS = 45;
+const WORKER_REQUEST_COOLDOWN_TICKS = 120;
 
 function nextActivityId(residentId: ResidentId, kind: string): string {
   const serial = (ACTIVITY_SERIAL.get(residentId) ?? 0) + 1;
@@ -274,8 +276,8 @@ export class WorkerFixturePolicy implements ResidentPolicy {
 
     this.emptyRackTicks += 1;
     if (
-      this.emptyRackTicks >= 90 &&
-      tick - this.lastRequestTick >= 120
+      this.emptyRackTicks >= WORKER_BLOCKED_REQUEST_AFTER_TICKS &&
+      tick - this.lastRequestTick >= WORKER_REQUEST_COOLDOWN_TICKS
     ) {
       this.lastRequestTick = tick;
       return {
