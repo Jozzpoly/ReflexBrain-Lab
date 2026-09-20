@@ -1446,7 +1446,7 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
     .join("");
 
   return [
-    '<p class="boundary">The encoder is frozen. Only five linear semantic directions are constructed from <strong>TRAIN directional embedding differences</strong>. DEV/TEST labels never update the head.</p>',
+    '<p class="boundary">The encoder is frozen. Only five linear semantic directions are constructed from <strong>TRAIN directional embedding differences</strong>. DEV/TEST/OOD labels never update the head.</p>',
     '<div class="result-meta">',
     "<span>Representation: <strong>" +
       escapeHtml(result.representation) +
