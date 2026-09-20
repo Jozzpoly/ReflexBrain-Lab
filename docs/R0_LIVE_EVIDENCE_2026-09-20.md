@@ -1556,3 +1556,81 @@ Falsifier:
 If the bank preserves older warning relations while retaining the new negation/currentness gains without DEV/TEST regression, the evidence supports a multi-causal appraisal representation.
 
 If it still trades one valid reason against another, the next problem is likely the appraisal ontology / representation itself rather than head optimization.
+
+
+## R1 pooled prototype-bank falsifier — negative result
+
+A transparent TRAIN-only prototype-bank head was tested after TRAIN-direction coherence exposed destructive averaging in the one-vector heads.
+
+The tested bank was deliberately parameter-free:
+
+- every TRAIN greater relation contributed its left state as a higher-appraisal prototype and right state as a lower-appraisal prototype;
+- no directional deltas were averaged;
+- state score was nearest-lower squared distance minus nearest-higher squared distance;
+- OOD/DEV/TEST never entered bank construction;
+- equality invariants remained exact.
+
+CI qualification proved TRAIN-only construction, exact equality preservation and a synthetic multimodal case that a single summed direction could not represent.
+
+### Live result on frozen OOD v3
+
+| supervision | head | TRAIN | DEV | TEST | OOD v3 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| expanded | one-vector prototype | 16/16 | 11/11 | 11/11 | **21/26** |
+| expanded | pooled prototype bank | 16/16 | 11/11 | 11/11 | **17/26** |
+| pragmatic breadth | one-vector prototype | 20/20 | 10/11 | 11/11 | **20/26** |
+| pragmatic breadth | one-vector linear ranking | 20/20 | 10/11 | 11/11 | **20/26** |
+| pragmatic breadth | pooled prototype bank | 20/20 | **11/11** | 11/11 | **18/26** |
+
+The bank therefore does not qualify as an improvement.
+
+### Complementary failure structure
+
+The negative result is informative rather than uniform.
+
+Pragmatic pooled-bank restores several relations lost by the one-vector pragmatic head:
+
+- old warning-vs-reassurance interrupt: PASS;
+- old warning-vs-reassurance threat: PASS;
+- old indirect-warning threat: PASS;
+- v3 routing cognition: PASS;
+- the pragmatic DEV warning regression disappears.
+
+But it loses relations handled by the one-vector head:
+
+- quoted/current warning interrupt: about **-9.94e-3**;
+- quoted/current warning threat: about **-1.17e-2**;
+- old negation interrupt: about **-4.06e-3**;
+- old negation threat: about **-4.06e-3**;
+- clearance cognition: about **-3.34e-4**;
+- v3 current-smoke threat over conditional: about **-6.91e-4**.
+
+It still fails:
+
+- v3 operative-order interrupt: about **-5.70e-3**;
+- v3 hazard-vs-deadline threat: about **-1.51e-3**.
+
+It retains the pragmatic gain on v3 negation scope:
+
+- interrupt about **+3.41e-2**;
+- threat about **+5.94e-4**.
+
+### Interpretation
+
+**Multi-causal geometry remains supported, but pooled nearest-prototype classification is rejected.**
+
+A key flaw in this bank is now explicit: it discards TRAIN pair identity. The nearest higher prototype may come from one causal reason while the nearest lower prototype comes from another. That can create a contrast that no authored TRAIN relation ever asserted.
+
+So the negative result does not yet falsify a true reason-bank architecture. It falsifies pooling higher and lower anchors independently.
+
+### Earned correction: paired local reason experts
+
+The next falsifier preserves each TRAIN relation as one indivisible local reason:
+
+- each TRAIN pair keeps its own higher anchor, lower anchor, midpoint and directional contrast;
+- no cross-pair higher/lower mixing is allowed;
+- select the locally nearest TRAIN pair using midpoint distance normalized by that pair's own gap;
+- score only with that selected pair's normalized higher-vs-lower contrast;
+- no learned temperature, OOD tuning or new supervision.
+
+This is still deliberately simple and transparent. If it cannot preserve old warning semantics while retaining new pragmatic distinctions, the evidence shifts more strongly toward factorizing the appraisal ontology itself rather than changing readout geometry.
