@@ -1,15 +1,16 @@
 import type { ActorPrivateState } from "../contracts";
-import { createSemanticChallenges } from "../challenges";
 import { createR0CounterfactualEpisode } from "../episode";
 import type { AppraisalId } from "../local-choice-probe";
 import { compilePrivateState } from "../private-state";
 
 export type R1Relation = "greater" | "equal";
 export type R1ConstraintStrength = "hard_invariant" | "directional";
+export type R1Split = "train" | "dev" | "test";
 
 export interface R1StateRecord {
   id: string;
   familyId: string;
+  split: R1Split;
   description: string;
   state: ActorPrivateState;
 }
@@ -17,6 +18,7 @@ export interface R1StateRecord {
 export interface R1CounterfactualConstraint {
   id: string;
   familyId: string;
+  split: R1Split;
   dimension: AppraisalId;
   relation: R1Relation;
   leftStateId: string;
@@ -31,168 +33,363 @@ export interface R1CounterfactualSuite {
   constraints: readonly R1CounterfactualConstraint[];
 }
 
+interface SplitRecipe {
+  split: R1Split;
+  requestText: string;
+  warningText: string;
+  speechX: number;
+  speechVx: number;
+  passX: number;
+  passVx: number;
+  fastX: number;
+  fastVx: number;
+  hiddenTick: number;
+}
+
+const RECIPES: readonly SplitRecipe[] = [
+  {
+    split: "train",
+    requestText: "Can you help me with this for a moment?",
+    warningText: "Watch out! Move away now!",
+    speechX: 150,
+    speechVx: 0,
+    passX: 150,
+    passVx: 0,
+    fastX: 240,
+    fastVx: -180,
+    hiddenTick: 0,
+  },
+  {
+    split: "dev",
+    requestText: "Could you give me a hand with this?",
+    warningText: "Careful! Get back right now!",
+    speechX: 165,
+    speechVx: -10,
+    passX: 160,
+    passVx: -20,
+    fastX: 250,
+    fastVx: -200,
+    hiddenTick: 1,
+  },
+  {
+    split: "test",
+    requestText: "Would you help me with this, please?",
+    warningText: "Danger—step away immediately!",
+    speechX: 145,
+    speechVx: 10,
+    passX: 140,
+    passVx: 20,
+    fastX: 235,
+    fastVx: -170,
+    hiddenTick: 2,
+  },
+];
+
 /**
- * R1 seed supervision is intentionally relational.
+ * R1 supervision is relational by construction.
  *
- * It does not invent absolute "gold probabilities". It records only causal
- * comparisons we are willing to defend before any learned model exists.
+ * No absolute semantic score is invented here. Every learned target is either:
+ * - a directional causal comparison; or
+ * - a hard epistemic equality for actor-indistinguishable states.
+ *
+ * Families never cross train/dev/test. Text and physical context are also
+ * mutated across splits so exact private states cannot leak between them.
  */
 export function createR1CounterfactualSuite(): R1CounterfactualSuite {
-  const challengeStates = new Map(
-    createSemanticChallenges().map((challenge) => [
-      challenge.id,
-      compilePrivateState(challenge.episode.frames[10]!, "task"),
-    ]),
+  const states: R1StateRecord[] = [];
+  const constraints: R1CounterfactualConstraint[] = [];
+
+  for (const recipe of RECIPES) {
+    addRequestFamily(recipe, states, constraints);
+    addWarningFamily(recipe, states, constraints);
+    addApproachFamily(recipe, states, constraints);
+    addHiddenWorldFamily(recipe, states, constraints);
+  }
+
+  assertSuiteReferences(states, constraints);
+  return { states, constraints };
+}
+
+function addRequestFamily(
+  recipe: SplitRecipe,
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = recipe.split + ":request-addressing";
+  const addressedId = recipe.split + ":addressed-request";
+  const overheardId = recipe.split + ":overheard-request";
+
+  states.push(
+    stateFromEpisode(
+      addressedId,
+      familyId,
+      recipe.split,
+      "Direct request with split-specific wording and physical context.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText: recipe.requestText,
+        tick9PlayerX: recipe.speechX,
+        tick9PlayerVx: recipe.speechVx,
+        idSuffix: addressedId,
+      }),
+      10,
+    ),
+    stateFromEpisode(
+      overheardId,
+      familyId,
+      recipe.split,
+      "Identical words and physics, but the request is overheard.",
+      createR0CounterfactualEpisode({
+        speechExposure: "overheard",
+        speechText: recipe.requestText,
+        tick9PlayerX: recipe.speechX,
+        tick9PlayerVx: recipe.speechVx,
+        idSuffix: overheardId,
+      }),
+      10,
+    ),
   );
 
-  const quiet = createR0CounterfactualEpisode({
+  constraints.push(
+    directional(
+      recipe.split + ":addressed-social-over-overheard",
+      familyId,
+      recipe.split,
+      "social",
+      addressedId,
+      overheardId,
+      "only speech addressee changes from not-this-actor to this actor",
+      "Identical words addressed to the actor should be more socially relevant than merely overheard words.",
+    ),
+    directional(
+      recipe.split + ":addressed-attention-over-overheard",
+      familyId,
+      recipe.split,
+      "attention",
+      addressedId,
+      overheardId,
+      "only speech addressee changes from not-this-actor to this actor",
+      "Directly addressed speech should create more attention pressure than the same overheard speech.",
+    ),
+  );
+}
+
+function addWarningFamily(
+  recipe: SplitRecipe,
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = recipe.split + ":warning-semantics";
+  const warningId = recipe.split + ":urgent-warning";
+  const requestId = recipe.split + ":warning-control-request";
+
+  const common = {
+    tick9PlayerX: recipe.speechX,
+    tick9PlayerVx: recipe.speechVx,
+  } as const;
+
+  states.push(
+    stateFromEpisode(
+      warningId,
+      familyId,
+      recipe.split,
+      "Direct urgent warning.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText: recipe.warningText,
+        ...common,
+        idSuffix: warningId,
+      }),
+      10,
+    ),
+    stateFromEpisode(
+      requestId,
+      familyId,
+      recipe.split,
+      "Direct non-urgent request under identical physics and addressee.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText: recipe.requestText,
+        ...common,
+        idSuffix: requestId,
+      }),
+      10,
+    ),
+  );
+
+  constraints.push(
+    directional(
+      recipe.split + ":warning-interrupt-over-request",
+      familyId,
+      recipe.split,
+      "interrupt",
+      warningId,
+      requestId,
+      "speech meaning changes from ordinary request to urgent danger warning; physics and addressee stay fixed",
+      "Urgent danger language should create more interruption pressure than an ordinary addressed request.",
+    ),
+    directional(
+      recipe.split + ":warning-threat-over-request",
+      familyId,
+      recipe.split,
+      "threat",
+      warningId,
+      requestId,
+      "speech meaning changes from ordinary request to urgent danger warning; physics and addressee stay fixed",
+      "Urgent danger language should increase immediate threat appraisal over an ordinary addressed request.",
+    ),
+    directional(
+      recipe.split + ":warning-cognition-over-request",
+      familyId,
+      recipe.split,
+      "cognition",
+      warningId,
+      requestId,
+      "speech meaning changes from ordinary request to urgent danger warning; physics and addressee stay fixed",
+      "Urgent danger language should create more pressure for deliberate reconsideration than an ordinary request.",
+    ),
+  );
+}
+
+function addApproachFamily(
+  recipe: SplitRecipe,
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = recipe.split + ":approach-speed";
+  const fastId = recipe.split + ":fast-close";
+  const passId = recipe.split + ":ordinary-pass";
+
+  states.push(
+    stateFromEpisode(
+      fastId,
+      familyId,
+      recipe.split,
+      "Silent fast closing approach.",
+      createR0CounterfactualEpisode({
+        speechExposure: "none",
+        tick9PlayerX: recipe.fastX,
+        tick9PlayerVx: recipe.fastVx,
+        idSuffix: fastId,
+      }),
+      10,
+    ),
+    stateFromEpisode(
+      passId,
+      familyId,
+      recipe.split,
+      "Silent ordinary nearby pass.",
+      createR0CounterfactualEpisode({
+        speechExposure: "none",
+        tick9PlayerX: recipe.passX,
+        tick9PlayerVx: recipe.passVx,
+        idSuffix: passId,
+      }),
+      10,
+    ),
+  );
+
+  constraints.push(
+    directional(
+      recipe.split + ":fast-close-threat-over-pass",
+      familyId,
+      recipe.split,
+      "threat",
+      fastId,
+      passId,
+      "closing speed changes materially while speech remains absent",
+      "Rapid closing motion should increase immediate threat appraisal relative to an ordinary silent pass.",
+    ),
+  );
+}
+
+function addHiddenWorldFamily(
+  recipe: SplitRecipe,
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = recipe.split + ":hidden-world-invariance";
+  const hiddenId = recipe.split + ":epistemic-hidden";
+  const controlId = recipe.split + ":epistemic-control";
+
+  const control = createR0CounterfactualEpisode({
     speechExposure: "none",
     hiddenOpeningSpeech: false,
-    idSuffix: "r1-epistemic-control",
+    idSuffix: controlId,
   });
   const hidden = createR0CounterfactualEpisode({
     speechExposure: "none",
     hiddenOpeningSpeech: true,
-    idSuffix: "r1-epistemic-hidden",
+    hiddenSpeechTick: recipe.hiddenTick,
+    idSuffix: hiddenId,
   });
 
-  const states: R1StateRecord[] = [
-    stateRecord(
-      "silent-pass",
-      "pass-by",
-      "Nearby player passes silently while actor continues its own task.",
-      required(challengeStates, "silent-pass"),
+  states.push(
+    stateFromEpisode(
+      hiddenId,
+      familyId,
+      recipe.split,
+      "World-only hidden event outside current actor sensory range.",
+      hidden,
+      recipe.hiddenTick,
     ),
-    stateRecord(
-      "addressed-request",
-      "request-addressing",
-      "Player directly asks the actor for help.",
-      required(challengeStates, "addressed-request"),
+    stateFromEpisode(
+      controlId,
+      familyId,
+      recipe.split,
+      "Matched control without the hidden World-only event.",
+      control,
+      recipe.hiddenTick,
     ),
-    stateRecord(
-      "overheard-request",
-      "request-addressing",
-      "Identical request is overheard rather than addressed to the actor.",
-      required(challengeStates, "overheard-request"),
-    ),
-    stateRecord(
-      "urgent-warning",
-      "warning-vs-quiet",
-      "Player directly gives an urgent warning to move away.",
-      required(challengeStates, "urgent-warning"),
-    ),
-    stateRecord(
-      "fast-close",
-      "approach-speed",
-      "Player closes distance rapidly without speaking.",
-      required(challengeStates, "fast-close"),
-    ),
-    stateRecord(
-      "epistemic-control",
-      "hidden-world-invariance",
-      "No hidden opening event exists.",
-      compilePrivateState(quiet.frames[0]!, "task"),
-    ),
-    stateRecord(
-      "epistemic-hidden",
-      "hidden-world-invariance",
-      "A hidden World event exists outside current actor perception.",
-      compilePrivateState(hidden.frames[0]!, "task"),
-    ),
-  ];
+  );
 
-  const constraints: R1CounterfactualConstraint[] = [
-    directional(
-      "addressed-social-over-overheard",
-      "request-addressing",
-      "social",
-      "addressed-request",
-      "overheard-request",
-      "speech addressee flips from other/none to this actor",
-      "Identical words addressed to the actor should be more socially relevant than merely overheard words.",
-    ),
-    directional(
-      "addressed-attention-over-overheard",
-      "request-addressing",
-      "attention",
-      "addressed-request",
-      "overheard-request",
-      "speech addressee flips from other/none to this actor",
-      "Directly addressed speech should create more attention pressure than the same overheard speech.",
-    ),
-    directional(
-      "fast-close-threat-over-pass",
-      "approach-speed",
-      "threat",
-      "fast-close",
-      "silent-pass",
-      "approach speed increases by more than 100 world-units/s with no speech mutation",
-      "Rapid closing motion should increase immediate threat appraisal relative to an ordinary silent pass.",
-    ),
-    directional(
-      "warning-attention-over-pass",
-      "warning-vs-quiet",
-      "attention",
-      "urgent-warning",
-      "silent-pass",
-      "direct urgent warning replaces silence",
-      "An addressed urgent warning should demand more attention than a silent nearby pass.",
-    ),
-    directional(
-      "warning-interrupt-over-pass",
-      "warning-vs-quiet",
-      "interrupt",
-      "urgent-warning",
-      "silent-pass",
-      "direct urgent warning replaces silence",
-      "An urgent warning should exert more interruption pressure than a silent pass-by.",
-    ),
-    directional(
-      "warning-cognition-over-pass",
-      "warning-vs-quiet",
-      "cognition",
-      "urgent-warning",
-      "silent-pass",
-      "direct urgent warning replaces silence",
-      "An urgent warning should create more pressure for deliberate reconsideration than a silent pass-by.",
-    ),
-    ...(["attention", "interrupt", "social", "threat", "cognition"] as const).map(
-      (dimension): R1CounterfactualConstraint => ({
-        id: "hidden-world-equal-" + dimension,
-        familyId: "hidden-world-invariance",
-        dimension,
-        relation: "equal",
-        leftStateId: "epistemic-hidden",
-        rightStateId: "epistemic-control",
-        strength: "hard_invariant",
-        causalMutation:
-          "World-only hidden event added outside actor sensory range; actor-private state remains byte-equivalent",
-        rationale:
-          "A semantic reflex must not respond to World facts the actor cannot perceive or legitimately know.",
-      }),
-    ),
-  ];
-
-  return { states, constraints };
+  for (const dimension of [
+    "attention",
+    "interrupt",
+    "social",
+    "threat",
+    "cognition",
+  ] as const) {
+    constraints.push({
+      id: recipe.split + ":hidden-world-equal-" + dimension,
+      familyId,
+      split: recipe.split,
+      dimension,
+      relation: "equal",
+      leftStateId: hiddenId,
+      rightStateId: controlId,
+      strength: "hard_invariant",
+      causalMutation:
+        "World-only hidden event differs; actor-private state must remain identical",
+      rationale:
+        "A semantic reflex must not respond to facts the actor cannot perceive or legitimately know.",
+    });
+  }
 }
 
-function stateRecord(
+function stateFromEpisode(
   id: string,
   familyId: string,
+  split: R1Split,
   description: string,
-  state: ActorPrivateState,
+  episode: ReturnType<typeof createR0CounterfactualEpisode>,
+  tick: number,
 ): R1StateRecord {
+  const world = episode.frames[tick];
+  if (!world) throw new Error("missing episode tick " + tick + " for " + id);
   return {
     id,
     familyId,
+    split,
     description,
-    state: structuredClone(state),
+    state: compilePrivateState(world, "task"),
   };
 }
 
 function directional(
   id: string,
   familyId: string,
+  split: R1Split,
   dimension: AppraisalId,
   leftStateId: string,
   rightStateId: string,
@@ -202,6 +399,7 @@ function directional(
   return {
     id,
     familyId,
+    split,
     dimension,
     relation: "greater",
     leftStateId,
@@ -212,11 +410,28 @@ function directional(
   };
 }
 
-function required(
-  states: ReadonlyMap<string, ActorPrivateState>,
-  id: string,
-): ActorPrivateState {
-  const state = states.get(id);
-  if (!state) throw new Error("missing semantic challenge state " + id);
-  return state;
+function assertSuiteReferences(
+  states: readonly R1StateRecord[],
+  constraints: readonly R1CounterfactualConstraint[],
+): void {
+  const ids = new Set(states.map((state) => state.id));
+  if (ids.size !== states.length) {
+    throw new Error("duplicate R1 state id");
+  }
+
+  for (const constraint of constraints) {
+    if (!ids.has(constraint.leftStateId) || !ids.has(constraint.rightStateId)) {
+      throw new Error("R1 constraint references missing state: " + constraint.id);
+    }
+    const left = states.find((state) => state.id === constraint.leftStateId)!;
+    const right = states.find((state) => state.id === constraint.rightStateId)!;
+    if (
+      left.split !== constraint.split ||
+      right.split !== constraint.split ||
+      left.familyId !== constraint.familyId ||
+      right.familyId !== constraint.familyId
+    ) {
+      throw new Error("R1 constraint crosses split/family boundary: " + constraint.id);
+    }
+  }
 }
