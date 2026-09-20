@@ -17,6 +17,10 @@ import {
 } from "./prototype-head";
 import { learnRegularizedLinearHeads } from "./linear-ranking-head";
 import {
+  evaluatePrototypeBankHeads,
+  learnPrototypeBankHeads,
+} from "./prototype-bank-head";
+import {
   analyzeRelationGeometry,
   analyzeTrainDirectionCoherence,
 } from "./relation-geometry";
@@ -263,15 +267,20 @@ async function runLearnedHead(
   }
 
   const headStarted = performance.now();
-  const heads =
-    request.headMode === "linear-ranking"
-      ? learnRegularizedLinearHeads(embeddingById, request.constraints)
-      : learnPrototypeHeads(embeddingById, request.constraints);
-  const evaluation = evaluatePrototypeHeads(
-    heads,
-    embeddingById,
-    request.constraints,
-  );
+  const evaluation =
+    request.headMode === "prototype-bank"
+      ? evaluatePrototypeBankHeads(
+          learnPrototypeBankHeads(embeddingById, request.constraints),
+          embeddingById,
+          request.constraints,
+        )
+      : evaluatePrototypeHeads(
+          request.headMode === "linear-ranking"
+            ? learnRegularizedLinearHeads(embeddingById, request.constraints)
+            : learnPrototypeHeads(embeddingById, request.constraints),
+          embeddingById,
+          request.constraints,
+        );
   const geometry = analyzeRelationGeometry(
     embeddingById,
     request.constraints,
