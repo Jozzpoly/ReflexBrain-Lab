@@ -5,7 +5,7 @@ import { compilePrivateState } from "../private-state";
 
 export type R1Relation = "greater" | "equal";
 export type R1ConstraintStrength = "hard_invariant" | "directional";
-export type R1Split = "train" | "dev" | "test";
+export type R1Split = "train" | "dev" | "test" | "ood";
 
 export interface R1StateRecord {
   id: string;
