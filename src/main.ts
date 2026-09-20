@@ -38,7 +38,10 @@ import {
   R1EncoderBenchmarkClient,
   type R1EncoderProgress,
 } from "./r1/encoder-client";
-import type { R1EncoderBenchmarkResult } from "./r1/encoder-contract";
+import type {
+  R1EncoderBenchmarkResult,
+  R1LearnedHeadResult,
+} from "./r1/encoder-contract";
 import { createSemanticChallenges } from "./challenges";
 import { RuleBaselineProvider } from "./rule-provider";
 import { runShadowEpisode } from "./shadow-runner";
@@ -151,6 +154,11 @@ let r1EncoderStatus = webGpuAvailable
   ? "R1 encoder benchmark has not run."
   : "R1 encoder benchmark unavailable: WebGPU is not available.";
 let r1EncoderResult: R1EncoderBenchmarkResult | null = null;
+let r1LearnedHeadBusy = false;
+let r1LearnedHeadStatus = webGpuAvailable
+  ? "R1 learned head has not run."
+  : "R1 learned head unavailable: WebGPU is not available.";
+let r1LearnedHeadResult: R1LearnedHeadResult | null = null;
 
 function selectedSpecimen(): Specimen {
   return specimens.find(
@@ -242,6 +250,10 @@ function render(): void {
     '<p class="status">' + escapeHtml(r1EncoderStatus) + "</p>",
     r1EncoderControls(),
     r1EncoderResult ? r1EncoderReportTable(r1EncoderResult) : "",
+    '<h3>Frozen-encoder learned appraisal head</h3>',
+    '<p class="status">' + escapeHtml(r1LearnedHeadStatus) + "</p>",
+    r1LearnedHeadControls(),
+    r1LearnedHeadResult ? r1LearnedHeadReportTable(r1LearnedHeadResult) : "",
     "</section>",
     '<section class="panel"><h2>Rule baseline · cross-variant snapshot at tick 10</h2>',
     comparisonTable(),
@@ -299,6 +311,12 @@ function render(): void {
     .querySelector<HTMLButtonElement>("[data-run-r1-encoder]")
     ?.addEventListener("click", () => {
       void runR1EncoderBenchmark();
+    });
+
+  document
+    .querySelector<HTMLButtonElement>("[data-run-r1-learned]")
+    ?.addEventListener("click", () => {
+      void runR1LearnedHead();
     });
 }
 
@@ -1237,6 +1255,184 @@ async function runAppraisalMatrix(): Promise<void> {
   }
 }
 
+function r1LearnedHeadControls(): string {
+  if (!webGpuAvailable) {
+    return "<button disabled>R1 learned head requires WebGPU</button>";
+  }
+
+  return (
+    '<button class="primary" data-run-r1-learned ' +
+    (r1LearnedHeadBusy || r1EncoderBusy ? "disabled" : "") +
+    ">Run frozen MiniLM learned appraisal head</button>"
+  );
+}
+
+async function runR1LearnedHead(): Promise<void> {
+  if (
+    !webGpuAvailable ||
+    r1LearnedHeadBusy ||
+    r1EncoderBusy
+  ) {
+    return;
+  }
+
+  const suite = createR1CounterfactualSuite();
+  const states = suite.states.map((state) => ({
+    id: state.id,
+    state: structuredClone(state.state),
+  }));
+  const constraints = suite.constraints.map((constraint) => ({
+    id: constraint.id,
+    familyId: constraint.familyId,
+    split: constraint.split,
+    dimension: constraint.dimension,
+    relation: constraint.relation,
+    leftStateId: constraint.leftStateId,
+    rightStateId: constraint.rightStateId,
+  }));
+
+  r1LearnedHeadBusy = true;
+  r1LearnedHeadStatus =
+    "Embedding all R1 states with frozen MiniLM, then learning heads from TRAIN relations only...";
+  r1LearnedHeadResult = null;
+  render();
+
+  try {
+    r1EncoderClient ??= new R1EncoderBenchmarkClient();
+    r1LearnedHeadResult = await r1EncoderClient.learnedHead(
+      states,
+      constraints,
+      updateR1LearnedHeadProgress,
+    );
+
+    const testRows = r1LearnedHeadResult.constraints.filter(
+      (constraint) => constraint.split === "test",
+    );
+    const passed = testRows.filter((constraint) => constraint.passed).length;
+    r1LearnedHeadStatus =
+      "R1 learned head complete · TEST " +
+      passed +
+      "/" +
+      testRows.length +
+      " causal relations passed.";
+  } catch (error) {
+    r1LearnedHeadStatus =
+      "R1 learned head failed: " + errorMessage(error);
+  } finally {
+    r1LearnedHeadBusy = false;
+    render();
+  }
+}
+
+function updateR1LearnedHeadProgress(progress: R1EncoderProgress): void {
+  const p =
+    progress.progress === null
+      ? ""
+      : " · " + progress.progress.toFixed(1) + "%";
+  const file = progress.file ? " · " + progress.file : "";
+  r1LearnedHeadStatus = progress.status + p + file;
+  render();
+}
+
+function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
+  const splitRows = (["train", "dev", "test"] as const)
+    .map((split) => {
+      const rows = result.constraints.filter(
+        (constraint) => constraint.split === split,
+      );
+      const passed = rows.filter((constraint) => constraint.passed).length;
+      return (
+        "<tr><td>" +
+        split +
+        "</td><td>" +
+        passed +
+        " / " +
+        rows.length +
+        "</td></tr>"
+      );
+    })
+    .join("");
+
+  const dimensionRows = result.dimensions
+    .map((dimension) => {
+      const split = (name: "train" | "dev" | "test") =>
+        dimension.splits.find((entry) => entry.split === name)!;
+      const train = split("train");
+      const dev = split("dev");
+      const test = split("test");
+
+      return (
+        "<tr><td>" +
+        escapeHtml(dimension.dimension) +
+        "</td><td>" +
+        dimension.trainingRelations +
+        "</td><td>" +
+        train.passed +
+        "/" +
+        train.total +
+        "</td><td>" +
+        dev.passed +
+        "/" +
+        dev.total +
+        "</td><td>" +
+        test.passed +
+        "/" +
+        test.total +
+        "</td></tr>"
+      );
+    })
+    .join("");
+
+  const heldOutFailures = result.constraints
+    .filter(
+      (constraint) =>
+        constraint.split !== "train" && !constraint.passed,
+    )
+    .map(
+      (constraint) =>
+        "<tr><td>" +
+        escapeHtml(constraint.split) +
+        "</td><td>" +
+        escapeHtml(constraint.dimension) +
+        "</td><td>" +
+        escapeHtml(constraint.familyId) +
+        "</td><td><code>" +
+        escapeHtml(constraint.id) +
+        "</code></td><td>" +
+        constraint.margin.toExponential(3) +
+        "</td></tr>",
+    )
+    .join("");
+
+  return [
+    '<p class="boundary">The encoder is frozen. Only five linear semantic directions are constructed from <strong>TRAIN directional embedding differences</strong>. DEV/TEST labels never update the head.</p>',
+    '<div class="result-meta">',
+    "<span>Embedding batch: <strong>" +
+      result.embeddingMs.toFixed(1) +
+      " ms / " +
+      result.constraints.length +
+      " constraints over 24 states</strong></span>",
+    "<span>Head learn+eval: <strong>" +
+      result.headMs.toFixed(3) +
+      " ms</strong></span>",
+    "<span>Embedding: <strong>" +
+      result.embeddingDimensions +
+      "d</strong></span>",
+    "</div>",
+    '<div class="table-wrap"><table><thead><tr><th>Split</th><th>Relations passed</th></tr></thead><tbody>',
+    splitRows,
+    "</tbody></table></div>",
+    '<div class="table-wrap"><table><thead><tr><th>Dimension</th><th>TRAIN relations</th><th>TRAIN</th><th>DEV</th><th>TEST</th></tr></thead><tbody>',
+    dimensionRows,
+    "</tbody></table></div>",
+    heldOutFailures.length > 0
+      ? '<h4>Held-out failures</h4><div class="table-wrap"><table><thead><tr><th>Split</th><th>Dimension</th><th>Family</th><th>Constraint</th><th>Margin</th></tr></thead><tbody>' +
+          heldOutFailures +
+          "</tbody></table></div>"
+      : '<p class="ready">No held-out relation failures in this seed suite.</p>',
+  ].join("");
+}
+
 function r1EncoderControls(): string {
   if (!webGpuAvailable) {
     return "<button disabled>R1 encoder requires WebGPU</button>";
@@ -1244,13 +1440,13 @@ function r1EncoderControls(): string {
 
   return (
     '<button class="primary" data-run-r1-encoder ' +
-    (r1EncoderBusy ? "disabled" : "") +
+    (r1EncoderBusy || r1LearnedHeadBusy ? "disabled" : "") +
     ">Run R1 MiniLM-L3 encoder benchmark</button>"
   );
 }
 
 async function runR1EncoderBenchmark(): Promise<void> {
-  if (!webGpuAvailable || r1EncoderBusy) return;
+  if (!webGpuAvailable || r1EncoderBusy || r1LearnedHeadBusy) return;
 
   const suite = createR1CounterfactualSuite();
   const states = suite.states
@@ -1480,13 +1676,19 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     mode !== "semantic-token-sweep" &&
     mode !== "appraisal-matrix" &&
     mode !== "bipolar-matrix" &&
-    mode !== "r1-encoder-benchmark"
+    mode !== "r1-encoder-benchmark" &&
+    mode !== "r1-learned-head"
   ) {
     return;
   }
 
   if (mode === "r1-encoder-benchmark") {
     await runR1EncoderBenchmark();
+    return;
+  }
+
+  if (mode === "r1-learned-head") {
+    await runR1LearnedHead();
     return;
   }
 
