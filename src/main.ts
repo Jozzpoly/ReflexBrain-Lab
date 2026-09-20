@@ -35,6 +35,7 @@ import {
 import { compilePrivateState } from "./private-state";
 import { createR1CounterfactualSuite } from "./r1/counterfactual-supervision";
 import { createR1OodRedTeamSuite } from "./r1/ood-red-team";
+import { createR1SemanticTrainingAugmentation } from "./r1/semantic-training-augmentation";
 import {
   R1EncoderBenchmarkClient,
   type R1EncoderProgress,
@@ -161,6 +162,8 @@ let r1LearnedHeadStatus = webGpuAvailable
   ? "R1 learned head has not run."
   : "R1 learned head unavailable: WebGPU is not available.";
 let r1LearnedHeadResult: R1LearnedHeadResult | null = null;
+type R1SupervisionMode = "base" | "expanded";
+let r1LearnedHeadSupervision: R1SupervisionMode = "base";
 
 function selectedSpecimen(): Specimen {
   return specimens.find(
@@ -325,6 +328,12 @@ function render(): void {
     .querySelector<HTMLButtonElement>("[data-run-r1-hybrid]")
     ?.addEventListener("click", () => {
       void runR1LearnedHead("hybrid");
+    });
+
+  document
+    .querySelector<HTMLButtonElement>("[data-run-r1-hybrid-expanded]")
+    ?.addEventListener("click", () => {
+      void runR1LearnedHead("hybrid", "expanded");
     });
 }
 
@@ -1279,12 +1288,16 @@ function r1LearnedHeadControls(): string {
     '<button class="primary" data-run-r1-hybrid ' +
     disabled +
     ">Run hybrid semantic + structured head</button>" +
+    '<button class="primary" data-run-r1-hybrid-expanded ' +
+    disabled +
+    ">Run hybrid + expanded TRAIN semantics</button>" +
     "</div>"
   );
 }
 
 async function runR1LearnedHead(
   representation: R1RepresentationMode,
+  supervision: R1SupervisionMode = "base",
 ): Promise<void> {
   if (
     !webGpuAvailable ||
@@ -1296,9 +1309,21 @@ async function runR1LearnedHead(
 
   const baseSuite = createR1CounterfactualSuite();
   const oodSuite = createR1OodRedTeamSuite();
+  const trainingAugmentation =
+    supervision === "expanded"
+      ? createR1SemanticTrainingAugmentation()
+      : { states: [], constraints: [] };
   const suite = {
-    states: [...baseSuite.states, ...oodSuite.states],
-    constraints: [...baseSuite.constraints, ...oodSuite.constraints],
+    states: [
+      ...baseSuite.states,
+      ...trainingAugmentation.states,
+      ...oodSuite.states,
+    ],
+    constraints: [
+      ...baseSuite.constraints,
+      ...trainingAugmentation.constraints,
+      ...oodSuite.constraints,
+    ],
   };
   const states = suite.states.map((state) => ({
     id: state.id,
@@ -1315,10 +1340,13 @@ async function runR1LearnedHead(
   }));
 
   r1LearnedHeadBusy = true;
+  r1LearnedHeadSupervision = supervision;
   r1LearnedHeadStatus =
     "Embedding all R1 states with frozen MiniLM, then learning " +
     representation +
-    " heads from TRAIN relations only...";
+    " heads from " +
+    supervision +
+    " TRAIN relations only...";
   r1LearnedHeadResult = null;
   render();
 
@@ -1342,6 +1370,8 @@ async function runR1LearnedHead(
     r1LearnedHeadStatus =
       "R1 " +
       representation +
+      "/" +
+      supervision +
       " head complete · TEST " +
       testPassed +
       "/" +
@@ -1468,6 +1498,9 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
     '<div class="result-meta">',
     "<span>Representation: <strong>" +
       escapeHtml(result.representation) +
+      "</strong></span>",
+    "<span>Supervision: <strong>" +
+      escapeHtml(r1LearnedHeadSupervision) +
       "</strong></span>",
     "<span>Embedding pass: <strong>" +
       result.embeddingMs.toFixed(1) +
@@ -1747,7 +1780,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     mode !== "bipolar-matrix" &&
     mode !== "r1-encoder-benchmark" &&
     mode !== "r1-learned-head" &&
-    mode !== "r1-hybrid-head"
+    mode !== "r1-hybrid-head" &&
+    mode !== "r1-hybrid-expanded-head"
   ) {
     return;
   }
@@ -1764,6 +1798,11 @@ async function autoRunSmokeIfRequested(): Promise<void> {
 
   if (mode === "r1-hybrid-head") {
     await runR1LearnedHead("hybrid");
+    return;
+  }
+
+  if (mode === "r1-hybrid-expanded-head") {
+    await runR1LearnedHead("hybrid", "expanded");
     return;
   }
 
