@@ -252,7 +252,7 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
       activity,
     );
 
-    const resolved = resolveFixtureOracle(privateFrame, oracle, physical);
+    const resolved = resolveFixtureOracle(actorPrivateFrame, oracle, physical);
     oracle = resolved.nextState;
 
     if (resolved.decision.behavior === "carry" ||
