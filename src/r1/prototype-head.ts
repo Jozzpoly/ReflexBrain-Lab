@@ -90,11 +90,7 @@ export function evaluatePrototypeHeads(
         : Math.abs(margin) <= equalityTolerance;
 
     return {
-      id: constraint.id,
-      split: constraint.split,
-      dimension: constraint.dimension,
-      relation: constraint.relation,
-      familyId: constraint.familyId,
+      ...constraint,
       margin,
       passed,
     };
