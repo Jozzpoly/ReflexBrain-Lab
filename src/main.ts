@@ -42,6 +42,7 @@ import {
 } from "./r1/encoder-client";
 import type {
   R1EncoderBenchmarkResult,
+  R1HeadMode,
   R1LearnedHeadResult,
   R1RepresentationMode,
 } from "./r1/encoder-contract";
@@ -164,6 +165,7 @@ let r1LearnedHeadStatus = webGpuAvailable
 let r1LearnedHeadResult: R1LearnedHeadResult | null = null;
 type R1SupervisionMode = "base" | "expanded";
 let r1LearnedHeadSupervision: R1SupervisionMode = "base";
+let r1LearnedHeadMode: R1HeadMode = "prototype";
 
 function selectedSpecimen(): Specimen {
   return specimens.find(
@@ -334,6 +336,12 @@ function render(): void {
     .querySelector<HTMLButtonElement>("[data-run-r1-hybrid-expanded]")
     ?.addEventListener("click", () => {
       void runR1LearnedHead("hybrid", "expanded");
+    });
+
+  document
+    .querySelector<HTMLButtonElement>("[data-run-r1-hybrid-expanded-linear]")
+    ?.addEventListener("click", () => {
+      void runR1LearnedHead("hybrid", "expanded", "linear-ranking");
     });
 }
 
@@ -1291,6 +1299,9 @@ function r1LearnedHeadControls(): string {
     '<button class="primary" data-run-r1-hybrid-expanded ' +
     disabled +
     ">Run hybrid + expanded TRAIN semantics</button>" +
+    '<button class="primary" data-run-r1-hybrid-expanded-linear ' +
+    disabled +
+    ">Run hybrid + expanded TRAIN + linear ranker</button>" +
     "</div>"
   );
 }
@@ -1298,6 +1309,7 @@ function r1LearnedHeadControls(): string {
 async function runR1LearnedHead(
   representation: R1RepresentationMode,
   supervision: R1SupervisionMode = "base",
+  headMode: R1HeadMode = "prototype",
 ): Promise<void> {
   if (
     !webGpuAvailable ||
@@ -1341,12 +1353,15 @@ async function runR1LearnedHead(
 
   r1LearnedHeadBusy = true;
   r1LearnedHeadSupervision = supervision;
+  r1LearnedHeadMode = headMode;
   r1LearnedHeadStatus =
     "Embedding all R1 states with frozen MiniLM, then learning " +
     representation +
     " heads from " +
     supervision +
-    " TRAIN relations only...";
+    " TRAIN relations only with " +
+    headMode +
+    " head...";
   r1LearnedHeadResult = null;
   render();
 
@@ -1356,6 +1371,7 @@ async function runR1LearnedHead(
       states,
       constraints,
       representation,
+      headMode,
       updateR1LearnedHeadProgress,
     );
 
@@ -1372,6 +1388,8 @@ async function runR1LearnedHead(
       representation +
       "/" +
       supervision +
+      "/" +
+      headMode +
       " head complete · TEST " +
       testPassed +
       "/" +
@@ -1501,6 +1519,9 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
       "</strong></span>",
     "<span>Supervision: <strong>" +
       escapeHtml(r1LearnedHeadSupervision) +
+      "</strong></span>",
+    "<span>Head: <strong>" +
+      escapeHtml(result.headMode) +
       "</strong></span>",
     "<span>Embedding pass: <strong>" +
       result.embeddingMs.toFixed(1) +
@@ -1781,7 +1802,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     mode !== "r1-encoder-benchmark" &&
     mode !== "r1-learned-head" &&
     mode !== "r1-hybrid-head" &&
-    mode !== "r1-hybrid-expanded-head"
+    mode !== "r1-hybrid-expanded-head" &&
+    mode !== "r1-hybrid-expanded-linear-head"
   ) {
     return;
   }
@@ -1803,6 +1825,11 @@ async function autoRunSmokeIfRequested(): Promise<void> {
 
   if (mode === "r1-hybrid-expanded-head") {
     await runR1LearnedHead("hybrid", "expanded");
+    return;
+  }
+
+  if (mode === "r1-hybrid-expanded-linear-head") {
+    await runR1LearnedHead("hybrid", "expanded", "linear-ranking");
     return;
   }
 
