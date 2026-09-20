@@ -794,3 +794,68 @@ describe("R1 surface-memorizer negative control", () => {
     }
   });
 });
+
+
+describe("R1 encoder benchmark contract", () => {
+  it("serializes only actor-private state and preserves epistemic equality", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const { serializeR1PrivateState } = await import(
+      "../src/r1/encoder-contract"
+    );
+
+    const suite = createR1CounterfactualSuite();
+    const hidden = suite.states.find(
+      (state) => state.id === "test:epistemic-hidden",
+    )!;
+    const control = suite.states.find(
+      (state) => state.id === "test:epistemic-control",
+    )!;
+
+    expect(serializeR1PrivateState(hidden.state)).toBe(
+      serializeR1PrivateState(control.state),
+    );
+    expect(serializeR1PrivateState(hidden.state)).not.toContain(
+      "hidden World",
+    );
+    expect(serializeR1PrivateState(hidden.state)).not.toContain(
+      "epistemic-hidden",
+    );
+  });
+
+  it("keeps warning-vs-request encoder input matched except for speech meaning", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const { serializeR1PrivateState } = await import(
+      "../src/r1/encoder-contract"
+    );
+
+    const suite = createR1CounterfactualSuite();
+    const warning = suite.states.find(
+      (state) => state.id === "test:urgent-warning",
+    )!;
+    const request = suite.states.find(
+      (state) => state.id === "test:warning-control-request",
+    )!;
+
+    const normalizeText = (value: string) =>
+      value.replace(/text "[^"]*"/, 'text "<TEXT>"');
+
+    expect(normalizeText(serializeR1PrivateState(warning.state))).toBe(
+      normalizeText(serializeR1PrivateState(request.state)),
+    );
+    expect(serializeR1PrivateState(warning.state)).not.toBe(
+      serializeR1PrivateState(request.state),
+    );
+  });
+
+  it("computes cosine similarity without hidden normalization assumptions", async () => {
+    const { cosineSimilarity } = await import("../src/r1/encoder-contract");
+
+    expect(cosineSimilarity([1, 0], [1, 0])).toBeCloseTo(1, 12);
+    expect(cosineSimilarity([1, 0], [0, 1])).toBeCloseTo(0, 12);
+    expect(cosineSimilarity([1, 1], [-1, -1])).toBeCloseTo(-1, 12);
+  });
+});
