@@ -721,3 +721,104 @@ Next R1 work should stress and improve the learned appraisal surface itself:
 7. only after semantic robustness earns it, move into temporal Reflex Dynamics and embodied continuous episodes.
 
 This keeps the project aimed at the real question: whether a cheap local semantic reflex layer can remain useful and stable under embodied causal variation, not whether a toy benchmark can be made green.
+
+
+## R1 semantic OOD v2 — pragmatic/currentness adversaries
+
+The OOD suite was expanded without changing TRAIN, DEV or TEST supervision.
+
+New evaluation-only families add:
+
+- indirect current warning vs non-current maintenance information using similar hazard vocabulary;
+- the **same alarming quote** framed either as a current radio warning or as a completed historical drill;
+- unsafe vs safe meaning with heavily overlapping lexical surface and negation;
+- current unresolved uncertainty vs an old uncertainty report explicitly resolved later.
+
+Current OOD size:
+
+- **18 private states**;
+- **18 causal relations**;
+- OOD remains evaluation-only and cannot update prototype-head weights.
+
+The apparatus passed CI before live inference. New matched semantic pairs were verified to have identical actor-private physical/addressee state after speech-text normalization. The quoted-warning pair contains the exact same alarming text on both sides:
+
+`"RUN, THE CEILING IS FALLING!"`
+
+Only pragmatic / temporal framing differs.
+
+### Live result
+
+| representation | TRAIN | DEV | TEST | OOD v2 |
+| --- | ---: | ---: | ---: | ---: |
+| encoder-only 384d | 11/11 | 11/11 | 10/11 | **16/18** |
+| hybrid 384d + 12 structured | 11/11 | 11/11 | 11/11 | **16/18** |
+
+Both representations fail the same two new semantic constraints:
+
+- quoted current warning > completed old drill, `interrupt`;
+- quoted current warning > completed old drill, `threat`.
+
+Observed hybrid margins:
+
+| OOD semantic relation | hybrid margin | result |
+| --- | ---: | --- |
+| danger-decoy interrupt | +2.3168e-2 | PASS |
+| danger-decoy threat | +1.6263e-2 | PASS |
+| indirect warning interrupt | +3.7537e-2 | PASS |
+| indirect warning threat | +2.7529e-2 | PASS |
+| quoted/current warning interrupt | **-7.9947e-3** | **FAIL** |
+| quoted/current warning threat | **-5.9483e-3** | **FAIL** |
+| negation unsafe > safe interrupt | +2.3092e-3 | PASS, very small margin |
+| negation unsafe > safe threat | +2.2551e-3 | PASS, very small margin |
+| ambiguity cognition | +1.5987e-2 | PASS |
+| live uncertainty > resolved cognition | +3.8882e-2 | PASS |
+| fast-close physical threat | +7.1871e-1 | PASS |
+| hidden urgent danger equalities | exactly 0 on all five axes | PASS |
+
+The encoder-only quoted interrupt failure was also **-7.9947e-3**. Hybrid threat changes slightly because the hybrid threat direction also incorporates explicit structured kinematic supervision, but it remains negative.
+
+### Repeatability check
+
+A second identical hybrid run on the same deployed code and same 48-state evaluation returned the same key margins to the displayed precision, including:
+
+- quoted interrupt: **-7.9947e-3**;
+- quoted threat: **-5.9483e-3**;
+- negation interrupt: **+2.3092e-3**;
+- negation threat: **+2.2551e-3**;
+- physical threat: **+7.1871e-1**.
+
+So the quoted failure is not currently behaving like a random sign flip from WebGPU numerical noise.
+
+### Interpretation
+
+**OOD v2 successfully found a real semantic boundary.**
+
+The result is more informative than another perfect benchmark:
+
+- explicit structured channels continue to solve exact physical/directness facts;
+- they do not hide semantic failure;
+- the frozen sentence encoder + one prototype direction handles direct warnings, indirect warnings, danger-word reassurance, negation and two uncertainty forms in this small campaign;
+- it fails when identical alarming content must be interpreted differently because one occurrence is current/operative and the other is merely quoted historical information.
+
+The very small positive negation margins are also a warning: PASS alone is not evidence of a robust semantic reflex.
+
+### Next falsifier: supervision breadth before model complexity
+
+Do **not** train on the failed OOD examples and do not move to LoRA yet.
+
+Freeze OOD v2 exactly as it is. Add several **independent TRAIN-only semantic families** whose wording and scenario do not copy the quoted adversary, but which teach broader distinctions such as:
+
+- current physical hazard vs already-resolved past hazard;
+- active failure vs serviced/verified historical failure;
+- unresolved prerequisite vs independently confirmed prerequisite.
+
+Then compare, on the unchanged OOD v2:
+
+1. original/base supervision;
+2. expanded TRAIN semantic supervision;
+
+with the encoder still frozen and the same transparent head construction first.
+
+If expanded independent supervision fixes the quoted/currentness OOD relation, the representation likely contains useful information and the earlier failure was primarily supervision/head-direction poverty.
+
+If it remains failed, the next question becomes head capacity / representation geometry, at which point a tiny regularized linear or MLP readout is earned before any backbone adaptation.
