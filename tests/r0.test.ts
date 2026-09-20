@@ -1282,6 +1282,7 @@ describe("R1 adversarial OOD red-team", () => {
       ["ood:v3-hatch-unsafe", "ood:v3-hatch-safe"],
       ["ood:v3-immediate-hazard", "ood:v3-immediate-deadline"],
       ["ood:v3-deadline-now", "ood:v3-deadline-later"],
+      ["ood:v3-destination-unknown", "ood:v3-destination-known"],
     ] as const) {
       expect(tokenBag(speechText(leftId))).toEqual(
         tokenBag(speechText(rightId)),
