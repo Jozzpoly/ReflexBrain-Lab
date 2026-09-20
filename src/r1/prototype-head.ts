@@ -100,7 +100,7 @@ export function evaluatePrototypeHeads(
     const byDimension = results.filter(
       (result) => result.dimension === dimension,
     );
-    const splitCounts = (["train", "dev", "test"] as const).map((split) => {
+    const splitCounts = (["train", "dev", "test", "ood"] as const).map((split) => {
       const rows = byDimension.filter((result) => result.split === split);
       return {
         split,
