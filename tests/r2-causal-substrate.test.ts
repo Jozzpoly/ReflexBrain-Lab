@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createR2ChallengeSpaceV0 } from "../src/r2/challenge-space";
 import type { CausalEpisodeFrame } from "../src/r2/causal-contracts";
+import { buildCausalMicroscope } from "../src/r2/causal-microscope";
 import { validateCausalEpisode } from "../src/r2/causal-validation";
 import type { OracleClaim } from "../src/r2/oracle-ladder";
 import {
@@ -11,11 +12,15 @@ import {
 describe("R2 causal organism substrate", () => {
   const challenges = createR2ChallengeSpaceV0();
 
-  it("starts from causal challenge families rather than legacy ReflexScores", () => {
+  it("expands causal distinctions without requiring a replacement score ontology", () => {
     expect(challenges.map((challenge) => challenge.family)).toEqual([
       "same_event_different_history",
       "same_world_different_knowledge",
       "same_motion_different_provenance",
+      "same_message_different_activity",
+      "actuality_and_applicability",
+      "interruption_and_resumption",
+      "supersession",
     ]);
 
     const serialized = JSON.stringify(challenges);
@@ -23,6 +28,8 @@ describe("R2 causal organism substrate", () => {
     expect(serialized).not.toContain("interruptCurrent");
     expect(serialized).not.toContain("socialRelevance");
     expect(serialized).not.toContain("deeperCognition");
+    expect(serialized).not.toContain('"threat":');
+    expect(serialized).not.toContain('"significance":');
   });
 
   it("qualifies all initial challenge variants as causally well-formed episodes", () => {
@@ -50,22 +57,7 @@ describe("R2 causal organism substrate", () => {
     );
   });
 
-  it("represents private history as earlier causal evidence rather than a global status enum", () => {
-    const variant = challenges[0]!.variants[0]!;
-    expect(variant.frames).toHaveLength(2);
-
-    const earlier = variant.frames[0]!;
-    const current = variant.frames[1]!;
-    expect(earlier.world.events[0]!.id).toBe("event:earlier-tool-loan");
-    expect(
-      current.privateByActor["resident:mira"]!.history[0]!.provenanceEventIds,
-    ).toEqual(["event:earlier-tool-loan"]);
-    expect(
-      "status" in current.privateByActor["resident:mira"]!.history[0]!,
-    ).toBe(false);
-  });
-
-  it("can keep identical World truth hidden from an actor with no observation path", () => {
+  it("keeps identical World truth hidden from an actor with no observation path", () => {
     const challenge = challenges[1]!;
     const seen = challenge.variants[0]!.frames[0]!;
     const unseen = challenge.variants[1]!.frames[0]!;
@@ -83,12 +75,57 @@ describe("R2 causal organism substrate", () => {
     expect(ownerOrigin.privateByActor["resident:mira"]!.observations).toEqual(
       externalOrigin.privateByActor["resident:mira"]!.observations,
     );
-    expect(ownerOrigin.world.events[0]!.kind).toBe(
-      "control.requested_motion",
+    expect(ownerOrigin.world.events[0]!.kind).toBe("control.requested_motion");
+    expect(externalOrigin.world.events[0]!.kind).toBe("body.external_impulse");
+  });
+
+  it("keeps identical speech while varying only the ongoing activity context", () => {
+    const challenge = challenges[3]!;
+    const low = challenge.variants[0]!.frames[0]!;
+    const committed = challenge.variants[1]!.frames[0]!;
+
+    expect(low.world).toEqual(committed.world);
+    expect(low.privateByActor["resident:mira"]!.observations).toEqual(
+      committed.privateByActor["resident:mira"]!.observations,
     );
-    expect(externalOrigin.world.events[0]!.kind).toBe(
-      "body.external_impulse",
+    expect(low.privateByActor["resident:mira"]!.activity?.kind).not.toBe(
+      committed.privateByActor["resident:mira"]!.activity?.kind,
     );
+  });
+
+  it("preserves activity identity across a transient hazard episode", () => {
+    const challenge = challenges[5]!;
+    const ids = challenge.variants[0]!.frames.map(
+      (frame) => frame.privateByActor["resident:mira"]!.activity?.id,
+    );
+    expect(ids).toEqual([
+      "activity:carry-crate",
+      "activity:carry-crate",
+      "activity:carry-crate",
+    ]);
+  });
+
+  it("keeps both directive and later cancellation in private causal history before stale-looking playback", () => {
+    const challenge = challenges[6]!;
+    const last = challenge.variants[0]!.frames.at(-1)!;
+    expect(
+      last.privateByActor["resident:mira"]!.history.map((entry) => entry.id),
+    ).toEqual(["history:gate-order", "history:gate-cancel"]);
+  });
+
+  it("builds a neutral microscope without adding inferred cognitive labels", () => {
+    const challenge = challenges[6]!;
+    const rows = buildCausalMicroscope(challenge.variants[0]!.frames);
+    const serialized = JSON.stringify(rows);
+
+    expect(rows.some((row) => row.kind === "world_event")).toBe(true);
+    expect(rows.some((row) => row.kind === "observation")).toBe(true);
+    expect(rows.some((row) => row.kind === "history")).toBe(true);
+    expect(rows.some((row) => row.kind === "activity")).toBe(true);
+    expect(serialized).not.toContain("salience");
+    expect(serialized).not.toContain("threat");
+    expect(serialized).not.toContain("interrupt");
+    expect(serialized).not.toContain("significance");
   });
 
   it("rejects private evidence that cites a future causal event", () => {
