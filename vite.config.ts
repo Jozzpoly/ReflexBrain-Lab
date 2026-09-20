@@ -7,6 +7,7 @@ export default defineConfig({
       input: {
         main: "index.html",
         r2: "r2.html",
+        r2Live: "r2-live.html",
       },
     },
   },

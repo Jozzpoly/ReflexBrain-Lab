@@ -1,0 +1,74 @@
+.live-shell .hero { margin-bottom: 18px; }
+.live-world { height: 250px; }
+.live-hazard { background: repeating-linear-gradient(135deg, #9a594a 0 8px, #6f3d35 8px 16px); }
+
+.truth-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid #222d37;
+  border-bottom: 1px solid #222d37;
+}
+.truth-strip > div { padding: 12px 18px; border-right: 1px solid #222d37; }
+.truth-strip > div:last-child { border-right: 0; }
+.truth-strip strong { display: block; font-size: 13px; }
+
+.live-controls-panel {
+  margin-top: 14px;
+  border: 1px solid #25303b;
+  background: rgba(14, 20, 27, .91);
+  border-radius: 18px;
+  padding: 16px;
+  display: grid;
+  gap: 15px;
+}
+.control-group { display: grid; gap: 7px; }
+.control-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.control-row button {
+  border: 1px solid #2b3845;
+  background: #111821;
+  color: #cbd5df;
+  padding: 9px 13px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.control-row button:hover { border-color: #52687c; }
+.control-row button.selected { border-color: #78a9d6; background: #18314a; color: #e6f2ff; }
+.control-row button.primary { background: #316ca7; border-color: #4a83ba; color: white; }
+.speech-control input {
+  flex: 1 1 420px;
+  min-width: 220px;
+  border: 1px solid #31404e;
+  background: #0a1016;
+  color: #e5edf5;
+  padding: 10px 12px;
+  border-radius: 9px;
+  outline: none;
+}
+.speech-control input:focus { border-color: #6d9bc7; box-shadow: 0 0 0 3px rgba(75, 132, 184, .13); }
+
+.live-timeline { grid-template-columns: repeat(auto-fit, minmax(54px, 1fr)); }
+
+.private-panel {
+  border: 1px solid #25303b;
+  background: rgba(14, 20, 27, .91);
+  border-radius: 18px;
+  overflow: hidden;
+  margin-top: 14px;
+}
+.private-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; padding: 14px; }
+.evidence-card {
+  border: 1px solid #2a3a45;
+  background: #0b1218;
+  border-radius: 10px;
+  padding: 11px;
+  min-width: 0;
+}
+.evidence-card span { display: block; color: #7ecda4; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 5px; }
+.evidence-card strong { display: block; color: #d8e1e9; font-size: 13px; margin-bottom: 6px; }
+.evidence-card small { display: block; color: #7f91a2; overflow-wrap: anywhere; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+@media (max-width: 760px) {
+  .truth-strip { grid-template-columns: 1fr; }
+  .truth-strip > div { border-right: 0; border-bottom: 1px solid #222d37; }
+  .truth-strip > div:last-child { border-bottom: 0; }
+}
