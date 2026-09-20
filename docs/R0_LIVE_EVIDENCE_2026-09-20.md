@@ -1439,3 +1439,120 @@ Next experiment:
 If independent pragmatic supervision repairs those four relations without DEV/TEST regressions, the evidence favors supervision-geometry poverty.
 
 If it does not, representation geometry / appraisal ontology becomes the stronger bottleneck.
+
+
+## R1 pragmatic-breadth + TRAIN-direction coherence — destructive averaging
+
+OOD v3 froze the current-best expanded configuration before evaluation and exposed five failures at 21/26 OOD.
+
+An independent pragmatic TRAIN augmentation then added four directional relations without changing OOD v3:
+
+- active directive > retired directive, interrupt;
+- unsafe circuit > safe circuit, interrupt;
+- unsafe circuit > safe circuit, threat;
+- immediate injury risk > immediate filing deadline, threat.
+
+Routing/cognition TRAIN was deliberately unchanged.
+
+The pragmatic augmentation remained TRAIN-only and passed the lexical negative-control qualification.
+
+### Pragmatic breadth result
+
+Both existing one-vector heads give the same aggregate result:
+
+| head | TRAIN | DEV | TEST | OOD v3 |
+| --- | ---: | ---: | ---: | ---: |
+| prototype sum-of-directions | 20/20 | **10/11** | 11/11 | **20/26** |
+| deterministic linear ranking | 20/20 | **10/11** | 11/11 | **20/26** |
+
+So optimizer choice still does not resolve the semantic conflict.
+
+Pragmatic breadth repairs some target distinctions:
+
+- v3 negation-scope interrupt becomes strongly positive (about **+4.31e-2**);
+- v3 negation-scope threat becomes strongly positive (about **+2.89e-2**);
+- the older negation OOD family also becomes strongly positive.
+
+But it regresses older semantics and leaves other v3 failures:
+
+- old warning-vs-reassurance interrupt becomes negative (about **-3.3e-3** prototype);
+- old warning-vs-reassurance threat becomes negative (about **-1.0e-2**);
+- old indirect-warning threat becomes negative (about **-2.5e-3**);
+- v3 operative-order interrupt remains slightly negative (about **-7.2e-4**);
+- v3 hazard-vs-deadline threat remains negative (about **-6.8e-3**);
+- v3 routing cognition remains **-1.4546e-3** because cognition TRAIN was intentionally unchanged.
+
+The DEV regression is the existing warning-interrupt relation: pragmatic breadth reduces DEV interrupt from 2/2 to 1/2 while TEST remains 2/2.
+
+### TRAIN-direction coherence
+
+A direct audit of normalized TRAIN pairwise deltas shows why adding examples is not monotonic.
+
+Expanded current-best:
+
+| dimension | TRAIN dirs | min cosine | mean cosine | max cosine |
+| --- | ---: | ---: | ---: | ---: |
+| interrupt | 3 | +0.000 | **+0.058** | +0.169 |
+| threat | 4 | -0.001 | **+0.031** | +0.169 |
+| cognition | 2 | +0.166 | **+0.166** | +0.166 |
+
+Pragmatic breadth:
+
+| dimension | TRAIN dirs | min cosine | mean cosine | max cosine |
+| --- | ---: | ---: | ---: | ---: |
+| interrupt | 5 | **-0.090** | **+0.022** | +0.183 |
+| threat | 6 | **-0.090** | **+0.011** | +0.169 |
+| cognition | 2 | +0.166 | **+0.166** | +0.166 |
+
+Examples of the conflict:
+
+- pressure-interrupt vs circuit-unsafe-interrupt: **-0.090**;
+- hoist-interrupt vs circuit-unsafe-interrupt: **-0.081**;
+- warning-interrupt vs circuit-unsafe-interrupt: **-0.038**;
+- pressure-threat vs circuit-unsafe-threat: **-0.090**;
+- hoist-threat vs circuit-unsafe-threat: **-0.081**;
+- pressure-threat vs injury-vs-filing threat: **-0.061**.
+
+The destructive averaging is visible directly on held-out geometry. For the older warning-vs-reassurance interrupt relation, several TRAIN reasons align positively (warning, directive, pressure, hoist), while the new circuit-safety reason is strongly opposed. Summing all reasons into one vector flips the final relation despite useful evidence being present.
+
+### Interpretation
+
+**MATERIAL FINDING: interrupt and threat are behaving as multi-causal appraisals, not as single semantic directions.**
+
+The failure mode is no longer well described as simply “insufficient supervision.”
+
+More TRAIN examples can add a valid new reason while rotating a one-vector head away from an older valid reason. The linear-ranking control does not remove this because it still compresses each appraisal to one vector.
+
+This does not yet prove that a multi-prototype architecture is better. It earns that falsifier.
+
+### Earned next falsifier: transparent multi-reason prototype bank
+
+Freeze:
+
+- MiniLM-L3 q8;
+- isolated per-state embedding;
+- hybrid 384D + 12 structured representation;
+- OOD v3;
+- base/expanded/pragmatic TRAIN sets;
+- DEV/TEST.
+
+Add a deterministic TRAIN-only **prototype bank** head:
+
+- every TRAIN greater relation contributes its left state as a higher-appraisal prototype and right state as a lower-appraisal prototype for that dimension;
+- no averaging of directional deltas;
+- state score = distance to nearest lower prototype minus distance to nearest higher prototype;
+- use squared Euclidean distance in the existing hybrid representation, with no learned temperature or OOD-tuned hyperparameter;
+- identical actor-private states must still score identically, preserving equality invariants.
+
+This is a deliberately simple multimodal classifier, not a final ReflexBrain design.
+
+Falsifier:
+
+1. qualify that only TRAIN anchors enter the bank;
+2. prove deterministic/equality behavior on synthetic fixtures;
+3. show a synthetic two-mode case where opposing local reasons cannot be represented by one summed direction but are represented by the bank;
+4. compare expanded and pragmatic-breadth prototype-bank heads on frozen OOD v3.
+
+If the bank preserves older warning relations while retaining the new negation/currentness gains without DEV/TEST regression, the evidence supports a multi-causal appraisal representation.
+
+If it still trades one valid reason against another, the next problem is likely the appraisal ontology / representation itself rather than head optimization.
