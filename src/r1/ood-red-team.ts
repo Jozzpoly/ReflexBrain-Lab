@@ -702,7 +702,7 @@ function addRoutingUncertainty(
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
-          "The destination code is absent. Determine which depot receives this pallet before routing it.",
+          "Depot identity is not established; checking is required before routing.",
         ...common,
         idSuffix: "ood-v3-destination-unknown",
       }),
@@ -715,7 +715,7 @@ function addRoutingUncertainty(
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
-          "The destination code names depot four. Route this pallet there.",
+          "Depot identity is established; checking is not required before routing.",
         ...common,
         idSuffix: "ood-v3-destination-known",
       }),
@@ -730,8 +730,8 @@ function addRoutingUncertainty(
       "cognition",
       "ood:v3-destination-unknown",
       "ood:v3-destination-known",
-      "routing destination changes from absent and requiring determination to explicitly established",
-      "Missing destination evidence should create more deliberate-cognition pressure than an explicitly established routing destination.",
+      "identical binary token set; negation moves between depot establishment and checking requirement",
+      "Unestablished depot identity with checking required should create more deliberate-cognition pressure than established identity with checking not required.",
     ),
   );
 }
