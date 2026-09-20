@@ -593,11 +593,11 @@ describe("R1 counterfactual supervision suite", () => {
     );
     const suite = createR1CounterfactualSuite();
 
-    expect(suite.states).toHaveLength(24);
+    expect(suite.states).toHaveLength(30);
     expect(suite.constraints).toHaveLength(33);
 
     for (const split of ["train", "dev", "test"] as const) {
-      expect(suite.states.filter((state) => state.split === split)).toHaveLength(8);
+      expect(suite.states.filter((state) => state.split === split)).toHaveLength(10);
       expect(
         suite.constraints.filter((constraint) => constraint.split === split),
       ).toHaveLength(11);
@@ -703,7 +703,49 @@ describe("R1 counterfactual supervision suite", () => {
       );
       expect(
         new Set(semanticConstraints.map((constraint) => constraint.dimension)),
-      ).toEqual(new Set(["interrupt", "threat", "cognition"]));
+      ).toEqual(new Set(["interrupt", "threat"]));
+    }
+  });
+
+  it("gives deeper cognition its own ambiguity-vs-clear causal family", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const suite = createR1CounterfactualSuite();
+
+    for (const split of ["train", "dev", "test"] as const) {
+      const ambiguous = suite.states.find(
+        (state) => state.id === split + ":ambiguous-instruction",
+      )!;
+      const clear = suite.states.find(
+        (state) => state.id === split + ":clear-instruction",
+      )!;
+
+      const normalizeSpeechText = (state: ActorPrivateState) => ({
+        ...state,
+        percepts: state.percepts.map((percept) =>
+          percept.kind === "speech"
+            ? { ...percept, text: "<TEXT>" }
+            : percept,
+        ),
+      });
+
+      expect(normalizeSpeechText(ambiguous.state)).toEqual(
+        normalizeSpeechText(clear.state),
+      );
+
+      const constraints = suite.constraints.filter(
+        (constraint) =>
+          constraint.split === split &&
+          constraint.familyId === split + ":cognition-ambiguity",
+      );
+      expect(constraints).toHaveLength(1);
+      expect(constraints[0]).toMatchObject({
+        dimension: "cognition",
+        relation: "greater",
+        leftStateId: split + ":ambiguous-instruction",
+        rightStateId: split + ":clear-instruction",
+      });
     }
   });
 
@@ -753,8 +795,8 @@ describe("R1 surface-memorizer negative control", () => {
     expect(reports.find((report) => report.split === "train")).toMatchObject({
       passed: 11,
       total: 11,
-      warningSemanticPassed: 3,
-      warningSemanticTotal: 3,
+      warningSemanticPassed: 2,
+      warningSemanticTotal: 2,
     });
 
     for (const split of ["dev", "test"] as const) {
@@ -763,8 +805,34 @@ describe("R1 surface-memorizer negative control", () => {
       expect(report.equalPassed).toBe(5);
       expect(report.directionalPassed).toBe(3);
       expect(report.warningSemanticPassed).toBe(0);
-      expect(report.warningSemanticTotal).toBe(3);
+      expect(report.warningSemanticTotal).toBe(2);
       expect(report.passed).toBe(8);
+    }
+  });
+
+  it("does not solve held-out cognition ambiguity by train lexical memorization", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const { score, trainSurfaceMemorizer } = await import(
+      "../src/r1/surface-baseline"
+    );
+
+    const suite = createR1CounterfactualSuite();
+    const model = trainSurfaceMemorizer(suite);
+
+    for (const split of ["dev", "test"] as const) {
+      const ambiguous = suite.states.find(
+        (state) => state.id === split + ":ambiguous-instruction",
+      )!;
+      const clear = suite.states.find(
+        (state) => state.id === split + ":clear-instruction",
+      )!;
+
+      const margin =
+        score(model, "cognition", ambiguous.state) -
+        score(model, "cognition", clear.state);
+      expect(margin).toBeLessThanOrEqual(0);
     }
   });
 
@@ -789,6 +857,17 @@ describe("R1 surface-memorizer negative control", () => {
       "hand",
       "assist",
       "briefly",
+      "mira",
+      "retain",
+      "confirm",
+      "ownership",
+      "removal",
+      "route",
+      "closure",
+      "establish",
+      "passage",
+      "condition",
+      "transport",
     ]) {
       expect(vocabulary.has(token)).toBe(false);
     }
