@@ -734,3 +734,63 @@ describe("R1 counterfactual supervision suite", () => {
     }
   });
 });
+
+
+describe("R1 surface-memorizer negative control", () => {
+  it("fits train while failing held-out semantic paraphrases", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const {
+      evaluateSurfaceMemorizer,
+      trainSurfaceMemorizer,
+    } = await import("../src/r1/surface-baseline");
+
+    const suite = createR1CounterfactualSuite();
+    const model = trainSurfaceMemorizer(suite);
+    const reports = evaluateSurfaceMemorizer(model, suite);
+
+    expect(reports.find((report) => report.split === "train")).toMatchObject({
+      passed: 11,
+      total: 11,
+      warningSemanticPassed: 3,
+      warningSemanticTotal: 3,
+    });
+
+    for (const split of ["dev", "test"] as const) {
+      const report = reports.find((candidate) => candidate.split === split)!;
+      expect(report.total).toBe(11);
+      expect(report.equalPassed).toBe(5);
+      expect(report.directionalPassed).toBe(3);
+      expect(report.warningSemanticPassed).toBe(0);
+      expect(report.warningSemanticTotal).toBe(3);
+      expect(report.passed).toBe(8);
+    }
+  });
+
+  it("does not leak held-out speech tokens into the training vocabulary", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const { trainSurfaceMemorizer } = await import(
+      "../src/r1/surface-baseline"
+    );
+
+    const suite = createR1CounterfactualSuite();
+    const model = trainSurfaceMemorizer(suite);
+    const vocabulary = new Set(model.vocabulary);
+
+    for (const token of [
+      "careful",
+      "impact",
+      "incoming",
+      "clear",
+      "lend",
+      "hand",
+      "assist",
+      "briefly",
+    ]) {
+      expect(vocabulary.has(token)).toBe(false);
+    }
+  });
+});
