@@ -20,6 +20,12 @@ export function createR1OodRedTeamSuite(): R1CounterfactualSuite {
   addNegationWarning(states, constraints);
   addCognition(states, constraints);
   addResolvedUncertainty(states, constraints);
+  addConditionalHazard(states, constraints);
+  addOperativeInstruction(states, constraints);
+  addNegationScope(states, constraints);
+  addUrgencyThreatDisentangle(states, constraints);
+  addAdministrativeUrgency(states, constraints);
+  addRoutingUncertainty(states, constraints);
   addApproach(states, constraints);
   addHiddenDanger(states, constraints);
 
@@ -413,6 +419,319 @@ function addResolvedUncertainty(
       "ood:clearance-established",
       "identical binary token set; negation moves between established clearance and review requirement",
       "Unestablished clearance with review required should create more cognition pressure than established clearance with review not required.",
+    ),
+  );
+}
+
+function addConditionalHazard(
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = "ood:v3-conditional-hazard";
+  const common = { tick9PlayerX: 157, tick9PlayerVx: 3 } as const;
+
+  states.push(
+    state(
+      "ood:v3-smoke-current",
+      familyId,
+      "Smoke is present now; the clearing condition is only later.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "Smoke is present now; work stops. If smoke clears later, work resumes.",
+        ...common,
+        idSuffix: "ood-v3-smoke-current",
+      }),
+      10,
+    ),
+    state(
+      "ood:v3-smoke-conditional",
+      familyId,
+      "Smoke is absent now and only conditional later.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "If smoke is present later, work stops; smoke clears now, work resumes.",
+        ...common,
+        idSuffix: "ood-v3-smoke-conditional",
+      }),
+      10,
+    ),
+  );
+
+  constraints.push(
+    directional(
+      "ood:v3-current-smoke-interrupt-over-conditional",
+      familyId,
+      "interrupt",
+      "ood:v3-smoke-current",
+      "ood:v3-smoke-conditional",
+      "identical binary token set; present/clears attach to now/later in opposite temporal roles",
+      "A hazard present now should create more interruption pressure than the same hazard described only as a later condition while it clears now.",
+    ),
+    directional(
+      "ood:v3-current-smoke-threat-over-conditional",
+      familyId,
+      "threat",
+      "ood:v3-smoke-current",
+      "ood:v3-smoke-conditional",
+      "identical binary token set; present/clears attach to now/later in opposite temporal roles",
+      "A hazard present now should create more threat pressure than the same hazard described only as a later condition while it clears now.",
+    ),
+  );
+}
+
+function addOperativeInstruction(
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = "ood:v3-operative-instruction";
+  const common = { tick9PlayerX: 157, tick9PlayerVx: 3 } as const;
+  const command = '"Move crate seven outside."';
+
+  states.push(
+    state(
+      "ood:v3-current-order",
+      familyId,
+      "The quoted command belongs to the current order.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "Current order says " + command + " Archived note says obsolete.",
+        ...common,
+        idSuffix: "ood-v3-current-order",
+      }),
+      10,
+    ),
+    state(
+      "ood:v3-archived-order",
+      familyId,
+      "The identical quoted command belongs only to the archived order.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "Archived order says " + command + " Current note says obsolete.",
+        ...common,
+        idSuffix: "ood-v3-archived-order",
+      }),
+      10,
+    ),
+  );
+
+  constraints.push(
+    directional(
+      "ood:v3-operative-order-interrupt-over-archived",
+      familyId,
+      "interrupt",
+      "ood:v3-current-order",
+      "ood:v3-archived-order",
+      "identical binary token set and quoted command; current/archived roles swap",
+      "A command belonging to the current order should create more interruption pressure than the identical command marked as archived and obsolete.",
+    ),
+  );
+}
+
+function addNegationScope(
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = "ood:v3-negation-scope";
+  const common = { tick9PlayerX: 157, tick9PlayerVx: 3 } as const;
+
+  states.push(
+    state(
+      "ood:v3-hatch-unsafe",
+      familyId,
+      "Negation applies to sealing; entry remains unsafe.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "The hatch is not sealed. Entry is unsafe. Proceed? Do not.",
+        ...common,
+        idSuffix: "ood-v3-hatch-unsafe",
+      }),
+      10,
+    ),
+    state(
+      "ood:v3-hatch-safe",
+      familyId,
+      "Negation applies to unsafe; the hatch is sealed.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "The hatch is sealed. Entry is not unsafe. Do proceed.",
+        ...common,
+        idSuffix: "ood-v3-hatch-safe",
+      }),
+      10,
+    ),
+  );
+
+  constraints.push(
+    directional(
+      "ood:v3-negation-scope-interrupt-unsafe-over-safe",
+      familyId,
+      "interrupt",
+      "ood:v3-hatch-unsafe",
+      "ood:v3-hatch-safe",
+      "identical binary token set; negation scope moves from sealed to unsafe",
+      "An unsealed unsafe hatch should create more interruption pressure than a sealed hatch explicitly described as not unsafe.",
+    ),
+    directional(
+      "ood:v3-negation-scope-threat-unsafe-over-safe",
+      familyId,
+      "threat",
+      "ood:v3-hatch-unsafe",
+      "ood:v3-hatch-safe",
+      "identical binary token set; negation scope moves from sealed to unsafe",
+      "An unsealed unsafe hatch should create more threat pressure than a sealed hatch explicitly described as not unsafe.",
+    ),
+  );
+}
+
+function addUrgencyThreatDisentangle(
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = "ood:v3-urgency-threat-disentangle";
+  const common = { tick9PlayerX: 157, tick9PlayerVx: 3 } as const;
+
+  states.push(
+    state(
+      "ood:v3-immediate-hazard",
+      familyId,
+      "Immediate physical hazard; paperwork deadline is not immediate.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "Hazard is immediate; deadline is not. Safety matters now; paperwork can wait.",
+        ...common,
+        idSuffix: "ood-v3-immediate-hazard",
+      }),
+      10,
+    ),
+    state(
+      "ood:v3-immediate-deadline",
+      familyId,
+      "Immediate administrative deadline; physical hazard is explicitly absent.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "Deadline is immediate; hazard is not. Paperwork matters now; safety can wait.",
+        ...common,
+        idSuffix: "ood-v3-immediate-deadline",
+      }),
+      10,
+    ),
+  );
+
+  constraints.push(
+    directional(
+      "ood:v3-hazard-threat-over-deadline",
+      familyId,
+      "threat",
+      "ood:v3-immediate-hazard",
+      "ood:v3-immediate-deadline",
+      "identical binary token set; immediacy moves between physical hazard and paperwork deadline",
+      "Immediate physical hazard should create more threat pressure than equally immediate administrative paperwork.",
+    ),
+  );
+}
+
+function addAdministrativeUrgency(
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = "ood:v3-administrative-urgency";
+  const common = { tick9PlayerX: 157, tick9PlayerVx: 3 } as const;
+
+  states.push(
+    state(
+      "ood:v3-deadline-now",
+      familyId,
+      "Non-hazard administrative deadline applies now.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "Deadline is now; paperwork waits later? No, act now.",
+        ...common,
+        idSuffix: "ood-v3-deadline-now",
+      }),
+      10,
+    ),
+    state(
+      "ood:v3-deadline-later",
+      familyId,
+      "The same administrative deadline applies later rather than now.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "Deadline is later; paperwork waits now? No, act later.",
+        ...common,
+        idSuffix: "ood-v3-deadline-later",
+      }),
+      10,
+    ),
+  );
+
+  constraints.push(
+    directional(
+      "ood:v3-admin-now-interrupt-over-later",
+      familyId,
+      "interrupt",
+      "ood:v3-deadline-now",
+      "ood:v3-deadline-later",
+      "identical binary token set; now/later attach to deadline and action in opposite temporal roles",
+      "A non-hazard administrative deadline that applies now should create more interruption pressure than the same deadline deferred until later.",
+    ),
+  );
+}
+
+function addRoutingUncertainty(
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = "ood:v3-routing-uncertainty";
+  const common = { tick9PlayerX: 157, tick9PlayerVx: 3 } as const;
+
+  states.push(
+    state(
+      "ood:v3-destination-unknown",
+      familyId,
+      "Routing destination is absent and must be determined.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "The destination code is absent. Determine which depot receives this pallet before routing it.",
+        ...common,
+        idSuffix: "ood-v3-destination-unknown",
+      }),
+      10,
+    ),
+    state(
+      "ood:v3-destination-known",
+      familyId,
+      "Routing destination is explicitly established.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "The destination code names depot four. Route this pallet there.",
+        ...common,
+        idSuffix: "ood-v3-destination-known",
+      }),
+      10,
+    ),
+  );
+
+  constraints.push(
+    directional(
+      "ood:v3-routing-unknown-cognition-over-known",
+      familyId,
+      "cognition",
+      "ood:v3-destination-unknown",
+      "ood:v3-destination-known",
+      "routing destination changes from absent and requiring determination to explicitly established",
+      "Missing destination evidence should create more deliberate-cognition pressure than an explicitly established routing destination.",
     ),
   );
 }
