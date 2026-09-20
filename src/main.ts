@@ -36,6 +36,7 @@ import { compilePrivateState } from "./private-state";
 import { createR1CounterfactualSuite } from "./r1/counterfactual-supervision";
 import { createR1OodRedTeamSuite } from "./r1/ood-red-team";
 import { createR1SemanticTrainingAugmentation } from "./r1/semantic-training-augmentation";
+import { createR1CognitionTrainingAugmentation } from "./r1/cognition-training-augmentation";
 import {
   R1EncoderBenchmarkClient,
   type R1EncoderProgress,
@@ -163,7 +164,7 @@ let r1LearnedHeadStatus = webGpuAvailable
   ? "R1 learned head has not run."
   : "R1 learned head unavailable: WebGPU is not available.";
 let r1LearnedHeadResult: R1LearnedHeadResult | null = null;
-type R1SupervisionMode = "base" | "expanded";
+type R1SupervisionMode = "base" | "expanded" | "cognition-breadth";
 let r1LearnedHeadSupervision: R1SupervisionMode = "base";
 let r1LearnedHeadMode: R1HeadMode = "prototype";
 
@@ -342,6 +343,12 @@ function render(): void {
     .querySelector<HTMLButtonElement>("[data-run-r1-hybrid-expanded-linear]")
     ?.addEventListener("click", () => {
       void runR1LearnedHead("hybrid", "expanded", "linear-ranking");
+    });
+
+  document
+    .querySelector<HTMLButtonElement>("[data-run-r1-hybrid-cognition]")
+    ?.addEventListener("click", () => {
+      void runR1LearnedHead("hybrid", "cognition-breadth");
     });
 }
 
@@ -1302,6 +1309,9 @@ function r1LearnedHeadControls(): string {
     '<button class="primary" data-run-r1-hybrid-expanded-linear ' +
     disabled +
     ">Run hybrid + expanded TRAIN + linear ranker</button>" +
+    '<button class="primary" data-run-r1-hybrid-cognition ' +
+    disabled +
+    ">Run hybrid + cognition TRAIN breadth</button>" +
     "</div>"
   );
 }
@@ -1322,18 +1332,24 @@ async function runR1LearnedHead(
   const baseSuite = createR1CounterfactualSuite();
   const oodSuite = createR1OodRedTeamSuite();
   const trainingAugmentation =
-    supervision === "expanded"
+    supervision === "expanded" || supervision === "cognition-breadth"
       ? createR1SemanticTrainingAugmentation()
+      : { states: [], constraints: [] };
+  const cognitionAugmentation =
+    supervision === "cognition-breadth"
+      ? createR1CognitionTrainingAugmentation()
       : { states: [], constraints: [] };
   const suite = {
     states: [
       ...baseSuite.states,
       ...trainingAugmentation.states,
+      ...cognitionAugmentation.states,
       ...oodSuite.states,
     ],
     constraints: [
       ...baseSuite.constraints,
       ...trainingAugmentation.constraints,
+      ...cognitionAugmentation.constraints,
       ...oodSuite.constraints,
     ],
   };
@@ -1841,7 +1857,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     mode !== "r1-learned-head" &&
     mode !== "r1-hybrid-head" &&
     mode !== "r1-hybrid-expanded-head" &&
-    mode !== "r1-hybrid-expanded-linear-head"
+    mode !== "r1-hybrid-expanded-linear-head" &&
+    mode !== "r1-hybrid-cognition-head"
   ) {
     return;
   }
@@ -1868,6 +1885,11 @@ async function autoRunSmokeIfRequested(): Promise<void> {
 
   if (mode === "r1-hybrid-expanded-linear-head") {
     await runR1LearnedHead("hybrid", "expanded", "linear-ranking");
+    return;
+  }
+
+  if (mode === "r1-hybrid-cognition-head") {
+    await runR1LearnedHead("hybrid", "cognition-breadth");
     return;
   }
 
