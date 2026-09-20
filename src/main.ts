@@ -1579,6 +1579,43 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
     })
     .join("");
 
+  const coherenceRows = result.trainCoherence
+    .map((row) => {
+      const pairs =
+        row.pairs.length === 0
+          ? "single TRAIN direction"
+          : row.pairs
+              .map(
+                (pair) =>
+                  "<code>" +
+                  escapeHtml(pair.leftConstraintId) +
+                  "</code> ↔ <code>" +
+                  escapeHtml(pair.rightConstraintId) +
+                  "</code> " +
+                  signed(pair.cosine),
+              )
+              .join("<br>");
+
+      return (
+        "<tr><td>" +
+        escapeHtml(row.dimension) +
+        "</td><td>" +
+        row.relationCount +
+        "</td><td>" +
+        row.pairCount +
+        "</td><td>" +
+        (row.minCosine === null ? "n/a" : signed(row.minCosine)) +
+        "</td><td>" +
+        (row.meanCosine === null ? "n/a" : signed(row.meanCosine)) +
+        "</td><td>" +
+        (row.maxCosine === null ? "n/a" : signed(row.maxCosine)) +
+        "</td><td>" +
+        pairs +
+        "</td></tr>"
+      );
+    })
+    .join("");
+
   const heldOutFailures = result.constraints
     .filter(
       (constraint) =>
@@ -1643,6 +1680,11 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
     geometryRows.length > 0
       ? '<h4>OOD relation geometry vs TRAIN</h4><div class="table-wrap"><table><thead><tr><th>Dimension</th><th>OOD relation</th><th>All TRAIN cosine alignments</th><th>Nearest TRAIN</th><th>Nearest</th><th>Mean</th><th>Prototype</th></tr></thead><tbody>' +
           geometryRows +
+          "</tbody></table></div>"
+      : "",
+    coherenceRows.length > 0
+      ? '<h4>TRAIN direction coherence</h4><div class="table-wrap"><table><thead><tr><th>Dimension</th><th>TRAIN directions</th><th>Pairs</th><th>Min cosine</th><th>Mean cosine</th><th>Max cosine</th><th>Pairwise detail</th></tr></thead><tbody>' +
+          coherenceRows +
           "</tbody></table></div>"
       : "",
     heldOutFailures.length > 0
