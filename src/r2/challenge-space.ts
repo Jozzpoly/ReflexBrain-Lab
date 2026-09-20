@@ -20,7 +20,7 @@ export type R2ChallengeFamily =
 
 export interface R2ChallengeVariant {
   id: string;
-  episodeFrame: CausalEpisodeFrame;
+  frames: readonly CausalEpisodeFrame[];
 }
 
 export interface R2CausalChallenge {
@@ -43,8 +43,9 @@ export function createR2ChallengeSpaceV0(): readonly R2CausalChallenge[] {
 }
 
 function sameEventDifferentHistory(): R2CausalChallenge {
-  const world = worldFrame([
+  const currentWorld = worldFrame(10, [
     event(
+      10,
       "event:janek-entered",
       "actor.entered_visible_area",
       "resident:janek",
@@ -53,62 +54,132 @@ function sameEventDifferentHistory(): R2CausalChallenge {
     ),
   ]);
 
-  const observation = observed(
+  const currentObservation = observed(
+    10,
     "obs:janek-entered",
-    "event:janek-entered",
+    ["event:janek-entered"],
     "vision",
     "actor.entered_visible_area",
     { actor: "resident:janek", region: "workshop" },
   );
 
+  const unfinishedEarlierWorld = worldFrame(4, [
+    event(
+      4,
+      "event:earlier-tool-loan",
+      "object.transfer",
+      ACTOR,
+      ["resident:janek"],
+      { object: "tool:hammer" },
+    ),
+  ]);
+
+  const neutralEarlierWorld = worldFrame(4, []);
+
   return {
     id: "r2-v0:same-event-different-history",
     family: "same_event_different_history",
     question:
-      "Can identical received evidence acquire different legitimate significance solely because private causal history differs?",
+      "Can identical current received evidence acquire different legitimate significance solely because private causal history differs?",
     mustRemainEqual: [
-      "World event",
+      "current World event",
       "actor identity",
       "current observation",
       "ongoing activity",
     ],
     intendedCausalDifference: [
-      "one variant contains active unfinished private history involving Janek",
+      "one variant contains prior private causal evidence involving Janek",
     ],
     variants: [
-      variant(
-        "unfinished-history",
-        world,
-        privateFrame(
-          [observation],
-          [
-            history(
-              "history:janek-tool-return",
-              "unfinished_exchange",
-              "active",
-              ["event:earlier-tool-loan"],
-              { person: "resident:janek", object: "tool:hammer" },
+      {
+        id: "unfinished-history",
+        frames: [
+          episodeFrame(
+            unfinishedEarlierWorld,
+            privateFrame(
+              4,
+              [
+                observed(
+                  4,
+                  "obs:earlier-tool-loan",
+                  ["event:earlier-tool-loan"],
+                  "vision",
+                  "object.transfer",
+                  { object: "tool:hammer", person: "resident:janek" },
+                ),
+              ],
+              [
+                history(
+                  "history:janek-tool-return",
+                  4,
+                  "unfinished_exchange",
+                  ["event:earlier-tool-loan"],
+                  { person: "resident:janek", object: "tool:hammer" },
+                ),
+              ],
+              activity(
+                4,
+                "activity:sort",
+                "sort_materials",
+                "approach_crates",
+              ),
             ),
-          ],
-          activity("activity:sort", "sort_materials", "carry"),
-        ),
-      ),
-      variant(
-        "no-related-history",
-        world,
-        privateFrame(
-          [observation],
-          [],
-          activity("activity:sort", "sort_materials", "carry"),
-        ),
-      ),
+          ),
+          episodeFrame(
+            currentWorld,
+            privateFrame(
+              10,
+              [currentObservation],
+              [
+                history(
+                  "history:janek-tool-return",
+                  4,
+                  "unfinished_exchange",
+                  ["event:earlier-tool-loan"],
+                  { person: "resident:janek", object: "tool:hammer" },
+                ),
+              ],
+              activity(10, "activity:sort", "sort_materials", "carry"),
+            ),
+          ),
+        ],
+      },
+      {
+        id: "no-related-history",
+        frames: [
+          episodeFrame(
+            neutralEarlierWorld,
+            privateFrame(
+              4,
+              [],
+              [],
+              activity(
+                4,
+                "activity:sort",
+                "sort_materials",
+                "approach_crates",
+              ),
+            ),
+          ),
+          episodeFrame(
+            currentWorld,
+            privateFrame(
+              10,
+              [currentObservation],
+              [],
+              activity(10, "activity:sort", "sort_materials", "carry"),
+            ),
+          ),
+        ],
+      },
     ],
   };
 }
 
 function sameWorldDifferentKnowledge(): R2CausalChallenge {
-  const world = worldFrame([
+  const world = worldFrame(10, [
     event(
+      10,
       "event:crate-moved",
       "object.position_changed",
       "resident:janek",
@@ -129,28 +200,35 @@ function sameWorldDifferentKnowledge(): R2CausalChallenge {
     variants: [
       variant(
         "observed",
-        world,
-        privateFrame(
-          [
-            observed(
-              "obs:crate-moved",
-              "event:crate-moved",
-              "vision",
-              "object.position_changed",
-              { object: "object:crate-a", destination: "shelf-east" },
-            ),
-          ],
-          [],
-          activity("activity:sort", "sort_materials", "seek_crate"),
+        episodeFrame(
+          world,
+          privateFrame(
+            10,
+            [
+              observed(
+                10,
+                "obs:crate-moved",
+                ["event:crate-moved"],
+                "vision",
+                "object.position_changed",
+                { object: "object:crate-a", destination: "shelf-east" },
+              ),
+            ],
+            [],
+            activity(10, "activity:sort", "sort_materials", "seek_crate"),
+          ),
         ),
       ),
       variant(
         "unobserved",
-        world,
-        privateFrame(
-          [],
-          [],
-          activity("activity:sort", "sort_materials", "seek_crate"),
+        episodeFrame(
+          world,
+          privateFrame(
+            10,
+            [],
+            [],
+            activity(10, "activity:sort", "sort_materials", "seek_crate"),
+          ),
         ),
       ),
     ],
@@ -158,8 +236,9 @@ function sameWorldDifferentKnowledge(): R2CausalChallenge {
 }
 
 function sameMotionDifferentProvenance(): R2CausalChallenge {
-  const ownerWorld = worldFrame([
+  const ownerWorld = worldFrame(10, [
     event(
+      10,
       "event:owner-motion-request",
       "control.requested_motion",
       "player",
@@ -167,6 +246,7 @@ function sameMotionDifferentProvenance(): R2CausalChallenge {
       { vx: 2, vy: 0 },
     ),
     event(
+      10,
       "event:player-motion",
       "body.actual_motion",
       "player",
@@ -174,8 +254,9 @@ function sameMotionDifferentProvenance(): R2CausalChallenge {
       { actor: "player", vx: 2, vy: 0 },
     ),
   ]);
-  const externalWorld = worldFrame([
+  const externalWorld = worldFrame(10, [
     event(
+      10,
       "event:external-push",
       "body.external_impulse",
       ACTOR,
@@ -183,6 +264,7 @@ function sameMotionDifferentProvenance(): R2CausalChallenge {
       { impulseX: 2, impulseY: 0 },
     ),
     event(
+      10,
       "event:player-motion",
       "body.actual_motion",
       "player",
@@ -192,8 +274,9 @@ function sameMotionDifferentProvenance(): R2CausalChallenge {
   ]);
 
   const motionObservation = observed(
+    10,
     "obs:player-motion",
-    "event:player-motion",
+    ["event:player-motion"],
     "vision",
     "body.actual_motion",
     { actor: "player", vx: 2, vy: 0 },
@@ -216,20 +299,36 @@ function sameMotionDifferentProvenance(): R2CausalChallenge {
     variants: [
       variant(
         "owner-request-origin",
-        ownerWorld,
-        privateFrame(
-          [motionObservation],
-          [],
-          activity("activity:escort", "move_with_player", "maintain_relation"),
+        episodeFrame(
+          ownerWorld,
+          privateFrame(
+            10,
+            [motionObservation],
+            [],
+            activity(
+              10,
+              "activity:escort",
+              "move_with_player",
+              "maintain_relation",
+            ),
+          ),
         ),
       ),
       variant(
         "external-push-origin",
-        externalWorld,
-        privateFrame(
-          [motionObservation],
-          [],
-          activity("activity:escort", "move_with_player", "maintain_relation"),
+        episodeFrame(
+          externalWorld,
+          privateFrame(
+            10,
+            [motionObservation],
+            [],
+            activity(
+              10,
+              "activity:escort",
+              "move_with_player",
+              "maintain_relation",
+            ),
+          ),
         ),
       ),
     ],
@@ -238,23 +337,30 @@ function sameMotionDifferentProvenance(): R2CausalChallenge {
 
 function variant(
   id: string,
+  frame: CausalEpisodeFrame,
+): R2ChallengeVariant {
+  return { id, frames: [frame] };
+}
+
+function episodeFrame(
   world: CausalWorldFrame,
   privateState: ActorPrivateFrame,
-): R2ChallengeVariant {
+): CausalEpisodeFrame {
   return {
-    id,
-    episodeFrame: {
-      world,
-      privateByActor: { [ACTOR]: privateState },
-    },
+    world,
+    privateByActor: { [ACTOR]: privateState },
   };
 }
 
-function worldFrame(events: CausalWorldFrame["events"]): CausalWorldFrame {
-  return { tick: 10, events, facts: [] };
+function worldFrame(
+  tick: number,
+  events: CausalWorldFrame["events"],
+): CausalWorldFrame {
+  return { tick, events, facts: [] };
 }
 
 function event(
+  tick: number,
   id: string,
   kind: string,
   sourceEntityId: string | null,
@@ -263,7 +369,7 @@ function event(
 ) {
   return {
     id,
-    tick: 10,
+    tick,
     kind,
     sourceEntityId,
     targetEntityIds,
@@ -272,13 +378,14 @@ function event(
 }
 
 function privateFrame(
+  tick: number,
   observations: readonly PrivateObservation[],
   entries: readonly PrivateHistoryEntry[],
   currentActivity: OngoingActivity | null,
 ): ActorPrivateFrame {
   return {
     actorId: ACTOR,
-    tick: 10,
+    tick,
     observations,
     history: entries,
     activity: currentActivity,
@@ -286,8 +393,9 @@ function privateFrame(
 }
 
 function observed(
+  tick: number,
   id: string,
-  sourceEventId: string,
+  provenanceEventIds: readonly string[],
   channel: PrivateObservation["channel"],
   kind: string,
   payload: Readonly<Record<string, string | number | boolean | null>>,
@@ -295,9 +403,9 @@ function observed(
   return {
     id,
     actorId: ACTOR,
-    tick: 10,
+    tick,
     channel,
-    sourceEventId,
+    provenanceEventIds,
     kind,
     payload,
   };
@@ -305,16 +413,15 @@ function observed(
 
 function history(
   id: string,
+  recordedTick: number,
   kind: string,
-  status: PrivateHistoryEntry["status"],
   provenanceEventIds: readonly string[],
   payload: Readonly<Record<string, string | number | boolean | null>>,
 ): PrivateHistoryEntry {
   return {
     id,
     actorId: ACTOR,
-    establishedTick: 4,
-    status,
+    recordedTick,
     kind,
     provenanceEventIds,
     payload,
@@ -322,6 +429,7 @@ function history(
 }
 
 function activity(
+  tick: number,
   id: string,
   kind: string,
   phase: string,
@@ -331,8 +439,7 @@ function activity(
     actorId: ACTOR,
     kind,
     phase,
-    status: "active",
-    startedTick: 1,
+    startedTick: Math.min(1, tick),
     payload: {},
   };
 }

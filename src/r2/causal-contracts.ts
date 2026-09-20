@@ -42,31 +42,36 @@ export interface PrivateObservation {
   actorId: ActorId;
   tick: number;
   channel: ObservationChannel;
-  sourceEventId: CausalEventId;
+  provenanceEventIds: readonly CausalEventId[];
   kind: string;
   payload: CausalPayload;
 }
 
-export type HistoryStatus = "active" | "settled" | "superseded";
-
+/**
+ * Historical evidence intentionally has no universal lifecycle/status enum.
+ *
+ * Whether a particular candidate treats evidence as unresolved, superseded,
+ * settled, decayed, remembered, etc. belongs to the experiment/candidate,
+ * not to the neutral causal substrate.
+ */
 export interface PrivateHistoryEntry {
   id: EvidenceId;
   actorId: ActorId;
-  establishedTick: number;
-  status: HistoryStatus;
+  recordedTick: number;
   kind: string;
   provenanceEventIds: readonly CausalEventId[];
   payload: CausalPayload;
 }
 
-export type ActivityStatus = "active" | "suspended" | "completed";
-
+/**
+ * This is the actor's currently continuing activity, not a task-policy API.
+ * Candidate-specific interruption/commitment semantics are deliberately absent.
+ */
 export interface OngoingActivity {
   id: ActivityId;
   actorId: ActorId;
   kind: string;
   phase: string;
-  status: ActivityStatus;
   startedTick: number;
   payload: CausalPayload;
 }

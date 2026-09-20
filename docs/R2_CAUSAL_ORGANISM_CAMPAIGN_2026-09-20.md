@@ -46,13 +46,19 @@ The durable research question is:
 8. **Owner-test direction is mandatory.**
    If a sequence of stages does not increase the ability to observe/provoke a living actor, treat that as campaign drift.
 
+9. **Neutral substrate must stay weaker than donor ontologies.**
+   Do not copy SPC matter lifecycle, Companion deliberation dossiers, or R1 appraisal axes into generic contracts merely because they are convenient.
+
+10. **Temporal-ready from the beginning.**
+    Challenges are episode sequences, even when a current fixture uses one frame. Snapshot classification must not silently become the R2 worldview.
+
 ## Donor lessons carried forward
 
 ### SPC / First Hearth
 
 - reception != attention != cognition != action;
 - the same event can have different legitimate significance for different residents because private causal history differs;
-- unresolved meaning needs lifecycle, supersession, settlement and protection against stale resurrection;
+- unresolved meaning may need lifecycle, supersession and settlement, but those are candidate questions rather than neutral substrate fields;
 - behavioural momentum matters: speech/event arrival is evidence, not automatic interruption.
 
 ### Companion-Brain-Lab
@@ -120,7 +126,9 @@ Allow ideal research substitution at distinct boundaries:
 3. actor-relative significance;
 4. executive arbitration.
 
-A later layer normally consumes actor-private evidence only. World-truth authority is permitted only for an explicit oracle that is replacing the perception boundary.
+These layer names are research probes, not a promise that the final brain contains four modules.
+
+A later oracle layer normally consumes actor-private evidence only. World-truth authority is permitted only for an explicit oracle that is replacing the perception boundary.
 
 ### Phase D — deterministic living specimen
 
@@ -164,15 +172,17 @@ Immediate stop signals:
 - challenge definitions naming the intended internal representation instead of the causal distinction;
 - repeated stages with no increasing Owner-testable capability;
 - a candidate using World facts unavailable to the actor;
-- event arrival directly causing global interruption/cognition without an actor-relative reason.
+- event arrival directly causing global interruption/cognition without an actor-relative reason;
+- neutral contracts acquiring donor-specific lifecycle/policy enums merely because one sibling project uses them.
 
 ## First implementation increment
 
-The first committed R2 increment intentionally contains only:
+The first R2 increment intentionally contains only:
 
 - neutral causal contracts;
-- implementation-independent challenge descriptors and initial donor-derived fixtures;
+- temporal-ready, implementation-independent challenge descriptors and initial donor-derived fixtures;
 - oracle boundary contracts;
+- causal episode validation;
 - tests proving actor-private / provenance separation.
 
 It deliberately contains no candidate Brain interface.
