@@ -1215,43 +1215,6 @@ describe("R1 adversarial OOD red-team", () => {
     ).toBe(true);
   });
 
-  it("matches danger warning and danger-word reassurance except for speech meaning", async () => {
-    const { createR1OodRedTeamSuite } = await import(
-      "../src/r1/ood-red-team"
-    );
-    const suite = createR1OodRedTeamSuite();
-    const warning = suite.states.find(
-      (state) => state.id === "ood:urgent-warning",
-    )!;
-    const reassurance = suite.states.find(
-      (state) => state.id === "ood:secured-beam-control",
-    )!;
-
-    const normalizeSpeechText = (state: ActorPrivateState) => ({
-      ...state,
-      percepts: state.percepts.map((percept) =>
-        percept.kind === "speech"
-          ? { ...percept, text: "<TEXT>" }
-          : percept,
-      ),
-    });
-
-    expect(normalizeSpeechText(warning.state)).toEqual(
-      normalizeSpeechText(reassurance.state),
-    );
-    expect(
-      reassurance.state.percepts.find(
-        (percept) => percept.kind === "speech",
-      ),
-    ).toEqual(
-      expect.objectContaining({
-        kind: "speech",
-        addressed: true,
-        text: expect.stringContaining("DANGER"),
-      }),
-    );
-  });
-
   it("keeps all new semantic adversaries physically matched within their pair", async () => {
     const { createR1OodRedTeamSuite } = await import(
       "../src/r1/ood-red-team"
@@ -1268,9 +1231,11 @@ describe("R1 adversarial OOD red-team", () => {
     });
 
     for (const [leftId, rightId] of [
+      ["ood:urgent-warning", "ood:secured-beam-control"],
       ["ood:indirect-live-warning", "ood:indirect-earlier-control"],
       ["ood:quoted-live-warning", "ood:quoted-old-drill"],
       ["ood:negated-unsafe", "ood:negated-safe"],
+      ["ood:seal-unconfirmed", "ood:seal-confirmed"],
       ["ood:clearance-unestablished", "ood:clearance-established"],
     ] as const) {
       const left = suite.states.find((state) => state.id === leftId)!;
@@ -1279,6 +1244,38 @@ describe("R1 adversarial OOD red-team", () => {
       expect(normalizeSpeechText(left.state)).toEqual(
         normalizeSpeechText(right.state),
       );
+    }
+  });
+
+  it("uses identical binary token bags for the hardened structural semantic adversaries", async () => {
+    const { createR1OodRedTeamSuite } = await import(
+      "../src/r1/ood-red-team"
+    );
+    const suite = createR1OodRedTeamSuite();
+
+    const speechText = (id: string) => {
+      const record = suite.states.find((state) => state.id === id)!;
+      const percept = record.state.percepts.find(
+        (candidate) => candidate.kind === "speech",
+      );
+      if (!percept || percept.kind !== "speech") {
+        throw new Error("missing speech for " + id);
+      }
+      return percept.text;
+    };
+    const tokenBag = (value: string) =>
+      [...new Set(value.toLowerCase().match(/[a-z]+/g) ?? [])].sort();
+
+    for (const [leftId, rightId] of [
+      ["ood:urgent-warning", "ood:secured-beam-control"],
+      ["ood:indirect-live-warning", "ood:indirect-earlier-control"],
+      ["ood:seal-unconfirmed", "ood:seal-confirmed"],
+      ["ood:clearance-unestablished", "ood:clearance-established"],
+    ] as const) {
+      expect(tokenBag(speechText(leftId))).toEqual(
+        tokenBag(speechText(rightId)),
+      );
+      expect(speechText(leftId)).not.toBe(speechText(rightId));
     }
   });
 
