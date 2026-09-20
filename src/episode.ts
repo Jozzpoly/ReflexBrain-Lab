@@ -21,6 +21,7 @@ export interface R0EpisodeOptions {
   tick9PlayerX?: number;
   tick9PlayerVx?: number;
   hiddenSpeechTick?: number;
+  hiddenSpeechText?: string;
   idSuffix?: string;
   title?: string;
 }
@@ -73,7 +74,9 @@ export function createR0CounterfactualEpisode(
         kind: "speech",
         sourceActorId: PLAYER_ID,
         targetActorId: RESIDENT_ID,
-        text: "This exists in World truth but is outside the resident's current sensory range.",
+        text:
+          options.hiddenSpeechText ??
+          "This exists in World truth but is outside the resident's current sensory range.",
       });
     }
 
