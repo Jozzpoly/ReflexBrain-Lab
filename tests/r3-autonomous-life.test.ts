@@ -60,6 +60,66 @@ describe("R3 autonomous life pressure host", () => {
     expect(withoutStewardProduced).toBe(0);
   });
 
+  it("preserves material causal lineage across multiple residents", () => {
+    const run = createAutonomousLifeRun();
+    run.runTicks(4200);
+
+    const events = run.allEvents();
+    const byId = new Map(events.map((event) => [event.id, event]));
+    const generatedIds = new Set(
+      events
+        .filter((event) => event.kind === "resource_generated")
+        .map((event) => event.subjectId)
+        .filter((value): value is string => value !== null),
+    );
+
+    const depotDelivery = [...events]
+      .reverse()
+      .find(
+        (event) =>
+          event.kind === "place" &&
+          event.subjectId !== null &&
+          generatedIds.has(event.subjectId) &&
+          distance(event.position, R3_LIFE_PLACES.depot.position) <= 0.5,
+      );
+
+    expect(depotDelivery).toBeDefined();
+
+    const chain = [] as typeof events;
+    let cursor = depotDelivery!;
+    const seen = new Set<string>();
+    while (!seen.has(cursor.id)) {
+      seen.add(cursor.id);
+      chain.push(cursor);
+      const causeId = cursor.causes[0];
+      if (!causeId) break;
+      const cause = byId.get(causeId);
+      if (!cause) throw new Error("causal lineage references missing event");
+      cursor = cause;
+    }
+
+    expect(chain.some((event) => event.kind === "resource_generated")).toBe(true);
+    expect(
+      chain.some(
+        (event) =>
+          event.kind === "place" && event.actorId === "resident:mira",
+      ),
+    ).toBe(true);
+    expect(
+      chain.some(
+        (event) =>
+          event.kind === "processing_completed" &&
+          event.actorId === "resident:janek",
+      ),
+    ).toBe(true);
+    expect(
+      chain.some(
+        (event) =>
+          event.kind === "pickup" && event.actorId === "resident:ida",
+      ),
+    ).toBe(true);
+  });
+
   it("does not expose distant source inventory through private observation", () => {
     const run = createAutonomousLifeRun();
     const observation = run.world.perceive("resident:mira");

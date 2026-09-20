@@ -62,6 +62,7 @@ export class AutonomousLifeWorld {
   private readonly actors = new Map<LifeActorId, MutableActor>();
   private readonly objects = new Map<string, MutableMaterial>();
   private readonly processing = new Map<LifeActorId, ProcessingState>();
+  private readonly objectLastEvent = new Map<string, string>();
   private previousEvents: LifeEvent[] = [];
 
   constructor(options: Partial<LifeWorldOptions> = {}) {
@@ -218,16 +219,16 @@ export class AutonomousLifeWorld {
     this.sourceCooldown = 0;
 
     const id = this.addMaterial("raw_blank", this.options.sourcePosition);
-    events.push(
-      this.makeEvent(
-        "resource_generated",
-        null,
-        id,
-        this.options.sourcePosition,
-        [],
-        { kind: "raw_blank" },
-      ),
+    const generated = this.makeEvent(
+      "resource_generated",
+      null,
+      id,
+      this.options.sourcePosition,
+      [],
+      { kind: "raw_blank" },
     );
+    this.objectLastEvent.set(id, generated.id);
+    events.push(generated);
   }
 
   private resolveIntent(
@@ -290,16 +291,16 @@ export class AutonomousLifeWorld {
         object.location = { kind: "held", actorId: residentId };
         actor.holdingObjectId = object.id;
         this.processing.delete(residentId);
-        events.push(
-          this.makeEvent(
-            "pickup",
-            residentId,
-            object.id,
-            actor.position,
-            sourceEvent ? [sourceEvent] : [],
-            { objectKind: object.kind },
-          ),
+        const pickup = this.makeEvent(
+          "pickup",
+          residentId,
+          object.id,
+          actor.position,
+          sourceEvent ? [sourceEvent] : [],
+          { objectKind: object.kind },
         );
+        this.objectLastEvent.set(object.id, pickup.id);
+        events.push(pickup);
         return;
       }
 
@@ -322,16 +323,16 @@ export class AutonomousLifeWorld {
         object.location = { kind: "free", position: { ...intent.position } };
         actor.holdingObjectId = null;
         this.processing.delete(residentId);
-        events.push(
-          this.makeEvent(
-            "place",
-            residentId,
-            object.id,
-            intent.position,
-            sourceEvent ? [sourceEvent] : [],
-            { objectKind: object.kind },
-          ),
+        const placed = this.makeEvent(
+          "place",
+          residentId,
+          object.id,
+          intent.position,
+          sourceEvent ? [sourceEvent] : [],
+          { objectKind: object.kind },
         );
+        this.objectLastEvent.set(object.id, placed.id);
+        events.push(placed);
         return;
       }
 
@@ -360,16 +361,16 @@ export class AutonomousLifeWorld {
 
         if (state.progressTicks === 0) {
           const sourceEvent = this.latestObjectEventId(object.id);
-          events.push(
-            this.makeEvent(
-              "processing_started",
-              residentId,
-              object.id,
-              actor.position,
-              sourceEvent ? [sourceEvent] : [],
-              {},
-            ),
+          const started = this.makeEvent(
+            "processing_started",
+            residentId,
+            object.id,
+            actor.position,
+            sourceEvent ? [sourceEvent] : [],
+            {},
           );
+          this.objectLastEvent.set(object.id, started.id);
+          events.push(started);
         }
 
         state.progressTicks += 1;
@@ -380,16 +381,16 @@ export class AutonomousLifeWorld {
         const cause = this.latestObjectEventId(object.id);
         object.kind = "finished_part";
         this.processing.delete(residentId);
-        events.push(
-          this.makeEvent(
-            "processing_completed",
-            residentId,
-            object.id,
-            actor.position,
-            cause ? [cause] : [],
-            { objectKind: "finished_part" },
-          ),
+        const completed = this.makeEvent(
+          "processing_completed",
+          residentId,
+          object.id,
+          actor.position,
+          cause ? [cause] : [],
+          { objectKind: "finished_part" },
         );
+        this.objectLastEvent.set(object.id, completed.id);
+        events.push(completed);
         return;
       }
 
@@ -424,11 +425,8 @@ export class AutonomousLifeWorld {
     );
   }
 
-  private latestObjectEventId(_objectId: string): string | null {
-    // This first host keeps only one-tick delivery state. Full historical causal
-    // provenance will be promoted only if the autonomous slice demonstrates
-    // that it is worth preserving as a durable host capability.
-    return null;
+  private latestObjectEventId(objectId: string): string | null {
+    return this.objectLastEvent.get(objectId) ?? null;
   }
 
   private makeEvent(
