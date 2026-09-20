@@ -245,7 +245,7 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
     knownWorldEvents.push(...worldEvents);
 
     const activity = currentActivity(tick, physical);
-    const privateFrame = privateFrame(
+    const actorPrivateFrame = privateFrame(
       tick,
       observations,
       history,
