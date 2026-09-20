@@ -73,6 +73,22 @@ export interface R1RelationGeometry {
   trainAlignments: readonly R1TrainAlignment[];
 }
 
+export interface R1TrainDirectionPair {
+  leftConstraintId: string;
+  rightConstraintId: string;
+  cosine: number;
+}
+
+export interface R1TrainDirectionCoherence {
+  dimension: AppraisalId;
+  relationCount: number;
+  pairCount: number;
+  minCosine: number | null;
+  meanCosine: number | null;
+  maxCosine: number | null;
+  pairs: readonly R1TrainDirectionPair[];
+}
+
 export type R1RepresentationMode = "encoder-only" | "hybrid";
 export type R1HeadMode = "prototype" | "linear-ranking";
 
@@ -94,6 +110,7 @@ export interface R1LearnedHeadResult {
   constraints: readonly R1LearnedConstraintResult[];
   dimensions: readonly R1LearnedDimensionSummary[];
   geometry: readonly R1RelationGeometry[];
+  trainCoherence: readonly R1TrainDirectionCoherence[];
 }
 
 export interface R1EncoderBenchmarkResult {
