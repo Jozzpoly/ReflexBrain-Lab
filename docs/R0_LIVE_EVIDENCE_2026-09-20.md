@@ -1634,3 +1634,69 @@ The next falsifier preserves each TRAIN relation as one indivisible local reason
 - no learned temperature, OOD tuning or new supervision.
 
 This is still deliberately simple and transparent. If it cannot preserve old warning semantics while retaining new pragmatic distinctions, the evidence shifts more strongly toward factorizing the appraisal ontology itself rather than changing readout geometry.
+
+
+## R1 paired-local-reason falsifier — no dominance over current-best
+
+After pooled higher/lower prototypes failed, the next transparent head preserved every TRAIN pair as one indivisible local reason.
+
+For each TRAIN pair:
+
+- higher/lower identity remained paired;
+- midpoint locality was normalized by the pair's own gap;
+- only the nearest local pair scored a state;
+- its contrast was normalized so the pair's own higher anchor scores +1 and lower anchor -1;
+- no OOD/DEV/TEST data or tuned temperature entered the head.
+
+CI qualification proved TRAIN-only construction, exact equality preservation, own-pair +1/-1 behavior and a synthetic two-mode case where opposing local reasons remain separable.
+
+### Live result
+
+| supervision | head | TRAIN | DEV | TEST | OOD v3 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| expanded | one-vector prototype | 16/16 | 11/11 | 11/11 | **21/26** |
+| expanded | paired local reasons | 16/16 | 11/11 | **9/11** | **21/26** |
+| pragmatic breadth | one-vector prototype | 20/20 | 10/11 | 11/11 | 20/26 |
+| pragmatic breadth | pooled prototype bank | 20/20 | 11/11 | 11/11 | 18/26 |
+| pragmatic breadth | paired local reasons | 20/20 | 11/11 | **9/11** | **21/26** |
+
+Both paired-reason variants lose the same held-out TEST warning semantics:
+
+- test warning interrupt > request: about **-9.56e-2**;
+- test warning threat > request: about **-9.56e-2**.
+
+Pragmatic paired reasons also exhibit large local misrouting on several OOD semantic pairs, including quoted warning and v3 negation-scope cases.
+
+### Interpretation
+
+**The geometric-head family has reached diminishing returns.**
+
+Current evidence now includes:
+
+- one summed prototype direction;
+- deterministic regularized linear ranking;
+- pooled positive/negative prototypes;
+- paired local reason experts.
+
+Each exposes different useful geometry, but none dominates the current-best expanded one-vector configuration on TRAIN + DEV + TEST + frozen OOD v3.
+
+The repeated pattern is that broad labels such as interrupt, threat and cognition collapse multiple causal facts and downstream policy consequences into one target. Changing the readout moves the failure set rather than removing the conflict.
+
+### Next phase
+
+Stop adding readout geometry.
+
+Treat OOD v3 as ontology-design evidence from this point onward, not as a pristine final test.
+
+Audit a factorized semantic layer before learning it. Candidate primitive facts:
+
+- physical hazard content;
+- current applicability / operativity;
+- action demand;
+- time pressure / urgency;
+- unresolved information / prerequisite;
+- plus explicit actor-private addressedness and physical kinematics already available outside the language encoder.
+
+Only if a deterministic oracle composition of those primitives can explain the existing relational benchmark consistently should the project train primitive detectors.
+
+After freezing the primitive schema and composition, create a fresh OOD v4 that was not used to design the ontology.
