@@ -56,6 +56,7 @@ export interface R1LearnedDimensionSummary {
 }
 
 export type R1RepresentationMode = "encoder-only" | "hybrid";
+export type R1HeadMode = "prototype" | "linear-ranking";
 
 export interface R1LearnedHeadResult {
   modelId: string;
@@ -63,6 +64,7 @@ export interface R1LearnedHeadResult {
   dtype: typeof R1_ENCODER_DTYPE;
   device: "webgpu";
   representation: R1RepresentationMode;
+  headMode: R1HeadMode;
   stateCount: number;
   loadMs: number;
   warmupMs: number;
@@ -102,6 +104,7 @@ export type R1EncoderWorkerRequest =
       states: readonly R1EncoderStateInput[];
       constraints: readonly R1LearnConstraintInput[];
       representation: R1RepresentationMode;
+      headMode: R1HeadMode;
     };
 
 export type R1EncoderWorkerResponse =
