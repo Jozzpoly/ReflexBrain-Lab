@@ -4,6 +4,7 @@ import {
   R1_ENCODER_DTYPE,
   R1_ENCODER_MODEL_ID,
   R1_ENCODER_MODEL_REVISION,
+  R1_LEARNED_HEAD_EMBEDDING_BATCH_SIZE,
   serializeR1PrivateState,
   type R1EncoderBenchmarkResult,
   type R1LearnedHeadResult,
@@ -200,7 +201,9 @@ async function runLearnedHead(
   dispose(warmup);
 
   const embeddingById = new Map<string, number[]>();
-  const chunkSize = 8;
+  // Correctness qualification uses isolated per-state inference.
+  // Do not increase this without a dedicated batch-invariance proof.
+  const chunkSize = R1_LEARNED_HEAD_EMBEDDING_BATCH_SIZE;
   const embeddingStarted = performance.now();
   let encoderDimensions = 0;
   let representationDimensions = 0;
