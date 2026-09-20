@@ -353,6 +353,16 @@ function render(): void {
     });
 
   document
+    .querySelector<HTMLButtonElement>("[data-run-r1-hybrid-pragmatic-linear]")
+    ?.addEventListener("click", () => {
+      void runR1LearnedHead(
+        "hybrid",
+        "pragmatic-breadth",
+        "linear-ranking",
+      );
+    });
+
+  document
     .querySelector<HTMLButtonElement>("[data-run-r1-hybrid-expanded-linear]")
     ?.addEventListener("click", () => {
       void runR1LearnedHead("hybrid", "expanded", "linear-ranking");
@@ -1325,6 +1335,9 @@ function r1LearnedHeadControls(): string {
     '<button class="primary" data-run-r1-hybrid-pragmatic ' +
     disabled +
     ">Run hybrid + pragmatic TRAIN breadth</button>" +
+    '<button class="primary" data-run-r1-hybrid-pragmatic-linear ' +
+    disabled +
+    ">Run pragmatic breadth + linear ranker</button>" +
     '<button class="primary" data-run-r1-hybrid-expanded-linear ' +
     disabled +
     ">Run hybrid + expanded TRAIN + linear ranker</button>" +
@@ -1889,6 +1902,7 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     mode !== "r1-encoder-expanded-head" &&
     mode !== "r1-hybrid-expanded-head" &&
     mode !== "r1-hybrid-pragmatic-head" &&
+    mode !== "r1-hybrid-pragmatic-linear-head" &&
     mode !== "r1-hybrid-expanded-linear-head" &&
     mode !== "r1-hybrid-cognition-head"
   ) {
@@ -1922,6 +1936,15 @@ async function autoRunSmokeIfRequested(): Promise<void> {
 
   if (mode === "r1-hybrid-pragmatic-head") {
     await runR1LearnedHead("hybrid", "pragmatic-breadth");
+    return;
+  }
+
+  if (mode === "r1-hybrid-pragmatic-linear-head") {
+    await runR1LearnedHead(
+      "hybrid",
+      "pragmatic-breadth",
+      "linear-ranking",
+    );
     return;
   }
 
