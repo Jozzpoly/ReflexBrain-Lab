@@ -545,3 +545,65 @@ The next gate is therefore adversarial OOD testing, not architecture expansion:
 - matched private-state context wherever possible.
 
 Only if the same train-only head survives those should R1 invest in a richer trained head or LoRA/backbone adaptation.
+
+
+## R1 supervision correction + frozen encoder rerun
+
+The initial 11/11 seed result exposed a supervision-design issue during red-team review: using an urgent warning as the positive target for **deeper cognition** was not sufficiently defensible. An urgent warning may demand immediate reflex rather than deliberation.
+
+R1 therefore changed the cognition family before further promotion:
+
+- removed `urgent warning > ordinary request` as a cognition target;
+- added a dedicated matched `ambiguous/conditional instruction > clear instruction` cognition family;
+- physics and addressee are identical within each cognition pair;
+- TRAIN / DEV / TEST wording was made deliberately lexically distinct.
+
+The current seed suite contains:
+
+- **30 private states**;
+- **33 relations**;
+- 10 states and 11 relations per split;
+- five hard hidden-World equality constraints per split.
+
+The surface-memorizer negative control still passes TRAIN but remains at **8/11** on DEV and TEST, confirming that the new semantic families are not solved by its TRAIN lexical vocabulary.
+
+### Frozen MiniLM head on corrected supervision
+
+The same frozen MiniLM + train-only prototype-direction method was rerun.
+
+Result:
+
+- TRAIN: **11/11**;
+- DEV: **11/11**;
+- TEST: **10/11**.
+
+The only TEST failure was:
+
+- dimension: `threat`;
+- family: `test:approach-speed`;
+- constraint: `test:fast-close-threat-over-pass`;
+- margin: **-1.522e-3**.
+
+The new cognition ambiguity relation passed on DEV and TEST.
+
+Runtime for this run:
+
+- embedding all 30 states in batches of 8: **620.0 ms**;
+- linear head construction + all-relation evaluation: **1.300 ms**.
+
+### Interpretation
+
+This is a more useful result than the earlier perfect score.
+
+The frozen sentence encoder transfers the held-out linguistic relations, including the corrected cognition family, but fails one explicitly physical/numeric relation. That suggests an architectural split rather than a reason to train the language encoder harder:
+
+- semantic/language representation can come from a tiny encoder;
+- precise physical/perceptual quantities should remain explicit structured channels;
+- the learned reflex head should consume both.
+
+The next controlled experiment should therefore keep the encoder and training method fixed and compare:
+
+1. encoder-only representation;
+2. encoder embedding + explicit normalized actor-private structured features.
+
+If the hybrid fixes the physical threat relation without degrading held-out semantic relations, that is evidence for a hybrid ReflexBrain substrate rather than a text-only brain.
