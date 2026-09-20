@@ -41,6 +41,7 @@ import {
 import type {
   R1EncoderBenchmarkResult,
   R1LearnedHeadResult,
+  R1RepresentationMode,
 } from "./r1/encoder-contract";
 import { createSemanticChallenges } from "./challenges";
 import { RuleBaselineProvider } from "./rule-provider";
@@ -316,7 +317,13 @@ function render(): void {
   document
     .querySelector<HTMLButtonElement>("[data-run-r1-learned]")
     ?.addEventListener("click", () => {
-      void runR1LearnedHead();
+      void runR1LearnedHead("encoder-only");
+    });
+
+  document
+    .querySelector<HTMLButtonElement>("[data-run-r1-hybrid]")
+    ?.addEventListener("click", () => {
+      void runR1LearnedHead("hybrid");
     });
 }
 
@@ -1260,14 +1267,24 @@ function r1LearnedHeadControls(): string {
     return "<button disabled>R1 learned head requires WebGPU</button>";
   }
 
+  const disabled =
+    r1LearnedHeadBusy || r1EncoderBusy ? "disabled" : "";
+
   return (
+    '<div class="probe-controls">' +
     '<button class="primary" data-run-r1-learned ' +
-    (r1LearnedHeadBusy || r1EncoderBusy ? "disabled" : "") +
-    ">Run frozen MiniLM learned appraisal head</button>"
+    disabled +
+    ">Run encoder-only head</button>" +
+    '<button class="primary" data-run-r1-hybrid ' +
+    disabled +
+    ">Run hybrid semantic + structured head</button>" +
+    "</div>"
   );
 }
 
-async function runR1LearnedHead(): Promise<void> {
+async function runR1LearnedHead(
+  representation: R1RepresentationMode,
+): Promise<void> {
   if (
     !webGpuAvailable ||
     r1LearnedHeadBusy ||
@@ -1293,7 +1310,9 @@ async function runR1LearnedHead(): Promise<void> {
 
   r1LearnedHeadBusy = true;
   r1LearnedHeadStatus =
-    "Embedding all R1 states with frozen MiniLM, then learning heads from TRAIN relations only...";
+    "Embedding all R1 states with frozen MiniLM, then learning " +
+    representation +
+    " heads from TRAIN relations only...";
   r1LearnedHeadResult = null;
   render();
 
@@ -1302,6 +1321,7 @@ async function runR1LearnedHead(): Promise<void> {
     r1LearnedHeadResult = await r1EncoderClient.learnedHead(
       states,
       constraints,
+      representation,
       updateR1LearnedHeadProgress,
     );
 
@@ -1310,7 +1330,9 @@ async function runR1LearnedHead(): Promise<void> {
     );
     const passed = testRows.filter((constraint) => constraint.passed).length;
     r1LearnedHeadStatus =
-      "R1 learned head complete · TEST " +
+      "R1 " +
+      representation +
+      " head complete · TEST " +
       passed +
       "/" +
       testRows.length +
@@ -1407,16 +1429,21 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
   return [
     '<p class="boundary">The encoder is frozen. Only five linear semantic directions are constructed from <strong>TRAIN directional embedding differences</strong>. DEV/TEST labels never update the head.</p>',
     '<div class="result-meta">',
-    "<span>Embedding batch: <strong>" +
+    "<span>Representation: <strong>" +
+      escapeHtml(result.representation) +
+      "</strong></span>",
+    "<span>Embedding pass: <strong>" +
       result.embeddingMs.toFixed(1) +
       " ms / " +
-      result.constraints.length +
-      " constraints over 24 states</strong></span>",
+      result.stateCount +
+      " states</strong></span>",
     "<span>Head learn+eval: <strong>" +
       result.headMs.toFixed(3) +
       " ms</strong></span>",
-    "<span>Embedding: <strong>" +
-      result.embeddingDimensions +
+    "<span>Encoder / representation: <strong>" +
+      result.encoderDimensions +
+      "d / " +
+      result.representationDimensions +
       "d</strong></span>",
     "</div>",
     '<div class="table-wrap"><table><thead><tr><th>Split</th><th>Relations passed</th></tr></thead><tbody>',
@@ -1677,7 +1704,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     mode !== "appraisal-matrix" &&
     mode !== "bipolar-matrix" &&
     mode !== "r1-encoder-benchmark" &&
-    mode !== "r1-learned-head"
+    mode !== "r1-learned-head" &&
+    mode !== "r1-hybrid-head"
   ) {
     return;
   }
@@ -1688,7 +1716,12 @@ async function autoRunSmokeIfRequested(): Promise<void> {
   }
 
   if (mode === "r1-learned-head") {
-    await runR1LearnedHead();
+    await runR1LearnedHead("encoder-only");
+    return;
+  }
+
+  if (mode === "r1-hybrid-head") {
+    await runR1LearnedHead("hybrid");
     return;
   }
 
