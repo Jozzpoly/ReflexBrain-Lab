@@ -955,3 +955,107 @@ Do not tune it on OOD. Use fixed training/regularization settings or select only
 If a linear ranking head improves cognition and increases semantic margins without degrading invariants, head capacity/training was the next bottleneck.
 
 If not, the next earned step becomes a tiny MLP/readout-capacity test while the encoder remains frozen. LoRA/backbone adaptation remains premature.
+
+
+## R1 deterministic linear-ranking head — no gain over prototype
+
+The next candidate changed only the readout optimization.
+
+Frozen inputs remained:
+
+- MiniLM-L3 q8;
+- hybrid 384D encoder + 12 actor-private structured channels;
+- expanded TRAIN supervision;
+- hardened exact-token-resistant DEV/TEST/OOD;
+- zero World/body authority.
+
+The new head is deterministic pairwise logistic ranking with fixed settings chosen before OOD evaluation:
+
+- TRAIN directional deltas only;
+- each TRAIN delta normalized before optimization, matching prototype scale treatment;
+- 400 deterministic batch-gradient iterations;
+- L2 = 0.1;
+- initial learning rate = 0.2 with fixed decay;
+- final per-dimension weight vector normalized;
+- no random initialization;
+- no DEV/TEST/OOD fitting.
+
+CI tests prove:
+
+- contradictory OOD constraints do not change learned weights;
+- repeated training is bitwise deterministic in the synthetic qualification fixture;
+- training pairs are positively ranked;
+- final scorer vectors remain normalized.
+
+### Live A/B result
+
+Prototype expanded hybrid:
+
+- TEST **11/11**;
+- hardened OOD **16/18**;
+- cognition failures:
+  - seal: **-4.4603e-3**;
+  - clearance: **-8.8312e-3**.
+
+Regularized linear-ranking expanded hybrid:
+
+- TEST **11/11**;
+- hardened OOD **16/18**;
+- cognition failures:
+  - seal: **-4.4603e-3**;
+  - clearance: **-8.8312e-3**.
+
+Representative linear-ranking OOD margins:
+
+- beam interrupt: +5.4557e-3;
+- beam threat: +4.9791e-3;
+- current-vs-earlier interrupt: +7.0152e-3;
+- current-vs-earlier threat: +5.8679e-3;
+- quoted/current interrupt: +2.4924e-2;
+- quoted/current threat: +2.2644e-2;
+- negation interrupt: +2.1551e-3;
+- negation threat: +1.8205e-3;
+- physical threat: +4.9920e-1.
+
+Head construction + evaluation took about **66 ms** in this browser run versus roughly 1–2 ms for the prototype; encoder pass still dominated at ~1.13 s for 54 states.
+
+### Interpretation
+
+**FAIL AS A HEAD-CAPACITY IMPROVEMENT.**
+
+The deterministic regularized linear ranker does not recover either remaining cognition relation and provides no aggregate OOD gain.
+
+This also weakens the hypothesis that the current bottleneck is merely the prototype's naive equal-sum construction.
+
+However a nonlinear head is **not yet earned**.
+
+Current cognition supervision is materially thinner than hazard supervision:
+
+- base + augmentation cognition directional TRAIN relations: 2;
+- interrupt: 3;
+- threat: 4.
+
+The exact unchanged cognition margins under prototype vs regularized linear ranking suggest the next question is representation/supervision geometry, not optimizer sophistication.
+
+### Earned next diagnostic
+
+Before adding MLP capacity or more cognition examples, inspect the frozen hybrid relation geometry:
+
+- normalize each TRAIN directional delta;
+- normalize each held-out directional delta;
+- for every held-out relation, report cosine alignment to every same-dimension TRAIN delta;
+- report nearest TRAIN delta, mean alignment and alignment to the prototype direction.
+
+Particularly inspect:
+
+- `ood:seal-unconfirmed-cognition-over-confirmed`;
+- `ood:clearance-unestablished-cognition-over-resolved`;
+
+against:
+
+- base TRAIN cognition ambiguity delta;
+- expanded TRAIN interlock cognition delta.
+
+If both OOD cognition deltas are poorly or negatively aligned with all available TRAIN cognition deltas, broader independent cognition supervision is the earned next experiment.
+
+If useful alignment exists but the scorer still points incorrectly, then head capacity becomes a stronger hypothesis.
