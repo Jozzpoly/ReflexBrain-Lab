@@ -1,0 +1,155 @@
+import { describe, expect, it } from "vitest";
+import {
+  createAutonomousLifeRun,
+  R3_LIFE_PLACES,
+} from "../src/r3/autonomous-life-run";
+import { distance } from "../src/r3/life-world";
+
+describe("R3 autonomous life pressure host", () => {
+  it("creates repeated material life with zero Owner input", () => {
+    const run = createAutonomousLifeRun();
+    run.runTicks(3500);
+
+    const events = run.allEvents();
+    const processed = events.filter(
+      (event) => event.kind === "processing_completed",
+    );
+    const depotPlacements = events.filter(
+      (event) =>
+        event.kind === "place" &&
+        distance(event.position, R3_LIFE_PLACES.depot.position) <= 0.5,
+    );
+
+    expect(processed.length).toBeGreaterThanOrEqual(3);
+    expect(depotPlacements.length).toBeGreaterThanOrEqual(2);
+
+    for (const residentId of [
+      "resident:mira",
+      "resident:janek",
+      "resident:ida",
+    ] as const) {
+      expect(
+        events.some(
+          (event) =>
+            event.actorId === residentId &&
+            (event.kind === "motion" ||
+              event.kind === "pickup" ||
+              event.kind === "place"),
+        ),
+      ).toBe(true);
+    }
+  });
+
+  it("has real cross-resident causal dependence instead of three isolated animations", () => {
+    const full = createAutonomousLifeRun();
+    full.runTicks(2600);
+    const fullProduced = full
+      .allEvents()
+      .filter((event) => event.kind === "processing_completed").length;
+
+    const withoutSteward = createAutonomousLifeRun({
+      enabledResidents: ["resident:janek", "resident:ida"],
+      initialSourceRaw: 3,
+    });
+    withoutSteward.runTicks(2600);
+    const withoutStewardProduced = withoutSteward
+      .allEvents()
+      .filter((event) => event.kind === "processing_completed").length;
+
+    expect(fullProduced).toBeGreaterThan(0);
+    expect(withoutStewardProduced).toBe(0);
+  });
+
+  it("does not expose distant source inventory through private observation", () => {
+    const run = createAutonomousLifeRun();
+    const observation = run.world.perceive("resident:mira");
+
+    expect(
+      observation.visibleObjects.some(
+        (object) =>
+          object.kind === "raw_blank" &&
+          object.location.kind === "free" &&
+          distance(
+            object.location.position,
+            R3_LIFE_PLACES.source.position,
+          ) <= 0.6,
+      ),
+    ).toBe(false);
+  });
+
+  it("preserves one activity identity across many movement ticks", () => {
+    const run = createAutonomousLifeRun();
+
+    const activityIds: string[] = [];
+    for (let i = 0; i < 25; i += 1) {
+      const step = run.advanceOneTick();
+      activityIds.push(step.activities["resident:mira"]!.id);
+    }
+
+    expect(new Set(activityIds).size).toBe(1);
+    expect(activityIds[0]).toMatch(/maintain_input_stock/);
+  });
+
+  it("invalidates stale last-known object location after checked absence", () => {
+    const run = createAutonomousLifeRun();
+    let rememberedObjectId: string | null = null;
+
+    for (let i = 0; i < 120; i += 1) {
+      run.advanceOneTick();
+      const memory = run.residentDebug("resident:mira")!.memory;
+      const seen = Object.values(memory.objectBeliefs).find(
+        (belief) =>
+          belief.kind === "raw_blank" &&
+          belief.lastKnownLocation?.kind === "free",
+      );
+      if (seen) {
+        rememberedObjectId = seen.objectId;
+        break;
+      }
+    }
+
+    expect(rememberedObjectId).not.toBeNull();
+
+    // Continue long enough for the remembered object to be picked up/moved and
+    // for Mira to physically revisit/check its old location.
+    run.runTicks(500);
+    const belief =
+      run.residentDebug("resident:mira")!.memory.objectBeliefs[
+        rememberedObjectId!
+      ];
+
+    expect(belief).toBeDefined();
+    if (belief.lastKnownLocation?.kind === "free") {
+      const mira = run.world
+        .snapshot()
+        .actors.find((actor) => actor.id === "resident:mira")!;
+      // A still-known free location is acceptable only if Mira has not yet
+      // physically checked that exact location.
+      expect(
+        distance(mira.position, belief.lastKnownLocation.position),
+      ).toBeGreaterThan(0.75);
+    }
+  });
+
+  it("generates semantic pressure from resident blockage rather than a scripted tick", () => {
+    const run = createAutonomousLifeRun({
+      enabledResidents: ["resident:janek"],
+      initialSourceRaw: 0,
+    });
+    run.runTicks(500);
+
+    const requests = run
+      .allEvents()
+      .filter((event) => event.kind === "speech");
+
+    expect(requests.length).toBeGreaterThanOrEqual(2);
+    expect(
+      requests.every(
+        (event) => event.payload.text === "The input rack is empty.",
+      ),
+    ).toBe(true);
+    expect(
+      requests.map((event) => event.tick),
+    ).not.toContain(90);
+  });
+});
