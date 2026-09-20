@@ -1224,7 +1224,7 @@ describe("R1 adversarial OOD red-team", () => {
       (state) => state.id === "ood:urgent-warning",
     )!;
     const reassurance = suite.states.find(
-      (state) => state.id === "ood:danger-word-reassurance",
+      (state) => state.id === "ood:secured-beam-control",
     )!;
 
     const normalizeSpeechText = (state: ActorPrivateState) => ({
@@ -1268,10 +1268,10 @@ describe("R1 adversarial OOD red-team", () => {
     });
 
     for (const [leftId, rightId] of [
-      ["ood:indirect-live-warning", "ood:indirect-maintenance-note"],
+      ["ood:indirect-live-warning", "ood:indirect-earlier-control"],
       ["ood:quoted-live-warning", "ood:quoted-old-drill"],
       ["ood:negated-unsafe", "ood:negated-safe"],
-      ["ood:live-uncertainty", "ood:resolved-uncertainty-quote"],
+      ["ood:clearance-unestablished", "ood:clearance-established"],
     ] as const) {
       const left = suite.states.find((state) => state.id === leftId)!;
       const right = suite.states.find((state) => state.id === rightId)!;
