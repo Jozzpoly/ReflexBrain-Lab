@@ -14,6 +14,7 @@ import {
   evaluatePrototypeHeads,
   learnPrototypeHeads,
 } from "./prototype-head";
+import { hybridPrivateRepresentation } from "./structured-features";
 
 const scope = globalThis as unknown as {
   postMessage(message: R1EncoderWorkerResponse): void;
@@ -199,7 +200,8 @@ async function runLearnedHead(
   const embeddingById = new Map<string, number[]>();
   const chunkSize = 8;
   const embeddingStarted = performance.now();
-  let embeddingDimensions = 0;
+  let encoderDimensions = 0;
+  let representationDimensions = 0;
 
   for (let offset = 0; offset < texts.length; offset += chunkSize) {
     const chunkTexts = texts.slice(offset, offset + chunkSize);
@@ -217,11 +219,26 @@ async function runLearnedHead(
 
       for (let index = 0; index < rows.length; index += 1) {
         const row = rows[index]!;
-        if (embeddingDimensions === 0) embeddingDimensions = row.length;
-        if (row.length !== embeddingDimensions) {
-          throw new Error("R1 learned head embedding dimension changed");
+        if (encoderDimensions === 0) encoderDimensions = row.length;
+        if (row.length !== encoderDimensions) {
+          throw new Error("R1 learned head encoder dimension changed");
         }
-        embeddingById.set(chunkStates[index]!.id, row);
+
+        const representation =
+          request.representation === "hybrid"
+            ? hybridPrivateRepresentation(
+                row,
+                chunkStates[index]!.state,
+              )
+            : row;
+
+        if (representationDimensions === 0) {
+          representationDimensions = representation.length;
+        }
+        if (representation.length !== representationDimensions) {
+          throw new Error("R1 learned head representation dimension changed");
+        }
+        embeddingById.set(chunkStates[index]!.id, representation);
       }
     } finally {
       dispose(output);
@@ -229,7 +246,11 @@ async function runLearnedHead(
   }
 
   const embeddingMs = performance.now() - embeddingStarted;
-  if (embeddingById.size !== request.states.length || embeddingDimensions <= 0) {
+  if (
+    embeddingById.size !== request.states.length ||
+    encoderDimensions <= 0 ||
+    representationDimensions <= 0
+  ) {
     throw new Error("R1 learned head did not embed every state");
   }
 
@@ -247,11 +268,14 @@ async function runLearnedHead(
     modelRevision: R1_ENCODER_MODEL_REVISION,
     dtype: R1_ENCODER_DTYPE,
     device: "webgpu",
+    representation: request.representation,
+    stateCount: request.states.length,
     loadMs,
     warmupMs,
     embeddingMs,
     embeddingBatchSize: chunkSize,
-    embeddingDimensions,
+    encoderDimensions,
+    representationDimensions,
     headMs,
     constraints: evaluation.constraints,
     dimensions: evaluation.dimensions,
