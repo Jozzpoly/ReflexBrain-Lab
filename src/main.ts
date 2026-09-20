@@ -334,6 +334,12 @@ function render(): void {
     });
 
   document
+    .querySelector<HTMLButtonElement>("[data-run-r1-encoder-expanded]")
+    ?.addEventListener("click", () => {
+      void runR1LearnedHead("encoder-only", "expanded");
+    });
+
+  document
     .querySelector<HTMLButtonElement>("[data-run-r1-hybrid-expanded]")
     ?.addEventListener("click", () => {
       void runR1LearnedHead("hybrid", "expanded");
@@ -1303,6 +1309,9 @@ function r1LearnedHeadControls(): string {
     '<button class="primary" data-run-r1-hybrid ' +
     disabled +
     ">Run hybrid semantic + structured head</button>" +
+    '<button class="primary" data-run-r1-encoder-expanded ' +
+    disabled +
+    ">Run encoder-only + expanded TRAIN semantics</button>" +
     '<button class="primary" data-run-r1-hybrid-expanded ' +
     disabled +
     ">Run hybrid + expanded TRAIN semantics</button>" +
@@ -1859,6 +1868,7 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     mode !== "r1-encoder-benchmark" &&
     mode !== "r1-learned-head" &&
     mode !== "r1-hybrid-head" &&
+    mode !== "r1-encoder-expanded-head" &&
     mode !== "r1-hybrid-expanded-head" &&
     mode !== "r1-hybrid-expanded-linear-head" &&
     mode !== "r1-hybrid-cognition-head"
@@ -1878,6 +1888,11 @@ async function autoRunSmokeIfRequested(): Promise<void> {
 
   if (mode === "r1-hybrid-head") {
     await runR1LearnedHead("hybrid");
+    return;
+  }
+
+  if (mode === "r1-encoder-expanded-head") {
+    await runR1LearnedHead("encoder-only", "expanded");
     return;
   }
 
