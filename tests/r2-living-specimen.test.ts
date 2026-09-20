@@ -53,6 +53,10 @@ describe("R2 deterministic living specimen", () => {
       during.frame.privateByActor["resident:mira"]!.activity?.id,
     ).toBe("activity:carry-crate-a");
     expect(
+      during.frame.privateByActor["resident:mira"]!.activity?.phase,
+    ).toBe("carry_to_shelf");
+    expect(during.decision.behavior).toBe("protective_hold");
+    expect(
       resumed.frame.privateByActor["resident:mira"]!.activity?.id,
     ).toBe("activity:carry-crate-a");
 

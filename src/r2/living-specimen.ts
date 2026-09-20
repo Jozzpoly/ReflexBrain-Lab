@@ -422,10 +422,7 @@ function currentActivity(
 ): OngoingActivity | null {
   if (physical.completed) return null;
 
-  let phase = "approach_crate";
-  if (physical.carrying) {
-    phase = physical.hazardBlocksAisle ? "carry_blocked" : "carry_to_shelf";
-  }
+  const phase = physical.carrying ? "carry_to_shelf" : "approach_crate";
 
   return {
     id: "activity:carry-crate-a",
