@@ -3,7 +3,8 @@ import { createDeterministicLivingSpecimen } from "../src/r2/living-specimen";
 import { buildLivingSpecimenMicroscope } from "../src/r2/living-specimen-microscope";
 
 describe("R2 deterministic living specimen", () => {
-  const run = createDeterministicLivingSpecimen();
+  const run = createDeterministicLivingSpecimen("private_hazard_oracle");
+  const nullRun = createDeterministicLivingSpecimen("null_continue");
 
   it("receives low-stakes speech without abandoning the ongoing carry activity", () => {
     const speechStep = run.steps.find(
@@ -115,6 +116,43 @@ describe("R2 deterministic living specimen", () => {
 
     expect(actorPosition.provenanceEventIds).toContain(motion.id);
     expect(cratePosition.provenanceEventIds).toContain(motion.id);
+  });
+
+  it("creates different World consequences for oracle and null controls under the same hazard schedule", () => {
+    const oracleExposures = run.steps.flatMap((step) =>
+      step.frame.world.events.filter(
+        (event) => event.kind === "physical.hazard_exposure",
+      ),
+    );
+    const nullExposures = nullRun.steps.flatMap((step) =>
+      step.frame.world.events.filter(
+        (event) => event.kind === "physical.hazard_exposure",
+      ),
+    );
+
+    expect(oracleExposures).toHaveLength(0);
+    expect(nullExposures).toHaveLength(1);
+
+    const oracleHazardTicks = run.steps
+      .filter((step) =>
+        step.frame.world.events.some(
+          (event) =>
+            event.kind === "physical.hazard_onset" ||
+            event.kind === "physical.hazard_resolved",
+        ),
+      )
+      .map((step) => step.frame.world.tick);
+    const nullHazardTicks = nullRun.steps
+      .filter((step) =>
+        step.frame.world.events.some(
+          (event) =>
+            event.kind === "physical.hazard_onset" ||
+            event.kind === "physical.hazard_resolved",
+        ),
+      )
+      .map((step) => step.frame.world.tick);
+
+    expect(nullHazardTicks).toEqual(oracleHazardTicks);
   });
 
   it("eventually completes the same assigned carry activity", () => {

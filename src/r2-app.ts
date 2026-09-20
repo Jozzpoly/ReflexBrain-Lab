@@ -1,12 +1,14 @@
 import "./r2-style.css";
 import {
   createDeterministicLivingSpecimen,
+  type LivingSpecimenFixtureMode,
   type LivingSpecimenStep,
 } from "./r2/living-specimen";
 import { buildLivingSpecimenMicroscope } from "./r2/living-specimen-microscope";
 
-const run = createDeterministicLivingSpecimen();
-const microscope = buildLivingSpecimenMicroscope(run);
+let fixtureMode: LivingSpecimenFixtureMode = "private_hazard_oracle";
+let run = createDeterministicLivingSpecimen(fixtureMode);
+let microscope = buildLivingSpecimenMicroscope(run);
 const appElement = document.querySelector<HTMLDivElement>("#app");
 if (!appElement) throw new Error("missing #app");
 const app: HTMLDivElement = appElement;
@@ -37,11 +39,11 @@ function render(): void {
     '<div>',
     '<p class="eyebrow">ReflexBrain R2 · research specimen</p>',
     '<h1>Causal organism, before a learned brain</h1>',
-    '<p class="lede">A deterministic actor carries one activity through harmless speech, a temporary physical hazard, and recovery. The oracle is explicit research equipment — not intelligence evidence.</p>',
+    '<p class="lede">The same causal world is replayed through two explicit research controls: a private-evidence hazard oracle and a null/continue fixture. This is A/B infrastructure, not intelligence evidence.</p>',
     '</div>',
     '<div class="status-card">',
     '<span class="status-dot"></span>',
-    '<div><strong>Oracle fixture</strong><small>No learned model · no ReflexScores · no direct World mutation</small></div>',
+    '<div><strong>' + (fixtureMode === "private_hazard_oracle" ? "Private hazard oracle" : "Null continue control") + '</strong><small>No learned model · no ReflexScores · no direct World mutation</small></div>',
     '</div>',
     '</header>',
 
@@ -61,7 +63,10 @@ function render(): void {
     '<div class="shelf-marker" style="left:' +
       xPercent(step.physical.destinationX) + '%">shelf</div>',
     step.physical.hazardActive
-      ? '<div class="beam" style="left:' + xPercent(5.2) + '%"><span>falling beam</span></div>'
+      ? '<div class="beam" style="left:' + xPercent(5.2) + '%"><span>hazard zone</span></div>'
+      : '',
+    step.frame.world.events.some((event) => event.kind === "physical.hazard_exposure")
+      ? '<div class="exposure-badge">WORLD OUTCOME · HAZARD EXPOSURE</div>'
       : '',
     '<div class="actor" style="left:' + xPercent(step.physical.actorX) + '%"><span>Mira</span></div>',
     step.physical.carrying
@@ -75,6 +80,12 @@ function render(): void {
       escapeHtml(step.decision.reason) + '</strong></div>',
     '</section>',
 
+    '<section class="ab-panel">',
+    '<span class="label">A/B research fixture</span>',
+    '<button class="' + (fixtureMode === "private_hazard_oracle" ? "selected" : "") + '" data-fixture="private_hazard_oracle">Private-evidence oracle</button>',
+    '<button class="' + (fixtureMode === "null_continue" ? "selected" : "") + '" data-fixture="null_continue">Null / continue</button>',
+    '</section>',
+
     '<section class="controls-panel">',
     '<button data-action="reset">Reset</button>',
     '<button data-action="previous">← Previous</button>',
@@ -84,7 +95,7 @@ function render(): void {
 
     '<section class="timeline-panel">',
     '<div class="section-head"><div><p class="eyebrow">Episode</p><h2>Continuity over time</h2></div>',
-    '<p>Speech at t3 is received but does not reset the activity. Hazard t6–t8 holds movement. Resolution t9 resumes the same activity identity.</p></div>',
+    '<p>The exogenous schedule is identical. The oracle fixture holds on private hazard evidence; the null control keeps moving and can create a different World consequence.</p></div>',
     '<div class="timeline">',
     run.steps.map((candidate, index) =>
       '<button class="tick ' +
@@ -117,7 +128,7 @@ function render(): void {
 
     '<section class="boundary-panel">',
     '<h2>What this does <em>not</em> prove</h2>',
-    '<p>The oracle understands only the hand-authored physical hazard distinction used by this specimen. Harmless speech continues because the fixture has no rule that promotes it. This page proves causal continuity and observability infrastructure, not semantic intelligence.</p>',
+    '<p>The hazard oracle understands only one hand-authored distinction. The null control deliberately ignores all incoming evidence. Their difference proves that the harness can attribute a World consequence to a private-evidence decision path; it does not prove semantic intelligence.</p>',
     '</section>',
     '</main>',
   ].join("");
@@ -126,6 +137,17 @@ function render(): void {
 }
 
 function bindControls(): void {
+  app.querySelectorAll<HTMLButtonElement>("[data-fixture]").forEach((button) => {
+    button.onclick = () => {
+      pause();
+      fixtureMode = button.dataset.fixture as LivingSpecimenFixtureMode;
+      run = createDeterministicLivingSpecimen(fixtureMode);
+      microscope = buildLivingSpecimenMicroscope(run);
+      selectedIndex = 0;
+      render();
+    };
+  });
+
   app.querySelector<HTMLButtonElement>('[data-action="reset"]')!.onclick = () => {
     pause();
     selectedIndex = 0;

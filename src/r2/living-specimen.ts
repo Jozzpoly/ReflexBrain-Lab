@@ -14,6 +14,11 @@ const ACTOR_ID = "resident:mira";
 const PLAYER_ID = "player";
 const CRATE_ID = "object:crate-a";
 const BEAM_ID = "object:beam-a";
+const HAZARD_X = 5.2;
+
+export type LivingSpecimenFixtureMode =
+  | "private_hazard_oracle"
+  | "null_continue";
 
 export type LivingSpecimenBehavior =
   | "carry"
@@ -71,7 +76,9 @@ interface MutablePhysicalState {
   completed: boolean;
 }
 
-export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
+export function createDeterministicLivingSpecimen(
+  fixtureMode: LivingSpecimenFixtureMode = "private_hazard_oracle",
+): LivingSpecimenRun {
   const physical: MutablePhysicalState = {
     actorX: 1,
     crateX: 1,
@@ -255,7 +262,11 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
       activity,
     );
 
-    const resolved = resolveFixtureOracle(actorPrivateFrame, oracle);
+    const resolved = resolveFixture(
+      fixtureMode,
+      actorPrivateFrame,
+      oracle,
+    );
     oracle = resolved.nextState;
 
     if (resolved.decision.behavior === "carry" ||
@@ -266,6 +277,22 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
         knownWorldEvents.push(motion);
         latestActorMotionEventId = motion.id;
         latestCratePositionEventId = motion.id;
+
+        if (physical.hazardActive && motionCrossesHazard(motion)) {
+          const exposure = event(
+            tick,
+            "event:hazard-exposure:" + tick,
+            "physical.hazard_exposure",
+            BEAM_ID,
+            [ACTOR_ID],
+            {
+              hazard: BEAM_ID,
+              x: HAZARD_X,
+            },
+          );
+          worldEvents.push(exposure);
+          knownWorldEvents.push(exposure);
+        }
       }
     }
 
@@ -343,12 +370,40 @@ export function createDeterministicLivingSpecimen(): LivingSpecimenRun {
   validateCausalEpisode(steps.map((step) => step.frame));
 
   return {
-    id: "r2-specimen:carry-interrupt-resume-v0",
+    id: "r2-specimen:carry-interrupt-resume-v0:" + fixtureMode,
     title:
-      "Carry task with harmless speech, transient physical hazard, and recovery",
+      fixtureMode === "private_hazard_oracle"
+        ? "Private-evidence hazard oracle"
+        : "Null continue control",
     actorId: ACTOR_ID,
     steps,
   };
+}
+
+function resolveFixture(
+  fixtureMode: LivingSpecimenFixtureMode,
+  frame: ActorPrivateFrame,
+  previous: FixtureOracleState,
+): {
+  decision: LivingSpecimenDecisionTrace;
+  nextState: FixtureOracleState;
+} {
+  if (fixtureMode === "null_continue") {
+    return {
+      decision: {
+        tick: frame.tick,
+        behavior: frame.activity === null ? "completed" : "carry",
+        evidenceIds: [],
+        reason:
+          frame.activity === null
+            ? "null control: activity already completed"
+            : "null control: continue activity regardless of incoming evidence",
+      },
+      nextState: previous,
+    };
+  }
+
+  return resolveFixtureOracle(frame, previous);
 }
 
 function resolveFixtureOracle(
@@ -448,6 +503,17 @@ function advanceCarry(
       fromX,
       toX,
     },
+  );
+}
+
+function motionCrossesHazard(motion: WorldEvent): boolean {
+  const fromX = motion.payload.fromX;
+  const toX = motion.payload.toX;
+  return (
+    typeof fromX === "number" &&
+    typeof toX === "number" &&
+    fromX < HAZARD_X &&
+    toX >= HAZARD_X
   );
 }
 

@@ -50,13 +50,18 @@ button { font: inherit; }
 .crate.carried { top: 48%; margin-left: 36px; }
 .beam { position: absolute; top: 39%; width: 18px; height: 110px; background: #a76555; border: 2px solid #e2a08d; transform: rotate(11deg); border-radius: 4px; box-shadow: 0 6px 24px rgba(217,104,80,.2); }
 .beam span { position: absolute; width: 100px; top: -25px; left: -38px; text-align: center; color: #d9a697; font-size: 11px; transform: rotate(-11deg); }
+.exposure-badge { position: absolute; right: 18px; top: 18px; padding: 8px 10px; border: 1px solid #d66b57; background: rgba(92, 31, 23, .92); color: #ffd4ca; border-radius: 8px; font-size: 11px; font-weight: 800; letter-spacing: .04em; }
 .speech-bubble { position: absolute; top: 20px; left: 18%; max-width: 300px; padding: 10px 13px; background: #eef5fb; color: #17202a; border-radius: 12px 12px 12px 3px; font-size: 13px; box-shadow: 0 8px 30px rgba(0,0,0,.24); }
 .reason-strip { display: flex; gap: 10px; padding: 13px 18px; border-top: 1px solid #222d37; color: #aab6c2; font-size: 13px; }
 .reason-strip span { color: #687a8b; white-space: nowrap; }
 
-.controls-panel { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 0; }
-.controls-panel button { border: 1px solid #2b3845; background: #111821; color: #cbd5df; padding: 9px 14px; border-radius: 9px; cursor: pointer; }
-.controls-panel button:hover { border-color: #52687c; }
+.ab-panel { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 12px 0 0; }
+.ab-panel .label { margin-right: 4px; margin-bottom: 0; }
+.ab-panel button, .controls-panel button { border: 1px solid #2b3845; background: #111821; color: #cbd5df; padding: 9px 14px; border-radius: 9px; cursor: pointer; }
+.ab-panel button:hover, .controls-panel button:hover { border-color: #52687c; }
+.ab-panel button.selected { border-color: #78a9d6; background: #18314a; color: #e6f2ff; }
+
+.controls-panel { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 0 12px; }
 .controls-panel .primary { background: #316ca7; border-color: #4a83ba; color: white; min-width: 90px; }
 
 .section-head { display: flex; justify-content: space-between; gap: 28px; padding: 18px; border-bottom: 1px solid #222d37; }
