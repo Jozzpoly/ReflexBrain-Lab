@@ -86,12 +86,13 @@ export function trainSurfaceMemorizer(
 
   return {
     vocabulary,
-    weights: Object.fromEntries(
-      DIMENSIONS.map((dimension) => [
-        dimension,
-        [...mutableWeights[dimension]],
-      ]),
-    ) as Record<AppraisalId, readonly number[]>,
+    weights: {
+      attention: [...mutableWeights.attention],
+      interrupt: [...mutableWeights.interrupt],
+      social: [...mutableWeights.social],
+      threat: [...mutableWeights.threat],
+      cognition: [...mutableWeights.cognition],
+    },
   };
 }
 
