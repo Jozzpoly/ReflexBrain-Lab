@@ -1128,3 +1128,48 @@ Add several cognition TRAIN families with different nouns, phrasing and micro-si
 The existing exact-token negative-control gate must remain green after this expansion.
 
 Only after cognition TRAIN geometry spans held-out cognition more plausibly should head-capacity escalation be reconsidered.
+
+
+## R1 batch-layout confound discovered during cognition-breadth A/B
+
+The first cognition-breadth live run exposed a methodological confound in learned-head embedding.
+
+Current learned-head inference embeds states in chunks of 8. Adding six **cognition-only** TRAIN states before the frozen OOD states changes which OOD sentences share a batch/chunk and their position inside that batch.
+
+This produced a result that cannot be attributed solely to cognition supervision.
+
+On the **same deployed code revision**:
+
+Expanded supervision (54 states, unchanged interrupt supervision):
+
+- negation interrupt OOD margin: **+2.4343e-3 PASS**;
+- seal cognition: **-4.4603e-3 FAIL**;
+- clearance cognition: **-8.8312e-3 FAIL**.
+
+Cognition-breadth supervision (60 states; only cognition TRAIN was added):
+
+- negation interrupt OOD margin: **-3.7950e-5 FAIL**;
+- seal cognition: **-3.7787e-3 FAIL**;
+- clearance cognition: **+2.9691e-3 PASS**.
+
+Because the interrupt TRAIN relations and interrupt head construction are unchanged between these two variants, the negation-interrupt sign flip is direct evidence that adding unrelated states changed the OOD representation through batch layout / numerical execution.
+
+The cognition-breadth geometry also changed, but those changes are therefore not clean supervision evidence yet.
+
+### Consequence
+
+**Cross-supervision learned-head comparisons made with chunkSize=8 are not qualified evidence when the state count/order changes.**
+
+Same-layout repeats remain useful for repeatability, but previous cross-layout margin comparisons must be treated as contaminated by batch composition.
+
+### Corrective experiment
+
+Before interpreting cognition breadth or any further head-capacity experiment:
+
+1. embed every learned-head state independently (`chunkSize=1`) so a state's representation cannot depend on what unrelated state shares its inference batch;
+2. keep model revision, dtype, serialization, hybrid structured channels, datasets and head math unchanged;
+3. rerun expanded 54-state and cognition-breadth 60-state variants;
+4. require dimensions whose TRAIN supervision did not change (attention, social, interrupt, threat) to retain the same OOD margins to practical numerical precision across the two variants;
+5. only then interpret cognition changes as supervision effects.
+
+The batching path may later be reintroduced for performance only after a dedicated batch-invariance qualification establishes acceptable numerical equivalence.
