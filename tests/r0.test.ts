@@ -859,3 +859,191 @@ describe("R1 encoder benchmark contract", () => {
     expect(cosineSimilarity([1, 1], [-1, -1])).toBeCloseTo(-1, 12);
   });
 });
+
+
+describe("R1 frozen-encoder prototype head", () => {
+  it("learns only from TRAIN relations and evaluates held-out relations afterward", async () => {
+    const {
+      evaluatePrototypeHeads,
+      learnPrototypeHeads,
+    } = await import("../src/r1/prototype-head");
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+
+    const embeddings = new Map<string, readonly number[]>();
+    const constraints: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const positive = new Array<number>(5).fill(0);
+      positive[index] = 1;
+      const negative = new Array<number>(5).fill(0);
+
+      embeddings.set("train:" + dimension + ":left", positive);
+      embeddings.set("train:" + dimension + ":right", negative);
+      embeddings.set("dev:" + dimension + ":left", positive);
+      embeddings.set("dev:" + dimension + ":right", negative);
+      embeddings.set("test:" + dimension + ":left", positive);
+      embeddings.set("test:" + dimension + ":right", negative);
+
+      constraints.push(
+        {
+          id: "train:" + dimension,
+          familyId: "train:" + dimension,
+          split: "train",
+          dimension,
+          relation: "greater",
+          leftStateId: "train:" + dimension + ":left",
+          rightStateId: "train:" + dimension + ":right",
+        },
+        {
+          id: "dev:" + dimension,
+          familyId: "dev:" + dimension,
+          split: "dev",
+          dimension,
+          relation: "greater",
+          leftStateId: "dev:" + dimension + ":left",
+          rightStateId: "dev:" + dimension + ":right",
+        },
+        {
+          id: "test:" + dimension,
+          familyId: "test:" + dimension,
+          split: "test",
+          dimension,
+          relation: "greater",
+          leftStateId: "test:" + dimension + ":left",
+          rightStateId: "test:" + dimension + ":right",
+        },
+      );
+    });
+
+    const heads = learnPrototypeHeads(embeddings, constraints);
+    const evaluated = evaluatePrototypeHeads(
+      heads,
+      embeddings,
+      constraints,
+    );
+
+    expect(
+      evaluated.constraints.every((constraint) => constraint.passed),
+    ).toBe(true);
+    expect(
+      evaluated.dimensions.every(
+        (dimension) => dimension.trainingRelations === 1,
+      ),
+    ).toBe(true);
+  });
+
+  it("does not let DEV/TEST labels change learned head weights", async () => {
+    const { learnPrototypeHeads } = await import(
+      "../src/r1/prototype-head"
+    );
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+    const embeddings = new Map<string, readonly number[]>();
+    const train: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const left = new Array<number>(5).fill(0);
+      left[index] = 1;
+      embeddings.set("left:" + dimension, left);
+      embeddings.set("right:" + dimension, new Array<number>(5).fill(0));
+      train.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "left:" + dimension,
+        rightStateId: "right:" + dimension,
+      });
+    });
+
+    const devA: import("../src/r1/encoder-contract").R1LearnConstraintInput = {
+      id: "dev:a",
+      familyId: "dev:a",
+      split: "dev",
+      dimension: "threat",
+      relation: "greater",
+      leftStateId: "left:threat",
+      rightStateId: "right:threat",
+    };
+    const devB: import("../src/r1/encoder-contract").R1LearnConstraintInput = {
+      ...devA,
+      id: "dev:b",
+      leftStateId: "right:threat",
+      rightStateId: "left:threat",
+    };
+
+    const withA = learnPrototypeHeads(embeddings, [...train, devA]);
+    const withB = learnPrototypeHeads(embeddings, [...train, devB]);
+
+    expect(withA.weights).toEqual(withB.weights);
+  });
+
+  it("keeps identical embeddings equal under every learned dimension", async () => {
+    const {
+      evaluatePrototypeHeads,
+      learnPrototypeHeads,
+    } = await import("../src/r1/prototype-head");
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+    const embeddings = new Map<string, readonly number[]>();
+    const constraints: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const left = new Array<number>(5).fill(0);
+      left[index] = 1;
+      embeddings.set("train-left:" + dimension, left);
+      embeddings.set("train-right:" + dimension, new Array<number>(5).fill(0));
+      constraints.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "train-left:" + dimension,
+        rightStateId: "train-right:" + dimension,
+      });
+    });
+
+    embeddings.set("same-a", [0.2, 0.3, 0.4, 0.5, 0.6]);
+    embeddings.set("same-b", [0.2, 0.3, 0.4, 0.5, 0.6]);
+    constraints.push({
+      id: "test:hidden-equality",
+      familyId: "test:hidden",
+      split: "test",
+      dimension: "threat",
+      relation: "equal",
+      leftStateId: "same-a",
+      rightStateId: "same-b",
+    });
+
+    const heads = learnPrototypeHeads(embeddings, constraints);
+    const evaluation = evaluatePrototypeHeads(
+      heads,
+      embeddings,
+      constraints,
+    );
+    const equality = evaluation.constraints.find(
+      (constraint) => constraint.id === "test:hidden-equality",
+    )!;
+
+    expect(equality.margin).toBe(0);
+    expect(equality.passed).toBe(true);
+  });
+});
