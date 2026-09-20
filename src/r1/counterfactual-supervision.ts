@@ -37,6 +37,8 @@ interface SplitRecipe {
   split: R1Split;
   requestText: string;
   warningText: string;
+  clearInstructionText: string;
+  ambiguousInstructionText: string;
   speechX: number;
   speechVx: number;
   passX: number;
@@ -51,6 +53,9 @@ const RECIPES: readonly SplitRecipe[] = [
     split: "train",
     requestText: "Please help with these crates.",
     warningText: "Watch out! Move away now!",
+    clearInstructionText: "Please place this crate on the shelf.",
+    ambiguousInstructionText:
+      "Move this crate only if Alex already checked it; I am not sure whether he did.",
     speechX: 150,
     speechVx: 0,
     passX: 150,
@@ -63,6 +68,9 @@ const RECIPES: readonly SplitRecipe[] = [
     split: "dev",
     requestText: "Could you lend a hand here?",
     warningText: "Careful! Get back before impact!",
+    clearInstructionText: "Set this box beside the door.",
+    ambiguousInstructionText:
+      "Take this box there unless Mira still needs it; I do not know if she does.",
     speechX: 165,
     speechVx: -10,
     passX: 160,
@@ -75,6 +83,9 @@ const RECIPES: readonly SplitRecipe[] = [
     split: "test",
     requestText: "Kindly assist briefly.",
     warningText: "Incoming! Clear the area!",
+    clearInstructionText: "Put this package by the wall.",
+    ambiguousInstructionText:
+      "Carry this package over only if the route is open; I cannot tell whether it is.",
     speechX: 145,
     speechVx: 10,
     passX: 140,
@@ -102,6 +113,7 @@ export function createR1CounterfactualSuite(): R1CounterfactualSuite {
   for (const recipe of RECIPES) {
     addRequestFamily(recipe, states, constraints);
     addWarningFamily(recipe, states, constraints);
+    addCognitionFamily(recipe, states, constraints);
     addApproachFamily(recipe, states, constraints);
     addHiddenWorldFamily(recipe, states, constraints);
   }
@@ -238,15 +250,62 @@ function addWarningFamily(
       "speech meaning changes from ordinary request to urgent danger warning; physics and addressee stay fixed",
       "Urgent danger language should increase immediate threat appraisal over an ordinary addressed request.",
     ),
+  );
+}
+
+function addCognitionFamily(
+  recipe: SplitRecipe,
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = recipe.split + ":cognition-ambiguity";
+  const ambiguousId = recipe.split + ":ambiguous-instruction";
+  const clearId = recipe.split + ":clear-instruction";
+
+  const common = {
+    tick9PlayerX: recipe.speechX,
+    tick9PlayerVx: recipe.speechVx,
+  } as const;
+
+  states.push(
+    stateFromEpisode(
+      ambiguousId,
+      familyId,
+      recipe.split,
+      "Addressed conditional instruction with unresolved prerequisite.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText: recipe.ambiguousInstructionText,
+        ...common,
+        idSuffix: ambiguousId,
+      }),
+      10,
+    ),
+    stateFromEpisode(
+      clearId,
+      familyId,
+      recipe.split,
+      "Addressed clear instruction under identical physics.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText: recipe.clearInstructionText,
+        ...common,
+        idSuffix: clearId,
+      }),
+      10,
+    ),
+  );
+
+  constraints.push(
     directional(
-      recipe.split + ":warning-cognition-over-request",
+      recipe.split + ":ambiguous-cognition-over-clear",
       familyId,
       recipe.split,
       "cognition",
-      warningId,
-      requestId,
-      "speech meaning changes from ordinary request to urgent danger warning; physics and addressee stay fixed",
-      "Urgent danger language should create more pressure for deliberate reconsideration than an ordinary request.",
+      ambiguousId,
+      clearId,
+      "speech changes from a clear instruction to an unresolved conditional instruction; physics and addressee stay fixed",
+      "An unresolved conditional instruction should require more deliberate interpretation than a clear instruction.",
     ),
   );
 }
