@@ -21,6 +21,10 @@ import {
   learnPrototypeBankHeads,
 } from "./prototype-bank-head";
 import {
+  evaluatePairedReasonHeads,
+  learnPairedReasonHeads,
+} from "./paired-reason-head";
+import {
   analyzeRelationGeometry,
   analyzeTrainDirectionCoherence,
 } from "./relation-geometry";
@@ -274,13 +278,19 @@ async function runLearnedHead(
           embeddingById,
           request.constraints,
         )
-      : evaluatePrototypeHeads(
-          request.headMode === "linear-ranking"
-            ? learnRegularizedLinearHeads(embeddingById, request.constraints)
-            : learnPrototypeHeads(embeddingById, request.constraints),
-          embeddingById,
-          request.constraints,
-        );
+      : request.headMode === "paired-reason"
+        ? evaluatePairedReasonHeads(
+            learnPairedReasonHeads(embeddingById, request.constraints),
+            embeddingById,
+            request.constraints,
+          )
+        : evaluatePrototypeHeads(
+            request.headMode === "linear-ranking"
+              ? learnRegularizedLinearHeads(embeddingById, request.constraints)
+              : learnPrototypeHeads(embeddingById, request.constraints),
+            embeddingById,
+            request.constraints,
+          );
   const geometry = analyzeRelationGeometry(
     embeddingById,
     request.constraints,
