@@ -2126,3 +2126,214 @@ describe("R1 pragmatic TRAIN breadth augmentation", () => {
     expect(leaks).toEqual([]);
   });
 });
+
+
+describe("R1 prototype-bank head", () => {
+  it("constructs anchors from TRAIN directional relations only", async () => {
+    const { learnPrototypeBankHeads } = await import(
+      "../src/r1/prototype-bank-head"
+    );
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+    const embeddings = new Map<string, readonly number[]>();
+    const train: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const left = new Array<number>(5).fill(0);
+      left[index] = 1;
+      embeddings.set("train-left:" + dimension, left);
+      embeddings.set("train-right:" + dimension, new Array<number>(5).fill(0));
+      train.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "train-left:" + dimension,
+        rightStateId: "train-right:" + dimension,
+      });
+    });
+
+    embeddings.set("ood-left", [99, 99, 99, 99, 99]);
+    embeddings.set("ood-right", [-99, -99, -99, -99, -99]);
+
+    const oodA: import("../src/r1/encoder-contract").R1LearnConstraintInput = {
+      id: "ood:a",
+      familyId: "ood:a",
+      split: "ood",
+      dimension: "threat",
+      relation: "greater",
+      leftStateId: "ood-left",
+      rightStateId: "ood-right",
+    };
+    const oodB: import("../src/r1/encoder-contract").R1LearnConstraintInput = {
+      ...oodA,
+      id: "ood:b",
+      leftStateId: "ood-right",
+      rightStateId: "ood-left",
+    };
+
+    const withA = learnPrototypeBankHeads(embeddings, [...train, oodA]);
+    const withB = learnPrototypeBankHeads(embeddings, [...train, oodB]);
+
+    expect(withA).toEqual(withB);
+    expect(withA.trainingCounts).toEqual({
+      attention: 1,
+      interrupt: 1,
+      social: 1,
+      threat: 1,
+      cognition: 1,
+    });
+    expect(
+      withA.anchors.threat.some(
+        (anchor) =>
+          anchor.higherStateId.startsWith("ood") ||
+          anchor.lowerStateId.startsWith("ood"),
+      ),
+    ).toBe(false);
+  });
+
+  it("preserves exact equality for actor-indistinguishable states", async () => {
+    const {
+      evaluatePrototypeBankHeads,
+      learnPrototypeBankHeads,
+    } = await import("../src/r1/prototype-bank-head");
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+    const embeddings = new Map<string, readonly number[]>();
+    const constraints: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const left = new Array<number>(6).fill(0);
+      const right = new Array<number>(6).fill(0);
+      left[index] = 1;
+      right[index] = -1;
+      embeddings.set("left:" + dimension, left);
+      embeddings.set("right:" + dimension, right);
+      constraints.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "left:" + dimension,
+        rightStateId: "right:" + dimension,
+      });
+    });
+
+    const same = [0.2, -0.1, 0.3, 0, 0.4, 0.7];
+    embeddings.set("same-a", same);
+    embeddings.set("same-b", [...same]);
+    constraints.push({
+      id: "ood:equal",
+      familyId: "ood:equal",
+      split: "ood",
+      dimension: "threat",
+      relation: "equal",
+      leftStateId: "same-a",
+      rightStateId: "same-b",
+    });
+
+    const head = learnPrototypeBankHeads(embeddings, constraints);
+    const result = evaluatePrototypeBankHeads(
+      head,
+      embeddings,
+      constraints,
+    );
+    const equality = result.constraints.find(
+      (row) => row.id === "ood:equal",
+    )!;
+
+    expect(equality.margin).toBe(0);
+    expect(equality.passed).toBe(true);
+  });
+
+  it("represents two local threat reasons that collapse a single summed direction", async () => {
+    const {
+      evaluatePrototypeBankHeads,
+      learnPrototypeBankHeads,
+    } = await import("../src/r1/prototype-bank-head");
+    const { learnPrototypeHeads } = await import(
+      "../src/r1/prototype-head"
+    );
+
+    const embeddings = new Map<string, readonly number[]>();
+    const constraints: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    const simpleDimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "cognition",
+    ] as const;
+
+    simpleDimensions.forEach((dimension, index) => {
+      const y = 30 + index * 10;
+      embeddings.set("high:" + dimension, [1, y]);
+      embeddings.set("low:" + dimension, [-1, y]);
+      constraints.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "high:" + dimension,
+        rightStateId: "low:" + dimension,
+      });
+    });
+
+    // Two valid local threat reasons have opposite global x directions.
+    embeddings.set("threat-a-high", [1, 0]);
+    embeddings.set("threat-a-low", [-1, 0]);
+    embeddings.set("threat-b-high", [-1, 10]);
+    embeddings.set("threat-b-low", [1, 10]);
+
+    constraints.push(
+      {
+        id: "train:threat-a",
+        familyId: "train:threat-a",
+        split: "train",
+        dimension: "threat",
+        relation: "greater",
+        leftStateId: "threat-a-high",
+        rightStateId: "threat-a-low",
+      },
+      {
+        id: "train:threat-b",
+        familyId: "train:threat-b",
+        split: "train",
+        dimension: "threat",
+        relation: "greater",
+        leftStateId: "threat-b-high",
+        rightStateId: "threat-b-low",
+      },
+    );
+
+    expect(() =>
+      learnPrototypeHeads(embeddings, constraints),
+    ).toThrow(/collapsed to zero/);
+
+    const bank = learnPrototypeBankHeads(embeddings, constraints);
+    const result = evaluatePrototypeBankHeads(
+      bank,
+      embeddings,
+      constraints,
+    );
+
+    for (const id of ["train:threat-a", "train:threat-b"]) {
+      const row = result.constraints.find((candidate) => candidate.id === id)!;
+      expect(row.passed).toBe(true);
+      expect(row.margin).toBeGreaterThan(0);
+    }
+  });
+});
