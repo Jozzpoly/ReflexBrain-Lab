@@ -1173,3 +1173,146 @@ Before interpreting cognition breadth or any further head-capacity experiment:
 5. only then interpret cognition changes as supervision effects.
 
 The batching path may later be reintroduced for performance only after a dedicated batch-invariance qualification establishes acceptable numerical equivalence.
+
+
+## R1 isolated-embedding authority — batching confound removed
+
+This checkpoint **supersedes all learned-head pass-rate and margin comparisons produced with chunkSize=8 whenever the compared state set/order differed**.
+
+### Runtime correction
+
+The learned-head correctness path now embeds every private state independently:
+
+- `R1_LEARNED_HEAD_EMBEDDING_BATCH_SIZE = 1`;
+- model revision, q8 dtype, state serialization, hybrid structured features and head math are unchanged;
+- the throughput benchmark remains a separate concern and may still batch.
+
+The workbench reports the qualification embedding batch size explicitly.
+
+### Direct batch-invariance qualification
+
+Two supervision variants were compared under isolated embedding:
+
+- expanded: 54 states;
+- cognition-breadth: 60 states, with six additional **cognition-only** TRAIN states inserted before OOD.
+
+For every dimension whose TRAIN supervision is unchanged between those variants — attention, social, interrupt and threat — the OOD margins were identical to the displayed precision.
+
+Examples identical across 54 vs 60 state layouts:
+
+- beam interrupt: **+4.0526e-3**;
+- beam threat: **+4.4779e-3**;
+- current-vs-earlier interrupt: **+1.5479e-3**;
+- current-vs-earlier threat: **+1.9877e-3**;
+- quoted/current interrupt: **+1.9449e-2**;
+- quoted/current threat: **+1.7901e-2**;
+- negation interrupt: **+2.8596e-3**;
+- negation threat: **+2.6340e-3**;
+- fast-close threat: **+4.7447e-1**.
+
+This directly confirms that the earlier sign flips were caused by batch/chunk layout, not by cross-dimension supervision.
+
+### Authoritative isolated ladder
+
+| representation | supervision | TRAIN | DEV | TEST | hardened OOD |
+| --- | --- | ---: | ---: | ---: | ---: |
+| encoder-only | base | 11/11 | 11/11 | **10/11** | **14/18** |
+| hybrid | base | 11/11 | 11/11 | **11/11** | **12/18** |
+| encoder-only | expanded semantic | 16/16 | **10/11** | **10/11** | **17/18** |
+| hybrid | expanded semantic | **16/16** | **11/11** | **11/11** | **18/18** |
+| hybrid | cognition-breadth | 19/19 | **10/11** | **10/11** | **18/18** |
+
+The current-best configuration is therefore:
+
+**frozen MiniLM-L3 q8 + isolated per-state embedding + 12 actor-private structured features + expanded 16-relation TRAIN supervision + prototype direction head.**
+
+No larger head or backbone adaptation is currently earned.
+
+### Structured representation A/B
+
+The cleanest representation comparison uses the exact same:
+
+- 54 states;
+- expanded 16 TRAIN relations;
+- prototype head;
+- isolated embedding;
+- DEV/TEST/OOD.
+
+Encoder-only / expanded fails exactly three held-out relations:
+
+- DEV `fast-close-threat-over-pass`: **-9.610e-4**;
+- TEST `fast-close-threat-over-pass`: **-4.428e-3**;
+- OOD `fast-close-threat-over-pass`: **-4.474e-3**.
+
+Hybrid / expanded passes all three and every other relation:
+
+- TRAIN **16/16**;
+- DEV **11/11**;
+- TEST **11/11**;
+- OOD **18/18**.
+
+This is strong evidence for the architectural seam:
+
+**semantic embeddings should not be forced to carry exact actor-private kinematic facts that the world model already knows explicitly.**
+
+The 12 structured channels are not a generic quality booster. Their demonstrated value here is precise: they make physical/directness facts available to the same small readout while semantic embeddings carry contextual meaning.
+
+### Semantic supervision A/B
+
+Under the now-correct isolated hybrid representation:
+
+- base supervision: OOD **12/18**;
+- expanded independent semantic supervision: OOD **18/18** with DEV/TEST remaining **11/11**.
+
+So the earlier conclusion that broader independent semantic supervision exposes useful information already present in the frozen encoder survives the batching correction — and is now stronger because the measurement is invariant to unrelated state-set growth.
+
+### Cognition-breadth negative result
+
+Adding three more cognition-only TRAIN relations does **not** improve hardened OOD beyond 18/18 and introduces two held-out regressions:
+
+- DEV `ambiguous-cognition-over-clear`: **-1.323e-3**;
+- TEST `ambiguous-cognition-over-clear`: **-6.186e-3**.
+
+Meanwhile all three OOD cognition relations pass.
+
+This is evidence **against** treating broad “needs deliberation” semantics as one axis that can be improved monotonically by adding heterogeneous positive examples.
+
+The additional cognition examples rotate the prototype direction toward some forms of unresolved verification while away from the original DEV/TEST conditional-ambiguity concept.
+
+Therefore:
+
+- do not promote cognition-breadth;
+- do not add more cognition examples by default;
+- do not add MLP capacity to paper over a concept-definition conflict;
+- keep expanded semantic supervision as current-best.
+
+### Current interpretation
+
+The clean R1 result is not “MiniLM solved reflex cognition.”
+
+It is narrower and more useful:
+
+1. a frozen tiny sentence encoder contains reusable semantic structure for several bounded appraisal distinctions;
+2. a small amount of independent pairwise supervision can expose that structure;
+3. exact physical/directness facts belong in explicit actor-private structured channels;
+4. one simple prototype direction per appraisal is sufficient for the current seed suite;
+5. batching can materially falsify tiny-margin conclusions and must remain outside correctness qualification until separately proven invariant;
+6. the present 18/18 OOD score is now a reason to **make the OOD harder**, not to increase model capacity.
+
+### Next earned falsifier
+
+Freeze the current-best model, representation, head and TRAIN/DEV/TEST data.
+
+Expand evaluation-only semantic OOD with new independently authored adversaries that:
+
+- resist exact-token / bag-of-words memorization by construction where possible;
+- probe conditional vs current hazard;
+- probe quoted/reported vs operative instruction;
+- separate urgency/interruption from physical threat;
+- probe negation scope and mixed clauses;
+- add at least one new unresolved-information / deliberation family without changing cognition TRAIN;
+- preserve actor-private epistemic boundaries.
+
+All new semantic OOD must pass the lexical negative-control gate before learned inference is run.
+
+Only failures on that frozen expansion can justify the next architecture or supervision change.
