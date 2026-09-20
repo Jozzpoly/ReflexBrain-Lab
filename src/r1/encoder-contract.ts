@@ -1,4 +1,6 @@
 import type { ActorPrivateState } from "../contracts";
+import type { AppraisalId } from "../local-choice-probe";
+import type { R1Relation, R1Split } from "./counterfactual-supervision";
 
 export const R1_ENCODER_MODEL_ID = "Xenova/paraphrase-MiniLM-L3-v2";
 export const R1_ENCODER_MODEL_REVISION =
@@ -26,6 +28,48 @@ export interface R1EncoderPairResult extends R1EncoderPairInput {
   cosineDistance: number;
 }
 
+export interface R1LearnConstraintInput {
+  id: string;
+  familyId: string;
+  split: R1Split;
+  dimension: AppraisalId;
+  relation: R1Relation;
+  leftStateId: string;
+  rightStateId: string;
+}
+
+export interface R1LearnedConstraintResult extends R1LearnConstraintInput {
+  margin: number;
+  passed: boolean;
+}
+
+export interface R1LearnedSplitCount {
+  split: R1Split;
+  passed: number;
+  total: number;
+}
+
+export interface R1LearnedDimensionSummary {
+  dimension: AppraisalId;
+  trainingRelations: number;
+  splits: readonly R1LearnedSplitCount[];
+}
+
+export interface R1LearnedHeadResult {
+  modelId: string;
+  modelRevision: string;
+  dtype: typeof R1_ENCODER_DTYPE;
+  device: "webgpu";
+  loadMs: number;
+  warmupMs: number;
+  embeddingMs: number;
+  embeddingBatchSize: number;
+  embeddingDimensions: number;
+  headMs: number;
+  constraints: readonly R1LearnedConstraintResult[];
+  dimensions: readonly R1LearnedDimensionSummary[];
+}
+
 export interface R1EncoderBenchmarkResult {
   modelId: string;
   modelRevision: string;
@@ -40,12 +84,19 @@ export interface R1EncoderBenchmarkResult {
   pairs: readonly R1EncoderPairResult[];
 }
 
-export type R1EncoderWorkerRequest = {
-  id: number;
-  type: "benchmark";
-  states: readonly R1EncoderStateInput[];
-  pairs: readonly R1EncoderPairInput[];
-};
+export type R1EncoderWorkerRequest =
+  | {
+      id: number;
+      type: "benchmark";
+      states: readonly R1EncoderStateInput[];
+      pairs: readonly R1EncoderPairInput[];
+    }
+  | {
+      id: number;
+      type: "learned_head";
+      states: readonly R1EncoderStateInput[];
+      constraints: readonly R1LearnConstraintInput[];
+    };
 
 export type R1EncoderWorkerResponse =
   | {
@@ -59,6 +110,11 @@ export type R1EncoderWorkerResponse =
       id: number;
       type: "benchmark_result";
       result: R1EncoderBenchmarkResult;
+    }
+  | {
+      id: number;
+      type: "learned_head_result";
+      result: R1LearnedHeadResult;
     }
   | { id: number; type: "error"; message: string };
 
