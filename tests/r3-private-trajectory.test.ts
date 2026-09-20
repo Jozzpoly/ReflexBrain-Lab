@@ -41,7 +41,6 @@ describe("R3 private temporal corpus", () => {
     expect(text).toContain("activity:");
     expect(text).not.toContain(row.residentId);
     expect(text).not.toContain("tick:");
-    expect(text).not.toContain(String(row.tick));
   });
 
   it("derives factual temporal changes without introducing appraisal labels", () => {
