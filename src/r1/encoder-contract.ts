@@ -55,11 +55,15 @@ export interface R1LearnedDimensionSummary {
   splits: readonly R1LearnedSplitCount[];
 }
 
+export type R1RepresentationMode = "encoder-only" | "hybrid";
+
 export interface R1LearnedHeadResult {
   modelId: string;
   modelRevision: string;
   dtype: typeof R1_ENCODER_DTYPE;
   device: "webgpu";
+  representation: R1RepresentationMode;
+  stateCount: number;
   loadMs: number;
   warmupMs: number;
   embeddingMs: number;
@@ -96,6 +100,7 @@ export type R1EncoderWorkerRequest =
       type: "learned_head";
       states: readonly R1EncoderStateInput[];
       constraints: readonly R1LearnConstraintInput[];
+      representation: R1RepresentationMode;
     };
 
 export type R1EncoderWorkerResponse =
