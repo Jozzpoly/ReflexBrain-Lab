@@ -60,6 +60,7 @@ export class ContactMessengerFixturePolicy implements ResidentPolicy {
 
   private searchTarget: "workbench" | "depot" = "workbench";
   private lastReportTick = -10_000;
+  private returningToOwnWork = false;
 
   decide(input: ResidentPolicyInput): ResidentDecision {
     const tick = input.observation.tick;
@@ -68,10 +69,29 @@ export class ContactMessengerFixturePolicy implements ResidentPolicy {
       (actor) => actor.id === "resident:janek",
     );
 
+    if (this.returningToOwnWork) {
+      const ownWork = input.places.output;
+      if (near(self.position, ownWork.position)) {
+        this.returningToOwnWork = false;
+      } else {
+        return {
+          intent: { kind: "move_to", target: ownWork.position },
+          activity: continueActivity(
+            input.previousActivity,
+            this.residentId,
+            tick,
+            "maintain_contact",
+            "return_to_own_work",
+          ),
+        };
+      }
+    }
+
     if (visibleJanek) {
       const d = distance(self.position, visibleJanek.position);
       if (d <= 0.7 && tick - this.lastReportTick >= 180) {
         this.lastReportTick = tick;
+        this.returningToOwnWork = true;
         return {
           intent: {
             kind: "speak",
