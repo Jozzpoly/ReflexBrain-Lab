@@ -383,6 +383,26 @@ function render(): void {
     });
 
   document
+    .querySelector<HTMLButtonElement>("[data-run-r1-expanded-paired]")
+    ?.addEventListener("click", () => {
+      void runR1LearnedHead(
+        "hybrid",
+        "expanded",
+        "paired-reason",
+      );
+    });
+
+  document
+    .querySelector<HTMLButtonElement>("[data-run-r1-pragmatic-paired]")
+    ?.addEventListener("click", () => {
+      void runR1LearnedHead(
+        "hybrid",
+        "pragmatic-breadth",
+        "paired-reason",
+      );
+    });
+
+  document
     .querySelector<HTMLButtonElement>("[data-run-r1-hybrid-expanded-linear]")
     ?.addEventListener("click", () => {
       void runR1LearnedHead("hybrid", "expanded", "linear-ranking");
@@ -1364,6 +1384,12 @@ function r1LearnedHeadControls(): string {
     '<button class="primary" data-run-r1-pragmatic-bank ' +
     disabled +
     ">Run pragmatic breadth + prototype bank</button>" +
+    '<button class="primary" data-run-r1-expanded-paired ' +
+    disabled +
+    ">Run expanded + paired reasons</button>" +
+    '<button class="primary" data-run-r1-pragmatic-paired ' +
+    disabled +
+    ">Run pragmatic breadth + paired reasons</button>" +
     '<button class="primary" data-run-r1-hybrid-expanded-linear ' +
     disabled +
     ">Run hybrid + expanded TRAIN + linear ranker</button>" +
@@ -1973,6 +1999,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     mode !== "r1-hybrid-pragmatic-linear-head" &&
     mode !== "r1-hybrid-expanded-bank-head" &&
     mode !== "r1-hybrid-pragmatic-bank-head" &&
+    mode !== "r1-hybrid-expanded-paired-head" &&
+    mode !== "r1-hybrid-pragmatic-paired-head" &&
     mode !== "r1-hybrid-expanded-linear-head" &&
     mode !== "r1-hybrid-cognition-head"
   ) {
@@ -2032,6 +2060,24 @@ async function autoRunSmokeIfRequested(): Promise<void> {
       "hybrid",
       "pragmatic-breadth",
       "prototype-bank",
+    );
+    return;
+  }
+
+  if (mode === "r1-hybrid-expanded-paired-head") {
+    await runR1LearnedHead(
+      "hybrid",
+      "expanded",
+      "paired-reason",
+    );
+    return;
+  }
+
+  if (mode === "r1-hybrid-pragmatic-paired-head") {
+    await runR1LearnedHead(
+      "hybrid",
+      "pragmatic-breadth",
+      "paired-reason",
     );
     return;
   }
