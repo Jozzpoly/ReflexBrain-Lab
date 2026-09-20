@@ -1693,3 +1693,138 @@ describe("R1 deterministic regularized linear ranking head", () => {
     }
   });
 });
+
+
+describe("R1 relation geometry diagnostic", () => {
+  it("reports exact same-dimension TRAIN alignment without using held-out labels for learning", async () => {
+    const { analyzeRelationGeometry } = await import(
+      "../src/r1/relation-geometry"
+    );
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+    const representations = new Map<string, readonly number[]>();
+    const constraints: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const left = new Array<number>(7).fill(0);
+      left[index] = 1;
+      representations.set("train-a-left:" + dimension, left);
+      representations.set(
+        "train-a-right:" + dimension,
+        new Array<number>(7).fill(0),
+      );
+      constraints.push({
+        id: "train:a:" + dimension,
+        familyId: "train:a:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "train-a-left:" + dimension,
+        rightStateId: "train-a-right:" + dimension,
+      });
+    });
+
+    const cognitionSecond = new Array<number>(7).fill(0);
+    cognitionSecond[5] = 1;
+    representations.set("train-b-left:cognition", cognitionSecond);
+    representations.set("train-b-right:cognition", new Array<number>(7).fill(0));
+    constraints.push({
+      id: "train:b:cognition",
+      familyId: "train:b:cognition",
+      split: "train",
+      dimension: "cognition",
+      relation: "greater",
+      leftStateId: "train-b-left:cognition",
+      rightStateId: "train-b-right:cognition",
+    });
+
+    const heldOut = new Array<number>(7).fill(0);
+    heldOut[4] = 1;
+    representations.set("ood-left", heldOut);
+    representations.set("ood-right", new Array<number>(7).fill(0));
+    constraints.push({
+      id: "ood:cognition",
+      familyId: "ood:cognition",
+      split: "ood",
+      dimension: "cognition",
+      relation: "greater",
+      leftStateId: "ood-left",
+      rightStateId: "ood-right",
+    });
+
+    const geometry = analyzeRelationGeometry(
+      representations,
+      constraints,
+    );
+    const row = geometry.find(
+      (candidate) => candidate.constraintId === "ood:cognition",
+    )!;
+
+    expect(row.nearestTrainConstraintId).toBe("train:a:cognition");
+    expect(row.nearestCosine).toBeCloseTo(1, 12);
+    expect(row.meanTrainCosine).toBeCloseTo(0.5, 12);
+    expect(row.prototypeCosine).toBeCloseTo(1 / Math.sqrt(2), 12);
+    expect(row.trainAlignments).toEqual([
+      {
+        trainConstraintId: "train:a:cognition",
+        cosine: 1,
+      },
+      {
+        trainConstraintId: "train:b:cognition",
+        cosine: 0,
+      },
+    ]);
+  });
+
+  it("excludes equality constraints from directional geometry rows", async () => {
+    const { analyzeRelationGeometry } = await import(
+      "../src/r1/relation-geometry"
+    );
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+    const representations = new Map<string, readonly number[]>();
+    const constraints: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const left = new Array<number>(5).fill(0);
+      left[index] = 1;
+      representations.set("train-left:" + dimension, left);
+      representations.set("train-right:" + dimension, new Array<number>(5).fill(0));
+      constraints.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "train-left:" + dimension,
+        rightStateId: "train-right:" + dimension,
+      });
+    });
+
+    representations.set("same-a", [0.1, 0.2, 0.3, 0.4, 0.5]);
+    representations.set("same-b", [0.1, 0.2, 0.3, 0.4, 0.5]);
+    constraints.push({
+      id: "ood:equal",
+      familyId: "ood:equal",
+      split: "ood",
+      dimension: "threat",
+      relation: "equal",
+      leftStateId: "same-a",
+      rightStateId: "same-b",
+    });
+
+    expect(
+      analyzeRelationGeometry(representations, constraints),
+    ).toEqual([]);
+  });
+});
