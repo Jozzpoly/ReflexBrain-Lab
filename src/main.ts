@@ -363,6 +363,26 @@ function render(): void {
     });
 
   document
+    .querySelector<HTMLButtonElement>("[data-run-r1-expanded-bank]")
+    ?.addEventListener("click", () => {
+      void runR1LearnedHead(
+        "hybrid",
+        "expanded",
+        "prototype-bank",
+      );
+    });
+
+  document
+    .querySelector<HTMLButtonElement>("[data-run-r1-pragmatic-bank]")
+    ?.addEventListener("click", () => {
+      void runR1LearnedHead(
+        "hybrid",
+        "pragmatic-breadth",
+        "prototype-bank",
+      );
+    });
+
+  document
     .querySelector<HTMLButtonElement>("[data-run-r1-hybrid-expanded-linear]")
     ?.addEventListener("click", () => {
       void runR1LearnedHead("hybrid", "expanded", "linear-ranking");
@@ -1338,6 +1358,12 @@ function r1LearnedHeadControls(): string {
     '<button class="primary" data-run-r1-hybrid-pragmatic-linear ' +
     disabled +
     ">Run pragmatic breadth + linear ranker</button>" +
+    '<button class="primary" data-run-r1-expanded-bank ' +
+    disabled +
+    ">Run expanded + prototype bank</button>" +
+    '<button class="primary" data-run-r1-pragmatic-bank ' +
+    disabled +
+    ">Run pragmatic breadth + prototype bank</button>" +
     '<button class="primary" data-run-r1-hybrid-expanded-linear ' +
     disabled +
     ">Run hybrid + expanded TRAIN + linear ranker</button>" +
@@ -1945,6 +1971,8 @@ async function autoRunSmokeIfRequested(): Promise<void> {
     mode !== "r1-hybrid-expanded-head" &&
     mode !== "r1-hybrid-pragmatic-head" &&
     mode !== "r1-hybrid-pragmatic-linear-head" &&
+    mode !== "r1-hybrid-expanded-bank-head" &&
+    mode !== "r1-hybrid-pragmatic-bank-head" &&
     mode !== "r1-hybrid-expanded-linear-head" &&
     mode !== "r1-hybrid-cognition-head"
   ) {
@@ -1986,6 +2014,24 @@ async function autoRunSmokeIfRequested(): Promise<void> {
       "hybrid",
       "pragmatic-breadth",
       "linear-ranking",
+    );
+    return;
+  }
+
+  if (mode === "r1-hybrid-expanded-bank-head") {
+    await runR1LearnedHead(
+      "hybrid",
+      "expanded",
+      "prototype-bank",
+    );
+    return;
+  }
+
+  if (mode === "r1-hybrid-pragmatic-bank-head") {
+    await runR1LearnedHead(
+      "hybrid",
+      "pragmatic-breadth",
+      "prototype-bank",
     );
     return;
   }
