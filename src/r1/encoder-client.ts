@@ -6,6 +6,7 @@ import type {
   R1EncoderWorkerResponse,
   R1LearnConstraintInput,
   R1LearnedHeadResult,
+  R1RepresentationMode,
 } from "./encoder-contract";
 
 export interface R1EncoderProgress {
@@ -41,6 +42,7 @@ export class R1EncoderBenchmarkClient {
   learnedHead(
     states: readonly R1EncoderStateInput[],
     constraints: readonly R1LearnConstraintInput[],
+    representation: R1RepresentationMode,
     progress?: (value: R1EncoderProgress) => void,
   ): Promise<R1LearnedHeadResult> {
     return this.request<R1LearnedHeadResult>(
@@ -49,6 +51,7 @@ export class R1EncoderBenchmarkClient {
         type: "learned_head",
         states: structuredClone(states),
         constraints: structuredClone(constraints),
+        representation,
       },
       "learned_head_result",
       progress,
