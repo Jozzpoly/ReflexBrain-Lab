@@ -80,11 +80,12 @@ describe("R2 deterministic living specimen", () => {
     expect(
       final.frame.privateByActor["resident:mira"]!.activity,
     ).toBeNull();
-    expect(
-      final.frame.world.events.some(
+    const placementEvents = run.steps.flatMap((step) =>
+      step.frame.world.events.filter(
         (entry) => entry.id === "event:crate-placed",
       ),
-    ).toBe(true);
+    );
+    expect(placementEvents).toHaveLength(1);
   });
 
   it("produces a three-lane causal microscope without pretending oracle reasons are actor-private evidence", () => {
