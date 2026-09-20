@@ -98,7 +98,8 @@ function addDangerDecoy(
       "Novel direct warning of an actual immediate hazard.",
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
-        speechText: "Duck! A beam is dropping toward you!",
+        speechText:
+          "The beam is not secured and can fall; work should stop.",
         ...common,
         idSuffix: "ood-urgent-warning",
       }),
@@ -111,7 +112,7 @@ function addDangerDecoy(
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
-          "The label reads DANGER, yet the beam is locked in place and cannot fall. Stay with your task.",
+          "The beam is secured and can not fall; work should not stop.",
         ...common,
         idSuffix: "ood-danger-word-reassurance",
       }),
@@ -126,8 +127,8 @@ function addDangerDecoy(
       "interrupt",
       "ood:urgent-warning",
       "ood:danger-word-reassurance",
-      "speech meaning changes from immediate warning to explicit reassurance while both contain hazard language",
-      "Immediate warning should create more interruption pressure than danger-word reassurance.",
+      "the same binary token set changes meaning through negation placement: active fall risk vs secured beam",
+      "An active fall risk should create more interruption pressure than an explicitly secured beam.",
     ),
     directional(
       "ood:warning-threat-over-danger-decoy",
@@ -135,8 +136,8 @@ function addDangerDecoy(
       "threat",
       "ood:urgent-warning",
       "ood:danger-word-reassurance",
-      "speech meaning changes from immediate warning to explicit reassurance while both contain hazard language",
-      "Immediate warning should create more threat pressure than danger-word reassurance.",
+      "the same binary token set changes meaning through negation placement: active fall risk vs secured beam",
+      "An active fall risk should create more threat pressure than an explicitly secured beam.",
     ),
   );
 }
@@ -156,7 +157,7 @@ function addIndirectWarning(
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
-          "I would not stay under that hoist; the support pin is sliding out right now.",
+          "The support pin is sliding out now; earlier the hoist was locked.",
         ...common,
         idSuffix: "ood-indirect-live-warning",
       }),
@@ -169,7 +170,7 @@ function addIndirectWarning(
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
-          "The maintenance guide explains how a support pin can slide out, but this hoist is locked and idle.",
+          "The support pin was sliding out earlier; now the hoist is locked.",
         ...common,
         idSuffix: "ood-indirect-maintenance-note",
       }),
@@ -184,8 +185,8 @@ function addIndirectWarning(
       "interrupt",
       "ood:indirect-live-warning",
       "ood:indirect-maintenance-note",
-      "same physical context; language changes from current indirect warning to non-current maintenance description",
-      "A current indirect warning should create more interruption pressure than benign maintenance information using similar hazard vocabulary.",
+      "identical binary token set; temporal roles of now/earlier swap current failure vs historical failure",
+      "A support pin sliding out now should create more interruption pressure than the same failure described as earlier while the hoist is locked now.",
     ),
     directional(
       "ood:indirect-warning-threat-over-maintenance",
@@ -193,8 +194,8 @@ function addIndirectWarning(
       "threat",
       "ood:indirect-live-warning",
       "ood:indirect-maintenance-note",
-      "same physical context; language changes from current indirect warning to non-current maintenance description",
-      "A current indirect warning should create more threat pressure than benign maintenance information using similar hazard vocabulary.",
+      "identical binary token set; temporal roles of now/earlier swap current failure vs historical failure",
+      "A support pin sliding out now should create more threat pressure than the same failure described as earlier while the hoist is locked now.",
     ),
   );
 }
@@ -333,7 +334,7 @@ function addCognition(
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
-          "Nobody knows whether the seal has been released; settle that before handling the parcel.",
+          "The seal status is not confirmed; checking is required before moving.",
         ...common,
         idSuffix: "ood-ambiguous-instruction",
       }),
@@ -345,7 +346,8 @@ function addCognition(
       "Novel clear instruction under identical physics.",
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
-        speechText: "Carry the parcel to the marked square.",
+        speechText:
+          "The seal status is confirmed; checking is not required before moving.",
         ...common,
         idSuffix: "ood-clear-instruction",
       }),
@@ -360,8 +362,8 @@ function addCognition(
       "cognition",
       "ood:ambiguous-instruction",
       "ood:clear-instruction",
-      "clear instruction becomes unresolved-prerequisite instruction",
-      "An unresolved prerequisite should require more deliberate interpretation than a clear instruction.",
+      "identical binary token set; negation moves between confirmation and checking requirement",
+      "An unconfirmed prerequisite with checking required should demand more deliberate cognition than a confirmed prerequisite with checking not required.",
     ),
   );
 }
@@ -381,7 +383,7 @@ function addResolvedUncertainty(
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
-          "I still do not know whether the permit is valid; find out before opening the gate.",
+          "Clearance is not established; review is required before access.",
         ...common,
         idSuffix: "ood-live-uncertainty",
       }),
@@ -394,7 +396,7 @@ function addResolvedUncertainty(
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
-          'The old note said "permit status uncertain," but it was verified this morning. Open the gate.',
+          "Clearance is established; review is not required before access.",
         ...common,
         idSuffix: "ood-resolved-uncertainty-quote",
       }),
@@ -409,8 +411,8 @@ function addResolvedUncertainty(
       "cognition",
       "ood:live-uncertainty",
       "ood:resolved-uncertainty-quote",
-      "both mention uncertainty; only one remains unresolved now",
-      "Current unresolved uncertainty should create more deliberate-cognition pressure than uncertainty explicitly reported as already resolved.",
+      "identical binary token set; negation moves between established clearance and review requirement",
+      "Unestablished clearance with review required should create more cognition pressure than established clearance with review not required.",
     ),
   );
 }
