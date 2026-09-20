@@ -1490,6 +1490,39 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
     )
     .join("");
 
+  const geometryRows = result.geometry
+    .filter((row) => row.split === "ood")
+    .map((row) => {
+      const alignments = row.trainAlignments
+        .map(
+          (alignment) =>
+            "<code>" +
+            escapeHtml(alignment.trainConstraintId) +
+            "</code> " +
+            signed(alignment.cosine),
+        )
+        .join("<br>");
+
+      return (
+        "<tr><td>" +
+        escapeHtml(row.dimension) +
+        "</td><td><code>" +
+        escapeHtml(row.constraintId) +
+        "</code></td><td>" +
+        alignments +
+        "</td><td><code>" +
+        escapeHtml(row.nearestTrainConstraintId) +
+        "</code></td><td>" +
+        signed(row.nearestCosine) +
+        "</td><td>" +
+        signed(row.meanTrainCosine) +
+        "</td><td>" +
+        signed(row.prototypeCosine) +
+        "</td></tr>"
+      );
+    })
+    .join("");
+
   const heldOutFailures = result.constraints
     .filter(
       (constraint) =>
@@ -1546,6 +1579,11 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
     oodRows.length > 0
       ? '<h4>OOD red-team margins</h4><div class="table-wrap"><table><thead><tr><th>Dimension</th><th>Family</th><th>Constraint</th><th>Margin</th><th>Result</th></tr></thead><tbody>' +
           oodRows +
+          "</tbody></table></div>"
+      : "",
+    geometryRows.length > 0
+      ? '<h4>OOD relation geometry vs TRAIN</h4><div class="table-wrap"><table><thead><tr><th>Dimension</th><th>OOD relation</th><th>All TRAIN cosine alignments</th><th>Nearest TRAIN</th><th>Nearest</th><th>Mean</th><th>Prototype</th></tr></thead><tbody>' +
+          geometryRows +
           "</tbody></table></div>"
       : "",
     heldOutFailures.length > 0
