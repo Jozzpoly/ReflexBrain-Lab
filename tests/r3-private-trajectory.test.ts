@@ -68,3 +68,57 @@ describe("R3 private temporal corpus", () => {
     expect(serialized).not.toContain("significance");
   });
 });
+
+
+describe("R3 naturally occurring semantic pressure", () => {
+  it("delivers the same blocked-worker speech into different resident matters", () => {
+    const run = createAutonomousLifeRun();
+    run.runTicks(500);
+
+    const speech = run
+      .allEvents()
+      .find(
+        (event) =>
+          event.kind === "speech" &&
+          event.actorId === "resident:janek" &&
+          event.payload.text === "The input rack is empty.",
+      );
+
+    expect(speech).toBeDefined();
+
+    const heardRows = run
+      .privateExperiences()
+      .filter((row) =>
+        row.observation.heardEvents.some(
+          (event) => event.id === speech!.id,
+        ),
+      );
+
+    const mira = heardRows.find(
+      (row) => row.residentId === "resident:mira",
+    );
+    const ida = heardRows.find(
+      (row) => row.residentId === "resident:ida",
+    );
+
+    expect(mira).toBeDefined();
+    expect(ida).toBeDefined();
+    expect(mira!.standingMatter).not.toBe(ida!.standingMatter);
+    expect(
+      mira!.observation.heardEvents.find(
+        (event) => event.id === speech!.id,
+      )?.payload.text,
+    ).toBe(
+      ida!.observation.heardEvents.find(
+        (event) => event.id === speech!.id,
+      )?.payload.text,
+    );
+
+    const miraText = serializeR3PrivateExperience(mira!);
+    const idaText = serializeR3PrivateExperience(ida!);
+
+    expect(miraText).toContain("The input rack is empty.");
+    expect(idaText).toContain("The input rack is empty.");
+    expect(miraText).not.toBe(idaText);
+  });
+});
