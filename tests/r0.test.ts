@@ -1535,3 +1535,161 @@ describe("R1 semantic TRAIN breadth augmentation", () => {
     expect(leaks).toEqual([]);
   });
 });
+
+
+describe("R1 deterministic regularized linear ranking head", () => {
+  it("learns only from TRAIN directional relations", async () => {
+    const { learnRegularizedLinearHeads } = await import(
+      "../src/r1/linear-ranking-head"
+    );
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+    const embeddings = new Map<string, readonly number[]>();
+    const train: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const left = new Array<number>(5).fill(0);
+      left[index] = 1;
+      embeddings.set("train-left:" + dimension, left);
+      embeddings.set("train-right:" + dimension, new Array<number>(5).fill(0));
+      train.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "train-left:" + dimension,
+        rightStateId: "train-right:" + dimension,
+      });
+    });
+
+    embeddings.set("ood-left", [0, 0, -100, 0, 0]);
+    embeddings.set("ood-right", [0, 0, 100, 0, 0]);
+
+    const oodA: import("../src/r1/encoder-contract").R1LearnConstraintInput = {
+      id: "ood:a",
+      familyId: "ood:a",
+      split: "ood",
+      dimension: "social",
+      relation: "greater",
+      leftStateId: "ood-left",
+      rightStateId: "ood-right",
+    };
+    const oodB: import("../src/r1/encoder-contract").R1LearnConstraintInput = {
+      ...oodA,
+      id: "ood:b",
+      leftStateId: "ood-right",
+      rightStateId: "ood-left",
+    };
+
+    const withA = learnRegularizedLinearHeads(embeddings, [...train, oodA]);
+    const withB = learnRegularizedLinearHeads(embeddings, [...train, oodB]);
+
+    expect(withA.weights).toEqual(withB.weights);
+    expect(withA.trainingCounts).toEqual({
+      attention: 1,
+      interrupt: 1,
+      social: 1,
+      threat: 1,
+      cognition: 1,
+    });
+  });
+
+  it("is deterministic and ranks its synthetic TRAIN pairs positively", async () => {
+    const { evaluatePrototypeHeads } = await import(
+      "../src/r1/prototype-head"
+    );
+    const { learnRegularizedLinearHeads } = await import(
+      "../src/r1/linear-ranking-head"
+    );
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+    const embeddings = new Map<string, readonly number[]>();
+    const constraints: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const a = new Array<number>(6).fill(0);
+      const b = new Array<number>(6).fill(0);
+      a[index] = 1;
+      b[5] = 0.15 * (index + 1);
+      embeddings.set("left:" + dimension, a);
+      embeddings.set("right:" + dimension, b);
+      constraints.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "left:" + dimension,
+        rightStateId: "right:" + dimension,
+      });
+    });
+
+    const first = learnRegularizedLinearHeads(embeddings, constraints);
+    const second = learnRegularizedLinearHeads(embeddings, constraints);
+    expect(first.weights).toEqual(second.weights);
+
+    const evaluation = evaluatePrototypeHeads(
+      first,
+      embeddings,
+      constraints,
+    );
+    expect(
+      evaluation.constraints.every(
+        (constraint) => constraint.passed && constraint.margin > 0,
+      ),
+    ).toBe(true);
+  });
+
+  it("keeps learned weight vectors normalized for comparable margins", async () => {
+    const { learnRegularizedLinearHeads } = await import(
+      "../src/r1/linear-ranking-head"
+    );
+    const dimensions = [
+      "attention",
+      "interrupt",
+      "social",
+      "threat",
+      "cognition",
+    ] as const;
+    const embeddings = new Map<string, readonly number[]>();
+    const constraints: import("../src/r1/encoder-contract").R1LearnConstraintInput[] = [];
+
+    dimensions.forEach((dimension, index) => {
+      const left = new Array<number>(5).fill(0);
+      left[index] = 2;
+      embeddings.set("l:" + dimension, left);
+      embeddings.set("r:" + dimension, new Array<number>(5).fill(0));
+      constraints.push({
+        id: "train:" + dimension,
+        familyId: "train:" + dimension,
+        split: "train",
+        dimension,
+        relation: "greater",
+        leftStateId: "l:" + dimension,
+        rightStateId: "r:" + dimension,
+      });
+    });
+
+    const head = learnRegularizedLinearHeads(embeddings, constraints);
+    for (const dimension of dimensions) {
+      const norm = Math.sqrt(
+        head.weights[dimension].reduce(
+          (sum, value) => sum + value * value,
+          0,
+        ),
+      );
+      expect(norm).toBeCloseTo(1, 10);
+    }
+  });
+});
