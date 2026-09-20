@@ -55,6 +55,23 @@ export interface R1LearnedDimensionSummary {
   splits: readonly R1LearnedSplitCount[];
 }
 
+export interface R1TrainAlignment {
+  trainConstraintId: string;
+  cosine: number;
+}
+
+export interface R1RelationGeometry {
+  constraintId: string;
+  familyId: string;
+  split: R1Split;
+  dimension: AppraisalId;
+  nearestTrainConstraintId: string;
+  nearestCosine: number;
+  meanTrainCosine: number;
+  prototypeCosine: number;
+  trainAlignments: readonly R1TrainAlignment[];
+}
+
 export type R1RepresentationMode = "encoder-only" | "hybrid";
 export type R1HeadMode = "prototype" | "linear-ranking";
 
@@ -75,6 +92,7 @@ export interface R1LearnedHeadResult {
   headMs: number;
   constraints: readonly R1LearnedConstraintResult[];
   dimensions: readonly R1LearnedDimensionSummary[];
+  geometry: readonly R1RelationGeometry[];
 }
 
 export interface R1EncoderBenchmarkResult {
