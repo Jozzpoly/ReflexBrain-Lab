@@ -15,7 +15,11 @@ export function createR1OodRedTeamSuite(): R1CounterfactualSuite {
 
   addAddressing(states, constraints);
   addDangerDecoy(states, constraints);
+  addIndirectWarning(states, constraints);
+  addQuotedWarning(states, constraints);
+  addNegationWarning(states, constraints);
   addCognition(states, constraints);
+  addResolvedUncertainty(states, constraints);
   addApproach(states, constraints);
   addHiddenDanger(states, constraints);
 
@@ -137,6 +141,183 @@ function addDangerDecoy(
   );
 }
 
+function addIndirectWarning(
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = "ood:indirect-warning";
+  const common = { tick9PlayerX: 155, tick9PlayerVx: 5 } as const;
+
+  states.push(
+    state(
+      "ood:indirect-live-warning",
+      familyId,
+      "Indirect immediate warning without stock danger/run vocabulary.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "I would not stay under that hoist; the support pin is sliding out right now.",
+        ...common,
+        idSuffix: "ood-indirect-live-warning",
+      }),
+      10,
+    ),
+    state(
+      "ood:indirect-maintenance-note",
+      familyId,
+      "Matched hazard vocabulary framed as non-current maintenance information.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "The maintenance guide explains how a support pin can slide out, but this hoist is locked and idle.",
+        ...common,
+        idSuffix: "ood-indirect-maintenance-note",
+      }),
+      10,
+    ),
+  );
+
+  constraints.push(
+    directional(
+      "ood:indirect-warning-interrupt-over-maintenance",
+      familyId,
+      "interrupt",
+      "ood:indirect-live-warning",
+      "ood:indirect-maintenance-note",
+      "same physical context; language changes from current indirect warning to non-current maintenance description",
+      "A current indirect warning should create more interruption pressure than benign maintenance information using similar hazard vocabulary.",
+    ),
+    directional(
+      "ood:indirect-warning-threat-over-maintenance",
+      familyId,
+      "threat",
+      "ood:indirect-live-warning",
+      "ood:indirect-maintenance-note",
+      "same physical context; language changes from current indirect warning to non-current maintenance description",
+      "A current indirect warning should create more threat pressure than benign maintenance information using similar hazard vocabulary.",
+    ),
+  );
+}
+
+function addQuotedWarning(
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = "ood:quoted-warning";
+  const common = { tick9PlayerX: 155, tick9PlayerVx: 5 } as const;
+  const quote = '"RUN, THE CEILING IS FALLING!"';
+
+  states.push(
+    state(
+      "ood:quoted-live-warning",
+      familyId,
+      "Quoted warning explicitly framed as current and addressed to us.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "The radio message is for us now: " + quote,
+        ...common,
+        idSuffix: "ood-quoted-live-warning",
+      }),
+      10,
+    ),
+    state(
+      "ood:quoted-old-drill",
+      familyId,
+      "Same alarming quote framed as a finished historical drill.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "Yesterday's training transcript says " +
+          quote +
+          " The drill is over and the area is safe.",
+        ...common,
+        idSuffix: "ood-quoted-old-drill",
+      }),
+      10,
+    ),
+  );
+
+  constraints.push(
+    directional(
+      "ood:quoted-warning-interrupt-over-old-drill",
+      familyId,
+      "interrupt",
+      "ood:quoted-live-warning",
+      "ood:quoted-old-drill",
+      "both contain the same alarming quote; only temporal/pragmatic framing changes",
+      "A current quoted warning should create more interruption pressure than the identical quote inside a completed-drill report.",
+    ),
+    directional(
+      "ood:quoted-warning-threat-over-old-drill",
+      familyId,
+      "threat",
+      "ood:quoted-live-warning",
+      "ood:quoted-old-drill",
+      "both contain the same alarming quote; only temporal/pragmatic framing changes",
+      "A current quoted warning should create more threat pressure than the identical quote inside a completed-drill report.",
+    ),
+  );
+}
+
+function addNegationWarning(
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = "ood:negation-warning";
+  const common = { tick9PlayerX: 155, tick9PlayerVx: 5 } as const;
+
+  states.push(
+    state(
+      "ood:negated-unsafe",
+      familyId,
+      "Immediate unsafe statement and instruction to move.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "The floor is not stable. Do not stay there; move away from it.",
+        ...common,
+        idSuffix: "ood-negated-unsafe",
+      }),
+      10,
+    ),
+    state(
+      "ood:negated-safe",
+      familyId,
+      "Lexically similar reassurance whose negation reverses the hazard.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "The floor is stable. There is no reason to move away; stay there.",
+        ...common,
+        idSuffix: "ood-negated-safe",
+      }),
+      10,
+    ),
+  );
+
+  constraints.push(
+    directional(
+      "ood:negation-interrupt-unsafe-over-safe",
+      familyId,
+      "interrupt",
+      "ood:negated-unsafe",
+      "ood:negated-safe",
+      "matched physical context and heavily overlapping lexical surface; negation reverses current safety meaning",
+      "Unsafe meaning should create more interruption pressure than explicit reassurance.",
+    ),
+    directional(
+      "ood:negation-threat-unsafe-over-safe",
+      familyId,
+      "threat",
+      "ood:negated-unsafe",
+      "ood:negated-safe",
+      "matched physical context and heavily overlapping lexical surface; negation reverses current safety meaning",
+      "Unsafe meaning should create more threat pressure than explicit reassurance.",
+    ),
+  );
+}
+
 function addCognition(
   states: R1StateRecord[],
   constraints: R1CounterfactualConstraint[],
@@ -181,6 +362,55 @@ function addCognition(
       "ood:clear-instruction",
       "clear instruction becomes unresolved-prerequisite instruction",
       "An unresolved prerequisite should require more deliberate interpretation than a clear instruction.",
+    ),
+  );
+}
+
+function addResolvedUncertainty(
+  states: R1StateRecord[],
+  constraints: R1CounterfactualConstraint[],
+): void {
+  const familyId = "ood:resolved-uncertainty";
+  const common = { tick9PlayerX: 155, tick9PlayerVx: 5 } as const;
+
+  states.push(
+    state(
+      "ood:live-uncertainty",
+      familyId,
+      "Current unresolved prerequisite.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          "I still do not know whether the permit is valid; find out before opening the gate.",
+        ...common,
+        idSuffix: "ood-live-uncertainty",
+      }),
+      10,
+    ),
+    state(
+      "ood:resolved-uncertainty-quote",
+      familyId,
+      "Uncertainty vocabulary appears only as an obsolete quoted note.",
+      createR0CounterfactualEpisode({
+        speechExposure: "addressed",
+        speechText:
+          'The old note said "permit status uncertain," but it was verified this morning. Open the gate.',
+        ...common,
+        idSuffix: "ood-resolved-uncertainty-quote",
+      }),
+      10,
+    ),
+  );
+
+  constraints.push(
+    directional(
+      "ood:live-uncertainty-cognition-over-resolved",
+      familyId,
+      "cognition",
+      "ood:live-uncertainty",
+      "ood:resolved-uncertainty-quote",
+      "both mention uncertainty; only one remains unresolved now",
+      "Current unresolved uncertainty should create more deliberate-cognition pressure than uncertainty explicitly reported as already resolved.",
     ),
   );
 }
