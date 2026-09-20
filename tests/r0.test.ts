@@ -1201,14 +1201,14 @@ describe("R1 hybrid structured representation", () => {
 
 
 describe("R1 adversarial OOD red-team", () => {
-  it("defines one held-out 18-state / 18-relation semantic red-team split", async () => {
+  it("defines one held-out 30-state / 26-relation semantic red-team split", async () => {
     const { createR1OodRedTeamSuite } = await import(
       "../src/r1/ood-red-team"
     );
     const suite = createR1OodRedTeamSuite();
 
-    expect(suite.states).toHaveLength(18);
-    expect(suite.constraints).toHaveLength(18);
+    expect(suite.states).toHaveLength(30);
+    expect(suite.constraints).toHaveLength(26);
     expect(suite.states.every((state) => state.split === "ood")).toBe(true);
     expect(
       suite.constraints.every((constraint) => constraint.split === "ood"),
@@ -1237,6 +1237,12 @@ describe("R1 adversarial OOD red-team", () => {
       ["ood:negated-unsafe", "ood:negated-safe"],
       ["ood:seal-unconfirmed", "ood:seal-confirmed"],
       ["ood:clearance-unestablished", "ood:clearance-established"],
+      ["ood:v3-smoke-current", "ood:v3-smoke-conditional"],
+      ["ood:v3-current-order", "ood:v3-archived-order"],
+      ["ood:v3-hatch-unsafe", "ood:v3-hatch-safe"],
+      ["ood:v3-immediate-hazard", "ood:v3-immediate-deadline"],
+      ["ood:v3-deadline-now", "ood:v3-deadline-later"],
+      ["ood:v3-destination-unknown", "ood:v3-destination-known"],
     ] as const) {
       const left = suite.states.find((state) => state.id === leftId)!;
       const right = suite.states.find((state) => state.id === rightId)!;
@@ -1271,6 +1277,11 @@ describe("R1 adversarial OOD red-team", () => {
       ["ood:indirect-live-warning", "ood:indirect-earlier-control"],
       ["ood:seal-unconfirmed", "ood:seal-confirmed"],
       ["ood:clearance-unestablished", "ood:clearance-established"],
+      ["ood:v3-smoke-current", "ood:v3-smoke-conditional"],
+      ["ood:v3-current-order", "ood:v3-archived-order"],
+      ["ood:v3-hatch-unsafe", "ood:v3-hatch-safe"],
+      ["ood:v3-immediate-hazard", "ood:v3-immediate-deadline"],
+      ["ood:v3-deadline-now", "ood:v3-deadline-later"],
     ] as const) {
       expect(tokenBag(speechText(leftId))).toEqual(
         tokenBag(speechText(rightId)),
@@ -1490,13 +1501,19 @@ describe("R1 semantic TRAIN breadth augmentation", () => {
       "ood:negation-warning",
       "ood:cognition-ambiguity",
       "ood:resolved-uncertainty",
+      "ood:v3-conditional-hazard",
+      "ood:v3-operative-instruction",
+      "ood:v3-negation-scope",
+      "ood:v3-urgency-threat-disentangle",
+      "ood:v3-administrative-urgency",
+      "ood:v3-routing-uncertainty",
     ]);
     const semanticConstraints = ood.constraints.filter(
       (constraint) =>
         constraint.relation === "greater" &&
         semanticFamilies.has(constraint.familyId),
     );
-    expect(semanticConstraints).toHaveLength(10);
+    expect(semanticConstraints).toHaveLength(18);
 
     const variants = [
       { label: "base", suite: base },
