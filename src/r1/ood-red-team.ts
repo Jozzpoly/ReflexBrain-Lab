@@ -106,9 +106,9 @@ function addDangerDecoy(
       10,
     ),
     state(
-      "ood:danger-word-reassurance",
+      "ood:secured-beam-control",
       familyId,
-      "Contains danger language but explicitly denies an immediate hazard.",
+      "Same token vocabulary encodes a secured beam and no need to stop work.",
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
@@ -126,7 +126,7 @@ function addDangerDecoy(
       familyId,
       "interrupt",
       "ood:urgent-warning",
-      "ood:danger-word-reassurance",
+      "ood:secured-beam-control",
       "the same binary token set changes meaning through negation placement: active fall risk vs secured beam",
       "An active fall risk should create more interruption pressure than an explicitly secured beam.",
     ),
@@ -135,7 +135,7 @@ function addDangerDecoy(
       familyId,
       "threat",
       "ood:urgent-warning",
-      "ood:danger-word-reassurance",
+      "ood:secured-beam-control",
       "the same binary token set changes meaning through negation placement: active fall risk vs secured beam",
       "An active fall risk should create more threat pressure than an explicitly secured beam.",
     ),
@@ -164,9 +164,9 @@ function addIndirectWarning(
       10,
     ),
     state(
-      "ood:indirect-maintenance-note",
+      "ood:indirect-earlier-control",
       familyId,
-      "Matched hazard vocabulary framed as non-current maintenance information.",
+      "Same token vocabulary places the pin failure earlier and the locked hoist now.",
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
@@ -180,20 +180,20 @@ function addIndirectWarning(
 
   constraints.push(
     directional(
-      "ood:indirect-warning-interrupt-over-maintenance",
+      "ood:indirect-warning-interrupt-over-earlier-control",
       familyId,
       "interrupt",
       "ood:indirect-live-warning",
-      "ood:indirect-maintenance-note",
+      "ood:indirect-earlier-control",
       "identical binary token set; temporal roles of now/earlier swap current failure vs historical failure",
       "A support pin sliding out now should create more interruption pressure than the same failure described as earlier while the hoist is locked now.",
     ),
     directional(
-      "ood:indirect-warning-threat-over-maintenance",
+      "ood:indirect-warning-threat-over-earlier-control",
       familyId,
       "threat",
       "ood:indirect-live-warning",
-      "ood:indirect-maintenance-note",
+      "ood:indirect-earlier-control",
       "identical binary token set; temporal roles of now/earlier swap current failure vs historical failure",
       "A support pin sliding out now should create more threat pressure than the same failure described as earlier while the hoist is locked now.",
     ),
@@ -328,9 +328,9 @@ function addCognition(
 
   states.push(
     state(
-      "ood:ambiguous-instruction",
+      "ood:seal-unconfirmed",
       familyId,
-      "Novel instruction whose prerequisite truth is unresolved.",
+      "Seal prerequisite is unconfirmed and checking remains required.",
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
@@ -341,9 +341,9 @@ function addCognition(
       10,
     ),
     state(
-      "ood:clear-instruction",
+      "ood:seal-confirmed",
       familyId,
-      "Novel clear instruction under identical physics.",
+      "Seal prerequisite is confirmed and checking is not required.",
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
@@ -357,11 +357,11 @@ function addCognition(
 
   constraints.push(
     directional(
-      "ood:ambiguous-cognition-over-clear",
+      "ood:seal-unconfirmed-cognition-over-confirmed",
       familyId,
       "cognition",
-      "ood:ambiguous-instruction",
-      "ood:clear-instruction",
+      "ood:seal-unconfirmed",
+      "ood:seal-confirmed",
       "identical binary token set; negation moves between confirmation and checking requirement",
       "An unconfirmed prerequisite with checking required should demand more deliberate cognition than a confirmed prerequisite with checking not required.",
     ),
@@ -377,9 +377,9 @@ function addResolvedUncertainty(
 
   states.push(
     state(
-      "ood:live-uncertainty",
+      "ood:clearance-unestablished",
       familyId,
-      "Current unresolved prerequisite.",
+      "Clearance prerequisite is not established and review remains required.",
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
@@ -390,9 +390,9 @@ function addResolvedUncertainty(
       10,
     ),
     state(
-      "ood:resolved-uncertainty-quote",
+      "ood:clearance-established",
       familyId,
-      "Uncertainty vocabulary appears only as an obsolete quoted note.",
+      "Clearance prerequisite is established and review is not required.",
       createR0CounterfactualEpisode({
         speechExposure: "addressed",
         speechText:
@@ -406,11 +406,11 @@ function addResolvedUncertainty(
 
   constraints.push(
     directional(
-      "ood:live-uncertainty-cognition-over-resolved",
+      "ood:clearance-unestablished-cognition-over-resolved",
       familyId,
       "cognition",
-      "ood:live-uncertainty",
-      "ood:resolved-uncertainty-quote",
+      "ood:clearance-unestablished",
+      "ood:clearance-established",
       "identical binary token set; negation moves between established clearance and review requirement",
       "Unestablished clearance with review required should create more cognition pressure than established clearance with review not required.",
     ),
