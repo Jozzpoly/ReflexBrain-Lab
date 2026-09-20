@@ -3,6 +3,7 @@ import type {
   R1LearnConstraintInput,
   R1RelationGeometry,
   R1TrainAlignment,
+  R1TrainDirectionCoherence,
 } from "./encoder-contract";
 
 const DIMENSIONS: readonly AppraisalId[] = [
@@ -140,4 +141,57 @@ function dot(left: readonly number[], right: readonly number[]): number {
     total += left[index]! * right[index]!;
   }
   return total;
+}
+
+
+export function analyzeTrainDirectionCoherence(
+  representations: ReadonlyMap<string, readonly number[]>,
+  constraints: readonly R1LearnConstraintInput[],
+): readonly R1TrainDirectionCoherence[] {
+  return DIMENSIONS.map((dimension) => {
+    const train = constraints
+      .filter(
+        (constraint) =>
+          constraint.split === "train" &&
+          constraint.relation === "greater" &&
+          constraint.dimension === dimension,
+      )
+      .map((constraint) => ({
+        constraint,
+        delta: normalizedDelta(representations, constraint),
+      }));
+
+    if (train.length === 0) {
+      throw new Error("TRAIN coherence has no direction for " + dimension);
+    }
+
+    const pairs: Array<{
+      leftConstraintId: string;
+      rightConstraintId: string;
+      cosine: number;
+    }> = [];
+
+    for (let left = 0; left < train.length; left += 1) {
+      for (let right = left + 1; right < train.length; right += 1) {
+        pairs.push({
+          leftConstraintId: train[left]!.constraint.id,
+          rightConstraintId: train[right]!.constraint.id,
+          cosine: dot(train[left]!.delta, train[right]!.delta),
+        });
+      }
+    }
+
+    const cosines = pairs.map((pair) => pair.cosine);
+    return {
+      dimension,
+      relationCount: train.length,
+      pairCount: pairs.length,
+      minCosine: cosines.length ? Math.min(...cosines) : null,
+      meanCosine: cosines.length
+        ? cosines.reduce((sum, value) => sum + value, 0) / cosines.length
+        : null,
+      maxCosine: cosines.length ? Math.max(...cosines) : null,
+      pairs,
+    };
+  });
 }
