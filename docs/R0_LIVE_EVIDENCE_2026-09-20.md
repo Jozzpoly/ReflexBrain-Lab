@@ -1316,3 +1316,126 @@ Expand evaluation-only semantic OOD with new independently authored adversaries 
 All new semantic OOD must pass the lexical negative-control gate before learned inference is run.
 
 Only failures on that frozen expansion can justify the next architecture or supervision change.
+
+
+## R1 semantic OOD v3 — current-best breaks cleanly
+
+The current-best configuration was frozen before seeing this expansion:
+
+- frozen MiniLM-L3 q8;
+- isolated per-state embedding (batch size 1);
+- 384D semantic + 12 actor-private structured representation;
+- expanded 16-relation TRAIN supervision;
+- prototype direction head;
+- unchanged DEV/TEST.
+
+### OOD v3 apparatus
+
+Evaluation-only OOD was expanded from 18 states / 18 relations to:
+
+- **30 OOD states**;
+- **26 OOD relations**.
+
+Six new semantic families probe:
+
+1. current vs merely conditional physical hazard;
+2. current operative instruction vs the identical archived/obsolete instruction;
+3. negation scope under identical vocabulary;
+4. immediate physical hazard vs equally immediate administrative deadline;
+5. administrative urgency now vs later without physical danger;
+6. a new unresolved routing-information cognition case.
+
+Five of the six new state pairs are binary-token-bag matched by construction. The routing pair was hardened after the lexical negative control initially found a shortcut; it now also uses an identical binary token set.
+
+Before learned inference:
+
+- all OOD states remain evaluation-only;
+- physical/addressee matching tests PASS;
+- hardened structural token-bag tests PASS;
+- hidden-world epistemic invariants remain PASS;
+- all **18 semantic directional OOD relations** are unsolved by the exact-token memorizer under current TRAIN.
+
+Only after those gates passed was the frozen current-best evaluated.
+
+### Frozen current-best result
+
+- TRAIN: **16/16**
+- DEV: **11/11**
+- TEST: **11/11**
+- OOD v3: **21/26**
+
+The five failures are:
+
+| relation | margin |
+| --- | ---: |
+| current operative order > archived order, interrupt | **-6.2076e-3** |
+| unsafe negation scope > safe scope, interrupt | **-2.9479e-2** |
+| unsafe negation scope > safe scope, threat | **-2.6234e-2** |
+| immediate physical hazard > immediate paperwork deadline, threat | **-5.7991e-3** |
+| unresolved routing > established routing, cognition | **-1.4546e-3** |
+
+New relations that pass include:
+
+- current smoke hazard > conditional-later smoke, interrupt: **+2.1623e-3**;
+- current smoke hazard > conditional-later smoke, threat: **+2.2754e-3**;
+- administrative deadline now > later, interrupt: **+7.8992e-3**.
+
+Thus the previous 18/18 was small-suite saturation, not evidence that the semantic reflex problem was solved.
+
+### Geometry signal
+
+The failed pragmatic directions are poorly aligned with available TRAIN directions.
+
+Examples from the frozen hybrid representation:
+
+- operative-order interrupt aligns negatively with all three TRAIN interrupt deltas (nearest about **-0.011**, prototype about **-0.092**);
+- negation-scope interrupt aligns negatively with all three TRAIN interrupt deltas (nearest about **-0.029**, prototype about **-0.191**);
+- negation-scope threat aligns negatively with all four TRAIN threat deltas (nearest about **-0.006**, prototype about **-0.170**);
+- hazard-vs-deadline threat has only one weak positive TRAIN alignment (**+0.007**) while the prototype alignment remains negative (about **-0.066**);
+- routing cognition is mixed: base ambiguity **+0.030**, interlock uncertainty **-0.066**, prototype about **-0.024**.
+
+### Linear-ranking control
+
+The existing deterministic regularized linear-ranking head was rerun on the same isolated representation and frozen OOD v3.
+
+Result:
+
+- TRAIN **16/16**;
+- DEV **11/11**;
+- TEST **11/11**;
+- OOD **21/26**.
+
+It fails the exact same five relations:
+
+- operative interrupt: **-6.3624e-3**;
+- negation-scope interrupt: **-2.9057e-2**;
+- negation-scope threat: **-2.5693e-2**;
+- hazard-vs-deadline threat: **-5.6832e-3**;
+- routing cognition: **-1.4546e-3**.
+
+So prototype averaging vs deterministic pairwise logistic optimization is not the material bottleneck for OOD v3.
+
+### Interpretation
+
+**MATERIAL FINDING:** the frozen representation remains useful but current supervision does not span several pragmatic semantic distinctions.
+
+Do not:
+
+- train on the failed OOD examples;
+- add MLP capacity merely to fit them;
+- expand cognition supervision indiscriminately (the earlier cognition-breadth experiment already regressed DEV/TEST).
+
+Next experiment:
+
+- keep OOD v3 frozen;
+- add independent TRAIN-only pragmatic families in different domains and wording for:
+  - operative/current vs retired/obsolete instruction;
+  - negation-scope safety meaning;
+  - physical threat vs administrative urgency;
+- do **not** add routing/cognition supervision yet;
+- require the exact-token negative-control gate to remain green under the new TRAIN vocabulary;
+- compare against the unchanged OOD v3.
+
+If independent pragmatic supervision repairs those four relations without DEV/TEST regressions, the evidence favors supervision-geometry poverty.
+
+If it does not, representation geometry / appraisal ontology becomes the stronger bottleneck.
