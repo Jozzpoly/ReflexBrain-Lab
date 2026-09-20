@@ -14,6 +14,7 @@ import {
   evaluatePrototypeHeads,
   learnPrototypeHeads,
 } from "./prototype-head";
+import { learnRegularizedLinearHeads } from "./linear-ranking-head";
 import { hybridPrivateRepresentation } from "./structured-features";
 
 const scope = globalThis as unknown as {
@@ -255,7 +256,10 @@ async function runLearnedHead(
   }
 
   const headStarted = performance.now();
-  const heads = learnPrototypeHeads(embeddingById, request.constraints);
+  const heads =
+    request.headMode === "linear-ranking"
+      ? learnRegularizedLinearHeads(embeddingById, request.constraints)
+      : learnPrototypeHeads(embeddingById, request.constraints);
   const evaluation = evaluatePrototypeHeads(
     heads,
     embeddingById,
@@ -269,6 +273,7 @@ async function runLearnedHead(
     dtype: R1_ENCODER_DTYPE,
     device: "webgpu",
     representation: request.representation,
+    headMode: request.headMode,
     stateCount: request.states.length,
     loadMs,
     warmupMs,
