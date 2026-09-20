@@ -1577,6 +1577,9 @@ function r1LearnedHeadReportTable(result: R1LearnedHeadResult): string {
       " ms / " +
       result.stateCount +
       " states</strong></span>",
+    "<span>Qualification embedding batch: <strong>" +
+      result.embeddingBatchSize +
+      "</strong></span>",
     "<span>Head learn+eval: <strong>" +
       result.headMs.toFixed(3) +
       " ms</strong></span>",
