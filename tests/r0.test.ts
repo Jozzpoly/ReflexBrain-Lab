@@ -1201,14 +1201,14 @@ describe("R1 hybrid structured representation", () => {
 
 
 describe("R1 adversarial OOD red-team", () => {
-  it("defines one held-out 10-state / 11-relation mirror split", async () => {
+  it("defines one held-out 18-state / 18-relation semantic red-team split", async () => {
     const { createR1OodRedTeamSuite } = await import(
       "../src/r1/ood-red-team"
     );
     const suite = createR1OodRedTeamSuite();
 
-    expect(suite.states).toHaveLength(10);
-    expect(suite.constraints).toHaveLength(11);
+    expect(suite.states).toHaveLength(18);
+    expect(suite.constraints).toHaveLength(18);
     expect(suite.states.every((state) => state.split === "ood")).toBe(true);
     expect(
       suite.constraints.every((constraint) => constraint.split === "ood"),
@@ -1248,6 +1248,63 @@ describe("R1 adversarial OOD red-team", () => {
         kind: "speech",
         addressed: true,
         text: expect.stringContaining("DANGER"),
+      }),
+    );
+  });
+
+  it("keeps all new semantic adversaries physically matched within their pair", async () => {
+    const { createR1OodRedTeamSuite } = await import(
+      "../src/r1/ood-red-team"
+    );
+    const suite = createR1OodRedTeamSuite();
+
+    const normalizeSpeechText = (state: ActorPrivateState) => ({
+      ...state,
+      percepts: state.percepts.map((percept) =>
+        percept.kind === "speech"
+          ? { ...percept, text: "<TEXT>" }
+          : percept,
+      ),
+    });
+
+    for (const [leftId, rightId] of [
+      ["ood:indirect-live-warning", "ood:indirect-maintenance-note"],
+      ["ood:quoted-live-warning", "ood:quoted-old-drill"],
+      ["ood:negated-unsafe", "ood:negated-safe"],
+      ["ood:live-uncertainty", "ood:resolved-uncertainty-quote"],
+    ] as const) {
+      const left = suite.states.find((state) => state.id === leftId)!;
+      const right = suite.states.find((state) => state.id === rightId)!;
+
+      expect(normalizeSpeechText(left.state)).toEqual(
+        normalizeSpeechText(right.state),
+      );
+    }
+  });
+
+  it("uses the exact same alarming quote on both sides of the quoted-warning adversary", async () => {
+    const { createR1OodRedTeamSuite } = await import(
+      "../src/r1/ood-red-team"
+    );
+    const suite = createR1OodRedTeamSuite();
+    const live = suite.states.find(
+      (state) => state.id === "ood:quoted-live-warning",
+    )!;
+    const drill = suite.states.find(
+      (state) => state.id === "ood:quoted-old-drill",
+    )!;
+
+    const speech = (state: ActorPrivateState) =>
+      state.percepts.find((percept) => percept.kind === "speech");
+
+    expect(speech(live)).toEqual(
+      expect.objectContaining({
+        text: expect.stringContaining("RUN, THE CEILING IS FALLING!"),
+      }),
+    );
+    expect(speech(drill)).toEqual(
+      expect.objectContaining({
+        text: expect.stringContaining("RUN, THE CEILING IS FALLING!"),
       }),
     );
   });
