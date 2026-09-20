@@ -1457,16 +1457,17 @@ describe("R1 semantic TRAIN breadth augmentation", () => {
 
     for (const forbidden of [
       "run, the ceiling is falling",
-      "radio",
-      "drill",
-      "yesterday",
-      "training transcript",
+      "dispatch",
+      "presently",
+      "archive",
+      "rehearsal",
+      "elsewhere",
     ]) {
       expect(text).not.toContain(forbidden);
     }
   });
 
-  it("does not hand the frozen quoted-warning OOD to exact lexical memorization", async () => {
+  it("keeps all semantic OOD relations beyond exact-token memorization before and after augmentation", async () => {
     const { createR1CounterfactualSuite } = await import(
       "../src/r1/counterfactual-supervision"
     );
@@ -1482,26 +1483,45 @@ describe("R1 semantic TRAIN breadth augmentation", () => {
 
     const base = createR1CounterfactualSuite();
     const extra = createR1SemanticTrainingAugmentation();
-    const combined = {
-      states: [...base.states, ...extra.states],
-      constraints: [...base.constraints, ...extra.constraints],
-    };
-    const model = trainSurfaceMemorizer(combined);
     const ood = createR1OodRedTeamSuite();
-    const live = ood.states.find(
-      (state) => state.id === "ood:quoted-live-warning",
-    )!;
-    const old = ood.states.find(
-      (state) => state.id === "ood:quoted-old-drill",
-    )!;
+    const byId = new Map(ood.states.map((state) => [state.id, state] as const));
 
-    expect(
-      score(model, "interrupt", live.state) -
-        score(model, "interrupt", old.state),
-    ).toBeLessThanOrEqual(0);
-    expect(
-      score(model, "threat", live.state) -
-        score(model, "threat", old.state),
-    ).toBeLessThanOrEqual(0);
+    const semanticFamilies = new Set([
+      "ood:danger-decoy",
+      "ood:indirect-warning",
+      "ood:quoted-warning",
+      "ood:negation-warning",
+      "ood:cognition-ambiguity",
+      "ood:resolved-uncertainty",
+    ]);
+    const semanticConstraints = ood.constraints.filter(
+      (constraint) =>
+        constraint.relation === "greater" &&
+        semanticFamilies.has(constraint.familyId),
+    );
+    expect(semanticConstraints).toHaveLength(10);
+
+    for (const suite of [
+      base,
+      {
+        states: [...base.states, ...extra.states],
+        constraints: [...base.constraints, ...extra.constraints],
+      },
+    ]) {
+      const model = trainSurfaceMemorizer(suite);
+
+      for (const constraint of semanticConstraints) {
+        const left = byId.get(constraint.leftStateId)!;
+        const right = byId.get(constraint.rightStateId)!;
+        const margin =
+          score(model, constraint.dimension, left.state) -
+          score(model, constraint.dimension, right.state);
+
+        expect(
+          margin,
+          constraint.id + " leaked through exact lexical memorization",
+        ).toBeLessThanOrEqual(0);
+      }
+    }
   });
 });
