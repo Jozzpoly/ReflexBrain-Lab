@@ -7,8 +7,9 @@ import { buildLivingSpecimenMicroscope } from "./r2/living-specimen-microscope";
 
 const run = createDeterministicLivingSpecimen();
 const microscope = buildLivingSpecimenMicroscope(run);
-const app = document.querySelector<HTMLDivElement>("#app");
-if (!app) throw new Error("missing #app");
+const appElement = document.querySelector<HTMLDivElement>("#app");
+if (!appElement) throw new Error("missing #app");
+const app: HTMLDivElement = appElement;
 
 let selectedIndex = 0;
 let playing = false;
