@@ -1393,3 +1393,115 @@ describe("R1 adversarial OOD red-team", () => {
     expect(withA.weights).toEqual(withB.weights);
   });
 });
+
+
+describe("R1 semantic TRAIN breadth augmentation", () => {
+  it("adds six TRAIN-only states and five directional relations", async () => {
+    const { createR1SemanticTrainingAugmentation } = await import(
+      "../src/r1/semantic-training-augmentation"
+    );
+    const suite = createR1SemanticTrainingAugmentation();
+
+    expect(suite.states).toHaveLength(6);
+    expect(suite.constraints).toHaveLength(5);
+    expect(suite.states.every((state) => state.split === "train")).toBe(true);
+    expect(
+      suite.constraints.every(
+        (constraint) =>
+          constraint.split === "train" &&
+          constraint.relation === "greater",
+      ),
+    ).toBe(true);
+  });
+
+  it("keeps every augmentation pair physically/addressee matched", async () => {
+    const { createR1SemanticTrainingAugmentation } = await import(
+      "../src/r1/semantic-training-augmentation"
+    );
+    const suite = createR1SemanticTrainingAugmentation();
+
+    const normalizeSpeechText = (state: ActorPrivateState) => ({
+      ...state,
+      percepts: state.percepts.map((percept) =>
+        percept.kind === "speech"
+          ? { ...percept, text: "<TEXT>" }
+          : percept,
+      ),
+    });
+
+    for (const [leftId, rightId] of [
+      ["train:pressure-active", "train:pressure-resolved"],
+      ["train:hoist-active", "train:hoist-resolved"],
+      ["train:interlock-unresolved", "train:interlock-confirmed"],
+    ] as const) {
+      const left = suite.states.find((state) => state.id === leftId)!;
+      const right = suite.states.find((state) => state.id === rightId)!;
+      expect(normalizeSpeechText(left.state)).toEqual(
+        normalizeSpeechText(right.state),
+      );
+    }
+  });
+
+  it("does not copy the frozen quoted-warning OOD surface", async () => {
+    const { createR1SemanticTrainingAugmentation } = await import(
+      "../src/r1/semantic-training-augmentation"
+    );
+    const suite = createR1SemanticTrainingAugmentation();
+    const text = suite.states
+      .flatMap((state) =>
+        state.state.percepts
+          .filter((percept) => percept.kind === "speech")
+          .map((percept) => percept.text.toLowerCase()),
+      )
+      .join(" ");
+
+    for (const forbidden of [
+      "run, the ceiling is falling",
+      "radio",
+      "drill",
+      "yesterday",
+      "training transcript",
+    ]) {
+      expect(text).not.toContain(forbidden);
+    }
+  });
+
+  it("does not hand the frozen quoted-warning OOD to exact lexical memorization", async () => {
+    const { createR1CounterfactualSuite } = await import(
+      "../src/r1/counterfactual-supervision"
+    );
+    const { createR1OodRedTeamSuite } = await import(
+      "../src/r1/ood-red-team"
+    );
+    const { createR1SemanticTrainingAugmentation } = await import(
+      "../src/r1/semantic-training-augmentation"
+    );
+    const { score, trainSurfaceMemorizer } = await import(
+      "../src/r1/surface-baseline"
+    );
+
+    const base = createR1CounterfactualSuite();
+    const extra = createR1SemanticTrainingAugmentation();
+    const combined = {
+      states: [...base.states, ...extra.states],
+      constraints: [...base.constraints, ...extra.constraints],
+    };
+    const model = trainSurfaceMemorizer(combined);
+    const ood = createR1OodRedTeamSuite();
+    const live = ood.states.find(
+      (state) => state.id === "ood:quoted-live-warning",
+    )!;
+    const old = ood.states.find(
+      (state) => state.id === "ood:quoted-old-drill",
+    )!;
+
+    expect(
+      score(model, "interrupt", live.state) -
+        score(model, "interrupt", old.state),
+    ).toBeLessThanOrEqual(0);
+    expect(
+      score(model, "threat", live.state) -
+        score(model, "threat", old.state),
+    ).toBeLessThanOrEqual(0);
+  });
+});
