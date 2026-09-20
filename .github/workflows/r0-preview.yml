@@ -8,6 +8,7 @@ on:
       - experiment/r1-semantic-supervision-breadth-v1
       - experiment/r1-linear-ranking-head-v1
       - experiment/r1-relation-geometry-audit-v1
+      - experiment/r1-cognition-supervision-breadth-v1
   workflow_dispatch:
 
 permissions:
