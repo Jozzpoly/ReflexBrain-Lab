@@ -4,6 +4,7 @@ import type {
   R1EncoderStateInput,
   R1EncoderWorkerRequest,
   R1EncoderWorkerResponse,
+  R1HeadMode,
   R1LearnConstraintInput,
   R1LearnedHeadResult,
   R1RepresentationMode,
@@ -43,6 +44,7 @@ export class R1EncoderBenchmarkClient {
     states: readonly R1EncoderStateInput[],
     constraints: readonly R1LearnConstraintInput[],
     representation: R1RepresentationMode,
+    headMode: R1HeadMode = "prototype",
     progress?: (value: R1EncoderProgress) => void,
   ): Promise<R1LearnedHeadResult> {
     return this.request<R1LearnedHeadResult>(
@@ -52,6 +54,7 @@ export class R1EncoderBenchmarkClient {
         states: structuredClone(states),
         constraints: structuredClone(constraints),
         representation,
+        headMode,
       },
       "learned_head_result",
       progress,
