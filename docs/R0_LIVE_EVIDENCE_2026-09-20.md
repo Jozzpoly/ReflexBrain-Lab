@@ -479,3 +479,69 @@ The next earned experiment is therefore a frozen-encoder learned head:
 trained only on R1 TRAIN relational constraints and evaluated untouched on DEV/TEST.
 
 The encoder itself should remain frozen for this first learned baseline. This isolates whether a cheap readout can recover the causal appraisal relations before introducing LoRA/backbone adaptation.
+
+
+## R1 frozen MiniLM prototype head — seed generalization result
+
+The first learned R1 candidate deliberately kept the encoder frozen.
+
+Pipeline:
+
+`actor-private state -> frozen MiniLM-L3 q8 embedding -> per-dimension linear direction`
+
+The five head directions were constructed **only from TRAIN directional embedding differences**. There was no gradient update to MiniLM, no DEV/TEST fitting, no absolute target probability and no action authority.
+
+The seed R1 suite contained:
+
+- 24 actor-private states;
+- 33 causal relations;
+- 11 relations per TRAIN / DEV / TEST;
+- split-specific wording and physical context;
+- hard hidden-World equality constraints.
+
+A lexical surface-memorizer negative control had already established that the split is non-trivial:
+
+- TRAIN: **11/11**;
+- DEV: **8/11**;
+- TEST: **8/11**;
+- all three held-out warning-vs-request semantic relations failed on both DEV and TEST.
+
+### Live frozen-encoder learned-head result
+
+On the Owner browser/GPU:
+
+- TRAIN: **11/11**;
+- DEV: **11/11**;
+- TEST: **11/11**;
+- every dimension passed its current seed relations:
+  - attention: 2/2 per split;
+  - interrupt: 2/2 per split;
+  - social: 2/2 per split;
+  - threat: 3/3 per split;
+  - cognition: 2/2 per split.
+- all 24 state embeddings were produced in **411.9 ms** using batches of 8;
+- head construction + evaluation took **1.300 ms**;
+- embedding width: 384.
+
+### Interpretation
+
+**POSITIVE SEED SIGNAL — NOT YET PROMOTION.**
+
+This is the first R1 experiment where held-out success can reasonably be called a small amount of learned semantic generalization rather than prompt compliance:
+
+- the head never saw DEV/TEST relations during construction;
+- warning-vs-request holds physics and addressee fixed;
+- DEV/TEST use different warning/request wording;
+- the surface memorizer fails exactly these held-out semantic relations;
+- frozen MiniLM + train-only direction passes them.
+
+However the suite is still tiny and structurally simple. 11/11 can still be explained by an easy pretrained embedding geometry or semantic shortcut.
+
+The next gate is therefore adversarial OOD testing, not architecture expansion:
+
+- danger-word decoy without immediate danger;
+- explicit reassurance / safe-to-continue speech;
+- additional paraphrases with no TRAIN overlap;
+- matched private-state context wherever possible.
+
+Only if the same train-only head survives those should R1 invest in a richer trained head or LoRA/backbone adaptation.
