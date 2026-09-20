@@ -6,6 +6,7 @@ export const R1_ENCODER_MODEL_ID = "Xenova/paraphrase-MiniLM-L3-v2";
 export const R1_ENCODER_MODEL_REVISION =
   "4b544e74dfc3256b2b56849ea5d7064fee1ac846";
 export const R1_ENCODER_DTYPE = "q8" as const;
+export const R1_LEARNED_HEAD_EMBEDDING_BATCH_SIZE = 1 as const;
 
 export interface R1EncoderStateInput {
   id: string;
