@@ -1501,14 +1501,20 @@ describe("R1 semantic TRAIN breadth augmentation", () => {
     );
     expect(semanticConstraints).toHaveLength(10);
 
-    for (const suite of [
-      base,
+    const variants = [
+      { label: "base", suite: base },
       {
-        states: [...base.states, ...extra.states],
-        constraints: [...base.constraints, ...extra.constraints],
+        label: "expanded",
+        suite: {
+          states: [...base.states, ...extra.states],
+          constraints: [...base.constraints, ...extra.constraints],
+        },
       },
-    ]) {
-      const model = trainSurfaceMemorizer(suite);
+    ] as const;
+    const leaks: string[] = [];
+
+    for (const variant of variants) {
+      const model = trainSurfaceMemorizer(variant.suite);
 
       for (const constraint of semanticConstraints) {
         const left = byId.get(constraint.leftStateId)!;
@@ -1517,11 +1523,18 @@ describe("R1 semantic TRAIN breadth augmentation", () => {
           score(model, constraint.dimension, left.state) -
           score(model, constraint.dimension, right.state);
 
-        expect(
-          margin,
-          constraint.id + " leaked through exact lexical memorization",
-        ).toBeLessThanOrEqual(0);
+        if (margin > 0) {
+          leaks.push(
+            variant.label +
+              ":" +
+              constraint.id +
+              ":" +
+              margin.toFixed(6),
+          );
+        }
       }
     }
+
+    expect(leaks).toEqual([]);
   });
 });
