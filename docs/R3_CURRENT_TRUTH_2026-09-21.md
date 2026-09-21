@@ -174,18 +174,55 @@ Evaluation metadata retains ecology/actor/tick and factual future deltas so late
 
 Strict ecology holdout is now mechanically available.
 
-## Current blocker / frontier
+## Phase B finding — current future factual deltas rejected as first probe family
 
-The project is **not** blocked on infrastructure anymore.
+Cross-ecology shortcut controls and identifiability audits now exist before any R3 encoder experiment.
 
-It is blocked on defining a first learning question that is both:
-- derivable from real autonomous trajectories;
-- not merely another hand-authored appraisal ontology.
+The surveyed family included:
+- future activity identity change;
+- future activity phase change;
+- future held-object change;
+- future visible-object-kind change;
+- future speech arrival.
 
-Before training MiniLM or any head, Phase B still needs a strong negative-control story for surface-token/ecology leakage and a defensible relation/target construction.
+None currently qualifies as the first cross-ecology semantic representation probe.
 
-The next earned move is therefore **corpus falsification**, not model capacity:
-- audit surface shortcuts across ecologies;
-- identify naturally occurring matched/counterfactual relationships;
-- prove that a future target cannot be solved by actor/ecology/token identity alone;
-- only then instantiate the first representation probe.
+Key evidence:
+- identity / held-object / visible-object changes have no positive class in the moving-contact ecology;
+- phase change has both classes but is badly underidentified in moving-contact: over 90% of examples belong to legal input signatures that map to both labels, and a same-ecology signature oracle reaches only ~0.54 balanced accuracy;
+- future speech arrival is extremely rare and underidentified in both ecologies;
+- exact-input and bag-of-token controls do not explain away the phase-change failure.
+
+Interpretation: these future deltas are largely downstream execution/trajectory consequences, not a defensible first semantic ReflexBrain question.
+
+Do not add hidden position, cooldown or fixture execution state merely to rescue those labels.
+
+## Counterfactual evidence — QUALIFIED DONOR
+
+Paired autonomous runs now support first-divergence evidence.
+
+Qualified findings include:
+- hidden World perturbations do not alter resident decisions before private state diverges;
+- authoritative World outcomes may legitimately diverge before cognition when the same private decision receives a different physical result;
+- removing an actor-owned matter causally changes that resident's local life and later reaches other residents through the world;
+- changing only the wording of a matter can leave fixture decisions/outcomes invariant.
+
+Important boundary: fixture policies currently gate on matter identity, not on semantic statement meaning. Therefore wording invariance is useful representation evidence, but it is not evidence that semantic wording already controls behavior.
+
+## Current frontier
+
+Phase B now moves from **future-label hunting** to a matter↔lived-context relation probe.
+
+Candidate question:
+
+> given a matter-free temporal fragment of private life, can a semantic representation align it with the actor's own continuing matter better than with other matters from the same ecology?
+
+This is a representation probe, not a proposed ReflexBrain output contract.
+
+Before MiniLM is used:
+- keep matter text out of the trajectory query;
+- pair baseline and strongly paraphrased wording variants that produce identical fixture life;
+- deduplicate repeated query signatures;
+- measure lexical-overlap shortcuts on baseline and paraphrase variants;
+- inspect changing/eventful windows separately;
+- reject or harden the probe if surface overlap already solves it.
