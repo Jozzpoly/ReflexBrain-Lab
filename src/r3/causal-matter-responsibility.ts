@@ -31,6 +31,7 @@ export interface R3CausalMatterResponsibilityExample {
   ecology: R3EcologyId;
   wording: R3MatterWording;
   anchorTick: number;
+  queryEndTick: number;
   transitionHistory: readonly string[];
   candidateMatters: readonly ResidentMatter[];
   causallyResponsibleMatterId: string;
@@ -260,12 +261,15 @@ function buildOneCausalExample(options: {
   );
   baseline.runTicks(options.anchorTick);
 
-  const history = residentHistory(
+  // Keep only the prefix needed to build a decision-time private query.
+  // The current observation does not exist until advanceOneTick(), so the
+  // pre-decision prefix must contain historyLength - 1 earlier private rows.
+  const priorHistory = residentHistory(
     baseline.privateExperiences(),
     options.residentId,
-    options.historyLength,
+    options.historyLength - 1,
   );
-  if (history.length < options.historyLength) {
+  if (priorHistory.length < options.historyLength - 1) {
     return null;
   }
 
@@ -318,16 +322,26 @@ function buildOneCausalExample(options: {
     return null;
   }
 
+  // Temporal alignment is critical: the query must include the private
+  // observation that the baseline policy actually saw when making the
+  // labeled decision. ResidentPrivateExperience also contains decision and
+  // factual outcomes, but serializeR3PrivateTransition reads only private
+  // observation/memory facts and therefore does not leak those post-input
+  // fields into the model query.
+  const alignedHistory = [
+    ...priorHistory,
+    baselineRow,
+  ];
   const transitionHistory: string[] = [];
   for (
     let index = 1;
-    index < history.length;
+    index < alignedHistory.length;
     index += 1
   ) {
     transitionHistory.push(
       serializeR3PrivateTransition(
-        history[index - 1]!,
-        history[index]!,
+        alignedHistory[index - 1]!,
+        alignedHistory[index]!,
       ).semanticText,
     );
   }
@@ -337,6 +351,7 @@ function buildOneCausalExample(options: {
     ecology: options.ecology,
     wording: options.wording,
     anchorTick: options.anchorTick,
+    queryEndTick: baselineRow.tick,
     transitionHistory,
     candidateMatters: candidates.map(
       (matter) => structuredClone(matter),

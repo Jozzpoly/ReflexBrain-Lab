@@ -56,6 +56,10 @@ describe("R3 concurrent-matter causal responsibility", () => {
     expect(corpus.examples.length).toBeGreaterThan(0);
 
     for (const example of corpus.examples) {
+      expect(example.queryEndTick).toBe(
+        example.anchorTick,
+      );
+      expect(example.transitionHistory.length).toBeGreaterThan(0);
       expect(example.candidateMatters).toHaveLength(2);
       expect(
         example.candidateMatters.every((matter) =>
@@ -85,6 +89,21 @@ describe("R3 concurrent-matter causal responsibility", () => {
       expect(changed).toHaveLength(1);
       expect(changed[0]!.id).toBe(
         example.causallyResponsibleMatterId,
+      );
+    }
+  }, 20_000);
+
+  it("aligns the causal query with the exact private observation used by the labeled decision", () => {
+    const corpus =
+      buildR3CausalMatterResponsibilityCorpus({
+        sampleTicks: [20, 80, 210],
+        wordings: ["baseline"],
+      });
+
+    expect(corpus.examples.length).toBeGreaterThan(0);
+    for (const example of corpus.examples) {
+      expect(example.queryEndTick).toBe(
+        example.anchorTick,
       );
     }
   }, 20_000);
