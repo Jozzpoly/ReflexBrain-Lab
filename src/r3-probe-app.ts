@@ -9,6 +9,16 @@ import {
   evaluateR3MatterEmbeddingRetrieval,
 } from "./r3/matter-relation-geometry";
 import { R3SemanticEncoderClient } from "./r3/semantic-encoder-client";
+import {
+  auditR3TransitionLexicalRetrieval,
+  auditR3TransitionSemanticDiversity,
+  buildR3TransitionMatterCorpus,
+} from "./r3/transition-matter-corpus";
+import {
+  collectR3TransitionProbeTexts,
+  compareR3TransitionWordingStability,
+  evaluateR3TransitionEmbeddingRetrieval,
+} from "./r3/transition-matter-geometry";
 
 const statusElement =
   document.querySelector<HTMLElement>("#status");
@@ -33,6 +43,12 @@ async function runProbe(): Promise<void> {
     setStatus("Building autonomous baseline/paraphrase relation corpus…");
 
     const corpus = buildR3MatterRelationCorpus({
+      materialTicks: 1200,
+      contactTicks: 1200,
+      historyLength: 8,
+    });
+
+    const transitionCorpus = buildR3TransitionMatterCorpus({
       materialTicks: 1200,
       contactTicks: 1200,
       historyLength: 8,
@@ -84,7 +100,60 @@ async function runProbe(): Promise<void> {
       ),
     ];
 
-    const texts = collectR3MatterProbeTexts(corpus);
+    const transitionSemanticDiversity = [
+      auditR3TransitionSemanticDiversity(
+        transitionCorpus,
+        "material-work",
+        "baseline",
+      ),
+      auditR3TransitionSemanticDiversity(
+        transitionCorpus,
+        "material-work",
+        "paraphrase",
+      ),
+      auditR3TransitionSemanticDiversity(
+        transitionCorpus,
+        "moving-contact",
+        "baseline",
+      ),
+      auditR3TransitionSemanticDiversity(
+        transitionCorpus,
+        "moving-contact",
+        "paraphrase",
+      ),
+    ];
+
+    const transitionLexical = [
+      auditR3TransitionLexicalRetrieval(
+        transitionCorpus,
+        "material-work",
+        "baseline",
+      ),
+      auditR3TransitionLexicalRetrieval(
+        transitionCorpus,
+        "material-work",
+        "paraphrase",
+      ),
+      auditR3TransitionLexicalRetrieval(
+        transitionCorpus,
+        "moving-contact",
+        "baseline",
+      ),
+      auditR3TransitionLexicalRetrieval(
+        transitionCorpus,
+        "moving-contact",
+        "paraphrase",
+      ),
+    ];
+
+    const texts = [
+      ...new Set([
+        ...collectR3MatterProbeTexts(corpus),
+        ...collectR3TransitionProbeTexts(
+          transitionCorpus,
+        ),
+      ]),
+    ].sort();
     const items = texts.map((text, index) => ({
       id: "text:" + index,
       text,
@@ -202,6 +271,83 @@ async function runProbe(): Promise<void> {
       }
     }
 
+    const transitionReports = [];
+    for (const ecology of [
+      "material-work",
+      "moving-contact",
+    ] as const) {
+      for (const wording of [
+        "baseline",
+        "paraphrase",
+      ] as const) {
+        for (const mode of [
+          "last-transition",
+          "mean-transitions",
+        ] as const) {
+          transitionReports.push(
+            evaluateR3TransitionEmbeddingRetrieval(
+              transitionCorpus,
+              embeddingByText,
+              ecology,
+              wording,
+              mode,
+            ),
+          );
+        }
+      }
+    }
+
+    const compactTransitionReports =
+      transitionReports.map((report) => ({
+        ecology: report.ecology,
+        wording: report.wording,
+        mode: report.mode,
+        queryCount: report.queryCount,
+        candidateCount: report.candidateCount,
+        chanceTop1: report.chanceTop1,
+        top1Accuracy: report.top1Accuracy,
+        eventfulQueryCount: report.eventfulQueryCount,
+        eventfulTop1Accuracy:
+          report.eventfulTop1Accuracy,
+        meanPositiveMargin:
+          report.meanPositiveMargin,
+        eventfulMeanPositiveMargin:
+          report.eventfulMeanPositiveMargin,
+      }));
+
+    const transitionStability = [];
+    for (const ecology of [
+      "material-work",
+      "moving-contact",
+    ] as const) {
+      for (const mode of [
+        "last-transition",
+        "mean-transitions",
+      ] as const) {
+        const baseline =
+          transitionReports.find(
+            (report) =>
+              report.ecology === ecology &&
+              report.wording === "baseline" &&
+              report.mode === mode,
+          )!;
+        const paraphrase =
+          transitionReports.find(
+            (report) =>
+              report.ecology === ecology &&
+              report.wording === "paraphrase" &&
+              report.mode === mode,
+          )!;
+
+        transitionStability.push(
+          compareR3TransitionWordingStability(
+            baseline,
+            paraphrase,
+          ),
+        );
+      }
+    }
+
     const result = {
       status: "PASS_EXECUTION",
       interpretationBoundary:
@@ -221,6 +367,12 @@ async function runProbe(): Promise<void> {
       lexical,
       semanticRetrieval: compactReports,
       wordingStability: stability,
+      transitionSemanticDiversity,
+      transitionLexical,
+      transitionSemanticRetrieval:
+        compactTransitionReports,
+      transitionWordingStability:
+        transitionStability,
     };
 
     resultOutput.textContent = JSON.stringify(
