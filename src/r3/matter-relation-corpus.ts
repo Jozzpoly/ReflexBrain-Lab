@@ -89,7 +89,7 @@ export function buildR3MatterRelationCorpus(options: {
   materialBaseline.runTicks(materialTicks);
 
   const materialParaphrase = createAutonomousLifeRun({
-    matterOverrides: materialParaphraseMatters(),
+    matterOverrides: r3MaterialParaphraseMatters(),
   });
   materialParaphrase.runTicks(materialTicks);
 
@@ -97,7 +97,7 @@ export function buildR3MatterRelationCorpus(options: {
   contactBaseline.runTicks(contactTicks);
 
   const contactParaphrase = createAutonomousContactRun({
-    matterOverrides: contactParaphraseMatters(),
+    matterOverrides: r3ContactParaphraseMatters(),
   });
   contactParaphrase.runTicks(contactTicks);
 
@@ -488,7 +488,7 @@ function materialKindText(kind: MaterialKind): string {
   }
 }
 
-function materialParaphraseMatters(): Partial<
+export function r3MaterialParaphraseMatters(): Partial<
   Record<
     ResidentPrivateExperience["residentId"],
     readonly ResidentMatter[]
@@ -519,7 +519,7 @@ function materialParaphraseMatters(): Partial<
   };
 }
 
-function contactParaphraseMatters(): Partial<
+export function r3ContactParaphraseMatters(): Partial<
   Record<
     ResidentPrivateExperience["residentId"],
     readonly ResidentMatter[]
