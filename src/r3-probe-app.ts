@@ -10,6 +10,14 @@ import {
 } from "./r3/matter-relation-geometry";
 import { R3SemanticEncoderClient } from "./r3/semantic-encoder-client";
 import {
+  auditR3CausalMatterResponsibility,
+  buildR3CausalMatterResponsibilityCorpus,
+} from "./r3/causal-matter-responsibility";
+import {
+  compareR3CausalMatterWordingStability,
+  evaluateR3CausalMatterEmbeddingRetrieval,
+} from "./r3/causal-matter-geometry";
+import {
   auditR3SameActorMatterDiversity,
   auditR3SameActorMatterLexicalRetrieval,
   buildR3SameActorMatterCorpus,
@@ -114,6 +122,9 @@ async function runProbe(): Promise<void> {
         transitionCorpus,
       );
 
+    const causalCorpus =
+      buildR3CausalMatterResponsibilityCorpus();
+
     const sameActorDiversity = [
       auditR3SameActorMatterDiversity(
         sameActorCorpus,
@@ -155,6 +166,29 @@ async function runProbe(): Promise<void> {
       ),
       auditR3SameActorMatterLexicalRetrieval(
         sameActorCorpus,
+        "resident:ida",
+        "paraphrase",
+      ),
+    ];
+
+    const causalAudit = [
+      auditR3CausalMatterResponsibility(
+        causalCorpus,
+        "resident:janek",
+        "baseline",
+      ),
+      auditR3CausalMatterResponsibility(
+        causalCorpus,
+        "resident:janek",
+        "paraphrase",
+      ),
+      auditR3CausalMatterResponsibility(
+        causalCorpus,
+        "resident:ida",
+        "baseline",
+      ),
+      auditR3CausalMatterResponsibility(
+        causalCorpus,
         "resident:ida",
         "paraphrase",
       ),
@@ -484,6 +518,75 @@ async function runProbe(): Promise<void> {
       }
     }
 
+    const causalReports = [];
+    for (const residentId of [
+      "resident:janek",
+      "resident:ida",
+    ] as const) {
+      for (const wording of [
+        "baseline",
+        "paraphrase",
+      ] as const) {
+        for (const mode of [
+          "last-transition",
+          "mean-transitions",
+        ] as const) {
+          causalReports.push(
+            evaluateR3CausalMatterEmbeddingRetrieval(
+              causalCorpus,
+              embeddingByText,
+              residentId,
+              wording,
+              mode,
+            ),
+          );
+        }
+      }
+    }
+
+    const compactCausalReports =
+      causalReports.map((report) => ({
+        residentId: report.residentId,
+        wording: report.wording,
+        mode: report.mode,
+        queryCount: report.queryCount,
+        chanceTop1: report.chanceTop1,
+        top1Accuracy: report.top1Accuracy,
+        meanResponsibleMargin:
+          report.meanResponsibleMargin,
+      }));
+
+    const causalWordingStability = [];
+    for (const residentId of [
+      "resident:janek",
+      "resident:ida",
+    ] as const) {
+      for (const mode of [
+        "last-transition",
+        "mean-transitions",
+      ] as const) {
+        const baseline = causalReports.find(
+          (report) =>
+            report.residentId === residentId &&
+            report.wording === "baseline" &&
+            report.mode === mode,
+        )!;
+        const paraphrase = causalReports.find(
+          (report) =>
+            report.residentId === residentId &&
+            report.wording === "paraphrase" &&
+            report.mode === mode,
+        )!;
+
+        causalWordingStability.push(
+          compareR3CausalMatterWordingStability(
+            baseline,
+            paraphrase,
+          ),
+        );
+      }
+    }
+
     const result = {
       status: "PASS_EXECUTION",
       interpretationBoundary:
@@ -515,6 +618,10 @@ async function runProbe(): Promise<void> {
         compactSameActorReports,
       sameActorWordingStability:
         sameActorStability,
+      causalAudit,
+      causalSemanticRetrieval:
+        compactCausalReports,
+      causalWordingStability,
     };
 
     resultOutput.textContent = JSON.stringify(
