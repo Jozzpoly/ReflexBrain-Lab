@@ -10,6 +10,15 @@ import {
 } from "./r3/matter-relation-geometry";
 import { R3SemanticEncoderClient } from "./r3/semantic-encoder-client";
 import {
+  auditR3SameActorMatterDiversity,
+  auditR3SameActorMatterLexicalRetrieval,
+  buildR3SameActorMatterCorpus,
+} from "./r3/same-actor-matter-corpus";
+import {
+  compareR3SameActorWordingStability,
+  evaluateR3SameActorEmbeddingRetrieval,
+} from "./r3/same-actor-matter-geometry";
+import {
   auditR3TransitionLexicalRetrieval,
   auditR3TransitionSemanticDiversity,
   buildR3TransitionMatterCorpus,
@@ -96,6 +105,57 @@ async function runProbe(): Promise<void> {
       auditR3MatterLexicalRetrieval(
         corpus,
         "moving-contact",
+        "paraphrase",
+      ),
+    ];
+
+    const sameActorCorpus =
+      buildR3SameActorMatterCorpus(
+        transitionCorpus,
+      );
+
+    const sameActorDiversity = [
+      auditR3SameActorMatterDiversity(
+        sameActorCorpus,
+        "resident:janek",
+        "baseline",
+      ),
+      auditR3SameActorMatterDiversity(
+        sameActorCorpus,
+        "resident:janek",
+        "paraphrase",
+      ),
+      auditR3SameActorMatterDiversity(
+        sameActorCorpus,
+        "resident:ida",
+        "baseline",
+      ),
+      auditR3SameActorMatterDiversity(
+        sameActorCorpus,
+        "resident:ida",
+        "paraphrase",
+      ),
+    ];
+
+    const sameActorLexical = [
+      auditR3SameActorMatterLexicalRetrieval(
+        sameActorCorpus,
+        "resident:janek",
+        "baseline",
+      ),
+      auditR3SameActorMatterLexicalRetrieval(
+        sameActorCorpus,
+        "resident:janek",
+        "paraphrase",
+      ),
+      auditR3SameActorMatterLexicalRetrieval(
+        sameActorCorpus,
+        "resident:ida",
+        "baseline",
+      ),
+      auditR3SameActorMatterLexicalRetrieval(
+        sameActorCorpus,
+        "resident:ida",
         "paraphrase",
       ),
     ];
@@ -348,6 +408,82 @@ async function runProbe(): Promise<void> {
       }
     }
 
+    const sameActorReports = [];
+    for (const residentId of [
+      "resident:janek",
+      "resident:ida",
+    ] as const) {
+      for (const wording of [
+        "baseline",
+        "paraphrase",
+      ] as const) {
+        for (const mode of [
+          "last-transition",
+          "mean-transitions",
+        ] as const) {
+          sameActorReports.push(
+            evaluateR3SameActorEmbeddingRetrieval(
+              sameActorCorpus,
+              embeddingByText,
+              residentId,
+              wording,
+              mode,
+            ),
+          );
+        }
+      }
+    }
+
+    const compactSameActorReports =
+      sameActorReports.map((report) => ({
+        residentId: report.residentId,
+        wording: report.wording,
+        mode: report.mode,
+        queryCount: report.queryCount,
+        candidateCount: report.candidateCount,
+        chanceTop1: report.chanceTop1,
+        top1Accuracy: report.top1Accuracy,
+        eventfulQueryCount:
+          report.eventfulQueryCount,
+        eventfulTop1Accuracy:
+          report.eventfulTop1Accuracy,
+        meanPositiveMargin:
+          report.meanPositiveMargin,
+        eventfulMeanPositiveMargin:
+          report.eventfulMeanPositiveMargin,
+      }));
+
+    const sameActorStability = [];
+    for (const residentId of [
+      "resident:janek",
+      "resident:ida",
+    ] as const) {
+      for (const mode of [
+        "last-transition",
+        "mean-transitions",
+      ] as const) {
+        const baseline = sameActorReports.find(
+          (report) =>
+            report.residentId === residentId &&
+            report.wording === "baseline" &&
+            report.mode === mode,
+        )!;
+        const paraphrase = sameActorReports.find(
+          (report) =>
+            report.residentId === residentId &&
+            report.wording === "paraphrase" &&
+            report.mode === mode,
+        )!;
+
+        sameActorStability.push(
+          compareR3SameActorWordingStability(
+            baseline,
+            paraphrase,
+          ),
+        );
+      }
+    }
+
     const result = {
       status: "PASS_EXECUTION",
       interpretationBoundary:
@@ -373,6 +509,12 @@ async function runProbe(): Promise<void> {
         compactTransitionReports,
       transitionWordingStability:
         transitionStability,
+      sameActorDiversity,
+      sameActorLexical,
+      sameActorSemanticRetrieval:
+        compactSameActorReports,
+      sameActorWordingStability:
+        sameActorStability,
     };
 
     resultOutput.textContent = JSON.stringify(
