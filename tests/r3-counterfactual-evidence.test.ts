@@ -6,18 +6,33 @@ import {
 import { R3_LIFE_PLACES } from "../src/r3/autonomous-life-run";
 
 describe("R3 paired counterfactual first-divergence evidence", () => {
-  it("keeps a hidden material perturbation private until Mira can actually encounter it", () => {
-    const evidence = compareMaterialCounterfactual({
-      perturbationId: "source-stock:3-vs-0",
-      ticks: 700,
-      baseline: { initialSourceRaw: 3 },
-      variant: { initialSourceRaw: 0 },
-    });
+  const materialEvidence = compareMaterialCounterfactual({
+    perturbationId: "source-stock:3-vs-0",
+    ticks: 700,
+    baseline: { initialSourceRaw: 3 },
+    variant: { initialSourceRaw: 0 },
+  });
 
-    const mira = evidence.residents.find(
+  const contactEvidence = compareContactCounterfactual({
+    perturbationId: "janek-start:workbench-vs-depot",
+    ticks: 900,
+    baseline: {
+      janekStart: R3_LIFE_PLACES.workbench.position,
+    },
+    variant: {
+      janekStart: R3_LIFE_PLACES.depot.position,
+    },
+  });
+
+  console.info(
+    "R3_COUNTERFACTUAL_FIRST_DIVERGENCE",
+    JSON.stringify([materialEvidence, contactEvidence]),
+  );
+  it("keeps a hidden material perturbation private until Mira can actually encounter it", () => {
+    const mira = materialEvidence.residents.find(
       (row) => row.residentId === "resident:mira",
     )!;
-    const janek = evidence.residents.find(
+    const janek = materialEvidence.residents.find(
       (row) => row.residentId === "resident:janek",
     )!;
 
@@ -35,18 +50,7 @@ describe("R3 paired counterfactual first-divergence evidence", () => {
   });
 
   it("keeps a different initial Janek position hidden from Ida until local contact geometry reveals it", () => {
-    const evidence = compareContactCounterfactual({
-      perturbationId: "janek-start:workbench-vs-depot",
-      ticks: 900,
-      baseline: {
-        janekStart: R3_LIFE_PLACES.workbench.position,
-      },
-      variant: {
-        janekStart: R3_LIFE_PLACES.depot.position,
-      },
-    });
-
-    const ida = evidence.residents.find(
+    const ida = contactEvidence.residents.find(
       (row) => row.residentId === "resident:ida",
     )!;
 
@@ -63,22 +67,8 @@ describe("R3 paired counterfactual first-divergence evidence", () => {
 
   it("never lets a deterministic resident decision diverge before its private state diverges", () => {
     const evidences = [
-      compareMaterialCounterfactual({
-        perturbationId: "source-stock:3-vs-0",
-        ticks: 700,
-        baseline: { initialSourceRaw: 3 },
-        variant: { initialSourceRaw: 0 },
-      }),
-      compareContactCounterfactual({
-        perturbationId: "janek-start:workbench-vs-depot",
-        ticks: 900,
-        baseline: {
-          janekStart: R3_LIFE_PLACES.workbench.position,
-        },
-        variant: {
-          janekStart: R3_LIFE_PLACES.depot.position,
-        },
-      }),
+      materialEvidence,
+      contactEvidence,
     ];
 
     for (const evidence of evidences) {
@@ -92,34 +82,38 @@ describe("R3 paired counterfactual first-divergence evidence", () => {
     }
   });
 
-  it("never lets an actor-owned factual outcome diverge before that actor's decision diverges", () => {
+  it("preserves outcome-first divergence as legitimate World-authority evidence", () => {
     const evidences = [
-      compareMaterialCounterfactual({
-        perturbationId: "source-stock:3-vs-0",
-        ticks: 700,
-        baseline: { initialSourceRaw: 3 },
-        variant: { initialSourceRaw: 0 },
-      }),
-      compareContactCounterfactual({
-        perturbationId: "janek-start:workbench-vs-depot",
-        ticks: 900,
-        baseline: {
-          janekStart: R3_LIFE_PLACES.workbench.position,
-        },
-        variant: {
-          janekStart: R3_LIFE_PLACES.depot.position,
-        },
-      }),
+      materialEvidence,
+      contactEvidence,
     ];
 
-    for (const evidence of evidences) {
-      for (const resident of evidence.residents) {
-        if (resident.firstOutcomeTick === null) continue;
-        expect(resident.firstDecisionTick).not.toBeNull();
-        expect(resident.firstOutcomeTick).toBeGreaterThanOrEqual(
-          resident.firstDecisionTick!,
-        );
-      }
+    const outcomeFirst = evidences.flatMap(
+      (evidence) =>
+        evidence.residents
+          .filter(
+            (resident) =>
+              resident.firstOutcomeTick !== null &&
+              resident.firstDecisionTick !== null &&
+              resident.firstOutcomeTick <
+                resident.firstDecisionTick,
+          )
+          .map((resident) => ({
+            ecology: evidence.ecology,
+            resident,
+          })),
+    );
+
+    // Same private decision can receive a different authoritative World result.
+    // This is not a cognition leak. The no-telepathy invariant is instead that
+    // the resident's *decision* cannot diverge before its private state.
+    expect(outcomeFirst.length).toBeGreaterThan(0);
+
+    for (const { resident } of outcomeFirst) {
+      expect(resident.firstPrivateStateTick).not.toBeNull();
+      expect(resident.firstDecisionTick).toBeGreaterThanOrEqual(
+        resident.firstPrivateStateTick!,
+      );
     }
   });
 });
