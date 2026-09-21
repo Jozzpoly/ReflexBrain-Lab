@@ -191,10 +191,10 @@ export function surveyR3ExistingProbeTarget(
     "moving-contact",
   ];
 
-  const support = {
+  const support: Record<R3EcologyId, boolean> = {
     "material-work": false,
     "moving-contact": false,
-  } satisfies Record<R3EcologyId, boolean>;
+  };
 
   const identifiability: Partial<
     Record<R3EcologyId, R3InputIdentifiabilityAudit>
