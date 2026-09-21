@@ -115,6 +115,31 @@ describe("R3 matter-to-lived-context relation corpus", () => {
     }
   }, 20_000);
 
+  it("deduplicates by model-visible semantic history rather than hidden structured variation", () => {
+    for (const ecology of [
+      "material-work",
+      "moving-contact",
+    ] as const) {
+      for (const wording of [
+        "baseline",
+        "paraphrase",
+      ] as const) {
+        const audit = auditR3MatterLexicalRetrieval(
+          corpus,
+          ecology,
+          wording,
+        );
+        expect(audit.exampleCount).toBeLessThan(
+          corpus.examples.filter(
+            (example) =>
+              example.ecology === ecology &&
+              example.wording === wording,
+          ).length,
+        );
+      }
+    }
+  });
+
   it("measures lexical-overlap shortcut strength before any encoder probe", () => {
     const audits = [
       auditR3MatterLexicalRetrieval(

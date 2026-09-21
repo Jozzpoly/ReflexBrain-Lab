@@ -323,8 +323,14 @@ function deduplicateRelationQueries(
 ): R3MatterRelationExample[] {
   const bySignature = new Map<string, R3MatterRelationExample>();
   for (const example of examples) {
+    // Deduplicate on what the current semantic probe can actually see.
+    // Structured exact-private channels are deliberately not part of the
+    // frozen MiniLM input, so they must not manufacture extra "independent"
+    // semantic queries.
     const signature = JSON.stringify({
-      context: example.context,
+      semanticHistory: example.context.map(
+        (frame) => frame.semanticText,
+      ),
       positiveMatterId: example.positiveMatter.id,
     });
     if (!bySignature.has(signature)) {
