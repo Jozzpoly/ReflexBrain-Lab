@@ -5,7 +5,12 @@ import type {
 } from "./learning-corpus";
 import { splitR3CorpusByHeldOutEcology } from "./learning-corpus";
 
-export type R3ProbeTarget = "future_activity_phase_change";
+export type R3ProbeTarget =
+  | "future_activity_identity_change"
+  | "future_activity_phase_change"
+  | "future_held_object_change"
+  | "future_visible_object_kinds_change"
+  | "future_speech_arrival";
 
 export interface R3BinaryProbeExample {
   source: R3LearningExample;
@@ -28,6 +33,21 @@ export interface R3NegativeControlResult {
   majority: R3BinaryMetrics;
   exactInputMemorizer: R3BinaryMetrics;
   tokenMemorizer: R3BinaryMetrics;
+}
+
+export interface R3ProbeCandidateSurvey {
+  target: R3ProbeTarget;
+  classSupportByEcology: Readonly<
+    Record<R3EcologyId, boolean>
+  >;
+  identifiabilityByEcology: Readonly<
+    Partial<Record<R3EcologyId, R3InputIdentifiabilityAudit>>
+  >;
+  negativeControlsByHoldout: Readonly<
+    Partial<Record<R3EcologyId, R3NegativeControlResult>>
+  >;
+  qualifiedForRepresentationProbe: boolean;
+  reasons: readonly string[];
 }
 
 export interface R3InputIdentifiabilityAudit {
@@ -162,6 +182,112 @@ export function auditR3InputIdentifiability(
   };
 }
 
+export function surveyR3ExistingProbeTarget(
+  corpus: R3CrossEcologyCorpus,
+  target: R3ProbeTarget,
+): R3ProbeCandidateSurvey {
+  const ecologies: readonly R3EcologyId[] = [
+    "material-work",
+    "moving-contact",
+  ];
+
+  const support = {
+    "material-work": false,
+    "moving-contact": false,
+  } satisfies Record<R3EcologyId, boolean>;
+
+  const identifiability: Partial<
+    Record<R3EcologyId, R3InputIdentifiabilityAudit>
+  > = {};
+  const controls: Partial<
+    Record<R3EcologyId, R3NegativeControlResult>
+  > = {};
+  const reasons: string[] = [];
+
+  for (const ecology of ecologies) {
+    const examples = toR3BinaryProbeExamples(
+      corpus.examples.filter(
+        (example) => example.ecology === ecology,
+      ),
+      target,
+    );
+    const positives = examples.filter(
+      (example) => example.label,
+    ).length;
+    support[ecology] =
+      positives > 0 && positives < examples.length;
+
+    if (!support[ecology]) {
+      reasons.push(
+        target +
+          " lacks both classes in " +
+          ecology +
+          " (positives=" +
+          positives +
+          " total=" +
+          examples.length +
+          ")",
+      );
+      continue;
+    }
+
+    const audit = auditR3InputIdentifiability(
+      corpus,
+      target,
+      ecology,
+    );
+    identifiability[ecology] = audit;
+
+    if (audit.signatureOracle.balancedAccuracy < 0.7) {
+      reasons.push(
+        target +
+          " is underidentified in " +
+          ecology +
+          " (signature-oracle BA=" +
+          audit.signatureOracle.balancedAccuracy.toFixed(3) +
+          ")",
+      );
+    }
+  }
+
+  if (ecologies.every((ecology) => support[ecology])) {
+    for (const heldOut of ecologies) {
+      const audit = auditR3ProbeNegativeControls(
+        corpus,
+        target,
+        heldOut,
+      );
+      controls[heldOut] = audit;
+
+      if (audit.exactInputMemorizer.balancedAccuracy >= 0.8) {
+        reasons.push(
+          target +
+            " is shortcut-prone under exact-input holdout into " +
+            heldOut,
+        );
+      }
+      if (audit.tokenMemorizer.balancedAccuracy >= 0.85) {
+        reasons.push(
+          target +
+            " is shortcut-prone under token holdout into " +
+            heldOut,
+        );
+      }
+    }
+  }
+
+  return {
+    target,
+    classSupportByEcology: support,
+    identifiabilityByEcology: identifiability,
+    negativeControlsByHoldout: controls,
+    qualifiedForRepresentationProbe:
+      reasons.length === 0 &&
+      ecologies.every((ecology) => support[ecology]),
+    reasons,
+  };
+}
+
 export function exactLearningInputSignature(
   example: R3LearningExample,
 ): string {
@@ -189,8 +315,16 @@ function targetLabel(
   target: R3ProbeTarget,
 ): boolean {
   switch (target) {
+    case "future_activity_identity_change":
+      return example.evaluation.futureDelta.activityIdentityChanged;
     case "future_activity_phase_change":
       return example.evaluation.futureDelta.activityPhaseChanged;
+    case "future_held_object_change":
+      return example.evaluation.futureDelta.heldObjectChanged;
+    case "future_visible_object_kinds_change":
+      return example.evaluation.futureDelta.visibleObjectKindsChanged;
+    case "future_speech_arrival":
+      return example.evaluation.futureDelta.speechArrived;
   }
 }
 

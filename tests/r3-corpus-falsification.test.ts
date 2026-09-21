@@ -4,6 +4,7 @@ import {
   auditR3InputIdentifiability,
   auditR3ProbeNegativeControls,
   semanticTokens,
+  surveyR3ExistingProbeTarget,
   toR3BinaryProbeExamples,
 } from "../src/r3/corpus-falsification";
 
@@ -44,31 +45,54 @@ describe("R3 corpus falsification", () => {
     expect(tokens).not.toContain("maintain_contact");
   });
 
-  it("requires the target to remain identifiable from legitimate model input within each ecology", () => {
-    const audits = [
+  it("rejects future activity-phase change as the first cross-ecology semantic probe", () => {
+    const material = auditR3InputIdentifiability(
+      corpus,
+      "future_activity_phase_change",
       "material-work",
+    );
+    const contact = auditR3InputIdentifiability(
+      corpus,
+      "future_activity_phase_change",
       "moving-contact",
-    ].map((ecology) =>
-      auditR3InputIdentifiability(
-        corpus,
-        "future_activity_phase_change",
-        ecology as "material-work" | "moving-contact",
-      ),
     );
 
     console.info(
       "R3_IDENTIFIABILITY_AUDIT",
-      JSON.stringify(audits),
+      JSON.stringify([material, contact]),
     );
 
-    for (const audit of audits) {
-      // This is an identifiability sanity gate, not a product accuracy target.
-      // A cheating signature oracle sees the whole ecology. If even it cannot
-      // separate the labels, the probe is underdetermined from our input.
-      expect(
-        audit.signatureOracle.balancedAccuracy,
-      ).toBeGreaterThan(0.7);
-    }
+    expect(
+      material.signatureOracle.balancedAccuracy,
+    ).toBeGreaterThan(0.7);
+    expect(
+      contact.signatureOracle.balancedAccuracy,
+    ).toBeLessThan(0.7);
+    expect(contact.conflictedExampleRate).toBeGreaterThan(0.5);
+  });
+
+  it("surveys all current factual-delta targets before allowing a representation probe", () => {
+    const targets = [
+      "future_activity_identity_change",
+      "future_activity_phase_change",
+      "future_held_object_change",
+      "future_visible_object_kinds_change",
+      "future_speech_arrival",
+    ] as const;
+
+    const surveys = targets.map((target) =>
+      surveyR3ExistingProbeTarget(corpus, target),
+    );
+
+    console.info(
+      "R3_FACT_DELTA_TARGET_SURVEY",
+      JSON.stringify(surveys),
+    );
+
+    // This is deliberately not an assertion that one target must qualify.
+    // The survey exists to stop us from forcing a learned experiment when
+    // current trajectory deltas are the wrong learning question.
+    expect(surveys).toHaveLength(targets.length);
   });
 
   it("requires exact-input memorization to fail under ecology holdout", () => {
