@@ -9,12 +9,17 @@ import {
 } from "./r3/matter-relation-geometry";
 import { R3SemanticEncoderClient } from "./r3/semantic-encoder-client";
 
-const statusElement = document.querySelector<HTMLElement>("#status");
-const resultElement = document.querySelector<HTMLElement>("#result");
+const statusElement =
+  document.querySelector<HTMLElement>("#status");
+const resultElement =
+  document.querySelector<HTMLElement>("#result");
 
 if (!statusElement || !resultElement) {
   throw new Error("R3 probe page is missing output elements");
 }
+
+const statusOutput: HTMLElement = statusElement;
+const resultOutput: HTMLElement = resultElement;
 
 void runProbe();
 
@@ -193,7 +198,7 @@ async function runProbe(): Promise<void> {
       wordingStability: stability,
     };
 
-    resultElement.textContent = JSON.stringify(
+    resultOutput.textContent = JSON.stringify(
       result,
       null,
       2,
@@ -205,7 +210,7 @@ async function runProbe(): Promise<void> {
       error instanceof Error
         ? error.message
         : String(error);
-    resultElement.textContent = JSON.stringify(
+    resultOutput.textContent = JSON.stringify(
       {
         status: "FAIL_EXECUTION",
         error: message,
@@ -219,5 +224,5 @@ async function runProbe(): Promise<void> {
 }
 
 function setStatus(value: string): void {
-  statusElement.textContent = value;
+  statusOutput.textContent = value;
 }
