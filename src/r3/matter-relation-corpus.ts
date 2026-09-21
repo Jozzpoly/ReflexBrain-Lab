@@ -45,6 +45,26 @@ export interface R3MatterRelationCorpus {
   examples: readonly R3MatterRelationExample[];
 }
 
+export interface R3MatterSemanticDiversityAudit {
+  ecology: R3EcologyId;
+  wording: R3MatterWording;
+  rawExampleCount: number;
+  uniqueLabeledQueryCount: number;
+  uniqueSemanticHistoryCount: number;
+  uniqueSemanticFrameCount: number;
+  compressionRatio: number;
+  ambiguousSemanticHistoryCount: number;
+  ambiguousSemanticHistoryRate: number;
+  eventfulRawCount: number;
+  eventfulUniqueLabeledQueryCount: number;
+  residents: readonly {
+    residentId: ResidentPrivateExperience["residentId"];
+    rawExampleCount: number;
+    uniqueLabeledQueryCount: number;
+    uniqueSemanticHistoryCount: number;
+  }[];
+}
+
 export interface R3MatterRetrievalMetrics {
   ecology: R3EcologyId;
   wording: R3MatterWording;
@@ -118,6 +138,92 @@ export function buildR3MatterRelationCorpus(options: {
  * High performance here means the probe may be mostly surface overlap rather
  * than useful semantic geometry.
  */
+export function auditR3MatterSemanticDiversity(
+  corpus: R3MatterRelationCorpus,
+  ecology: R3EcologyId,
+  wording: R3MatterWording,
+): R3MatterSemanticDiversityAudit {
+  const raw = corpus.examples.filter(
+    (example) =>
+      example.ecology === ecology &&
+      example.wording === wording,
+  );
+  if (raw.length === 0) {
+    throw new Error(
+      "matter relation diversity subset is empty: " +
+        ecology +
+        "/" +
+        wording,
+    );
+  }
+
+  const labeled = uniqueR3MatterRelationExamples(
+    corpus,
+    ecology,
+    wording,
+  );
+
+  const semanticToMatters = new Map<string, Set<string>>();
+  const frameTexts = new Set<string>();
+
+  for (const example of raw) {
+    const signature = semanticHistorySignature(example);
+    const matters =
+      semanticToMatters.get(signature) ?? new Set<string>();
+    matters.add(example.positiveMatter.id);
+    semanticToMatters.set(signature, matters);
+
+    for (const frame of example.context) {
+      frameTexts.add(frame.semanticText);
+    }
+  }
+
+  const ambiguous = [...semanticToMatters.values()].filter(
+    (matters) => matters.size > 1,
+  ).length;
+
+  const residentIds = [
+    ...new Set(raw.map((example) => example.residentId)),
+  ].sort();
+
+  return {
+    ecology,
+    wording,
+    rawExampleCount: raw.length,
+    uniqueLabeledQueryCount: labeled.length,
+    uniqueSemanticHistoryCount: semanticToMatters.size,
+    uniqueSemanticFrameCount: frameTexts.size,
+    compressionRatio: labeled.length / raw.length,
+    ambiguousSemanticHistoryCount: ambiguous,
+    ambiguousSemanticHistoryRate:
+      semanticToMatters.size > 0
+        ? ambiguous / semanticToMatters.size
+        : 0,
+    eventfulRawCount: raw.filter(
+      (example) => example.eventful,
+    ).length,
+    eventfulUniqueLabeledQueryCount: labeled.filter(
+      (example) => example.eventful,
+    ).length,
+    residents: residentIds.map((residentId) => {
+      const residentRaw = raw.filter(
+        (example) => example.residentId === residentId,
+      );
+      const residentLabeled = deduplicateRelationQueries(
+        residentRaw,
+      );
+      return {
+        residentId,
+        rawExampleCount: residentRaw.length,
+        uniqueLabeledQueryCount: residentLabeled.length,
+        uniqueSemanticHistoryCount: new Set(
+          residentRaw.map(semanticHistorySignature),
+        ).size,
+      };
+    }),
+  };
+}
+
 export function auditR3MatterLexicalRetrieval(
   corpus: R3MatterRelationCorpus,
   ecology: R3EcologyId,
@@ -285,20 +391,19 @@ function uniqueMatters(
 function isEventful(
   context: readonly R3MatterRelationFrame[],
 ): boolean {
+  // "Eventful" in the semantic-only probe must be visible to the semantic
+  // representation itself. Exact structured private channels are audited
+  // separately and cannot manufacture eventful semantic evidence.
   for (let index = 0; index < context.length; index += 1) {
     const frame = context[index]!;
     if (!frame.semanticText.includes("heard speech: none")) {
       return true;
     }
-    if (index > 0) {
-      const before = context[index - 1]!;
-      if (
-        before.semanticText !== frame.semanticText ||
-        JSON.stringify(before.structured) !==
-          JSON.stringify(frame.structured)
-      ) {
-        return true;
-      }
+    if (
+      index > 0 &&
+      context[index - 1]!.semanticText !== frame.semanticText
+    ) {
+      return true;
     }
   }
   return false;
@@ -328,9 +433,7 @@ function deduplicateRelationQueries(
     // frozen MiniLM input, so they must not manufacture extra "independent"
     // semantic queries.
     const signature = JSON.stringify({
-      semanticHistory: example.context.map(
-        (frame) => frame.semanticText,
-      ),
+      semanticHistory: semanticHistorySignature(example),
       positiveMatterId: example.positiveMatter.id,
     });
     if (!bySignature.has(signature)) {
@@ -338,6 +441,14 @@ function deduplicateRelationQueries(
     }
   }
   return [...bySignature.values()];
+}
+
+function semanticHistorySignature(
+  example: R3MatterRelationExample,
+): string {
+  return JSON.stringify(
+    example.context.map((frame) => frame.semanticText),
+  );
 }
 
 function relationContextTokens(

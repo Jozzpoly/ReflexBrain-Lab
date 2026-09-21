@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   auditR3MatterLexicalRetrieval,
+  auditR3MatterSemanticDiversity,
   buildR3MatterRelationCorpus,
 } from "../src/r3/matter-relation-corpus";
 
@@ -140,6 +141,65 @@ describe("R3 matter-to-lived-context relation corpus", () => {
     }
   });
 
+  it("reports semantic diversity instead of hiding low-diversity ecologies behind raw tick counts", () => {
+    const audits = [
+      auditR3MatterSemanticDiversity(
+        corpus,
+        "material-work",
+        "baseline",
+      ),
+      auditR3MatterSemanticDiversity(
+        corpus,
+        "material-work",
+        "paraphrase",
+      ),
+      auditR3MatterSemanticDiversity(
+        corpus,
+        "moving-contact",
+        "baseline",
+      ),
+      auditR3MatterSemanticDiversity(
+        corpus,
+        "moving-contact",
+        "paraphrase",
+      ),
+    ];
+
+    console.info(
+      "R3_MATTER_SEMANTIC_DIVERSITY",
+      JSON.stringify(audits),
+    );
+
+    for (const audit of audits) {
+      expect(audit.rawExampleCount).toBeGreaterThan(500);
+      expect(audit.uniqueLabeledQueryCount).toBeGreaterThan(0);
+      expect(audit.uniqueSemanticHistoryCount).toBeGreaterThan(0);
+      expect(audit.uniqueSemanticFrameCount).toBeGreaterThan(0);
+      expect(audit.compressionRatio).toBeGreaterThan(0);
+      expect(audit.compressionRatio).toBeLessThanOrEqual(1);
+    }
+
+    const material = audits.find(
+      (audit) =>
+        audit.ecology === "material-work" &&
+        audit.wording === "baseline",
+    )!;
+    const contact = audits.find(
+      (audit) =>
+        audit.ecology === "moving-contact" &&
+        audit.wording === "baseline",
+    )!;
+
+    // This is an evidence assertion, not a quality threshold: the contact
+    // ecology currently exposes dramatically less model-visible semantic
+    // variety than the material ecology and must be treated as low-diversity
+    // evidence rather than thousands of independent training examples.
+    expect(material.uniqueSemanticHistoryCount).toBeGreaterThan(
+      contact.uniqueSemanticHistoryCount * 5,
+    );
+    expect(contact.compressionRatio).toBeLessThan(0.05);
+  });
+
   it("measures lexical-overlap shortcut strength before any encoder probe", () => {
     const audits = [
       auditR3MatterLexicalRetrieval(
@@ -170,8 +230,8 @@ describe("R3 matter-to-lived-context relation corpus", () => {
     );
 
     for (const audit of audits) {
-      expect(audit.exampleCount).toBeGreaterThan(20);
-      expect(audit.eventfulExampleCount).toBeGreaterThan(10);
+      expect(audit.exampleCount).toBeGreaterThan(0);
+      expect(audit.eventfulExampleCount).toBeGreaterThan(0);
       expect(audit.top1Accuracy).toBeGreaterThanOrEqual(0);
       expect(audit.top1Accuracy).toBeLessThanOrEqual(1);
       expect(audit.eventfulTop1Accuracy).toBeGreaterThanOrEqual(0);

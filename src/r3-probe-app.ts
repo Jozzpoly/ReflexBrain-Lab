@@ -1,5 +1,6 @@
 import {
   auditR3MatterLexicalRetrieval,
+  auditR3MatterSemanticDiversity,
   buildR3MatterRelationCorpus,
 } from "./r3/matter-relation-corpus";
 import {
@@ -36,6 +37,29 @@ async function runProbe(): Promise<void> {
       contactTicks: 1200,
       historyLength: 8,
     });
+
+    const semanticDiversity = [
+      auditR3MatterSemanticDiversity(
+        corpus,
+        "material-work",
+        "baseline",
+      ),
+      auditR3MatterSemanticDiversity(
+        corpus,
+        "material-work",
+        "paraphrase",
+      ),
+      auditR3MatterSemanticDiversity(
+        corpus,
+        "moving-contact",
+        "baseline",
+      ),
+      auditR3MatterSemanticDiversity(
+        corpus,
+        "moving-contact",
+        "paraphrase",
+      ),
+    ];
 
     const lexical = [
       auditR3MatterLexicalRetrieval(
@@ -193,6 +217,7 @@ async function runProbe(): Promise<void> {
         loadMs: embedded.loadMs,
         embeddingMs: embedded.embeddingMs,
       },
+      semanticDiversity,
       lexical,
       semanticRetrieval: compactReports,
       wordingStability: stability,
