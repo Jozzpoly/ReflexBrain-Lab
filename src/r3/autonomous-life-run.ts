@@ -4,6 +4,7 @@ import type {
   LifePlace,
   ResidentActivity,
   ResidentId,
+  ResidentMatter,
 } from "./life-contracts";
 import {
   CourierFixturePolicy,
@@ -60,21 +61,30 @@ export function createAutonomousLifeRun(
     world.addResident("resident:mira", { x: 8, y: 0.6 });
     agents.set(
       "resident:mira",
-      new AutonomousResidentAgent(new StewardFixturePolicy()),
+      new AutonomousResidentAgent(
+        new StewardFixturePolicy(),
+        authoredMatters("resident:mira"),
+      ),
     );
   }
   if (enabled.has("resident:janek")) {
     world.addResident("resident:janek", { x: 9.6, y: 0.6 });
     agents.set(
       "resident:janek",
-      new AutonomousResidentAgent(new WorkerFixturePolicy()),
+      new AutonomousResidentAgent(
+        new WorkerFixturePolicy(),
+        authoredMatters("resident:janek"),
+      ),
     );
   }
   if (enabled.has("resident:ida")) {
     world.addResident("resident:ida", { x: 12, y: 0.6 });
     agents.set(
       "resident:ida",
-      new AutonomousResidentAgent(new CourierFixturePolicy()),
+      new AutonomousResidentAgent(
+        new CourierFixturePolicy(),
+        authoredMatters("resident:ida"),
+      ),
     );
   }
 
@@ -89,12 +99,6 @@ export function createAutonomousLifeRun(
   const history: LifeEvent[] = [];
   const privateExperience: import("./life-contracts").ResidentPrivateExperience[] = [];
 
-  const standingMatter: Record<ResidentId, string> = {
-    "resident:mira": "keep the workshop input rack supplied with raw blanks",
-    "resident:janek": "turn available raw blanks into finished workshop parts",
-    "resident:ida": "carry finished workshop parts from output to the depot",
-  };
-
   return {
     world,
 
@@ -107,6 +111,7 @@ export function createAutonomousLifeRun(
         ResidentId,
         {
           activityBefore: import("./life-contracts").ResidentActivity | null;
+          matters: readonly ResidentMatter[];
           observation: import("./life-contracts").ResidentObservation;
           memory: import("./life-contracts").ResidentPrivateMemory;
         }
@@ -122,6 +127,7 @@ export function createAutonomousLifeRun(
         decisions.set(residentId, decision);
         privateInputs.set(residentId, {
           activityBefore: before.activity,
+          matters: structuredClone(before.matters),
           observation: structuredClone(observation),
           memory: structuredClone(agent.debugState().memory),
         });
@@ -141,7 +147,7 @@ export function createAutonomousLifeRun(
         privateExperience.push({
           tick: input.observation.tick,
           residentId,
-          standingMatter: standingMatter[residentId],
+          matters: structuredClone(input.matters),
           activityBefore: input.activityBefore
             ? structuredClone(input.activityBefore)
             : null,
@@ -191,4 +197,31 @@ export function createAutonomousLifeRun(
       return privateExperience.map((entry) => structuredClone(entry));
     },
   };
+}
+
+
+function authoredMatters(residentId: ResidentId): readonly ResidentMatter[] {
+  switch (residentId) {
+    case "resident:mira":
+      return [{
+        id: "resident:mira:matter:workshop-supply",
+        statement: "keep the workshop input rack supplied with raw blanks",
+        establishedTick: 0,
+        source: "authored",
+      }];
+    case "resident:janek":
+      return [{
+        id: "resident:janek:matter:workshop-processing",
+        statement: "turn available raw blanks into finished workshop parts",
+        establishedTick: 0,
+        source: "authored",
+      }];
+    case "resident:ida":
+      return [{
+        id: "resident:ida:matter:workshop-delivery",
+        statement: "carry finished workshop parts from output to the depot",
+        establishedTick: 0,
+        source: "authored",
+      }];
+  }
 }

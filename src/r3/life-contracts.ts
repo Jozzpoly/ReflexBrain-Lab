@@ -77,6 +77,13 @@ export interface ResidentPrivateMemory {
   heardEventIds: readonly string[];
 }
 
+export interface ResidentMatter {
+  id: string;
+  statement: string;
+  establishedTick: number;
+  source: "authored";
+}
+
 export interface ResidentActivity {
   id: string;
   kind: string;
@@ -101,6 +108,7 @@ export interface ResidentDecision {
 export interface ResidentPolicyInput {
   observation: ResidentObservation;
   memory: ResidentPrivateMemory;
+  matters: readonly ResidentMatter[];
   places: Readonly<Record<LifePlace["id"], LifePlace>>;
   previousActivity: ResidentActivity | null;
 }
@@ -127,7 +135,7 @@ export interface AutonomousLifeStep {
 export interface ResidentPrivateExperience {
   tick: number;
   residentId: ResidentId;
-  standingMatter: string;
+  matters: readonly ResidentMatter[];
   activityBefore: ResidentActivity | null;
   observation: ResidentObservation;
   memory: ResidentPrivateMemory;

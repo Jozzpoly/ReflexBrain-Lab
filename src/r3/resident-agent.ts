@@ -3,6 +3,7 @@ import type {
   ResidentActivity,
   ResidentDecision,
   ResidentId,
+  ResidentMatter,
   ResidentObservation,
   ResidentPolicy,
   ResidentPrivateMemory,
@@ -11,6 +12,7 @@ import type {
 export interface ResidentAgentDebugState {
   residentId: ResidentId;
   activity: ResidentActivity | null;
+  matters: readonly ResidentMatter[];
   memory: ResidentPrivateMemory;
 }
 
@@ -22,8 +24,17 @@ export class AutonomousResidentAgent {
     import("./life-contracts").ActorContactBelief
   >();
   private readonly heardEventIds: string[] = [];
+  private readonly mattersValue: ResidentMatter[];
 
-  constructor(private readonly policy: ResidentPolicy) {}
+  constructor(
+    private readonly policy: ResidentPolicy,
+    initialMatters: readonly ResidentMatter[] = [],
+  ) {
+    this.mattersValue = validateInitialMatters(
+      policy.residentId,
+      initialMatters,
+    );
+  }
 
   get residentId(): ResidentId {
     return this.policy.residentId;
@@ -37,6 +48,7 @@ export class AutonomousResidentAgent {
     const decision = this.policy.decide({
       observation,
       memory: this.memorySnapshot(),
+      matters: this.matterSnapshot(),
       places,
       previousActivity: this.activityValue
         ? structuredClone(this.activityValue)
@@ -50,6 +62,7 @@ export class AutonomousResidentAgent {
     return {
       residentId: this.residentId,
       activity: this.activityValue ? structuredClone(this.activityValue) : null,
+      matters: this.matterSnapshot(),
       memory: this.memorySnapshot(),
     };
   }
@@ -122,6 +135,10 @@ export class AutonomousResidentAgent {
     }
   }
 
+  private matterSnapshot(): readonly ResidentMatter[] {
+    return this.mattersValue.map((matter) => structuredClone(matter));
+  }
+
   private memorySnapshot(): ResidentPrivateMemory {
     const objectBeliefs: Record<string, ObjectBelief> = {};
     for (const [id, belief] of this.objectBeliefs) {
@@ -141,4 +158,31 @@ export class AutonomousResidentAgent {
       heardEventIds: [...this.heardEventIds],
     };
   }
+}
+
+
+function validateInitialMatters(
+  residentId: ResidentId,
+  matters: readonly ResidentMatter[],
+): ResidentMatter[] {
+  const ids = new Set<string>();
+  return matters.map((matter) => {
+    if (matter.id.trim().length === 0) {
+      throw new Error("resident matter id must be non-empty");
+    }
+    if (matter.statement.trim().length === 0) {
+      throw new Error("resident matter statement must be non-empty");
+    }
+    if (!Number.isSafeInteger(matter.establishedTick) || matter.establishedTick < 0) {
+      throw new Error("resident matter establishedTick must be a non-negative safe integer");
+    }
+    if (ids.has(matter.id)) {
+      throw new Error("duplicate resident matter id: " + matter.id);
+    }
+    if (!matter.id.startsWith(residentId + ":matter:")) {
+      throw new Error("resident matter id must be actor-owned: " + matter.id);
+    }
+    ids.add(matter.id);
+    return structuredClone(matter);
+  });
 }

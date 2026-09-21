@@ -82,7 +82,10 @@ export function serializeR3PrivateExperience(
 ): string {
   const lines = [
     "private embodied experience",
-    "standing matter: " + experience.standingMatter,
+    "continuing matters: " +
+      (experience.matters.length > 0
+        ? experience.matters.map((matter) => matter.statement).join(" | ")
+        : "none"),
     "activity: " +
       (experience.activityBefore
         ? experience.activityBefore.kind + " / " + experience.activityBefore.phase

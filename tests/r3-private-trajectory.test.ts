@@ -37,7 +37,7 @@ describe("R3 private temporal corpus", () => {
     const row = run.privateExperiences()[7]!;
     const text = serializeR3PrivateExperience(row);
 
-    expect(text).toContain("standing matter:");
+    expect(text).toContain("continuing matters:");
     expect(text).toContain("activity:");
     expect(text).not.toContain(row.residentId);
     expect(text).not.toContain("tick:");
@@ -100,7 +100,9 @@ describe("R3 naturally occurring semantic pressure", () => {
     ).toBe(true);
 
     const matters = new Set(
-      heardRows.map((row) => row.standingMatter),
+      heardRows.flatMap((row) =>
+        row.matters.map((matter) => matter.statement),
+      ),
     );
     expect(matters.size).toBeGreaterThanOrEqual(2);
 

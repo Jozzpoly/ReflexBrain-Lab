@@ -3,6 +3,7 @@ import type {
   LifeEvent,
   ResidentActivity,
   ResidentId,
+  ResidentMatter,
   ResidentPrivateExperience,
 } from "./life-contracts";
 import {
@@ -52,21 +53,19 @@ export function createAutonomousContactRun(): AutonomousContactRun {
   const agents = new Map<ResidentId, AutonomousResidentAgent>([
     [
       "resident:janek",
-      new AutonomousResidentAgent(new PatrolContactFixturePolicy()),
+      new AutonomousResidentAgent(
+        new PatrolContactFixturePolicy(),
+        contactMatters("resident:janek"),
+      ),
     ],
     [
       "resident:ida",
-      new AutonomousResidentAgent(new ContactMessengerFixturePolicy()),
+      new AutonomousResidentAgent(
+        new ContactMessengerFixturePolicy(),
+        contactMatters("resident:ida"),
+      ),
     ],
   ]);
-
-  const standingMatter: Record<ResidentId, string> = {
-    "resident:mira": "unused in contact ecology",
-    "resident:janek":
-      "patrol between the workshop and depot while remaining available for local contact",
-    "resident:ida":
-      "maintain intermittent physical contact with Janek and report depot inspection status in person",
-  };
 
   const history: LifeEvent[] = [];
   const experiences: ResidentPrivateExperience[] = [];
@@ -83,6 +82,7 @@ export function createAutonomousContactRun(): AutonomousContactRun {
         ResidentId,
         {
           activityBefore: ResidentActivity | null;
+          matters: readonly ResidentMatter[];
           observation: import("./life-contracts").ResidentObservation;
           memory: import("./life-contracts").ResidentPrivateMemory;
         }
@@ -98,6 +98,7 @@ export function createAutonomousContactRun(): AutonomousContactRun {
         decisions.set(residentId, decision);
         privateInputs.set(residentId, {
           activityBefore: before.activity,
+          matters: structuredClone(before.matters),
           observation: structuredClone(observation),
           memory: structuredClone(agent.debugState().memory),
         });
@@ -117,7 +118,7 @@ export function createAutonomousContactRun(): AutonomousContactRun {
         experiences.push({
           tick: input.observation.tick,
           residentId,
-          standingMatter: standingMatter[residentId],
+          matters: structuredClone(input.matters),
           activityBefore: input.activityBefore
             ? structuredClone(input.activityBefore)
             : null,
@@ -167,4 +168,22 @@ export function createAutonomousContactRun(): AutonomousContactRun {
       return experiences.map((entry) => structuredClone(entry));
     },
   };
+}
+
+
+function contactMatters(residentId: "resident:janek" | "resident:ida"): readonly ResidentMatter[] {
+  if (residentId === "resident:janek") {
+    return [{
+      id: "resident:janek:matter:contact-patrol",
+      statement: "patrol between the workshop and depot while remaining available for local contact",
+      establishedTick: 0,
+      source: "authored",
+    }];
+  }
+  return [{
+    id: "resident:ida:matter:contact-report",
+    statement: "maintain intermittent physical contact with Janek and report depot inspection status in person",
+    establishedTick: 0,
+    source: "authored",
+  }];
 }

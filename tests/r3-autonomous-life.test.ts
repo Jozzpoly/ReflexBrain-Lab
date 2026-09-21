@@ -224,7 +224,9 @@ describe("R3 private experience stream", () => {
     expect(rows.length).toBe(1500);
 
     for (const row of rows.slice(0, 30)) {
-      expect(row.standingMatter.length).toBeGreaterThan(10);
+      expect(row.matters.length).toBeGreaterThan(0);
+      expect(row.matters[0]!.statement.length).toBeGreaterThan(10);
+      expect("standingMatter" in row).toBe(false);
       expect("snapshot" in row).toBe(false);
       expect("world" in row).toBe(false);
       expect(row.observation.self.id).toBe(row.residentId);
@@ -305,6 +307,46 @@ describe("R3 private actor-contact memory", () => {
     const ida = memory.actorBeliefs["resident:ida"];
     if (ida) {
       expect(ida.lastSeenTick).toBeGreaterThan(0);
+    }
+  });
+});
+
+
+describe("R3 actor-owned continuing matters", () => {
+  it("records matter from resident private state rather than runner-only corpus metadata", () => {
+    const run = createAutonomousLifeRun();
+    const row = run.advanceOneTick();
+    void row;
+
+    const experience = run.privateExperiences().find(
+      (entry) => entry.residentId === "resident:mira",
+    )!;
+    const privateState = run.residentDebug("resident:mira")!;
+
+    expect(experience.matters).toEqual(privateState.matters);
+    expect(experience.matters[0]!.id).toBe(
+      "resident:mira:matter:workshop-supply",
+    );
+    expect("standingMatter" in experience).toBe(false);
+  });
+
+  it("keeps matter actor-owned and supports multiple matters without introducing lifecycle scores", () => {
+    const run = createAutonomousLifeRun();
+    run.advanceOneTick();
+
+    for (const residentId of [
+      "resident:mira",
+      "resident:janek",
+      "resident:ida",
+    ] as const) {
+      const state = run.residentDebug(residentId)!;
+      expect(state.matters.length).toBeGreaterThanOrEqual(1);
+      for (const matter of state.matters) {
+        expect(matter.id.startsWith(residentId + ":matter:")).toBe(true);
+        expect("status" in matter).toBe(false);
+        expect("priority" in matter).toBe(false);
+        expect("salience" in matter).toBe(false);
+      }
     }
   });
 });
