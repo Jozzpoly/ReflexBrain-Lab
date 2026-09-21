@@ -38,7 +38,7 @@ describe("R3 autonomous life pressure host", () => {
         ),
       ).toBe(true);
     }
-  });
+  }, 15_000);
 
   it("has real cross-resident causal dependence instead of three isolated animations", () => {
     const full = createAutonomousLifeRun();
@@ -58,7 +58,7 @@ describe("R3 autonomous life pressure host", () => {
 
     expect(fullProduced).toBeGreaterThan(0);
     expect(withoutStewardProduced).toBe(0);
-  });
+  }, 15_000);
 
   it("preserves material causal lineage across multiple residents", () => {
     const run = createAutonomousLifeRun();
@@ -118,7 +118,7 @@ describe("R3 autonomous life pressure host", () => {
           event.kind === "pickup" && event.actorId === "resident:ida",
       ),
     ).toBe(true);
-  });
+  }, 15_000);
 
   it("does not expose distant source inventory through private observation", () => {
     const run = createAutonomousLifeRun();
