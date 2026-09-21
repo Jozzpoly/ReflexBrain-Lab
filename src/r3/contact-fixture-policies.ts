@@ -85,6 +85,19 @@ export class ContactMessengerFixturePolicy implements ResidentPolicy {
   private lastReportTick = -10_000;
   private returningToOwnWork = false;
 
+  constructor(
+    private readonly reportCooldownTicks = 180,
+  ) {
+    if (
+      !Number.isSafeInteger(reportCooldownTicks) ||
+      reportCooldownTicks < 1
+    ) {
+      throw new Error(
+        "reportCooldownTicks must be a positive safe integer",
+      );
+    }
+  }
+
   decide(input: ResidentPolicyInput): ResidentDecision {
     if (!hasFixtureMatter(input, CONTACT_FIXTURE_MATTER_IDS.report)) {
       return matterAbsentDecision();
@@ -119,7 +132,11 @@ export class ContactMessengerFixturePolicy implements ResidentPolicy {
 
     if (visibleJanek) {
       const d = distance(self.position, visibleJanek.position);
-      if (d <= 0.7 && tick - this.lastReportTick >= 180) {
+      if (
+        d <= 0.7 &&
+        tick - this.lastReportTick >=
+          this.reportCooldownTicks
+      ) {
         this.lastReportTick = tick;
         this.returningToOwnWork = true;
         return {
