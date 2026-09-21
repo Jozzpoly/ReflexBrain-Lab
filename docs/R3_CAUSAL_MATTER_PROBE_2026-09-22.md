@@ -1,6 +1,6 @@
 # R3 Concurrent-Matter Causal Probe — Live Evidence 2026-09-22
 
-Status: **EXECUTION PASS · CAUSAL TARGET QUALIFIED · DIRECT COSINE FAIL**
+Status: **CORRECTED TEMPORAL ALIGNMENT RE-RUN PASS · CAUSAL TARGET QUALIFIED · DIRECT COSINE FAIL**
 
 Qualified code head:
 
@@ -97,3 +97,55 @@ The stronger target still contains a structural confound:
 A learned head can therefore win by learning domain/ecology separation.
 
 The next falsifier must create responsibility switching between concurrently owned matters **within one ecology for one actor**, with paired matter ablation providing labels.
+
+## Temporal alignment correction
+
+The first recorded causal run used a query history ending at `anchorTick - 1` while labeling the decision made from the private observation at `anchorTick`.
+
+That was a real methodological error: transient private evidence present at decision time could be absent from the model query.
+
+Commit `5a29041ca93cf8fa8d90ef64459b56ce6695855c` corrects the contract:
+
+- baseline and ablation prefixes remain identical;
+- matter intervention still happens immediately before the labeled decision;
+- the model query now ends at `queryEndTick === anchorTick`;
+- the final transition includes the exact actor-private observation integrated before that decision;
+- decision, factual World outcome and matter text remain excluded from query serialization.
+
+The corrected live WebGPU probe was rerun.
+
+### Corrected causal corpus
+
+Janek:
+- 18 examples, 9/9 responsibility balance;
+- 10 unique transition histories;
+- 20% ambiguous histories;
+- paraphrase lexical top-1 0.5.
+
+Ida:
+- 18 examples, 9/9 responsibility balance;
+- 6 unique transition histories;
+- ~33.3% ambiguous histories;
+- paraphrase lexical top-1 0.5.
+
+### Corrected frozen semantic retrieval
+
+All eight top-1 conditions remain exactly 0.5.
+
+Janek mean responsible margins:
+- baseline / last-transition: +0.0207;
+- baseline / mean-transitions: +0.0157;
+- paraphrase / last-transition: +0.0146;
+- paraphrase / mean-transitions: +0.0108.
+
+Ida:
+- baseline / last-transition: approximately -0.0001;
+- baseline / mean-transitions: +0.0027;
+- paraphrase / last-transition: -0.0066;
+- paraphrase / mean-transitions: -0.0023.
+
+Prediction agreement across wording remains 1.0 and responsible-prediction agreement remains 0.5.
+
+Therefore the direct-cosine causal FAIL survives the temporal correction and is now considered qualified.
+
+The earlier unaligned live numbers remain historical evidence of the discovered methodology bug, not authority for the current conclusion.

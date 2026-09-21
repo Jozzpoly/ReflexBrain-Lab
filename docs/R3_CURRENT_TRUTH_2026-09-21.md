@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **QUALIFIED CODE HEAD `02ab58edb826c38c6f2d6bbf5a511d2f97d7ab55` · CHECK PASS · LIVE WEBGPU CAUSAL-MATTER PROBE EXECUTED**
+Status: **QUALIFIED CODE HEAD `5a29041ca93cf8fa8d90ef64459b56ce6695855c` · CHECK PASS · TEMPORALLY ALIGNED LIVE WEBGPU CAUSAL PROBE EXECUTED**
 
 Branch:
 
@@ -498,3 +498,20 @@ Before any learned R3 relation head is justified, build a disposable mixed-press
 - lexical controls are rerun before any learned model.
 
 The ecology is test equipment, not a candidate production architecture.
+
+
+## Causal probe temporal correction — QUALIFIED
+
+A post-probe audit found that the first causal query ended one private tick before the observation used for the labeled decision.
+
+The harness now enforces `queryEndTick === anchorTick` and includes the current decision-time private observation while continuing to exclude decision and outcome fields.
+
+The corrected probe remained exactly 0.5 top-1 in all Janek/Ida × baseline/paraphrase × last/mean conditions.
+
+Therefore:
+- the temporal bug was real;
+- it has been corrected;
+- the direct-cosine causal FAIL survives correction;
+- no learned head is promoted from this evidence.
+
+The next target remains within-one-ecology causal responsibility switching between concurrently held matters.
