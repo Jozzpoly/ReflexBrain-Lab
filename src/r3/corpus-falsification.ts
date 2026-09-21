@@ -30,6 +30,15 @@ export interface R3NegativeControlResult {
   tokenMemorizer: R3BinaryMetrics;
 }
 
+export interface R3InputIdentifiabilityAudit {
+  ecology: R3EcologyId;
+  exampleCount: number;
+  uniqueSignatureCount: number;
+  conflictingSignatureCount: number;
+  conflictedExampleRate: number;
+  signatureOracle: R3BinaryMetrics;
+}
+
 export function toR3BinaryProbeExamples(
   examples: readonly R3LearningExample[],
   target: R3ProbeTarget,
@@ -80,6 +89,75 @@ export function auditR3ProbeNegativeControls(
     tokenMemorizer: evaluateBinary(
       heldOut,
       (example) => token.predict(example),
+    ),
+  };
+}
+
+export function auditR3InputIdentifiability(
+  corpus: R3CrossEcologyCorpus,
+  target: R3ProbeTarget,
+  ecology: R3EcologyId,
+): R3InputIdentifiabilityAudit {
+  const examples = toR3BinaryProbeExamples(
+    corpus.examples.filter(
+      (example) => example.ecology === ecology,
+    ),
+    target,
+  );
+  assertBinarySupport(examples, ecology + ":identifiability");
+
+  const groups = new Map<
+    string,
+    {
+      positive: number;
+      negative: number;
+      examples: R3BinaryProbeExample[];
+    }
+  >();
+
+  for (const example of examples) {
+    const key = exactLearningInputSignature(example.source);
+    const group = groups.get(key) ?? {
+      positive: 0,
+      negative: 0,
+      examples: [],
+    };
+    if (example.label) group.positive += 1;
+    else group.negative += 1;
+    group.examples.push(example);
+    groups.set(key, group);
+  }
+
+  const predictionBySignature = new Map<string, boolean>();
+  let conflictingSignatureCount = 0;
+  let conflictedExamples = 0;
+
+  for (const [signature, group] of groups) {
+    const conflicting =
+      group.positive > 0 && group.negative > 0;
+    if (conflicting) {
+      conflictingSignatureCount += 1;
+      conflictedExamples += group.examples.length;
+    }
+    predictionBySignature.set(
+      signature,
+      group.positive >= group.negative,
+    );
+  }
+
+  return {
+    ecology,
+    exampleCount: examples.length,
+    uniqueSignatureCount: groups.size,
+    conflictingSignatureCount,
+    conflictedExampleRate:
+      conflictedExamples / examples.length,
+    signatureOracle: evaluateBinary(
+      examples,
+      (example) =>
+        predictionBySignature.get(
+          exactLearningInputSignature(example.source),
+        )!,
     ),
   };
 }
