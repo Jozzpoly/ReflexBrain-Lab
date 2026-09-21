@@ -123,12 +123,10 @@ export function auditR3MatterLexicalRetrieval(
   ecology: R3EcologyId,
   wording: R3MatterWording,
 ): R3MatterRetrievalMetrics {
-  const examples = deduplicateRelationQueries(
-    corpus.examples.filter(
-      (example) =>
-        example.ecology === ecology &&
-        example.wording === wording,
-    ),
+  const examples = uniqueR3MatterRelationExamples(
+    corpus,
+    ecology,
+    wording,
   );
 
   if (examples.length === 0) {
@@ -304,6 +302,20 @@ function isEventful(
     }
   }
   return false;
+}
+
+export function uniqueR3MatterRelationExamples(
+  corpus: R3MatterRelationCorpus,
+  ecology: R3EcologyId,
+  wording: R3MatterWording,
+): readonly R3MatterRelationExample[] {
+  return deduplicateRelationQueries(
+    corpus.examples.filter(
+      (example) =>
+        example.ecology === ecology &&
+        example.wording === wording,
+    ),
+  );
 }
 
 function deduplicateRelationQueries(
