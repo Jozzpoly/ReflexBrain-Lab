@@ -102,7 +102,7 @@ describe("R3 second autonomous contact ecology", () => {
       .find(
         (row) =>
           row.residentId === "resident:ida" &&
-          row.decision.activity.phase === "check_last_known_contact",
+          row.decision.activity?.phase === "check_last_known_contact",
       );
 
     expect(staleContactRow).toBeDefined();
