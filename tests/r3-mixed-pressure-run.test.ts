@@ -67,13 +67,15 @@ describe("R3 mixed-pressure ecology", () => {
       createR3MixedPressureRun({
         janekMatterWording: "baseline",
       });
+    const baselineSteps =
+      baseline.runTicks(500);
+
+    // Construct the second replay only after the first run is complete so
+    // the disposable fixture activity serial is reset at the replay boundary.
     const paraphrase =
       createR3MixedPressureRun({
         janekMatterWording: "paraphrase",
       });
-
-    const baselineSteps =
-      baseline.runTicks(500);
     const paraphraseSteps =
       paraphrase.runTicks(500);
 
