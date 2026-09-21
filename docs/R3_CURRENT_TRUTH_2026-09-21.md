@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **QUALIFIED HEAD `a90666678d3cabd8dbecbbb225678db2e9db66be` · CHECK PASS**
+Status: **QUALIFIED CODE HEAD `420f7d70ee03593b0346db10f5b33a0c03ae57e7` · CHECK PASS · LIVE WEBGPU PROBE EXECUTED**
 
 Branch:
 
@@ -226,3 +226,88 @@ Before MiniLM is used:
 - measure lexical-overlap shortcuts on baseline and paraphrase variants;
 - inspect changing/eventful windows separately;
 - reject or harden the probe if surface overlap already solves it.
+
+
+## Frozen MiniLM matter-relation probe — REJECTED AS DIRECT RELATION MECHANISM
+
+A live browser/WebGPU run was executed on the deployed R3 research probe.
+
+Encoder:
+- `Xenova/paraphrase-MiniLM-L3-v2`;
+- revision `4b544e74dfc3256b2b56849ea5d7064fee1ac846`;
+- q8;
+- WebGPU;
+- isolated `batchSize=1`;
+- 384 dimensions;
+- 43 unique texts;
+- load ~1.86 s;
+- embedding pass ~2.64 s.
+
+### Semantic diversity audit
+
+Material-work:
+- 3576 raw windows;
+- 445 unique labeled queries;
+- 395 unique model-visible semantic histories;
+- 32 unique semantic frames;
+- ~12.4% dedup compression ratio;
+- ~10.4% semantic-history ambiguity.
+
+Moving-contact:
+- 2384 raw windows;
+- 18 unique labeled queries;
+- 9 unique model-visible semantic histories;
+- only 2 unique semantic frames;
+- ~0.76% dedup compression ratio;
+- **100% semantic-history ambiguity** between candidate matters.
+
+Therefore moving-contact remains useful host/causal evidence but is currently **not a valid semantic benchmark** under the present serializer.
+
+### Lexical baseline after model-visible deduplication
+
+Material-work:
+- baseline wording: top-1 ~0.108;
+- paraphrase wording: top-1 ~0.236;
+- chance ~0.333.
+
+Moving-contact:
+- baseline/paraphrase: 0.5;
+- chance 0.5;
+- paraphrase tie rate 1.0.
+
+Surface overlap does not solve the material relation task.
+
+### Frozen semantic retrieval
+
+Material-work:
+- baseline / last-frame: top-1 ~0.124;
+- baseline / mean-history: ~0.126;
+- paraphrase / last-frame: ~0.290;
+- paraphrase / mean-history: ~0.265;
+- chance ~0.333;
+- mean positive margins are negative in all four material conditions.
+
+Wording stability in material-work collapses:
+- last-frame prediction agreement ~0.009;
+- mean-history prediction agreement 0;
+- positive agreement approximately 0.
+
+Moving-contact:
+- all variants exactly 0.5 with mean margin 0, which is uninterpretable because the semantic input is fully ambiguous.
+
+### Interpretation
+
+Reject:
+
+> direct cosine similarity between a coarse matter-free private snapshot/history embedding and a matter-statement embedding as the first R3 semantic relation mechanism.
+
+Do **not** interpret this as evidence that MiniLM is generally useless.
+
+The experiment falsifies a much narrower hypothesis:
+- the current model-visible private representation is too coarse for moving-contact;
+- direct sentence-similarity geometry does not encode the desired actor-relative matter relation in material-work;
+- simply averaging short history does not fix the problem.
+
+The next earned question is whether a **private transition/event representation**, derived only from changes the actor itself can observe/remember, produces materially better semantic diversity without leaking fixture policy or World truth.
+
+If it does not, retire the whole matter↔lived-context retrieval family instead of adding a learned head to rescue it.
