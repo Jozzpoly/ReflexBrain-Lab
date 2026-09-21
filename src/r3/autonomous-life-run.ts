@@ -31,6 +31,10 @@ export interface AutonomousLifeRun {
   residentDebug(residentId: ResidentId): ReturnType<AutonomousResidentAgent["debugState"]> | null;
   allEvents(): readonly LifeEvent[];
   privateExperiences(): readonly import("./life-contracts").ResidentPrivateExperience[];
+  researchReplaceResidentMatters(
+    residentId: ResidentId,
+    matters: readonly ResidentMatter[],
+  ): void;
 }
 
 export const R3_LIFE_PLACES: Readonly<Record<LifePlace["id"], LifePlace>> = {
@@ -68,7 +72,7 @@ export function createAutonomousLifeRun(
       new AutonomousResidentAgent(
         new StewardFixturePolicy(),
         options.matterOverrides?.["resident:mira"] ??
-          authoredMatters("resident:mira"),
+          r3MaterialAuthoredMatters("resident:mira"),
       ),
     );
   }
@@ -79,7 +83,7 @@ export function createAutonomousLifeRun(
       new AutonomousResidentAgent(
         new WorkerFixturePolicy(),
         options.matterOverrides?.["resident:janek"] ??
-          authoredMatters("resident:janek"),
+          r3MaterialAuthoredMatters("resident:janek"),
       ),
     );
   }
@@ -90,7 +94,7 @@ export function createAutonomousLifeRun(
       new AutonomousResidentAgent(
         new CourierFixturePolicy(),
         options.matterOverrides?.["resident:ida"] ??
-          authoredMatters("resident:ida"),
+          r3MaterialAuthoredMatters("resident:ida"),
       ),
     );
   }
@@ -205,11 +209,27 @@ export function createAutonomousLifeRun(
     privateExperiences() {
       return privateExperience.map((entry) => structuredClone(entry));
     },
+
+    researchReplaceResidentMatters(
+      residentId: ResidentId,
+      matters: readonly ResidentMatter[],
+    ): void {
+      const agent = agents.get(residentId);
+      if (!agent) {
+        throw new Error(
+          "cannot replace matters for missing resident " +
+            residentId,
+        );
+      }
+      agent.researchReplaceMatters(matters);
+    },
   };
 }
 
 
-function authoredMatters(residentId: ResidentId): readonly ResidentMatter[] {
+export function r3MaterialAuthoredMatters(
+  residentId: ResidentId,
+): readonly ResidentMatter[] {
   switch (residentId) {
     case "resident:mira":
       return [{

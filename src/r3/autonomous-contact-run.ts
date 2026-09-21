@@ -32,6 +32,10 @@ export interface AutonomousContactRun {
   ): ReturnType<AutonomousResidentAgent["debugState"]> | null;
   allEvents(): readonly LifeEvent[];
   privateExperiences(): readonly ResidentPrivateExperience[];
+  researchReplaceResidentMatters(
+    residentId: ResidentId,
+    matters: readonly ResidentMatter[],
+  ): void;
 }
 
 /**
@@ -67,7 +71,7 @@ export function createAutonomousContactRun(
       new AutonomousResidentAgent(
         new PatrolContactFixturePolicy(),
         options.matterOverrides?.["resident:janek"] ??
-          contactMatters("resident:janek"),
+          r3ContactAuthoredMatters("resident:janek"),
       ),
     ],
     [
@@ -75,7 +79,7 @@ export function createAutonomousContactRun(
       new AutonomousResidentAgent(
         new ContactMessengerFixturePolicy(),
         options.matterOverrides?.["resident:ida"] ??
-          contactMatters("resident:ida"),
+          r3ContactAuthoredMatters("resident:ida"),
       ),
     ],
   ]);
@@ -182,11 +186,27 @@ export function createAutonomousContactRun(
     privateExperiences() {
       return experiences.map((entry) => structuredClone(entry));
     },
+
+    researchReplaceResidentMatters(
+      residentId: ResidentId,
+      matters: readonly ResidentMatter[],
+    ): void {
+      const agent = agents.get(residentId);
+      if (!agent) {
+        throw new Error(
+          "cannot replace matters for missing resident " +
+            residentId,
+        );
+      }
+      agent.researchReplaceMatters(matters);
+    },
   };
 }
 
 
-function contactMatters(residentId: "resident:janek" | "resident:ida"): readonly ResidentMatter[] {
+export function r3ContactAuthoredMatters(
+  residentId: "resident:janek" | "resident:ida",
+): readonly ResidentMatter[] {
   if (residentId === "resident:janek") {
     return [{
       id: CONTACT_FIXTURE_MATTER_IDS.patrol,

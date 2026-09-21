@@ -60,6 +60,27 @@ export class AutonomousResidentAgent {
     return structuredClone(decision);
   }
 
+  /**
+   * Research-only intervention seam.
+   *
+   * This mutates actor-private matter state without touching World truth.
+   * It exists for paired causal-ablation experiments and must not be used as
+   * ordinary fixture policy control.
+   */
+  researchReplaceMatters(
+    matters: readonly ResidentMatter[],
+  ): void {
+    const validated = validateInitialMatters(
+      this.residentId,
+      matters,
+    );
+    this.mattersValue.splice(
+      0,
+      this.mattersValue.length,
+      ...validated,
+    );
+  }
+
   debugState(): ResidentAgentDebugState {
     return {
       residentId: this.residentId,
