@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **QUALIFIED HEAD `3580335a5fee66fd0dae7a070c64d3d888555c54` · CHECK PASS**
+Status: **QUALIFIED HEAD `a90666678d3cabd8dbecbbb225678db2e9db66be` · CHECK PASS**
 
 Branch:
 
@@ -86,15 +86,26 @@ Temporal windows can be built without `threat / interrupt / attention / cognitio
 
 A semantic serializer already excludes resident identity and absolute tick shortcuts.
 
-## Material finding
+## Actor-owned continuing matters — QUALIFIED
 
-The field currently called `standingMatter` is **not yet valid actor-private state**.
+The former runner-only `standingMatter` field has been removed from the learning path.
 
-It is injected by the ecology runner when the experience row is written.
+Each resident now owns a private list of continuing matters.
 
-That means it is useful research metadata but is not yet legitimate learned-model input.
+Current minimal contract:
+- actor-owned matter id;
+- semantic statement;
+- establishment tick;
+- authored origin;
+- multiple matters supported by the contract;
+- no status lifecycle;
+- no priority;
+- no salience;
+- no interruption score.
 
-Do not train an R3 model using it until this is corrected.
+Ecology runners may author initial matters when constructing a resident, but private experience reads them back from the resident itself. The corpus no longer appends semantic purpose after the fact.
+
+Both autonomous ecologies remain green after this change.
 
 ## What is still fixture-only
 
@@ -140,25 +151,41 @@ Do not reuse by default:
 - linear five-score head;
 - the five appraisal labels as ontology.
 
-## Current blocker
+## Cross-ecology learning boundary — QUALIFIED
 
-The first learned experiment is blocked on **actor-owned continuing matter/purpose**.
+A new learning-corpus layer builds one schema from both autonomous ecologies.
 
-The actor must formally possess the context that future learned semantics are evaluated against.
+The model-facing input is explicitly separated from evaluation metadata.
 
-The runner may author initial matters when constructing an actor, but the corpus may only read them back from actor-private state. It must not append semantic purpose after the fact.
+Model input may contain:
+- actor-owned semantic matter statements;
+- privately heard speech;
+- privately visible material kinds;
+- small exact private structured counts/state.
 
-## Next earned move
+It deliberately excludes:
+- resident identity;
+- ecology label;
+- absolute tick;
+- fixture activity ids/kinds/phases;
+- future World outcome names.
 
-Create a deliberately minimal actor-private matter representation with these constraints:
+Evaluation metadata retains ecology/actor/tick and factual future deltas so later experiments can be audited without leaking those facts into inference.
 
-- actor-owned;
-- visible to local policy / future learned provider;
-- captured into private experience from the agent itself;
-- able to hold more than one matter in principle;
-- no copied SPC lifecycle unless evidence earns it;
-- no priority/salience score yet;
-- no interruption ontology yet;
-- stable across both qualified ecologies.
+Strict ecology holdout is now mechanically available.
 
-Then rerun both ecologies and the full test suite before changing the learning problem.
+## Current blocker / frontier
+
+The project is **not** blocked on infrastructure anymore.
+
+It is blocked on defining a first learning question that is both:
+- derivable from real autonomous trajectories;
+- not merely another hand-authored appraisal ontology.
+
+Before training MiniLM or any head, Phase B still needs a strong negative-control story for surface-token/ecology leakage and a defensible relation/target construction.
+
+The next earned move is therefore **corpus falsification**, not model capacity:
+- audit surface shortcuts across ecologies;
+- identify naturally occurring matched/counterfactual relationships;
+- prove that a future target cannot be solved by actor/ecology/token identity alone;
+- only then instantiate the first representation probe.

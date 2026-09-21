@@ -20,7 +20,7 @@ Reach a point where a small local learned mechanism demonstrably adds actor-rela
 
 The first Owner test is deliberately downstream of that achievement.
 
-## Phase A — legitimate actor-private continuity
+## Phase A — legitimate actor-private continuity — **QUALIFIED 2026-09-21**
 
 **Purpose:** remove semantic context that currently exists only in the research runner.
 
@@ -42,7 +42,7 @@ Red flags:
 - adding salience/priority because a scheduler needs a number;
 - making one `primaryGoal` the permanent architecture.
 
-## Phase B — cross-ecology corpus hardening
+## Phase B — cross-ecology corpus hardening — **ACTIVE**
 
 **Purpose:** make training/evaluation data reflect life rather than scenario labels.
 
