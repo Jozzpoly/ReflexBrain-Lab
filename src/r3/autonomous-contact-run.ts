@@ -9,6 +9,7 @@ import type {
 import {
   ContactMessengerFixturePolicy,
   PatrolContactFixturePolicy,
+  CONTACT_FIXTURE_MATTER_IDS,
 } from "./contact-fixture-policies";
 import { R3_LIFE_PLACES } from "./autonomous-life-run";
 import { AutonomousLifeWorld } from "./life-world";
@@ -17,6 +18,9 @@ import { AutonomousResidentAgent } from "./resident-agent";
 export interface AutonomousContactRunOptions {
   janekStart?: import("./life-contracts").Vec2;
   idaStart?: import("./life-contracts").Vec2;
+  matterOverrides?: Partial<
+    Record<ResidentId, readonly ResidentMatter[]>
+  >;
 }
 
 export interface AutonomousContactRun {
@@ -62,14 +66,16 @@ export function createAutonomousContactRun(
       "resident:janek",
       new AutonomousResidentAgent(
         new PatrolContactFixturePolicy(),
-        contactMatters("resident:janek"),
+        options.matterOverrides?.["resident:janek"] ??
+          contactMatters("resident:janek"),
       ),
     ],
     [
       "resident:ida",
       new AutonomousResidentAgent(
         new ContactMessengerFixturePolicy(),
-        contactMatters("resident:ida"),
+        options.matterOverrides?.["resident:ida"] ??
+          contactMatters("resident:ida"),
       ),
     ],
   ]);
@@ -138,9 +144,11 @@ export function createAutonomousContactRun(
         });
       }
 
-      const activities: Record<string, ResidentActivity> = {};
+      const activities: Record<string, ResidentActivity | null> = {};
       for (const [residentId, decision] of decisions) {
-        activities[residentId] = structuredClone(decision.activity);
+        activities[residentId] = decision.activity
+          ? structuredClone(decision.activity)
+          : null;
       }
 
       return {
@@ -181,14 +189,14 @@ export function createAutonomousContactRun(
 function contactMatters(residentId: "resident:janek" | "resident:ida"): readonly ResidentMatter[] {
   if (residentId === "resident:janek") {
     return [{
-      id: "resident:janek:matter:contact-patrol",
+      id: CONTACT_FIXTURE_MATTER_IDS.patrol,
       statement: "patrol between the workshop and depot while remaining available for local contact",
       establishedTick: 0,
       source: "authored",
     }];
   }
   return [{
-    id: "resident:ida:matter:contact-report",
+    id: CONTACT_FIXTURE_MATTER_IDS.report,
     statement: "maintain intermittent physical contact with Janek and report depot inspection status in person",
     establishedTick: 0,
     source: "authored",

@@ -102,7 +102,7 @@ export type ResidentIntent =
 
 export interface ResidentDecision {
   intent: ResidentIntent;
-  activity: ResidentActivity;
+  activity: ResidentActivity | null;
 }
 
 export interface ResidentPolicyInput {
@@ -128,7 +128,7 @@ export interface AutonomousLifeStep {
   tick: number;
   events: readonly LifeEvent[];
   snapshot: LifeWorldPublicSnapshot;
-  activities: Readonly<Record<string, ResidentActivity>>;
+  activities: Readonly<Record<string, ResidentActivity | null>>;
 }
 
 

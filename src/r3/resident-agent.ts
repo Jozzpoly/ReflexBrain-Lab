@@ -54,7 +54,9 @@ export class AutonomousResidentAgent {
         ? structuredClone(this.activityValue)
         : null,
     });
-    this.activityValue = structuredClone(decision.activity);
+    this.activityValue = decision.activity
+      ? structuredClone(decision.activity)
+      : null;
     return structuredClone(decision);
   }
 

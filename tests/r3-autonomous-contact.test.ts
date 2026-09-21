@@ -117,3 +117,35 @@ describe("R3 second autonomous contact ecology", () => {
     ).not.toBeNull();
   });
 });
+
+
+describe("R3 contact matter causality", () => {
+  it("removes Ida's contact/report life when her matter is absent while Janek keeps patrolling", () => {
+    const run = createAutonomousContactRun({
+      matterOverrides: {
+        "resident:ida": [],
+      },
+    });
+    run.runTicks(900);
+
+    const events = run.allEvents();
+    expect(
+      events.some(
+        (event) =>
+          event.actorId === "resident:janek" &&
+          event.kind === "motion",
+      ),
+    ).toBe(true);
+    expect(
+      events.some(
+        (event) =>
+          event.actorId === "resident:ida" &&
+          (event.kind === "motion" || event.kind === "speech"),
+      ),
+    ).toBe(false);
+
+    const ida = run.residentDebug("resident:ida")!;
+    expect(ida.matters).toEqual([]);
+    expect(ida.activity).toBeNull();
+  });
+});

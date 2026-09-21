@@ -14,6 +14,26 @@ const ACTIVITY_SERIAL = new Map<ResidentId, number>();
 const WORKER_BLOCKED_REQUEST_AFTER_TICKS = 45;
 const WORKER_REQUEST_COOLDOWN_TICKS = 120;
 
+export const MATERIAL_FIXTURE_MATTER_IDS = {
+  steward: "resident:mira:matter:workshop-supply",
+  worker: "resident:janek:matter:workshop-processing",
+  courier: "resident:ida:matter:workshop-delivery",
+} as const;
+
+function hasFixtureMatter(
+  input: ResidentPolicyInput,
+  matterId: string,
+): boolean {
+  return input.matters.some((matter) => matter.id === matterId);
+}
+
+function matterAbsentDecision(): ResidentDecision {
+  return {
+    intent: { kind: "idle" },
+    activity: null,
+  };
+}
+
 function nextActivityId(residentId: ResidentId, kind: string): string {
   const serial = (ACTIVITY_SERIAL.get(residentId) ?? 0) + 1;
   ACTIVITY_SERIAL.set(residentId, serial);
@@ -72,6 +92,10 @@ export class StewardFixturePolicy implements ResidentPolicy {
   private targetRackStock = 1;
 
   decide(input: ResidentPolicyInput): ResidentDecision {
+    if (!hasFixtureMatter(input, MATERIAL_FIXTURE_MATTER_IDS.steward)) {
+      return matterAbsentDecision();
+    }
+
     const tick = input.observation.tick;
     const self = input.observation.self;
     const held = input.observation.heldObject;
@@ -178,6 +202,10 @@ export class WorkerFixturePolicy implements ResidentPolicy {
   private lastRequestTick = -10_000;
 
   decide(input: ResidentPolicyInput): ResidentDecision {
+    if (!hasFixtureMatter(input, MATERIAL_FIXTURE_MATTER_IDS.worker)) {
+      return matterAbsentDecision();
+    }
+
     const tick = input.observation.tick;
     const self = input.observation.self;
     const held = input.observation.heldObject;
@@ -313,6 +341,10 @@ export class CourierFixturePolicy implements ResidentPolicy {
   readonly residentId = "resident:ida" as const;
 
   decide(input: ResidentPolicyInput): ResidentDecision {
+    if (!hasFixtureMatter(input, MATERIAL_FIXTURE_MATTER_IDS.courier)) {
+      return matterAbsentDecision();
+    }
+
     const tick = input.observation.tick;
     const self = input.observation.self;
     const held = input.observation.heldObject;

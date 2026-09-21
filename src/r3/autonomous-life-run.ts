@@ -11,6 +11,7 @@ import {
   resetFixtureActivitySerials,
   StewardFixturePolicy,
   WorkerFixturePolicy,
+  MATERIAL_FIXTURE_MATTER_IDS,
 } from "./life-fixture-policies";
 import { AutonomousLifeWorld } from "./life-world";
 import { AutonomousResidentAgent } from "./resident-agent";
@@ -18,6 +19,9 @@ import { AutonomousResidentAgent } from "./resident-agent";
 export interface AutonomousLifeRunOptions {
   enabledResidents?: readonly ResidentId[];
   initialSourceRaw?: number;
+  matterOverrides?: Partial<
+    Record<ResidentId, readonly ResidentMatter[]>
+  >;
 }
 
 export interface AutonomousLifeRun {
@@ -63,7 +67,8 @@ export function createAutonomousLifeRun(
       "resident:mira",
       new AutonomousResidentAgent(
         new StewardFixturePolicy(),
-        authoredMatters("resident:mira"),
+        options.matterOverrides?.["resident:mira"] ??
+          authoredMatters("resident:mira"),
       ),
     );
   }
@@ -73,7 +78,8 @@ export function createAutonomousLifeRun(
       "resident:janek",
       new AutonomousResidentAgent(
         new WorkerFixturePolicy(),
-        authoredMatters("resident:janek"),
+        options.matterOverrides?.["resident:janek"] ??
+          authoredMatters("resident:janek"),
       ),
     );
   }
@@ -83,7 +89,8 @@ export function createAutonomousLifeRun(
       "resident:ida",
       new AutonomousResidentAgent(
         new CourierFixturePolicy(),
-        authoredMatters("resident:ida"),
+        options.matterOverrides?.["resident:ida"] ??
+          authoredMatters("resident:ida"),
       ),
     );
   }
@@ -160,9 +167,11 @@ export function createAutonomousLifeRun(
         });
       }
 
-      const activities: Record<string, ResidentActivity> = {};
+      const activities: Record<string, ResidentActivity | null> = {};
       for (const [residentId, decision] of decisions) {
-        activities[residentId] = structuredClone(decision.activity);
+        activities[residentId] = decision.activity
+          ? structuredClone(decision.activity)
+          : null;
       }
 
       return {
@@ -204,21 +213,21 @@ function authoredMatters(residentId: ResidentId): readonly ResidentMatter[] {
   switch (residentId) {
     case "resident:mira":
       return [{
-        id: "resident:mira:matter:workshop-supply",
+        id: MATERIAL_FIXTURE_MATTER_IDS.steward,
         statement: "keep the workshop input rack supplied with raw blanks",
         establishedTick: 0,
         source: "authored",
       }];
     case "resident:janek":
       return [{
-        id: "resident:janek:matter:workshop-processing",
+        id: MATERIAL_FIXTURE_MATTER_IDS.worker,
         statement: "turn available raw blanks into finished workshop parts",
         establishedTick: 0,
         source: "authored",
       }];
     case "resident:ida":
       return [{
-        id: "resident:ida:matter:workshop-delivery",
+        id: MATERIAL_FIXTURE_MATTER_IDS.courier,
         statement: "carry finished workshop parts from output to the depot",
         establishedTick: 0,
         source: "authored",

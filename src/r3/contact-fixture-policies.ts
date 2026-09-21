@@ -7,6 +7,25 @@ import type {
   Vec2,
 } from "./life-contracts";
 
+export const CONTACT_FIXTURE_MATTER_IDS = {
+  patrol: "resident:janek:matter:contact-patrol",
+  report: "resident:ida:matter:contact-report",
+} as const;
+
+function hasFixtureMatter(
+  input: ResidentPolicyInput,
+  matterId: string,
+): boolean {
+  return input.matters.some((matter) => matter.id === matterId);
+}
+
+function matterAbsentDecision(): ResidentDecision {
+  return {
+    intent: { kind: "idle" },
+    activity: null,
+  };
+}
+
 function continueActivity(
   previous: ResidentActivity | null,
   residentId: "resident:janek" | "resident:ida",
@@ -35,6 +54,10 @@ export class PatrolContactFixturePolicy implements ResidentPolicy {
   private target: "workbench" | "depot" = "depot";
 
   decide(input: ResidentPolicyInput): ResidentDecision {
+    if (!hasFixtureMatter(input, CONTACT_FIXTURE_MATTER_IDS.patrol)) {
+      return matterAbsentDecision();
+    }
+
     const currentTarget = input.places[this.target];
 
     if (near(input.observation.self.position, currentTarget.position)) {
@@ -63,6 +86,10 @@ export class ContactMessengerFixturePolicy implements ResidentPolicy {
   private returningToOwnWork = false;
 
   decide(input: ResidentPolicyInput): ResidentDecision {
+    if (!hasFixtureMatter(input, CONTACT_FIXTURE_MATTER_IDS.report)) {
+      return matterAbsentDecision();
+    }
+
     const tick = input.observation.tick;
     const self = input.observation.self;
     const visibleJanek = input.observation.visibleActors.find(

@@ -350,3 +350,68 @@ describe("R3 actor-owned continuing matters", () => {
     }
   });
 });
+
+
+describe("R3 matter causality", () => {
+  it("collapses material downstream work when Mira lacks the supply matter", () => {
+    const baseline = createAutonomousLifeRun();
+    baseline.runTicks(2200);
+
+    const withoutMiraMatter = createAutonomousLifeRun({
+      matterOverrides: {
+        "resident:mira": [],
+      },
+    });
+    withoutMiraMatter.runTicks(2200);
+
+    const baselineProcessed = baseline
+      .allEvents()
+      .filter((event) => event.kind === "processing_completed").length;
+    const ablatedProcessed = withoutMiraMatter
+      .allEvents()
+      .filter((event) => event.kind === "processing_completed").length;
+
+    expect(baselineProcessed).toBeGreaterThan(0);
+    expect(ablatedProcessed).toBe(0);
+    expect(
+      withoutMiraMatter
+        .allEvents()
+        .some(
+          (event) =>
+            event.actorId === "resident:mira" &&
+            (event.kind === "motion" ||
+              event.kind === "pickup" ||
+              event.kind === "place"),
+        ),
+    ).toBe(false);
+
+    const mira = withoutMiraMatter.residentDebug("resident:mira")!;
+    expect(mira.matters).toEqual([]);
+    expect(mira.activity).toBeNull();
+  }, 15_000);
+
+  it("keeps fixture behavior unchanged when only the matter statement is paraphrased", () => {
+    const baseline = createAutonomousLifeRun();
+    baseline.runTicks(650);
+
+    const paraphrased = createAutonomousLifeRun({
+      matterOverrides: {
+        "resident:mira": [{
+          id: "resident:mira:matter:workshop-supply",
+          statement:
+            "make sure raw workshop blanks remain available at the input rack",
+          establishedTick: 0,
+          source: "authored",
+        }],
+      },
+    });
+    paraphrased.runTicks(650);
+
+    expect(paraphrased.allEvents()).toEqual(baseline.allEvents());
+    expect(
+      paraphrased.residentDebug("resident:mira")!.matters[0]!.statement,
+    ).not.toBe(
+      baseline.residentDebug("resident:mira")!.matters[0]!.statement,
+    );
+  }, 15_000);
+});
