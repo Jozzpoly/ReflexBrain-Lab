@@ -14,6 +14,11 @@ import { R3_LIFE_PLACES } from "./autonomous-life-run";
 import { AutonomousLifeWorld } from "./life-world";
 import { AutonomousResidentAgent } from "./resident-agent";
 
+export interface AutonomousContactRunOptions {
+  janekStart?: import("./life-contracts").Vec2;
+  idaStart?: import("./life-contracts").Vec2;
+}
+
 export interface AutonomousContactRun {
   readonly world: AutonomousLifeWorld;
   advanceOneTick(): AutonomousLifeStep;
@@ -32,7 +37,9 @@ export interface AutonomousContactRun {
  * places. Ida has to acquire and maintain contact through private sight /
  * last-known position and periodically report in person.
  */
-export function createAutonomousContactRun(): AutonomousContactRun {
+export function createAutonomousContactRun(
+  options: AutonomousContactRunOptions = {},
+): AutonomousContactRun {
   const world = new AutonomousLifeWorld({
     sourcePosition: R3_LIFE_PLACES.source.position,
     sourceCapacity: 0,
@@ -41,12 +48,12 @@ export function createAutonomousContactRun(): AutonomousContactRun {
 
   world.addResident(
     "resident:janek",
-    R3_LIFE_PLACES.workbench.position,
+    options.janekStart ?? R3_LIFE_PLACES.workbench.position,
     { speedPerTick: 0.12, sightRadius: 2.5, hearingRadius: 5 },
   );
   world.addResident(
     "resident:ida",
-    R3_LIFE_PLACES.source.position,
+    options.idaStart ?? R3_LIFE_PLACES.source.position,
     { speedPerTick: 0.19, sightRadius: 2.5, hearingRadius: 5 },
   );
 
