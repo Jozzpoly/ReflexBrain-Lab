@@ -15,6 +15,7 @@ describe("R3 causal matter embedding geometry", () => {
         ecology: "material-work",
         wording: "baseline",
         anchorTick: 20,
+        queryEndTick: 20,
         transitionHistory: [
           "no change",
           "raw blank visible count increased",
@@ -46,6 +47,7 @@ describe("R3 causal matter embedding geometry", () => {
         ecology: "material-work",
         wording: "paraphrase",
         anchorTick: 20,
+        queryEndTick: 20,
         transitionHistory: [
           "no change",
           "raw blank visible count increased",
