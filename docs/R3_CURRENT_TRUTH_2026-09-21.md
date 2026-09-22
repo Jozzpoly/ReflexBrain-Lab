@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **QUALIFIED CODE HEAD `5a29041ca93cf8fa8d90ef64459b56ce6695855c` · CHECK PASS · TEMPORALLY ALIGNED LIVE WEBGPU CAUSAL PROBE EXECUTED**
+Status: **QUALIFIED CODE HEAD `07448da82be795661fbecea39a23d74f3ac939a9` · CHECK PASS · MIXED-PRESSURE CAUSAL TARGET QUALIFIED**
 
 Branch:
 
@@ -515,3 +515,75 @@ Therefore:
 - no learned head is promoted from this evidence.
 
 The next target remains within-one-ecology causal responsibility switching between concurrently held matters.
+
+
+## Within-one-ecology mixed-pressure causal target — QUALIFIED
+
+The previous concurrent-matter causal probe correctly falsified direct cosine, but its responsibility labels were still structurally aligned with separate ecologies:
+- workshop matter active in material-work;
+- contact matter active in moving-contact.
+
+That confound is now removed by a disposable mixed-pressure ecology.
+
+Janek simultaneously owns:
+- workshop-processing matter;
+- local-report-response matter.
+
+Within the same continuous ecology:
+- ordinary workshop pressure can make workshop-processing causally responsible;
+- private speech/report pressure can make local-report-response causally responsible;
+- responsibility is still established by paired one-matter ablation after an identical deterministic prefix.
+
+### Audit
+
+Per wording variant:
+- 12 retained causal examples;
+- 6 workshop-responsible;
+- 6 report-responsible;
+- 9 unique transition histories;
+- 0 ambiguous histories;
+- chance top-1 = 0.5.
+
+Lexical controls:
+- baseline wording: ~0.333 top-1;
+- paraphrase wording: ~0.583 top-1.
+
+Interpretation:
+- the target is balanced;
+- responsibility switches inside one ecology;
+- actor identity and ecology identity no longer determine the label;
+- model-visible transition histories are label-identifiable in the retained set;
+- lexical overlap is not a dominant solver, though the paraphrase sample is small and 0.583 must not be overinterpreted.
+
+This is currently the strongest R3 supervision target.
+
+### Promotion boundary
+
+QUALIFIED:
+- mixed-pressure ecology as research test equipment;
+- within-one-ecology causal responsibility switching;
+- paired matter ablation as supervision;
+- zero observed transition-history ambiguity in the retained 12-example set.
+
+NOT YET QUALIFIED:
+- frozen MiniLM on this target;
+- any learned relation head;
+- any ReflexBrain output contract;
+- any actor authority;
+- any claim that 12 examples constitute a benchmark.
+
+## Clean next move
+
+The next experiment, in a new completed iteration, may evaluate the existing frozen semantic representation against this mixed-pressure causal target.
+
+Required controls:
+- baseline and paraphrase wording;
+- last-transition and short-history variants;
+- lexical baseline reported alongside semantic result;
+- no training;
+- no learned head;
+- no authority.
+
+If frozen direct cosine remains at chance, the entire direct-cosine matter-relevance family stays rejected and the project should move toward a jointly learned relation function only after expanding the causal corpus.
+
+If it shows robust paraphrase-resistant signal, treat that only as representation evidence, not as ReflexBrain architecture.
