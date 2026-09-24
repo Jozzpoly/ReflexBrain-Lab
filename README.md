@@ -1,41 +1,94 @@
 # ReflexBrain Lab
 
-Experimental laboratory for a **fast local semantic-reflex layer** for embodied game actors.
+Experimental laboratory for a **fast local semantic/reflex capability** inside embodied game actors.
+
+## Start here
+
+Current branch:
+
+`experiment/r3-autonomous-life-pressure-v0`
+
+Canonical current truth:
+
+**`docs/R3_CURRENT_TRUTH_2026-09-21.md`**
+
+Current mixed-pressure target qualification:
+
+**`docs/R3_MIXED_PRESSURE_CAUSAL_TARGET_2026-09-22.md`**
+
+Continuation protocol:
+
+**`docs/CAMPAIGN_CONTINUE_PROTOCOL.md`**
+
+Historical R0/R1/R2 documents remain evidence and falsifiers. They are not the current feature sequence.
 
 ## Core research question
 
-> Can a small local model continuously interpret an actor's bounded private state well enough to improve attention, appraisal, local reaction and escalation to deeper cognition without becoming the world authority, memory system, planner or motor controller?
+> Can a cheap local actor-private learned mechanism extract useful meaning from a resident's bounded temporal private experience strongly enough to support local cognition without becoming World authority, memory, planner or motor controller?
 
-The project is inspired by the System One / Jev pattern, but it is **not a Jev clone** and does not use Jev outputs as training data. The intended result is an independently developed local primitive for Jozzpoly embodied-agent projects.
+The target is not a full NPC and not a score ontology. ReflexBrain is intended as one small local organ inside an already-living actor.
 
-## Current stage
+## Current stage — R3 autonomous-life pressure
 
-**R0 — Semantic Shadow Probe.**
+The Owner rejected the R2 interactive specimen as a research clicker rather than life. R3 therefore starts from an autonomous host where life and causal pressure continue with **zero Owner input**.
 
-The first goal is deliberately narrow:
+Qualified substrate includes:
 
-1. build a tiny deterministic temporal micro-world;
-2. keep the reflex system at **zero authority**;
-3. expose compact actor-private state;
-4. compare a simple rule baseline with replaceable semantic providers;
-5. inspect raw semantic signals separately from temporal reflex dynamics;
-6. only later plug in a local WebGPU model.
+- fixed-step autonomous World;
+- several independent residents;
+- World-owned material/action outcomes;
+- actor-private sight/hearing/memory;
+- persistent activity identity;
+- actor-owned continuing matters;
+- private temporal experience/corpus;
+- counterfactual and paired-ablation research apparatus;
+- multiple ecologies used as pressure generators rather than product architecture.
 
-Current bootstrap makes no claim that semantic reflexes improve behavior yet.
+No learned ReflexBrain has earned actor authority.
+
+## Current semantic evidence
+
+The campaign has deliberately falsified several tempting shortcuts.
+
+- coarse matter↔context direct cosine: **FAIL**;
+- same-actor two-domain MiniLM probe: **PARTIAL SIGNAL / GENERALIZATION FAIL**;
+- concurrent-matter causal responsibility direct cosine: **FAIL at chance**, including after temporal alignment correction;
+- within-one-ecology mixed-pressure causal target: **QUALIFIED research target**.
+
+The current mixed-pressure target uses one Janek with two simultaneous matters whose causal responsibility switches inside the same ecology. Ground truth comes from paired matter ablation, not actor identity, ecology identity or ownership.
+
+Status:
+
+> **TARGET QUALIFIED · NO MODEL RUN ON THIS TARGET YET**
+
+## Current frontier
+
+Run one bounded frozen MiniLM evaluation against the qualified mixed-pressure causal-responsibility target with:
+
+- baseline + strong paraphrase wording;
+- last-transition + short-history variants;
+- lexical baseline alongside semantic result;
+- no training;
+- no learned head;
+- no actor authority.
+
+If direct cosine remains at chance, keep that whole mechanism family rejected. Do not rescue it by training a head on a still-too-small or conceptually weak target.
+
+If a robust paraphrase-resistant signal appears, classify it only as representation evidence and then pressure it further before any architecture promotion.
 
 ## Defended boundaries
 
 - World truth is authoritative and independent from model judgement.
 - Actor-private state contains only information the actor can legitimately possess.
-- Reflex output is probabilistic evidence / preference, not physical fact or command authority.
-- Temporal continuity belongs to an explicit reflex-dynamics layer rather than being hidden inside prompts.
-- Large-model cognition remains a separate possible System-2 layer.
-- Donor code and ideas are reused selectively; sibling repositories are evidence sources, not automatic architecture authority.
+- Model output is evidence/candidate cognition, not physical fact or body command.
+- Do not smuggle fixture policy, actor id, ecology id, hidden World state or future outcomes into model input.
+- Fixture ecologies and policies are research equipment unless separately promoted.
+- Green execution does not make a hypothesis true.
+- Owner test is not the default next step; learned competence must first exist and survive causal falsification.
 
-## Research ladder
+## Historical ladder
 
-- **R0 — Semantic Probe:** stock small local model, direct constrained scoring, shadow-only comparison.
-- **R1 — Reflex Model:** learn/calibrate a dedicated decision/readout layer if R0 earns it.
-- **R2 — Embodied Reflex Brain:** train/evaluate on temporal actor/world episodes and counterfactual families.
-
-The immediate target is not a full NPC. It is a falsifiable semantic-reflex experiment.
+- **R0** — semantic shadow/bootstrap evidence;
+- **R1** — representation/geometry/head experiments and falsifiers;
+- **R2** — causal-organism campaign; interactive clicker product direction rejected;
+- **R3** — autonomous-life pressure and causal supervision — **CURRENT**.
