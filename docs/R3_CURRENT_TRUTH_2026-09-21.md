@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **QUALIFIED CODE HEAD `e3e00cf7b0fca04196e2292422a97022e7aab77f` · LIVE MIXED-PRESSURE WEBGPU PROBE EXECUTED · DIRECT-COSINE FAMILY REJECTED**
+Status: **QUALIFIED CODE HEAD `c54579fc1ca239b6e2fe6710c8137f06700cd2ca` · CHECK #200 PASS · DIRECT-COSINE FAMILY REJECTED · CURRENT 12-EXAMPLE CORPUS NOT TRAINING-QUALIFIED**
 
 Branch:
 
@@ -750,3 +750,27 @@ Before training such a relation function:
 6. only then test a small learned relation mechanism.
 
 Direct cosine is closed unless genuinely new evidence reopens it.
+
+
+## Post-rejection causal-supervision readiness — MATERIAL FINDING
+
+The mixed-pressure target survives the direct-cosine rejection, but its current 12-example corpus does **not** survive a training-readiness audit.
+
+New deterministic baseline evidence at qualified code head `c54579fc1ca239b6e2fe6710c8137f06700cd2ca`:
+
+- balanced majority baseline: **0.500**;
+- context-only rule `last transition contains heard speech -> report matter, otherwise workshop matter`: **1.000** for baseline wording;
+- the same rule: **1.000** for paraphrase wording.
+
+The cause is structural, not accidental: the disposable mixed-pressure fixture routes direct Ida speech to the report branch, while ordinary candidate sampling excludes direct Ida speech.
+
+Interpretation:
+
+- **causal-ablation supervision: PRESERVED**;
+- **same-actor/same-ecology responsibility switching: PRESERVED**;
+- **direct-cosine rejection: PRESERVED**;
+- **current 12-example corpus as learned-relation training benchmark: FAIL**.
+
+Do not train a joint relation model on this corpus.
+
+The next earned move is to build broader, counterbalanced intervention-derived supervision where context-only and matter-only baselines cannot solve the label, then require paraphrase plus actor/domain transfer holdouts before any learned relation mechanism is allowed to claim useful actor-relative meaning.
