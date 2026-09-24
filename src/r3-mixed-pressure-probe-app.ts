@@ -6,6 +6,7 @@ import {
   collectR3MixedPressureProbeTexts,
   compareR3MixedPressureWordingStability,
   evaluateR3MixedPressureEmbeddingRetrieval,
+  type R3MixedPressureEmbeddingMetrics,
 } from "./r3/mixed-pressure-geometry";
 import {
   R3SemanticEncoderClient,
@@ -108,7 +109,7 @@ async function run(): Promise<void> {
       embeddingByText.set(text, item.vector);
     }
 
-    const reports = [];
+    const reports: R3MixedPressureEmbeddingMetrics[] = [];
 
     for (const wording of [
       "baseline",
