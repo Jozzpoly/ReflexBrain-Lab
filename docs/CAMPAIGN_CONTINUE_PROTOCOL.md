@@ -143,15 +143,26 @@ Before a major new layer:
 
 ## Current application
 
-At the 2026-09-21 frontier:
+At the 2026-09-24 recovered frontier:
 
-- R2 clicker: **REJECTED as product direction**;
+- R2 clicker: **REJECTED as product direction**; retained only as causal research evidence;
 - R3 autonomous host: **QUALIFIED research substrate**;
-- workshop policies: **FIXTURE-ONLY**;
-- contact policies: **FIXTURE-ONLY**;
-- private perception/memory: **reusable substrate candidate**;
-- temporal corpus: **research substrate candidate**;
-- runner-injected standing matter: **UNQUALIFIED / blocker**;
-- R3 learned ReflexBrain: **not yet implemented**.
+- fixture work/contact/mixed-pressure policies: **FIXTURE-ONLY**;
+- actor-private perception/memory and temporal corpus: **research/reusable substrate candidates**;
+- actor-owned continuing matters: **QUALIFIED for the current research substrate**;
+- coarse direct matter↔context cosine relation: **REJECTED**;
+- same-actor two-domain frozen MiniLM result: **PARTIAL SIGNAL / GENERALIZATION FAIL**;
+- concurrent-matter causal-responsibility direct cosine: **FAIL at chance**, including after temporal-alignment correction;
+- within-one-ecology mixed-pressure causal-responsibility target: **QUALIFIED · NO MODEL RUN YET**;
+- learned R3 ReflexBrain authority: **does not exist**.
 
-Therefore the next `kontynuuj` should not create a model until actor-owned matter/purpose is qualified.
+Therefore the next `kontynuuj` begins with one closed frozen-representation falsifier on the mixed-pressure target:
+
+- baseline + paraphrase;
+- last-transition + short history;
+- lexical baseline;
+- no training;
+- no learned head;
+- no authority.
+
+If direct cosine fails again, preserve the FAIL and retire that mechanism family instead of adding capacity to rescue it. If it shows a robust signal, treat it as representation evidence only and design the next falsifier before promoting architecture.
