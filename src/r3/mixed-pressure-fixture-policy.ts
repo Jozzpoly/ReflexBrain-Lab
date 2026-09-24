@@ -32,6 +32,11 @@ export class MixedPressureJanekFixturePolicy
   readonly residentId = "resident:janek" as const;
   private readonly worker = new WorkerFixturePolicy();
 
+  constructor(
+    private readonly reportGateMatterId: string =
+      MIXED_PRESSURE_MATTER_IDS.reportResponse,
+  ) {}
+
   decide(input: ResidentPolicyInput): ResidentDecision {
     const report = input.observation.heardEvents.find(
       (event) =>
@@ -45,7 +50,7 @@ export class MixedPressureJanekFixturePolicy
       report &&
       hasMatter(
         input,
-        MIXED_PRESSURE_MATTER_IDS.reportResponse,
+        this.reportGateMatterId,
       )
     ) {
       return {
