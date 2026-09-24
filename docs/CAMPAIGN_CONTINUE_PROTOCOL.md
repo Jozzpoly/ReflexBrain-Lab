@@ -153,16 +153,19 @@ At the 2026-09-24 recovered frontier:
 - coarse direct matter↔context cosine relation: **REJECTED**;
 - same-actor two-domain frozen MiniLM result: **PARTIAL SIGNAL / GENERALIZATION FAIL**;
 - concurrent-matter causal-responsibility direct cosine: **FAIL at chance**, including after temporal-alignment correction;
-- within-one-ecology mixed-pressure causal-responsibility target: **QUALIFIED**;
+- within-one-ecology mixed-pressure causal-responsibility target: **QUALIFIED as causal feasibility evidence**;
 - frozen MiniLM direct cosine on that target: **FAIL · FAMILY REJECTED**;
+- current 12-example mixed-pressure corpus as learned-relation training benchmark: **FAIL · context-only speech shortcut reaches 1.000**;
+- intervention-derived paired-ablation supervision: **PRESERVED**;
 - learned R3 ReflexBrain authority: **does not exist**.
 
-Therefore the next `kontynuuj` must **not** rerun or rescue direct cosine.
+Therefore the next `kontynuuj` must **not** rerun/rescue direct cosine and must **not** train a joint relation model on the current 12-example corpus.
 
 The earned frontier is:
-- broaden intervention-derived causal supervision beyond the 12-example feasibility set;
-- add null/simple structured relation baselines;
-- preserve same-actor, same-ecology responsibility switching and paraphrase controls;
-- only then consider a small learned **joint relation function** over private temporal evidence + candidate matter.
+- broaden and counterbalance intervention-derived causal supervision beyond the feasibility set;
+- require majority/null, context-only, matter-only and simple structured baselines;
+- break fixed cue→matter mappings while preserving same-actor/same-ecology causal switching;
+- preserve paraphrase controls and add candidate-order plus actor/domain transfer holdouts;
+- only after those gates pass consider a small learned **joint relation function** over private temporal evidence + candidate matter.
 
-Do not add capacity/head to the rejected independent-embedding cosine formulation.
+Do not add capacity/head to the rejected independent-embedding cosine formulation, and do not interpret a model fitting the current fixture as learned actor-relative meaning.
