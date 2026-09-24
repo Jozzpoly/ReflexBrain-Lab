@@ -49,6 +49,17 @@ export interface R3MixedPressureCausalAudit {
   workshopResponsibleCount: number;
 }
 
+export interface R3MixedPressureContextShortcutAudit {
+  wording: R3MixedPressureMatterWording;
+  exampleCount: number;
+  majorityBaselineAccuracy: number;
+  lastTransitionSpeechGateAccuracy: number;
+  reportWithLastTransitionSpeech: number;
+  reportWithoutLastTransitionSpeech: number;
+  workshopWithLastTransitionSpeech: number;
+  workshopWithoutLastTransitionSpeech: number;
+}
+
 export function buildR3MixedPressureCausalCorpus(
   options: {
     scanTicks?: number;
@@ -235,6 +246,84 @@ export function auditR3MixedPressureCausalResponsibility(
       responsibilityCounts[
         MATERIAL_FIXTURE_MATTER_IDS.worker
       ] ?? 0,
+  };
+}
+
+export function auditR3MixedPressureContextShortcuts(
+  corpus: R3MixedPressureCausalCorpus,
+  wording: R3MixedPressureMatterWording,
+): R3MixedPressureContextShortcutAudit {
+  const examples = corpus.examples.filter(
+    (example) => example.wording === wording,
+  );
+
+  if (examples.length === 0) {
+    throw new Error(
+      "mixed causal shortcut audit subset is empty: " + wording,
+    );
+  }
+
+  let speechGateCorrect = 0;
+  let reportWithSpeech = 0;
+  let reportWithoutSpeech = 0;
+  let workshopWithSpeech = 0;
+  let workshopWithoutSpeech = 0;
+
+  for (const example of examples) {
+    const lastTransition =
+      example.transitionHistory[
+        example.transitionHistory.length - 1
+      ] ?? "";
+    const hasSpeech =
+      lastTransition.includes("heard speech ");
+
+    if (
+      example.causallyResponsibleMatterId ===
+      MIXED_PRESSURE_MATTER_IDS.reportResponse
+    ) {
+      if (hasSpeech) reportWithSpeech += 1;
+      else reportWithoutSpeech += 1;
+    } else if (
+      example.causallyResponsibleMatterId ===
+      MATERIAL_FIXTURE_MATTER_IDS.worker
+    ) {
+      if (hasSpeech) workshopWithSpeech += 1;
+      else workshopWithoutSpeech += 1;
+    }
+
+    const predictedMatterId = hasSpeech
+      ? MIXED_PRESSURE_MATTER_IDS.reportResponse
+      : MATERIAL_FIXTURE_MATTER_IDS.worker;
+
+    if (
+      predictedMatterId ===
+      example.causallyResponsibleMatterId
+    ) {
+      speechGateCorrect += 1;
+    }
+  }
+
+  const reportCount =
+    reportWithSpeech + reportWithoutSpeech;
+  const workshopCount =
+    workshopWithSpeech + workshopWithoutSpeech;
+
+  return {
+    wording,
+    exampleCount: examples.length,
+    majorityBaselineAccuracy:
+      Math.max(reportCount, workshopCount) /
+      examples.length,
+    lastTransitionSpeechGateAccuracy:
+      speechGateCorrect / examples.length,
+    reportWithLastTransitionSpeech:
+      reportWithSpeech,
+    reportWithoutLastTransitionSpeech:
+      reportWithoutSpeech,
+    workshopWithLastTransitionSpeech:
+      workshopWithSpeech,
+    workshopWithoutLastTransitionSpeech:
+      workshopWithoutSpeech,
   };
 }
 
