@@ -33,6 +33,7 @@ import {
 export interface R3MixedPressureRunOptions {
   janekMatterWording?: R3MixedPressureMatterWording;
   janekMatterOverrides?: readonly ResidentMatter[];
+  janekReportGateMatterId?: string;
   reportCooldownTicks?: number;
   initialSourceRaw?: number;
 }
@@ -110,7 +111,9 @@ export function createR3MixedPressureRun(
     [
       "resident:janek",
       new AutonomousResidentAgent(
-        new MixedPressureJanekFixturePolicy(),
+        new MixedPressureJanekFixturePolicy(
+          options.janekReportGateMatterId,
+        ),
         options.janekMatterOverrides ??
           r3MixedPressureJanekMatters(
             options.janekMatterWording ??
