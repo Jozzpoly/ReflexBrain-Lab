@@ -59,11 +59,15 @@ The current mixed-pressure target uses one Janek with two simultaneous matters w
 
 Status:
 
-> **TARGET QUALIFIED · FROZEN PROBE IMPLEMENTED/DEPLOYED · LIVE WEBGPU EXECUTION BLOCKED BY BROWSER RUNTIME**
+> **MIXED-PRESSURE FROZEN WEBGPU PROBE EXECUTED · DIRECT-COSINE FAMILY REJECTED**
 
 ## Current frontier
 
-The bounded frozen MiniLM evaluation is already implemented and deployed. The only unresolved step is valid live WebGPU execution against the qualified mixed-pressure causal-responsibility target with:
+The bounded frozen MiniLM evaluation has now executed in a real Opera/WebGPU browser and failed the qualified mixed-pressure causal-responsibility falsifier.
+
+Direct cosine is therefore rejected as the candidate relation mechanism.
+
+The next frontier is to broaden intervention-derived causal supervision and establish null/simple structured baselines before testing any small learned **joint relation function** over private temporal evidence + candidate matter. The rejected cosine family must not be rescued by capacity, a head, or target changes. Historical evaluation dimensions remain:
 
 - baseline + strong paraphrase wording;
 - last-transition + short-history variants;

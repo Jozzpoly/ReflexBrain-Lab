@@ -153,16 +153,16 @@ At the 2026-09-24 recovered frontier:
 - coarse direct matter↔context cosine relation: **REJECTED**;
 - same-actor two-domain frozen MiniLM result: **PARTIAL SIGNAL / GENERALIZATION FAIL**;
 - concurrent-matter causal-responsibility direct cosine: **FAIL at chance**, including after temporal-alignment correction;
-- within-one-ecology mixed-pressure causal-responsibility target: **QUALIFIED · NO MODEL RUN YET**;
+- within-one-ecology mixed-pressure causal-responsibility target: **QUALIFIED**;
+- frozen MiniLM direct cosine on that target: **FAIL · FAMILY REJECTED**;
 - learned R3 ReflexBrain authority: **does not exist**.
 
-Therefore the next `kontynuuj` begins with one closed frozen-representation falsifier on the mixed-pressure target:
+Therefore the next `kontynuuj` must **not** rerun or rescue direct cosine.
 
-- baseline + paraphrase;
-- last-transition + short history;
-- lexical baseline;
-- no training;
-- no learned head;
-- no authority.
+The earned frontier is:
+- broaden intervention-derived causal supervision beyond the 12-example feasibility set;
+- add null/simple structured relation baselines;
+- preserve same-actor, same-ecology responsibility switching and paraphrase controls;
+- only then consider a small learned **joint relation function** over private temporal evidence + candidate matter.
 
-If direct cosine fails again, preserve the FAIL and retire that mechanism family instead of adding capacity to rescue it. If it shows a robust signal, treat it as representation evidence only and design the next falsifier before promoting architecture.
+Do not add capacity/head to the rejected independent-embedding cosine formulation.

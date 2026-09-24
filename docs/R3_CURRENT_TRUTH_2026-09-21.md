@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **QUALIFIED CODE HEAD `696ffcc5e4083727be3d3cfd6b710b6379c55786` · CHECK PASS · MIXED-PRESSURE FROZEN PROBE IMPLEMENTED · LIVE WEBGPU EXECUTION BLOCKED BY BROWSER RUNTIME**
+Status: **QUALIFIED CODE HEAD `e3e00cf7b0fca04196e2292422a97022e7aab77f` · LIVE MIXED-PRESSURE WEBGPU PROBE EXECUTED · DIRECT-COSINE FAMILY REJECTED**
 
 Branch:
 
@@ -634,3 +634,119 @@ The next action is only:
 5. record the result before beginning any new mechanism.
 
 Do not train a relation head while this falsifier is unresolved.
+
+
+## Mixed-pressure frozen MiniLM falsifier — LIVE RESULT: DIRECT-COSINE FAMILY REJECTED
+
+The already-qualified dedicated mixed-pressure probe was executed in a real Opera/WebGPU browser against the deployed checkpoint.
+
+Runtime:
+- model: `Xenova/paraphrase-MiniLM-L3-v2`;
+- revision: `4b544e74dfc3256b2b56849ea5d7064fee1ac846`;
+- q8;
+- WebGPU;
+- isolated `batchSize=1`;
+- 384 dimensions;
+- 17 unique texts;
+- model load ~2.02 s;
+- embedding pass ~1.84 s.
+
+Target remained unchanged:
+- one continuous mixed-pressure ecology;
+- one Janek;
+- two simultaneously-owned matters;
+- causal responsibility from paired one-matter ablation;
+- 12 examples per wording;
+- balanced 6/6 responsibility;
+- 9 unique transition histories;
+- 0 ambiguous histories.
+
+Lexical controls:
+- baseline: 0.333 top-1;
+- paraphrase: 0.583;
+- chance: 0.500.
+
+### Frozen direct-cosine result
+
+| wording | context | top-1 | chance | mean responsible margin |
+| --- | --- | ---: | ---: | ---: |
+| baseline | last-transition | 0.417 | 0.500 | +0.0213 |
+| baseline | mean-transitions | 0.500 | 0.500 | +0.0109 |
+| paraphrase | last-transition | 0.500 | 0.500 | -0.0150 |
+| paraphrase | mean-transitions | 0.500 | 0.500 | +0.0049 |
+
+Per-matter behavior reveals collapse rather than balanced competence.
+
+Baseline / last-transition:
+- workshop matter: 0.667;
+- report matter: 0.167.
+
+Baseline / mean-transitions:
+- workshop matter: 0.833;
+- report matter: 0.167.
+
+Paraphrase / both context modes:
+- workshop matter: **0.000**;
+- report matter: **1.000**.
+
+Wording stability:
+- last-transition prediction agreement: 0.250;
+- mean-transitions prediction agreement: 0.167;
+- responsible prediction agreement in both modes: **0.0833**.
+
+### Interpretation
+
+This falsifies the remaining direct-cosine escape hatch.
+
+The strongest current target removes the major prior confounds:
+- same actor;
+- same ecology;
+- both matters simultaneously owned;
+- responsibility switches inside that ecology;
+- ground truth comes from causal ablation;
+- transition histories have zero label ambiguity in the retained corpus.
+
+Yet independent sentence embeddings compared by cosine do not track which matter is causally responsible.
+
+The paraphrase condition is especially decisive: the model collapses to always selecting the report matter while the true labels remain balanced 6/6.
+
+### Promotion decision
+
+**REJECTED FAMILY**
+
+Reject as candidate ReflexBrain relation mechanism:
+- direct cosine between matter text and private snapshot;
+- direct cosine between matter text and private transition;
+- last-transition cosine;
+- mean-history / mean-transition cosine;
+- treating earlier Janek same-actor signal as causal relevance evidence.
+
+Do not rescue this family with:
+- larger capacity;
+- a trained classifier/head on top of the same weak 12-example target;
+- new wording chosen to make cosine look better;
+- a different target introduced solely because this one failed.
+
+Preserve:
+- frozen semantic encoder as a representation donor;
+- causal-ablation supervision;
+- mixed-pressure target;
+- actor-private transition representation;
+- paraphrase controls;
+- lexical/ambiguity controls.
+
+## New frontier after rejection
+
+The next question is no longer whether cosine can retrieve the right matter.
+
+It is whether actor-relative causal relevance requires a **joint relation function** over private temporal evidence and candidate matter, rather than independent sentence similarity.
+
+Before training such a relation function:
+1. expand causal supervision beyond the current 12-example feasibility sample;
+2. create explicit null/simple structured baselines;
+3. preserve same-actor, same-ecology responsibility switching;
+4. preserve paraphrase holdout;
+5. design actor/domain holdouts where feasible;
+6. only then test a small learned relation mechanism.
+
+Direct cosine is closed unless genuinely new evidence reopens it.
