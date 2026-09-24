@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   auditR3MixedPressureCausalResponsibility,
+  auditR3MixedPressureContextShortcuts,
   buildR3MixedPressureCausalCorpus,
 } from "../src/r3/mixed-pressure-causal-responsibility";
 import {
@@ -135,6 +136,43 @@ describe("R3 mixed-pressure causal responsibility", () => {
       ).toContain("heard speech");
     }
   });
+
+  it("exposes the current context-only speech shortcut before any learned relation training", () => {
+    for (const wording of [
+      "baseline",
+      "paraphrase",
+    ] as const) {
+      const audit =
+        auditR3MixedPressureContextShortcuts(
+          corpus,
+          wording,
+        );
+
+      console.info(
+        "R3_MIXED_PRESSURE_CONTEXT_SHORTCUT",
+        JSON.stringify(audit),
+      );
+
+      expect(
+        audit.majorityBaselineAccuracy,
+      ).toBe(0.5);
+      expect(
+        audit.lastTransitionSpeechGateAccuracy,
+      ).toBe(1);
+      expect(
+        audit.reportWithLastTransitionSpeech,
+      ).toBeGreaterThan(0);
+      expect(
+        audit.reportWithoutLastTransitionSpeech,
+      ).toBe(0);
+      expect(
+        audit.workshopWithLastTransitionSpeech,
+      ).toBe(0);
+      expect(
+        audit.workshopWithoutLastTransitionSpeech,
+      ).toBeGreaterThan(0);
+    }
+  }, 30_000);
 
   it("audits identifiability and lexical shortcuts before any mixed-pressure model run", () => {
     const audits = [
