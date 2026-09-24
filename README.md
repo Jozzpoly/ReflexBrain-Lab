@@ -59,11 +59,11 @@ The current mixed-pressure target uses one Janek with two simultaneous matters w
 
 Status:
 
-> **TARGET QUALIFIED · NO MODEL RUN ON THIS TARGET YET**
+> **TARGET QUALIFIED · FROZEN PROBE IMPLEMENTED/DEPLOYED · LIVE WEBGPU EXECUTION BLOCKED BY BROWSER RUNTIME**
 
 ## Current frontier
 
-Run one bounded frozen MiniLM evaluation against the qualified mixed-pressure causal-responsibility target with:
+The bounded frozen MiniLM evaluation is already implemented and deployed. The only unresolved step is valid live WebGPU execution against the qualified mixed-pressure causal-responsibility target with:
 
 - baseline + strong paraphrase wording;
 - last-transition + short-history variants;

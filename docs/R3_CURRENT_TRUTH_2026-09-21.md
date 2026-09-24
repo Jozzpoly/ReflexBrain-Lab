@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **QUALIFIED CODE HEAD `07448da82be795661fbecea39a23d74f3ac939a9` · CHECK PASS · MIXED-PRESSURE CAUSAL TARGET QUALIFIED**
+Status: **QUALIFIED CODE HEAD `696ffcc5e4083727be3d3cfd6b710b6379c55786` · CHECK PASS · MIXED-PRESSURE FROZEN PROBE IMPLEMENTED · LIVE WEBGPU EXECUTION BLOCKED BY BROWSER RUNTIME**
 
 Branch:
 
@@ -587,3 +587,50 @@ Required controls:
 If frozen direct cosine remains at chance, the entire direct-cosine matter-relevance family stays rejected and the project should move toward a jointly learned relation function only after expanding the causal corpus.
 
 If it shows robust paraphrase-resistant signal, treat that only as representation evidence, not as ReflexBrain architecture.
+
+
+## Mixed-pressure frozen MiniLM falsifier — IMPLEMENTED, LIVE EXECUTION BLOCKED
+
+The qualified within-one-ecology mixed-pressure causal target now has a dedicated, isolated frozen-representation probe.
+
+Implementation head:
+
+`696ffcc5e4083727be3d3cfd6b710b6379c55786`
+
+Qualified:
+- TypeScript/tests/build: PASS;
+- Research Preview build/deploy: PASS;
+- dedicated `r3-mixed-pressure-probe.html`;
+- frozen pinned MiniLM-L3 q8 path;
+- isolated `batchSize=1`;
+- baseline + paraphrase wording;
+- last-transition + mean-transitions;
+- lexical audit emitted alongside semantic metrics;
+- per-matter accuracy and wording stability included;
+- no training;
+- no learned head;
+- no actor authority.
+
+The intended live Opera/WebGPU execution could not be completed because the Opera Browser Connector was disconnected.
+
+A single bounded cloud-browser attempt was used only as a runtime check. The page reached terminal `FAIL_EXECUTION` with:
+
+`Failed to get GPU adapter`
+
+Therefore that run is **not model evidence** and must not be interpreted as a MiniLM FAIL.
+
+A container Chromium check also failed to provide a trustworthy WebGPU backend and was rejected as a substitute.
+
+### Current exact frontier
+
+No further implementation is required before the model falsifier.
+
+The next action is only:
+
+1. restore a browser with a working WebGPU adapter;
+2. open the already-deployed dedicated mixed-pressure probe;
+3. capture `causalAudit`, `semanticRetrieval`, and `wordingStability`;
+4. classify direct cosine as PASS/FAIL only from that valid execution;
+5. record the result before beginning any new mechanism.
+
+Do not train a relation head while this falsifier is unresolved.
