@@ -327,4 +327,212 @@ describe("R3 semantic consumer oracle feasibility", () => {
       }),
     );
   }, 30_000);
+  it("requires a joint message×matter relation when the same matter id changes actor-relative meaning", () => {
+    const baseline =
+      r3MixedPressureJanekMatters("baseline");
+
+    const depotMatters = baseline.map(
+      (matter) =>
+        matter.id ===
+        MIXED_PRESSURE_MATTER_IDS.reportResponse
+          ? {
+              ...matter,
+              statement:
+                "acknowledge depot inspection status reports when they arrive",
+            }
+          : structuredClone(matter),
+    );
+    const courtyardMatters = baseline.map(
+      (matter) =>
+        matter.id ===
+        MIXED_PRESSURE_MATTER_IDS.reportResponse
+          ? {
+              ...matter,
+              statement:
+                "acknowledge courtyard flower condition reports when they arrive",
+            }
+          : structuredClone(matter),
+    );
+
+    expect(
+      depotMatters.map((matter) => matter.id),
+    ).toEqual(
+      courtyardMatters.map((matter) => matter.id),
+    );
+    expect(
+      depotMatters.find(
+        (matter) =>
+          matter.id ===
+          MIXED_PRESSURE_MATTER_IDS.reportResponse,
+      )!.statement,
+    ).not.toBe(
+      courtyardMatters.find(
+        (matter) =>
+          matter.id ===
+          MIXED_PRESSURE_MATTER_IDS.reportResponse,
+      )!.statement,
+    );
+
+    const depotOracle = summarize(
+      "ideal-semantic-oracle",
+      depotMatters,
+    );
+    const courtyardOracle = summarize(
+      "ideal-semantic-oracle",
+      courtyardMatters,
+    );
+
+    const depotSurfaceOnDepot = summarize(
+      "surface-depot-only",
+      depotMatters,
+    );
+    const depotSurfaceOnCourtyard = summarize(
+      "surface-depot-only",
+      courtyardMatters,
+    );
+    const courtyardSurfaceOnDepot = summarize(
+      "surface-courtyard-only",
+      depotMatters,
+    );
+    const courtyardSurfaceOnCourtyard = summarize(
+      "surface-courtyard-only",
+      courtyardMatters,
+    );
+
+    for (const summary of [
+      courtyardOracle,
+      depotSurfaceOnDepot,
+      depotSurfaceOnCourtyard,
+      courtyardSurfaceOnDepot,
+      courtyardSurfaceOnCourtyard,
+    ]) {
+      expect(summary.pressureTimeline).toEqual(
+        depotOracle.pressureTimeline,
+      );
+    }
+
+    // Same pressure, same ids, different actor-private purpose.
+    // The ideal relation flips which message deserves the response.
+    expect(depotOracle.relevantResponseCount).toBe(
+      depotOracle.relevantExposureCount,
+    );
+    expect(
+      depotOracle.irrelevantResponseCount,
+    ).toBe(0);
+
+    expect(
+      courtyardOracle.relevantResponseCount,
+    ).toBe(0);
+    expect(
+      courtyardOracle.irrelevantResponseCount,
+    ).toBe(
+      courtyardOracle.irrelevantExposureCount,
+    );
+
+    // Surface-only rules cannot change with private purpose because they
+    // ignore matter.statement entirely.
+    expect(
+      depotSurfaceOnDepot.relevantResponseCount,
+    ).toBe(
+      depotSurfaceOnCourtyard.relevantResponseCount,
+    );
+    expect(
+      depotSurfaceOnDepot.irrelevantResponseCount,
+    ).toBe(
+      depotSurfaceOnCourtyard.irrelevantResponseCount,
+    );
+    expect(
+      courtyardSurfaceOnDepot.relevantResponseCount,
+    ).toBe(
+      courtyardSurfaceOnCourtyard.relevantResponseCount,
+    );
+    expect(
+      courtyardSurfaceOnDepot.irrelevantResponseCount,
+    ).toBe(
+      courtyardSurfaceOnCourtyard.irrelevantResponseCount,
+    );
+
+    const relationAccuracy = (
+      summary: ConsumerSummary,
+      domain: "depot" | "courtyard",
+    ): number => {
+      const correct =
+        domain === "depot"
+          ? summary.relevantResponseCount +
+            (
+              summary.irrelevantExposureCount -
+              summary.irrelevantResponseCount
+            )
+          : summary.irrelevantResponseCount +
+            (
+              summary.relevantExposureCount -
+              summary.relevantResponseCount
+            );
+      return (
+        correct /
+        (
+          summary.relevantExposureCount +
+          summary.irrelevantExposureCount
+        )
+      );
+    };
+
+    const oracleAccuracy =
+      (
+        relationAccuracy(depotOracle, "depot") +
+        relationAccuracy(
+          courtyardOracle,
+          "courtyard",
+        )
+      ) / 2;
+    const depotSurfaceAccuracy =
+      (
+        relationAccuracy(
+          depotSurfaceOnDepot,
+          "depot",
+        ) +
+        relationAccuracy(
+          depotSurfaceOnCourtyard,
+          "courtyard",
+        )
+      ) / 2;
+    const courtyardSurfaceAccuracy =
+      (
+        relationAccuracy(
+          courtyardSurfaceOnDepot,
+          "depot",
+        ) +
+        relationAccuracy(
+          courtyardSurfaceOnCourtyard,
+          "courtyard",
+        )
+      ) / 2;
+
+    expect(oracleAccuracy).toBe(1);
+    expect(depotSurfaceAccuracy).toBe(0.5);
+    expect(courtyardSurfaceAccuracy).toBe(0.5);
+
+    console.info(
+      "R3_SEMANTIC_CONSUMER_RELATION_2X2",
+      JSON.stringify({
+        sameMatterIds: true,
+        samePressureTimeline: true,
+        oracleAccuracy,
+        depotSurfaceAccuracy,
+        courtyardSurfaceAccuracy,
+        depotOracleResponses: {
+          depot: depotOracle.relevantResponseCount,
+          courtyard:
+            depotOracle.irrelevantResponseCount,
+        },
+        courtyardOracleResponses: {
+          depot:
+            courtyardOracle.relevantResponseCount,
+          courtyard:
+            courtyardOracle.irrelevantResponseCount,
+        },
+      }),
+    );
+  }, 30_000);
+
 });
