@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · FIRST BOUNDED SEMANTIC CONSUMER VALUE QUALIFIED · LEARNED REFLEXBRAIN STILL UNPROVEN · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · TWO BOUNDED ORACLE-ONLY SEMANTIC CONSUMER FAMILIES QUALIFIED · CURRENT TEMPORAL TRAINING TARGET UNDER-SPECIFIES ACTOR PURPOSE · LEARNED REFLEXBRAIN UNPROVEN · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -1032,3 +1032,48 @@ Before model training, harden the consumer-shaped evaluation with:
 6. an explicit supervision-source audit.
 
 Only after those gates should a learned approximation be selected. Direct cosine remains rejected; no learned head currently has earned promotion.
+
+
+## Temporal semantic consumer + learnability hardening — QUALIFIED CONSUMER / PARTIAL TARGET
+
+A second bounded oracle-only consumer family now establishes that settled private semantic history can matter downstream.
+
+In the autonomous temporal pressure fixture:
+- semantic state changes are acknowledged once;
+- paraphrased restatements of the same settled state are ignored;
+- exact-text change and respond-all over-acknowledge;
+- ignoring leaves additional unresolved World speech pressure;
+- processing throughput remains unchanged.
+
+The pressure now includes `complete`, `delayed` and `suspended` states.
+
+The derived temporal relation corpus holds `suspended` out of TRAIN and simple exact/current/history/unigram/cross-token controls fail to solve the held-out relation.
+
+But the stronger matter-dependence audit at head `1a14c6cc567ca415366521ff6933e8f00fbb2ac5` (Check #248 PASS, 25 files / 174 tests) found:
+- 32 temporal relation examples;
+- 0 temporal-evidence signatures with alternative matter meanings;
+- 0 matter-dependent label switches.
+
+So the current temporal target validates **semantic history × current evidence**, not the full actor-relative relation.
+
+It can be solved while ignoring `matterStatement`.
+
+### Current earned frontier — THREE-WAY ACTOR-PRIVATE RELATION
+
+Before any learned ReflexBrain candidate, require one bounded consumer/target where the correct response jointly depends on:
+
+1. current actor-private purpose/matter meaning;
+2. actor-private settled semantic history;
+3. current actor-private evidence.
+
+Required counterfactual structure:
+- fixed ids;
+- same current message/history can flip under different actor purposes;
+- same purpose/current message can flip under different settled history;
+- held-out paraphrase/unseen-state pressure;
+- null, surface-only, purpose-only, history-only, current-only and simple lexical controls;
+- causal consumer consequence in zero-input autonomous pressure.
+
+Only after that relation survives should model selection resume.
+
+This supersedes the weaker reading that the current temporal corpus alone is ready for model training.
