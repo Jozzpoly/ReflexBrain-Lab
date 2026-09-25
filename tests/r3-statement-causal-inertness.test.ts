@@ -88,12 +88,15 @@ describe("R3 statement causal inertness", () => {
       ],
     };
 
+    // Material fixture activity ids use a research-global serial counter.
+    // Execute paired worlds sequentially so each run starts from its own reset
+    // instead of allowing one live run to consume the other's serials.
     const ordinary = createAutonomousLifeRun();
+    const ordinarySteps = ordinary.runTicks(420);
+
     const altered = createAutonomousLifeRun({
       matterOverrides: permuted,
     });
-
-    const ordinarySteps = ordinary.runTicks(420);
     const alteredSteps = altered.runTicks(420);
 
     expect(alteredSteps).toEqual(ordinarySteps);
