@@ -4,6 +4,16 @@ import {
   R3_SEMANTIC_PRESSURE_MESSAGES,
   type R3SemanticConsumerMode,
 } from "../src/r3/semantic-consumer-oracle-run";
+import type {
+  ResidentMatter,
+} from "../src/r3/life-contracts";
+import {
+  MIXED_PRESSURE_MATTER_IDS,
+  r3MixedPressureJanekMatters,
+} from "../src/r3/mixed-pressure-fixture-policy";
+import {
+  MATERIAL_FIXTURE_MATTER_IDS,
+} from "../src/r3/life-fixture-policies";
 
 interface ConsumerSummary {
   mode: R3SemanticConsumerMode;
@@ -22,10 +32,12 @@ interface ConsumerSummary {
 
 function summarize(
   mode: R3SemanticConsumerMode,
+  janekMatterOverrides?: readonly ResidentMatter[],
 ): ConsumerSummary {
   const run = createR3SemanticConsumerRun({
     mode,
     messageIntervalTicks: 16,
+    janekMatterOverrides,
   });
   // One extra perception tick lets Janek observe the final pressure event.
   run.runTicks(1601);
@@ -122,6 +134,83 @@ function summarize(
 }
 
 describe("R3 semantic consumer oracle feasibility", () => {
+  it("makes the oracle consumer causally sensitive to semantic matter content rather than fixed matter identity", () => {
+    const baseline =
+      r3MixedPressureJanekMatters("baseline");
+    const paraphrase =
+      r3MixedPressureJanekMatters("paraphrase");
+
+    const workerStatement =
+      baseline.find(
+        (matter) =>
+          matter.id ===
+          MATERIAL_FIXTURE_MATTER_IDS.worker,
+      )!.statement;
+    const reportStatement =
+      baseline.find(
+        (matter) =>
+          matter.id ===
+          MIXED_PRESSURE_MATTER_IDS.reportResponse,
+      )!.statement;
+
+    const statementSwapped = baseline.map(
+      (matter) => ({
+        ...matter,
+        statement:
+          matter.id ===
+          MATERIAL_FIXTURE_MATTER_IDS.worker
+            ? reportStatement
+            : workerStatement,
+      }),
+    );
+
+    const ordinary = summarize(
+      "ideal-semantic-oracle",
+      baseline,
+    );
+    const paraphrased = summarize(
+      "ideal-semantic-oracle",
+      paraphrase,
+    );
+    const swapped = summarize(
+      "ideal-semantic-oracle",
+      statementSwapped,
+    );
+
+    expect(paraphrased.pressureTimeline).toEqual(
+      ordinary.pressureTimeline,
+    );
+    expect(swapped.pressureTimeline).toEqual(
+      ordinary.pressureTimeline,
+    );
+
+    expect(ordinary.relevantResponseCount).toBe(
+      ordinary.relevantExposureCount,
+    );
+    expect(paraphrased.relevantResponseCount).toBe(
+      paraphrased.relevantExposureCount,
+    );
+
+    // Fixed ids are unchanged, but putting workshop meaning on the report id
+    // disables the authored semantic oracle's report applicability.
+    expect(swapped.relevantResponseCount).toBe(0);
+    expect(swapped.irrelevantResponseCount).toBe(0);
+
+    console.info(
+      "R3_SEMANTIC_CONSUMER_STATEMENT_SENSITIVITY",
+      JSON.stringify({
+        ordinaryRelevantResponses:
+          ordinary.relevantResponseCount,
+        paraphraseRelevantResponses:
+          paraphrased.relevantResponseCount,
+        swappedRelevantResponses:
+          swapped.relevantResponseCount,
+        fixedMatterIds: true,
+        statementAssignmentChanged: true,
+      }),
+    );
+  }, 30_000);
+
   it("shows that ideal actor-private semantic selectivity has a bounded downstream consumer advantage over ignore-all and respond-all", () => {
     // Execute independently/sequentially so disposable fixture globals reset
     // cleanly at each paired-run boundary.
