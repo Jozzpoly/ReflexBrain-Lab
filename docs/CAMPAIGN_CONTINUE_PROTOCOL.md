@@ -177,6 +177,7 @@ At the 2026-09-25 recovered frontier:
 - first bounded semantic consumer value: **QUALIFIED ORACLE-ONLY** — same-id purpose switching plus persistent required pressure show a purpose×current-evidence relation can resolve recurring pressure with fewer unnecessary acknowledgements than respond-all and better resolution than fixed-surface/null controls;
 - second bounded temporal semantic consumer: **QUALIFIED ORACLE-ONLY** — semantic state-change settlement uses private history to suppress paraphrased duplicate pressure that exact-text change cannot distinguish;
 - current temporal relation corpus: **PARTIAL / NOT YET ACTOR-RELATIVE** — unseen-state and shortcut controls pass, but a matter-dependence audit finds zero counterfactual signatures where purpose meaning can change the label;
+- first learned joint relation probe: **PARTIAL SIGNAL / NO PROMOTION** — held-out BA 0.7167, TPR 0.475, TNR 0.9583; purpose/history/current counterfactual success 0.467/0.383/0.475; the precommitted gate failed;
 - learned R3 ReflexBrain authority: **does not exist**.
 
 Therefore the next `kontynuuj` must **not** rerun/rescue direct cosine, must **not** train a joint relation model on the current corpus, and must **not** equate intervention-derived policy dependence with semantic meaning.
@@ -217,7 +218,7 @@ For future `kontynuuj`:
 - red-team any proposed target with statement permutation, identity/order, context-only, matter-only, policy-family and leakage controls before model training;
 - if semantic supervision requires an authored parser/oracle/teacher, name that source explicitly rather than calling the target intervention-derived ground truth.
 
-The next move is **three-way actor-private consumer/target qualification** — purpose × settled semantic history × current evidence — not immediate model training and not premature selection of a self-supervised objective.
+The three-way consumer/target has now been qualified and the first frozen learned approximation has executed. It produced **PARTIAL SIGNAL / NO PROMOTION**. The next move is failure localization of that exact frozen model — especially unseen-state vs relation-composition failure — without threshold/model/feature tuning. Only after diagnosis may a new architecture hypothesis be proposed.
 
 
 ### R3-wide statement inertness
@@ -279,3 +280,25 @@ For future `kontynuuj`:
 - combine the already-qualified static purpose relation with temporal settlement in one bounded consumer/target;
 - require purpose, history and current evidence to each have causal/label necessity;
 - only after that gate consider the first learned approximation.
+
+
+### 2026-09-25 first learned joint relation result
+
+Real Opera/WebGPU execution of the frozen first learned joint relation probe returned:
+- held-out BA 0.7167;
+- TPR 0.475;
+- TNR 0.9583;
+- purpose CF 0.4667;
+- history CF 0.3833;
+- current CF 0.4750;
+- strongest privileged partial semantic baseline BA 0.9643.
+
+Classification: **PARTIAL SIGNAL / NO PROMOTION**.
+
+For future `kontynuuj`:
+- do not tune threshold;
+- do not add hidden layers or a larger encoder;
+- do not alter held-out state/wording to improve score;
+- first add diagnostics that leave the frozen model unchanged;
+- determine whether unseen `suspended` semantics, three-way composition, or both dominate the failure;
+- only then state a new falsifiable architecture hypothesis.
