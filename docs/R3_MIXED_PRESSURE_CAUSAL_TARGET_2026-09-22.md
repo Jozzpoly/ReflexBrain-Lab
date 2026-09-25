@@ -1,6 +1,6 @@
 # R3 Mixed-Pressure Causal Target — Qualification 2026-09-22
 
-Status: **CAUSAL TARGET QUALIFIED · DIRECT-COSINE PROBE EXECUTED/REJECTED · 12-EXAMPLE CORPUS NOT TRAINING-QUALIFIED**
+Status: **CAUSAL FEASIBILITY INSTRUMENT QUALIFIED · SEMANTIC TRAINING TARGET NOT QUALIFIED**
 
 Qualified code head:
 
@@ -117,4 +117,46 @@ Before any learned relation model, the causal-supervision corpus must be broaden
 - paraphrase remains a held-out control;
 - actor/domain holdouts test transfer rather than fixture memorization.
 
-The intervention-derived target survives. **Training readiness does not.**
+The intervention-derived causal instrument survives. **Training readiness does not.**
+
+
+## Policy-wiring invariance falsifier — FAIL
+
+The next red-team asked whether the ablation label is determined by the actor-private evidence + candidate matter meanings, or can instead be changed by invisible fixture wiring.
+
+A research-only variant made the report-response branch's required matter id configurable without changing the ordinary baseline policy behavior when both matters are present.
+
+At the first direct-report moment (tick 41):
+
+| Property | default gate | swapped gate |
+| --- | --- | --- |
+| actor-private observation | identical | identical |
+| private memory | identical | identical |
+| owned candidate matters/statements | identical | identical |
+| baseline decision | identical | identical |
+| ablation-responsible matter | report-response | workshop-processing |
+
+Only the hidden fixture matter gate changed.
+
+Evidence:
+- head `e4c2bcc10573060debda6667a1b6692c2b92473f`;
+- Check #205 PASS;
+- 19 test files / 161 tests PASS.
+
+### Interpretation
+
+Paired ablation still correctly answers a causal question:
+
+> which matter id did this authored policy implementation require for this next decision?
+
+But that answer is **policy-relative**. It is not automatically a semantic truth recoverable from the resident's private experience and matter statements.
+
+Therefore do not use the current causal-responsibility label as learned semantic supervision merely because it is intervention-derived.
+
+The stronger future requirement is **semantic-grounding invariance**: supervision intended to teach actor-relative meaning must not flip under a fixture rewiring that leaves the relevant model-visible private life and semantic candidate content unchanged.
+
+If a future target deliberately depends on policy binding, that binding must either:
+- be a legitimate actor-private input whose meaning the mechanism is supposed to learn; or
+- be held out/varied so a learned mechanism must transfer across policy families rather than memorize the fixture.
+
+This downgrades the current mixed-pressure target from candidate semantic supervision to a **qualified causal microscope / feasibility instrument**.
