@@ -263,6 +263,12 @@ async function run(): Promise<void> {
         predictionById,
       );
 
+    const failureDiagnostics =
+      buildFailureDiagnostics(
+        heldOutExamples,
+        predictionById,
+      );
+
     const gates = {
       beatsPrivilegedPartialBaseline:
         heldOutMetrics
@@ -383,6 +389,7 @@ async function run(): Promise<void> {
             .balancedAccuracy,
       },
       counterfactuals,
+      failureDiagnostics,
       gates,
     };
 
@@ -509,11 +516,16 @@ function evaluateCounterfactualFamilies(
       string,
       R3JointHeadPrediction
     >,
+  positiveFilter: (
+    example:
+      R3JointConsumerRelationExample,
+  ) => boolean = () => true,
 ) {
   const positives =
     heldOut.filter(
       (example) =>
-        example.shouldRespond,
+        example.shouldRespond &&
+        positiveFilter(example),
     );
 
   return {
@@ -657,6 +669,229 @@ function pairFamily(
         ? success / count
         : 0,
   };
+}
+
+function buildFailureDiagnostics(
+  heldOut:
+    readonly R3JointConsumerRelationExample[],
+  predictionById:
+    ReadonlyMap<
+      string,
+      R3JointHeadPrediction
+    >,
+) {
+  const states = [
+    "complete",
+    "delayed",
+    "suspended",
+  ] as const;
+
+  const seenStatesOnly = (
+    example:
+      R3JointConsumerRelationExample,
+  ) =>
+    example.priorAcknowledgedState !==
+      "suspended" &&
+    example.currentState !==
+      "suspended";
+
+  const anySuspended = (
+    example:
+      R3JointConsumerRelationExample,
+  ) =>
+    !seenStatesOnly(example);
+
+  return {
+    modelContractUnchanged: true,
+    heldOutSeenStatesOnly:
+      subsetDiagnostics(
+        heldOut,
+        predictionById,
+        seenStatesOnly,
+      ),
+    heldOutAnySuspended:
+      subsetDiagnostics(
+        heldOut,
+        predictionById,
+        anySuspended,
+      ),
+    byCurrentState:
+      Object.fromEntries(
+        states.map((state) => [
+          state,
+          subsetDiagnostics(
+            heldOut,
+            predictionById,
+            (example) =>
+              example.currentState ===
+              state,
+          ),
+        ]),
+      ),
+    byPriorState:
+      Object.fromEntries(
+        states.map((state) => [
+          state,
+          subsetDiagnostics(
+            heldOut,
+            predictionById,
+            (example) =>
+              example.priorAcknowledgedState ===
+              state,
+          ),
+        ]),
+      ),
+    bySuspendedPosition: {
+      neither:
+        subsetDiagnostics(
+          heldOut,
+          predictionById,
+          (example) =>
+            example.priorAcknowledgedState !==
+              "suspended" &&
+            example.currentState !==
+              "suspended",
+        ),
+      currentOnly:
+        subsetDiagnostics(
+          heldOut,
+          predictionById,
+          (example) =>
+            example.priorAcknowledgedState !==
+              "suspended" &&
+            example.currentState ===
+              "suspended",
+        ),
+      historyOnly:
+        subsetDiagnostics(
+          heldOut,
+          predictionById,
+          (example) =>
+            example.priorAcknowledgedState ===
+              "suspended" &&
+            example.currentState !==
+              "suspended",
+        ),
+      both:
+        subsetDiagnostics(
+          heldOut,
+          predictionById,
+          (example) =>
+            example.priorAcknowledgedState ===
+              "suspended" &&
+            example.currentState ===
+              "suspended",
+        ),
+    },
+    byMatterDomain: {
+      depot:
+        subsetDiagnostics(
+          heldOut,
+          predictionById,
+          (example) =>
+            example.matterDomain ===
+            "depot",
+        ),
+      courtyard:
+        subsetDiagnostics(
+          heldOut,
+          predictionById,
+          (example) =>
+            example.matterDomain ===
+            "courtyard",
+        ),
+    },
+    counterfactualsSeenStatesOnly:
+      evaluateCounterfactualFamilies(
+        heldOut,
+        predictionById,
+        seenStatesOnly,
+      ),
+    counterfactualsAnySuspended:
+      evaluateCounterfactualFamilies(
+        heldOut,
+        predictionById,
+        anySuspended,
+      ),
+  };
+}
+
+function subsetDiagnostics(
+  heldOut:
+    readonly R3JointConsumerRelationExample[],
+  predictionById:
+    ReadonlyMap<
+      string,
+      R3JointHeadPrediction
+    >,
+  include: (
+    example:
+      R3JointConsumerRelationExample,
+  ) => boolean,
+) {
+  const examples =
+    heldOut.filter(include);
+  if (examples.length === 0) {
+    throw new Error(
+      "failure diagnostic subset is empty",
+    );
+  }
+
+  const predictions =
+    examples.map((example) => {
+      const prediction =
+        predictionById.get(
+          example.id,
+        );
+      if (!prediction) {
+        throw new Error(
+          "missing prediction for diagnostic example " +
+            example.id,
+        );
+      }
+      return prediction;
+    });
+
+  const positives =
+    predictions.filter(
+      (prediction) =>
+        prediction.label,
+    );
+  const negatives =
+    predictions.filter(
+      (prediction) =>
+        !prediction.label,
+    );
+
+  return {
+    metrics:
+      evaluateR3JointPredictions(
+        predictions,
+      ),
+    meanPositiveProbability:
+      meanProbability(positives),
+    meanNegativeProbability:
+      meanProbability(negatives),
+  };
+}
+
+function meanProbability(
+  predictions:
+    readonly R3JointHeadPrediction[],
+): number | null {
+  if (predictions.length === 0) {
+    return null;
+  }
+
+  return (
+    predictions.reduce(
+      (sum, prediction) =>
+        sum +
+        prediction.probability,
+      0,
+    ) /
+    predictions.length
+  );
 }
 
 function vectorNorm(
