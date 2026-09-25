@@ -53,9 +53,9 @@ The campaign has deliberately falsified several tempting shortcuts.
 - coarse matter↔context direct cosine: **FAIL**;
 - same-actor two-domain MiniLM probe: **PARTIAL SIGNAL / GENERALIZATION FAIL**;
 - concurrent-matter causal responsibility direct cosine: **FAIL at chance**, including after temporal alignment correction;
-- within-one-ecology mixed-pressure causal target: **QUALIFIED research target**.
+- within-one-ecology mixed-pressure paired-ablation target: **QUALIFIED causal microscope / feasibility instrument, NOT semantic training ground truth**.
 
-The current mixed-pressure target uses one Janek with two simultaneous matters whose causal responsibility switches inside the same ecology. Ground truth comes from paired matter ablation, not actor identity, ecology identity or ownership.
+The current mixed-pressure target uses one Janek with two simultaneous matters whose causal responsibility switches inside the same ecology. Paired matter ablation establishes which matter the authored fixture policy causally depended on for the next decision. A policy-wiring falsifier has now shown that this label can flip while baseline model-visible private life and decision remain identical, so intervention provenance must not be confused with semantic target authority.
 
 Status:
 
@@ -67,18 +67,16 @@ The bounded frozen MiniLM evaluation has now executed in a real Opera/WebGPU bro
 
 Direct cosine is therefore rejected as the candidate relation mechanism.
 
-The next frontier is to broaden intervention-derived causal supervision and establish null/simple structured baselines before testing any small learned **joint relation function** over private temporal evidence + candidate matter. The rejected cosine family must not be rescued by capacity, a head, or target changes. Historical evaluation dimensions remain:
+The next frontier is **semantic-grounding qualification before learning**. Paired ablation remains useful causal provenance, but the current label/corpus is not valid learned-relation supervision.
 
-- baseline + strong paraphrase wording;
-- last-transition + short-history variants;
-- lexical baseline alongside semantic result;
-- no training;
-- no learned head;
-- no actor authority.
+Before any small learned **joint relation function**:
+- defeat majority/null, context-only, matter-only, candidate-position and simple structured baselines;
+- break fixed cue→matter mappings;
+- require paraphrase, actor/domain and policy-family transfer controls;
+- require claimed semantic labels to survive irrelevant hidden fixture rewiring;
+- keep model input actor-private and outcome/future leakage excluded.
 
-If direct cosine remains at chance, keep that whole mechanism family rejected. Do not rescue it by training a head on a still-too-small or conceptually weak target.
-
-If a robust paraphrase-resistant signal appears, classify it only as representation evidence and then pressure it further before any architecture promotion.
+The rejected cosine family must not be rescued by capacity, a head, wording tuning or target substitution. No learned head/model is currently earned.
 
 ## Defended boundaries
 
