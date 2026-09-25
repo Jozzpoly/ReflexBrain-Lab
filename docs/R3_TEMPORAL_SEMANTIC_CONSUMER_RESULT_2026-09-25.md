@@ -84,3 +84,68 @@ Before model work, construct a consumer-shaped temporal relation corpus in which
 - the relation remains actor-private and tied to the already-qualified temporal consumer.
 
 Only if simple controls fail and the relation stays identifiable should a learned joint temporal relation probe be considered.
+
+
+## Post-result hardening — unseen state PASS, actor-relative matter dependence FAIL
+
+The temporal consumer was extended beyond the original complete/delayed two-state specimen.
+
+Live oracle pressure now also includes a third semantic state, `suspended`, with two distinct surface realizations. The oracle-only behavioral result remains qualitatively stable:
+- new semantic states are acknowledged once;
+- paraphrased restatements of an already settled state are suppressed;
+- exact-text change still over-responds;
+- throughput remains diagnostic only.
+
+A separate temporal relation corpus then held `suspended` entirely out of TRAIN.
+
+Evidence at `edb7a26f9a11e4286556a408e7dc555aa541f58e` / Check #247:
+- TRAIN: 16 examples using only complete/delayed;
+- held-out current-state: 8 examples where current state is unseen `suspended`;
+- held-out history-state: 8 examples where acknowledged history is unseen `suspended`;
+- all splits balanced 0.5 / 0.5;
+- majority, exact-triple, current-only and history-only controls: 0.500 balanced accuracy;
+- unigram and cross-token-pair controls: <= 0.600, in the qualified run exactly 0.500.
+
+This is useful evidence that the bounded temporal relation is not reducible to the tested string/pair memorization shortcuts.
+
+However, a stronger structural audit then exposed a scope failure.
+
+Evidence head:
+`1a14c6cc567ca415366521ff6933e8f00fbb2ac5`
+
+CI:
+- Check #248: PASS;
+- build: PASS;
+- deploy: PASS;
+- 25 test files / 174 tests PASS.
+
+Result:
+- temporal examples: 32;
+- temporal-evidence signatures with more than one matter meaning: **0**;
+- matter-dependent label switches: **0**.
+
+The temporal label is constructed from semantic-state change:
+`priorAcknowledgedState !== currentState`.
+
+Therefore the current temporal training target can be solved without actor-relative matter meaning. Matter text is present in the input, but no counterfactual in this corpus ever requires it to change the answer.
+
+### Reclassification
+
+**QUALIFIED**
+- bounded temporal semantic consumer value, oracle-only;
+- semantic settlement/history can matter downstream;
+- unseen-state temporal evaluation defeats the tested simple memorization controls.
+
+**NOT QUALIFIED**
+- the current temporal corpus as a complete actor-relative ReflexBrain target;
+- evidence that a learner must use actor purpose;
+- a learner trained on this corpus as proof of actor-relative meaning.
+
+The next target must require all three:
+1. actor-private purpose/matter meaning;
+2. actor-private settled semantic history;
+3. current private evidence.
+
+The same history/current pair must be able to change label when purpose changes, and the same purpose/current pair must be able to change label when history changes.
+
+Do not train the current temporal corpus as if it already demonstrates the full actor-relative relation.
