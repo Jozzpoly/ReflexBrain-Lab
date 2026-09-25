@@ -3,7 +3,6 @@ import {
   r3MaterialAuthoredMatters,
 } from "./autonomous-life-run";
 import {
-  MATERIAL_FIXTURE_MATTER_IDS,
   resetFixtureActivitySerials,
   StewardFixturePolicy,
   WorkerFixturePolicy,
@@ -459,4 +458,3 @@ function speakerActivity(
   };
 }
 
-void MATERIAL_FIXTURE_MATTER_IDS;
