@@ -1,6 +1,6 @@
 # R3 Mixed-Pressure Causal Target — Qualification 2026-09-22
 
-Status: **CAUSAL FEASIBILITY INSTRUMENT QUALIFIED · SEMANTIC TRAINING TARGET NOT QUALIFIED**
+Status: **CAUSAL FEASIBILITY INSTRUMENT QUALIFIED · ID-ABLATION SEMANTIC TARGET CLOSED IN CURRENT STATEMENT-BLIND SUBSTRATE**
 
 Qualified code head:
 
@@ -160,3 +160,53 @@ If a future target deliberately depends on policy binding, that binding must eit
 - be held out/varied so a learned mechanism must transfer across policy families rather than memorize the fixture.
 
 This downgrades the current mixed-pressure target from candidate semantic supervision to a **qualified causal microscope / feasibility instrument**.
+
+
+## Statement-permutation identifiability falsifier — FAIL
+
+The policy-wiring falsifier showed that the ablation label is policy-relative. A stricter metamorphic test now asks whether the semantic statements themselves are identifiable from that label generator.
+
+At the first direct-report moment (tick 41), keep:
+- the same actor;
+- the same World and deterministic prefix;
+- the same two matter ids;
+- the same fixture policy wiring;
+- the same observations, memory and baseline decision trajectory.
+
+Then exchange only the two semantic `matter.statement` strings between the existing matter ids.
+
+Result:
+- private observed/memory/decision trajectory: identical;
+- semantic statement→id assignment: reversed;
+- ablation-responsible matter id: unchanged.
+
+Evidence:
+- commit `4f4c14e64e5ed046916168c0b400b30d53b7d2c6`;
+- Check #209 PASS;
+- 19 test files / 162 tests PASS.
+
+### Consequence
+
+The current causal label generator is statement-blind.
+
+Paired ablation remains correct causal instrumentation for:
+
+> which authored matter identity did this fixture decision depend on?
+
+It does not provide an intervention-derived answer to:
+
+> which candidate semantic statement best matches or matters to this private experience?
+
+Because changing the semantic statement assignment does not change the generated label, semantic meaning is not identifiable from this supervision mechanism.
+
+This failure cannot be repaired by:
+- more examples of the same fixture relation;
+- balancing the current classes;
+- stronger context-only baselines;
+- a larger encoder;
+- a learned head;
+- policy-family holdout alone.
+
+A future semantic target needs a genuine grounding path for semantic content, or an explicitly acknowledged external semantic teacher/annotation. The latter must not be mislabeled as intervention-derived semantic ground truth.
+
+The mixed-pressure target therefore remains a **causal microscope only**. Its current ID-ablation label family is closed as semantic training supervision in the present R3 substrate.
