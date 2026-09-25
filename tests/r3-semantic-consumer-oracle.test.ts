@@ -27,7 +27,8 @@ function summarize(
     mode,
     messageIntervalTicks: 16,
   });
-  run.runTicks(1600);
+  // One extra perception tick lets Janek observe the final pressure event.
+  run.runTicks(1601);
 
   const janek = run
     .privateExperiences()
