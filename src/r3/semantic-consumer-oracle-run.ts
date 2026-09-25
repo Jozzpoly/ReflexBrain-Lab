@@ -29,6 +29,8 @@ export type R3SemanticConsumerMode =
   | "ignore-all"
   | "respond-all"
   | "cadence-only"
+  | "surface-depot-only"
+  | "surface-courtyard-only"
   | "ideal-semantic-oracle";
 
 export const R3_SEMANTIC_PRESSURE_MESSAGES = {
@@ -338,6 +340,16 @@ class SemanticConsumerJanekPolicy
         return true;
       case "cadence-only":
         return speechIndex % 2 === 0;
+      case "surface-depot-only":
+        return (
+          speechText.trim().toLowerCase() ===
+          R3_SEMANTIC_PRESSURE_MESSAGES.relevant.toLowerCase()
+        );
+      case "surface-courtyard-only":
+        return (
+          speechText.trim().toLowerCase() ===
+          R3_SEMANTIC_PRESSURE_MESSAGES.irrelevant.toLowerCase()
+        );
       case "ideal-semantic-oracle":
         return idealLocalReportApplicabilityOracle(
           input,
@@ -367,19 +379,41 @@ function idealLocalReportApplicabilityOracle(
 
   const statement =
     reportMatter.statement.trim().toLowerCase();
-  const matterAcceptsLocalUpdates =
-    statement.includes("status report") ||
-    statement.includes("immediate update");
-
   const normalizedSpeech =
     speechText.trim().toLowerCase();
-  const isRelevantStatusReport =
+
+  const isDepotReport =
     normalizedSpeech ===
     R3_SEMANTIC_PRESSURE_MESSAGES.relevant.toLowerCase();
+  const isCourtyardReport =
+    normalizedSpeech ===
+    R3_SEMANTIC_PRESSURE_MESSAGES.irrelevant.toLowerCase();
+
+  // Existing broad report matters remain compatible with the original
+  // feasibility fixture. The specific domain clauses below exist only for
+  // the stronger same-id relation falsifier.
+  const acceptsGenericLocalUpdates =
+    statement.includes("status report") ||
+    statement.includes("immediate update");
+  const wantsDepotInspection =
+    statement.includes("depot inspection");
+  const wantsCourtyardCondition =
+    statement.includes("courtyard") &&
+    (
+      statement.includes("flower") ||
+      statement.includes("garden")
+    );
+
+  if (wantsDepotInspection) {
+    return isDepotReport;
+  }
+  if (wantsCourtyardCondition) {
+    return isCourtyardReport;
+  }
 
   return (
-    matterAcceptsLocalUpdates &&
-    isRelevantStatusReport
+    acceptsGenericLocalUpdates &&
+    isDepotReport
   );
 }
 
