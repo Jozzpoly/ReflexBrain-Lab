@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · THREE-WAY BOUNDED ORACLE-ONLY SEMANTIC CONSUMER VALUE QUALIFIED · LEARNED REFLEXBRAIN UNPROVEN · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · THREE-WAY ORACLE CONSUMER VALUE QUALIFIED · FIRST LEARNED JOINT RELATION = PARTIAL SIGNAL / NO PROMOTION · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -1142,3 +1142,83 @@ Required structural falsifiers:
 Supervision provenance must be explicit. If the first target uses an authored semantic teacher, call it that; do not relabel it as intervention-derived ground truth.
 
 Only after this target survives should the first learned joint relation mechanism be chosen.
+
+
+## First learned three-way relation probe — PARTIAL SIGNAL / NO PROMOTION
+
+A precommitted frozen learned probe has now executed in a real Opera/WebGPU browser.
+
+Executed candidate:
+- `3e40edbf7f21269eab054cb65336f10765a16923`;
+- pinned `Xenova/paraphrase-MiniLM-L3-v2`;
+- revision `4b544e74dfc3256b2b56849ea5d7064fee1ac846`;
+- q8, WebGPU, batch size 1, 384 dimensions;
+- 24 unique texts.
+
+Supervision remains explicitly:
+- `authored-semantic-teacher`;
+- 128 TRAIN examples;
+- 288 held-out examples;
+- held-out wording + unseen `suspended` state;
+- no held-out fitting/calibration.
+
+Frozen learned mechanism:
+- features `[abs(P-C), abs(H-C)]`;
+- one linear logistic head;
+- no hidden layer;
+- fixed threshold 0.5;
+- no sweep.
+
+TRAIN:
+- BA 0.9875;
+- TPR 1.000;
+- TNR 0.975.
+
+HELD-OUT:
+- BA **0.7167**;
+- TPR **0.475**;
+- TNR **0.9583**;
+- TP/TN/FP/FN = 57/161/7/63.
+
+Strongest privileged partial semantic baseline:
+- exact-text + purpose BA **0.9643**.
+
+Counterfactual pair success:
+- purpose: **0.4667**;
+- history: **0.3833**;
+- current evidence: **0.4750**.
+
+Precommitted qualification gate:
+- runtime: PASS;
+- TNR: PASS;
+- every other promotion gate: FAIL.
+
+Classification:
+
+> **PARTIAL_SIGNAL_NO_PROMOTION**
+
+Interpretation:
+- the frozen representation + tiny linear head carries non-chance held-out signal;
+- it does not preserve the required three-way relation strongly enough;
+- false negatives dominate;
+- no learned ReflexBrain competence is promoted.
+
+Do not rescue this exact experiment by threshold tuning, hidden layers, larger encoder, feature/hyperparameter sweeps, held-out leakage or target weakening.
+
+Detailed result:
+`docs/R3_FIRST_LEARNED_JOINT_PROBE_RESULT_2026-09-25.md`
+
+### Current frontier after learned-probe failure
+
+Do **not** jump to another model.
+
+First localize the failure of the frozen mechanism without changing it:
+- stratify held-out performance by current semantic state;
+- stratify by prior semantic state;
+- isolate examples containing unseen `suspended` in current/history;
+- stratify by matter domain;
+- preserve purpose/history/current counterfactual families.
+
+The next architecture hypothesis must be justified by that failure localization.
+
+This remains mechanism-plane evidence only. No Owner/product claim changes.
