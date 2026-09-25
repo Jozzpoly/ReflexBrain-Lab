@@ -20,6 +20,10 @@ Continuation protocol:
 
 **`docs/CAMPAIGN_CONTINUE_PROTOCOL.md`**
 
+Current semantic consumer evidence:
+
+**`docs/R3_SEMANTIC_CONSUMER_ORACLE_RESULT_2026-09-25.md`**
+
 Historical R0/R1/R2 documents remain evidence and falsifiers. They are not the current feature sequence.
 
 ## Core research question
@@ -73,20 +77,29 @@ The bounded frozen MiniLM evaluation has now executed in a real Opera/WebGPU bro
 
 Direct cosine is therefore rejected as the candidate relation mechanism.
 
-The next frontier is **consumer-first semantic utility before learning-objective selection**.
+The first bounded **semantic consumer utility** gate is now qualified, still oracle-only.
 
-R3-wide statement-permutation evidence now shows that both current autonomous ecologies are causally invariant to `matter.statement` meaning when matter ids remain fixed. The host is useful causal/private pressure, but does not itself ground semantic matter meaning.
+In a same-id depot/courtyard purpose falsifier:
+- the ideal joint semantic relation reaches 1.000;
+- fixed message-surface controls reach 0.500;
+- unresolved required reports recur as autonomous World speech;
+- the oracle resolves all required pressure with 50 acknowledgements;
+- respond-all requires 150 acknowledgements for the same pressure resolution;
+- ignore-all leaves 200 Ida speech events versus oracle/respond-all 150;
+- fixed-surface controls leave 175 and resolve only half the required reports across both purpose meanings;
+- processing throughput remains 22 in every condition.
 
-Before any learned mechanism:
-- identify a bounded semantic judgement with a real downstream consumer in autonomous zero-input pressure;
-- test its ideal availability through a research-only actor-private oracle;
-- compare oracle / null / simple non-semantic controls under identical exogenous conditions;
-- require material causal or continuity benefit;
-- reject objectives that merely encode the answer through authored ids, fixture wiring, parsers, teachers or labels;
-- keep World/body authority deterministic and separate;
-- do not treat oracle answers as automatic training labels or final API.
+This establishes a bounded downstream consumer for actor-relative semantic routing. It does **not** establish learned competence.
 
-Only after that utility gate should the project choose whether a learned approximation is supervised, relational, contrastive, predictive, self-supervised or something else.
+The next frontier is **consumer-shaped learnability/generalization hardening before model selection**:
+- add paraphrased and lexical counterfactual surfaces;
+- defeat exact-pair, message-only, matter-only, token-overlap and simple structured baselines;
+- preserve same-id purpose switching;
+- add at least one qualitatively different semantic-pressure family or counterfactual;
+- audit supervision provenance before using oracle outputs for training;
+- keep World/body authority deterministic and separate.
+
+Only after those gates should the project choose whether a learned approximation is supervised, relational, contrastive, predictive, self-supervised or something else.
 
 The rejected cosine family must not be rescued by capacity, a head, wording tuning or target substitution. The current causal label must not be rescued by more rows either. No learned head/model is currently earned.
 
