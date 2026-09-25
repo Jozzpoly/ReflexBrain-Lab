@@ -6,7 +6,11 @@ import {
 } from "../src/r3/mixed-pressure-causal-responsibility";
 import {
   MIXED_PRESSURE_MATTER_IDS,
+  r3MixedPressureJanekMatters,
 } from "../src/r3/mixed-pressure-fixture-policy";
+import {
+  createR3MixedPressureRun,
+} from "../src/r3/mixed-pressure-run";
 import {
   MATERIAL_FIXTURE_MATTER_IDS,
 } from "../src/r3/life-fixture-policies";
@@ -172,6 +176,166 @@ describe("R3 mixed-pressure causal responsibility", () => {
         audit.workshopWithoutLastTransitionSpeech,
       ).toBeGreaterThan(0);
     }
+  }, 30_000);
+
+  it("shows that causal-responsibility labels can flip under hidden fixture matter wiring while baseline private life stays identical", () => {
+    const candidates =
+      r3MixedPressureJanekMatters("baseline");
+
+    const survey = createR3MixedPressureRun({
+      janekMatterOverrides: candidates,
+    });
+    survey.runTicks(700);
+
+    const reportRow =
+      survey.privateExperiences().find(
+        (experience) =>
+          experience.residentId ===
+            "resident:janek" &&
+          experience.observation.heardEvents.some(
+            (event) =>
+              event.kind === "speech" &&
+              event.actorId === "resident:ida",
+          ),
+      );
+
+    expect(reportRow).toBeDefined();
+    const anchorTick = reportRow!.tick;
+
+    function rowAfter(
+      reportGateMatterId: string,
+      retainedMatters:
+        readonly (typeof candidates)[number][],
+    ) {
+      const run = createR3MixedPressureRun({
+        janekMatterOverrides: candidates,
+        janekReportGateMatterId:
+          reportGateMatterId,
+      });
+      run.runTicks(anchorTick);
+      run.researchReplaceResidentMatters(
+        "resident:janek",
+        retainedMatters,
+      );
+      run.advanceOneTick();
+
+      const row =
+        run.privateExperiences().find(
+          (experience) =>
+            experience.residentId ===
+              "resident:janek" &&
+            experience.tick === anchorTick,
+        );
+      expect(row).toBeDefined();
+      return row!;
+    }
+
+    const defaultBaseline = rowAfter(
+      MIXED_PRESSURE_MATTER_IDS.reportResponse,
+      candidates,
+    );
+    const swappedBaseline = rowAfter(
+      MATERIAL_FIXTURE_MATTER_IDS.worker,
+      candidates,
+    );
+
+    expect(
+      swappedBaseline.observation,
+    ).toEqual(defaultBaseline.observation);
+    expect(swappedBaseline.memory).toEqual(
+      defaultBaseline.memory,
+    );
+    expect(swappedBaseline.matters).toEqual(
+      defaultBaseline.matters,
+    );
+    expect(swappedBaseline.decision).toEqual(
+      defaultBaseline.decision,
+    );
+
+    const withoutReport = candidates.filter(
+      (matter) =>
+        matter.id !==
+        MIXED_PRESSURE_MATTER_IDS.reportResponse,
+    );
+    const withoutWorker = candidates.filter(
+      (matter) =>
+        matter.id !==
+        MATERIAL_FIXTURE_MATTER_IDS.worker,
+    );
+
+    const defaultWithoutReport = rowAfter(
+      MIXED_PRESSURE_MATTER_IDS.reportResponse,
+      withoutReport,
+    );
+    const defaultWithoutWorker = rowAfter(
+      MIXED_PRESSURE_MATTER_IDS.reportResponse,
+      withoutWorker,
+    );
+    const swappedWithoutReport = rowAfter(
+      MATERIAL_FIXTURE_MATTER_IDS.worker,
+      withoutReport,
+    );
+    const swappedWithoutWorker = rowAfter(
+      MATERIAL_FIXTURE_MATTER_IDS.worker,
+      withoutWorker,
+    );
+
+    const baselineDecision =
+      JSON.stringify(defaultBaseline.decision);
+
+    const defaultResponsible =
+      JSON.stringify(
+        defaultWithoutReport.decision,
+      ) !== baselineDecision
+        ? MIXED_PRESSURE_MATTER_IDS.reportResponse
+        : MATERIAL_FIXTURE_MATTER_IDS.worker;
+
+    const swappedResponsible =
+      JSON.stringify(
+        swappedWithoutWorker.decision,
+      ) !== baselineDecision
+        ? MATERIAL_FIXTURE_MATTER_IDS.worker
+        : MIXED_PRESSURE_MATTER_IDS.reportResponse;
+
+    expect(
+      JSON.stringify(
+        defaultWithoutReport.decision,
+      ),
+    ).not.toBe(baselineDecision);
+    expect(
+      JSON.stringify(
+        defaultWithoutWorker.decision,
+      ),
+    ).toBe(baselineDecision);
+
+    expect(
+      JSON.stringify(
+        swappedWithoutWorker.decision,
+      ),
+    ).not.toBe(baselineDecision);
+    expect(
+      JSON.stringify(
+        swappedWithoutReport.decision,
+      ),
+    ).toBe(baselineDecision);
+
+    expect(defaultResponsible).toBe(
+      MIXED_PRESSURE_MATTER_IDS.reportResponse,
+    );
+    expect(swappedResponsible).toBe(
+      MATERIAL_FIXTURE_MATTER_IDS.worker,
+    );
+
+    console.info(
+      "R3_MIXED_PRESSURE_POLICY_WIRING_FALSIFIER",
+      JSON.stringify({
+        anchorTick,
+        baselinePrivateObservationEqual: true,
+        baselineDecisionEqual: true,
+        defaultResponsible,
+        swappedResponsible,
+      }),
+    );
   }, 30_000);
 
   it("audits identifiability and lexical shortcuts before any mixed-pressure model run", () => {
