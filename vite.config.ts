@@ -11,6 +11,8 @@ export default defineConfig({
           "r3-mixed-pressure-probe.html",
         r3JointRelationProbe:
           "r3-joint-relation-probe.html",
+        r3TemporalFactorProbe:
+          "r3-temporal-factor-probe.html",
       },
     },
   },
