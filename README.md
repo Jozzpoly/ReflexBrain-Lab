@@ -30,7 +30,7 @@ The target is not a full NPC and not a score ontology. ReflexBrain is intended a
 
 ## Current stage — R3 autonomous-life pressure
 
-The Owner rejected the R2 interactive specimen as a research clicker rather than life. R3 therefore starts from an autonomous host where life and causal pressure continue with **zero Owner input**.
+The Owner rejected the R2 interactive specimen as a research clicker rather than life. R3 therefore starts from a deterministic autonomous research host where **causal pressure continues with zero Owner input**. This qualifies autonomy of the research substrate, not the stronger product claim that the resident is convincingly alive.
 
 Qualified substrate includes:
 
@@ -45,6 +45,12 @@ Qualified substrate includes:
 - multiple ecologies used as pressure generators rather than product architecture.
 
 No learned ReflexBrain has earned actor authority.
+
+## Owner/product evidence boundary
+
+Owner-observed behavior is authoritative for product-level claims. Machine PASS can establish narrower mechanism, causal, runtime or benchmark facts, but cannot override an Owner FAIL about whether a feature works experientially or whether a specimen feels alive/useful.
+
+Current R3 residents are **not Owner-qualified as a living product specimen**. R3 is a causal/private research substrate.
 
 ## Current semantic evidence
 
@@ -67,14 +73,20 @@ The bounded frozen MiniLM evaluation has now executed in a real Opera/WebGPU bro
 
 Direct cosine is therefore rejected as the candidate relation mechanism.
 
-The next frontier is **semantic-grounding objective discovery before learning**. Paired ablation remains useful causal provenance, but the present ID-ablation label family is closed as semantic supervision in the statement-blind R3 substrate.
+The next frontier is **consumer-first semantic utility before learning-objective selection**.
+
+R3-wide statement-permutation evidence now shows that both current autonomous ecologies are causally invariant to `matter.statement` meaning when matter ids remain fixed. The host is useful causal/private pressure, but does not itself ground semantic matter meaning.
 
 Before any learned mechanism:
-- require a real grounding path between semantic content and actor-private evidence/consequences;
+- identify a bounded semantic judgement with a real downstream consumer in autonomous zero-input pressure;
+- test its ideal availability through a research-only actor-private oracle;
+- compare oracle / null / simple non-semantic controls under identical exogenous conditions;
+- require material causal or continuity benefit;
 - reject objectives that merely encode the answer through authored ids, fixture wiring, parsers, teachers or labels;
-- defeat majority/null, context-only, matter-only, candidate-position and simple structured baselines;
-- preserve paraphrase, actor/domain/policy-family and statement-permutation controls;
-- keep model input actor-private and future/hidden-World leakage excluded.
+- keep World/body authority deterministic and separate;
+- do not treat oracle answers as automatic training labels or final API.
+
+Only after that utility gate should the project choose whether a learned approximation is supervised, relational, contrastive, predictive, self-supervised or something else.
 
 The rejected cosine family must not be rescued by capacity, a head, wording tuning or target substitution. The current causal label must not be rescued by more rows either. No learned head/model is currently earned.
 
