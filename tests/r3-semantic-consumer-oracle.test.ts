@@ -127,11 +127,15 @@ describe("R3 semantic consumer oracle feasibility", () => {
     // cleanly at each paired-run boundary.
     const ignoreAll = summarize("ignore-all");
     const respondAll = summarize("respond-all");
+    const cadenceOnly = summarize("cadence-only");
     const oracle = summarize(
       "ideal-semantic-oracle",
     );
 
     expect(respondAll.pressureTimeline).toEqual(
+      ignoreAll.pressureTimeline,
+    );
+    expect(cadenceOnly.pressureTimeline).toEqual(
       ignoreAll.pressureTimeline,
     );
     expect(oracle.pressureTimeline).toEqual(
@@ -141,6 +145,7 @@ describe("R3 semantic consumer oracle feasibility", () => {
     for (const summary of [
       ignoreAll,
       respondAll,
+      cadenceOnly,
       oracle,
     ]) {
       expect(
@@ -161,10 +166,42 @@ describe("R3 semantic consumer oracle feasibility", () => {
       respondAll.irrelevantExposureCount,
     );
 
+    expect(
+      cadenceOnly.relevantResponseCount,
+    ).toBeGreaterThan(0);
+    expect(
+      cadenceOnly.relevantResponseCount,
+    ).toBeLessThan(
+      cadenceOnly.relevantExposureCount,
+    );
+    expect(
+      cadenceOnly.irrelevantResponseCount,
+    ).toBeGreaterThan(0);
+
     expect(oracle.relevantResponseCount).toBe(
       oracle.relevantExposureCount,
     );
     expect(oracle.irrelevantResponseCount).toBe(0);
+
+    // Cadence-only spends the same response budget as the oracle but cannot
+    // allocate it by meaning under the irregular balanced pressure pattern.
+    expect(
+      cadenceOnly.relevantResponseCount +
+        cadenceOnly.irrelevantResponseCount,
+    ).toBe(
+      oracle.relevantResponseCount +
+        oracle.irrelevantResponseCount,
+    );
+    expect(
+      oracle.relevantResponseCount,
+    ).toBeGreaterThan(
+      cadenceOnly.relevantResponseCount,
+    );
+    expect(
+      oracle.irrelevantResponseCount,
+    ).toBeLessThan(
+      cadenceOnly.irrelevantResponseCount,
+    );
 
     // The semantic consumer preserves the useful response behavior of
     // respond-all while avoiding its irrelevant interruption cost.
@@ -196,6 +233,7 @@ describe("R3 semantic consumer oracle feasibility", () => {
       JSON.stringify({
         ignoreAll,
         respondAll,
+        cadenceOnly,
         oracle,
       }),
     );
