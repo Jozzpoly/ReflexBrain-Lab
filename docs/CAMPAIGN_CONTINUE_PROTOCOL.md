@@ -174,18 +174,19 @@ At the 2026-09-25 recovered frontier:
 - current 12-example mixed-pressure corpus as learned-relation training benchmark: **FAIL · context-only speech shortcut reaches 1.000**;
 - paired matter ablation as causal provenance instrumentation: **PRESERVED**;
 - current `causallyResponsibleMatterId` as semantic ground truth: **REJECTED for the statement-blind R3 substrate · policy-wiring and statement-permutation falsifiers show that the label tracks authored identity/wiring, not semantic meaning**;
+- first bounded semantic consumer value: **QUALIFIED ORACLE-ONLY** — same-id purpose switching plus persistent required pressure show a joint semantic relation can resolve recurring pressure with fewer unnecessary acknowledgements than respond-all and better resolution than fixed-surface/null controls;
 - learned R3 ReflexBrain authority: **does not exist**.
 
 Therefore the next `kontynuuj` must **not** rerun/rescue direct cosine, must **not** train a joint relation model on the current corpus, and must **not** equate intervention-derived policy dependence with semantic meaning.
 
-The earned frontier is now **consumer-first semantic utility**, before another training target is chosen:
+The first bounded consumer utility gate is now **QUALIFIED ORACLE-ONLY**. The earned frontier moves one step forward but remains pre-model:
+
 - preserve paired ablation as provenance, not automatic semantic authority;
-- identify one bounded downstream need where actor-relative semantic judgement could materially affect autonomous behavior or continuity;
-- test that boundary first with a research-only ideal oracle using actor-private evidence;
-- compare oracle / null / simple non-semantic controls under identical exogenous conditions;
-- require material causal usefulness before selecting a learned objective;
-- keep oracle answers separate from training authority;
-- only after utility is established decide what supervision/representation family deserves to approximate the boundary.
+- preserve the qualified report-applicability consumer as evidence that a useful semantic relation can exist;
+- harden that consumer-shaped pressure against exact-pair and lexical memorization;
+- add held-out paraphrase/surface controls and at least one qualitatively different semantic-pressure family or counterfactual;
+- audit supervision provenance explicitly before any oracle output is used for training;
+- only after those gates choose what supervision/representation family deserves to approximate the boundary.
 
 Do not add capacity/head to the rejected independent-embedding cosine formulation, do not treat corpus row count as progress, and do not interpret a model fitting authored fixture wiring as learned actor-relative meaning.
 
@@ -212,7 +213,7 @@ For future `kontynuuj`:
 - red-team any proposed target with statement permutation, identity/order, context-only, matter-only, policy-family and leakage controls before model training;
 - if semantic supervision requires an authored parser/oracle/teacher, name that source explicitly rather than calling the target intervention-derived ground truth.
 
-The next move is **semantic consumer/oracle qualification inside zero-input autonomous pressure**, not a learned joint head and not premature selection of a self-supervised objective.
+The next move is **consumer-shaped learnability/generalization hardening**, not immediate model training and not premature selection of a self-supervised objective.
 
 
 ### R3-wide statement inertness
@@ -228,3 +229,31 @@ Qualified diagnostic evidence:
 This proves a limitation of the current fixture substrate. It does **not** qualify life, intelligence, semantic competence or Owner value.
 
 For future `kontynuuj`, treat the current host as pressure/instrumentation and recover the real goal before adding another benchmark or learner.
+
+
+### 2026-09-25 bounded semantic consumer qualification
+
+Evidence head: `3cfff490e9ee02331ace8787aa450be7954320af`
+
+Qualification:
+- Check #231 PASS;
+- build/deploy PASS;
+- 22 test files / 168 tests PASS;
+- detailed evidence: `docs/R3_SEMANTIC_CONSUMER_ORACLE_RESULT_2026-09-25.md`.
+
+Exact claim:
+- one authored actor-private joint semantic relation has a real downstream consumer;
+- across same-id depot/courtyard purpose variants, the oracle routes required responses correctly while fixed message-surface rules reach only 0.500 relation accuracy;
+- unresolved required reports recur as World speech pressure;
+- oracle resolves all required pressure with 50 acknowledgements;
+- respond-all needs 150 acknowledgements for the same pressure resolution;
+- ignore-all causes 200 Ida speech events versus 150 for oracle;
+- fixed-surface controls cause 175 and resolve only half the required reports across both purpose variants.
+
+Do not inflate this result:
+- throughput remained 22 in every condition;
+- the oracle is hand-authored;
+- no learned model has passed;
+- no broad semantic generality or Owner/product value is established.
+
+For future `kontynuuj`, do not regress to “find any target and train it”. First make the consumer-shaped relation resistant to exact-pair/surface shortcuts and test another meaningful pressure boundary.
