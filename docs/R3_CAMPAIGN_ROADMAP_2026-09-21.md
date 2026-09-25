@@ -86,7 +86,7 @@ A statement-permutation metamorphic falsifier (Check #209, 19 files / 162 tests 
 
 Therefore the present ID-ablation label family is closed as semantic supervision in this substrate. Phase B must now discover a target/objective with a legitimate semantic grounding path before Phase C model work resumes. Counterbalancing the old target is no longer sufficient.
 
-## Phase B.5 — semantic consumer qualification — **ACTIVE**
+## Phase B.5 — semantic consumer qualification — **ACTIVE · FIRST BOUNDED CONSUMER FAMILY QUALIFIED**
 
 **Purpose:** prove that an ideal actor-private semantic judgement has a useful downstream role before choosing a learner to approximate it.
 
@@ -108,8 +108,30 @@ Pass gate:
 - the consumer remains useful when separated from the oracle implementation;
 - no Owner/product claim is promoted from machine evidence alone.
 
+### Qualified first consumer family
+
+At head `3cfff490e9ee02331ace8787aa450be7954320af`, a report-applicability consumer passed the first bounded oracle gate:
+
+- same matter ids, same pressure timeline, private purpose meaning changed;
+- ideal joint semantic relation: 1.000;
+- fixed surface controls: 0.500;
+- persistent required reports repeat when unresolved;
+- oracle resolves all required pressure with 50 acknowledgements;
+- respond-all also resolves pressure but spends 150 acknowledgements;
+- ignore-all leaves 200 Ida speech events versus oracle/respond-all 150;
+- fixed-surface rules leave 175 Ida speech events and resolve only half the required reports across both purpose meanings;
+- throughput remains equal at 22 processing completions.
+
+This qualifies **bounded causal consumer value**, not a learned mechanism and not Phase B.5 generality.
+
+Remaining Phase B.5 work:
+- survive at least one qualitatively different semantic-pressure family or counterfactual;
+- prove the useful boundary is not an artifact of exact authored text pairs;
+- keep oracle outputs evaluation/instrumentation until supervision provenance is separately justified.
+
 Fail gate:
-- if even ideal semantic information has no meaningful downstream consequence, reject or reformulate that semantic-output family before model work.
+- if a broader pressure family removes the semantic advantage, narrow the claim instead of promoting the consumer contract;
+- if even ideal semantic information has no meaningful downstream consequence in a proposed family, reject or reformulate that semantic-output family before model work.
 
 Boundary:
 - oracle answers are research instrumentation;
@@ -119,7 +141,7 @@ Boundary:
 
 ## Phase C — representation probes, not product brain
 
-**Purpose:** only after Phase B.5 demonstrates a useful consumer boundary, ask what small representation/learning objective can approximate the required actor-private semantic distinction.
+**Purpose:** only after Phase B.5 demonstrates a useful consumer boundary and the evaluation pressure is hardened against surface memorization, ask what small representation/learning objective can approximate the required actor-private semantic distinction.
 
 Initial candidates, selected only after the consumer boundary is known:
 - qualified R1 MiniLM frozen encoder;
