@@ -33,7 +33,8 @@ export type R3TemporalConsumerMode =
 
 export type R3TemporalReportState =
   | "complete"
-  | "delayed";
+  | "delayed"
+  | "suspended";
 
 export const R3_TEMPORAL_STATUS_MESSAGES:
 Readonly<
@@ -49,6 +50,10 @@ Readonly<
   delayed: [
     "Janek, the depot inspection is delayed.",
     "Janek, the storage review will take longer.",
+  ],
+  suspended: [
+    "Janek, the depot inspection is suspended.",
+    "Janek, the storage review has been put on hold.",
   ],
 };
 
@@ -576,10 +581,16 @@ class TemporalStatusPressurePolicy
       );
     this.slotIndex += 1;
 
+    const states:
+      readonly R3TemporalReportState[] = [
+        "complete",
+        "delayed",
+        "suspended",
+      ];
     this.currentState =
-      episode % 2 === 0
-        ? "complete"
-        : "delayed";
+      states[
+        episode % states.length
+      ]!;
 
     if (slot === 0) {
       this.pending = true;
@@ -660,6 +671,7 @@ function reportSemanticState(
     const state of [
       "complete",
       "delayed",
+      "suspended",
     ] as const
   ) {
     if (
