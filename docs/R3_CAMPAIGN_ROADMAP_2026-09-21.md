@@ -14,6 +14,12 @@ At every gate, evidence may:
 - delete a scaffold;
 - stop model work and return to the host.
 
+### Product-claim authority
+
+Owner-observed behavior governs claims about life, feel, usefulness and product function. CI and research harnesses may qualify narrower evidence only; they cannot overrule an Owner FAIL.
+
+R3 zero-input autonomy is therefore substrate evidence, not proof that the fixture residents are living/product-ready.
+
 ## Campaign objective
 
 Reach a point where a small local learned mechanism demonstrably adds actor-relative semantic/reflex competence inside autonomous life and generalizes beyond the ecology that produced its training evidence.
@@ -42,7 +48,7 @@ Red flags:
 - adding salience/priority because a scheduler needs a number;
 - making one `primaryGoal` the permanent architecture.
 
-## Phase B — cross-ecology corpus hardening — **ACTIVE**
+## Phase B — substrate/corpus falsification — **QUALIFIED LIMITS, NO SEMANTIC TARGET PROMOTED**
 
 **Purpose:** make training/evaluation data reflect life rather than scenario labels.
 
@@ -80,15 +86,46 @@ A statement-permutation metamorphic falsifier (Check #209, 19 files / 162 tests 
 
 Therefore the present ID-ablation label family is closed as semantic supervision in this substrate. Phase B must now discover a target/objective with a legitimate semantic grounding path before Phase C model work resumes. Counterbalancing the old target is no longer sufficient.
 
+## Phase B.5 — semantic consumer qualification — **ACTIVE**
+
+**Purpose:** prove that an ideal actor-private semantic judgement has a useful downstream role before choosing a learner to approximate it.
+
+This restores the campaign's oracle-before-learned-replacement discipline without returning to the rejected R2 clicker.
+
+Work:
+- choose one bounded semantic distinction that could affect ordinary autonomous life;
+- define an ideal research oracle over legitimate actor-private evidence;
+- route the oracle through one explicit deterministic consumer/executive seam;
+- keep World/body authority outside the oracle;
+- run zero-input paired A/B under identical exogenous conditions;
+- compare oracle against null and simple non-semantic baselines;
+- measure causal consequences such as continuity, relevant response, unnecessary interruption, recovery or task loss.
+
+Pass gate:
+- the ideal semantic advisory produces a material, repeatable causal benefit unavailable to the null/simple baseline;
+- the benefit survives a qualitatively different pressure case or counterfactual;
+- the oracle does not need hidden World truth;
+- the consumer remains useful when separated from the oracle implementation;
+- no Owner/product claim is promoted from machine evidence alone.
+
+Fail gate:
+- if even ideal semantic information has no meaningful downstream consequence, reject or reformulate that semantic-output family before model work.
+
+Boundary:
+- oracle answers are research instrumentation;
+- they are not automatic training labels;
+- the oracle shape is not the final ReflexBrain API;
+- no Owner-facing clicker is required.
+
 ## Phase C — representation probes, not product brain
 
-**Purpose:** ask what small representation can carry from actor-private temporal context.
+**Purpose:** only after Phase B.5 demonstrates a useful consumer boundary, ask what small representation/learning objective can approximate the required actor-private semantic distinction.
 
-Initial candidates:
+Initial candidates, selected only after the consumer boundary is known:
 - qualified R1 MiniLM frozen encoder;
 - exact actor-private structured channels that should not be inferred from prose;
 - simple transparent probes;
-- temporal difference / contrastive relationships.
+- relational, temporal-difference, contrastive or predictive/self-supervised objectives where their target matches the demonstrated consumer need.
 
 Questions:
 - Can the same event be represented differently when the actor's matter/context differs?
