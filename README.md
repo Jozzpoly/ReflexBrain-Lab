@@ -77,7 +77,7 @@ The bounded frozen MiniLM evaluation has now executed in a real Opera/WebGPU bro
 
 Direct cosine is therefore rejected as the candidate relation mechanism.
 
-The first bounded **semantic consumer utility** gate is now qualified, still oracle-only.
+Two bounded **semantic consumer utility** families are now qualified, still oracle-only: purpose×current-evidence routing and temporal semantic settlement.
 
 In a same-id depot/courtyard purpose falsifier:
 - the ideal joint semantic relation reaches 1.000;
@@ -89,9 +89,11 @@ In a same-id depot/courtyard purpose falsifier:
 - fixed-surface controls leave 175 and resolve only half the required reports across both purpose meanings;
 - processing throughput remains 22 in every condition.
 
-This establishes a bounded downstream consumer for actor-relative semantic routing. It does **not** establish learned competence.
+Together they establish that actor purpose and settled semantic history can each have bounded downstream causal value. They do **not** yet establish one learned mechanism, and the current temporal corpus can still ignore actor purpose.
 
-The next frontier is **consumer-shaped learnability/generalization hardening before model selection**:
+The next frontier is **three-way actor-private relation qualification before model selection**:
+
+> purpose × settled semantic history × current evidence
 - add paraphrased and lexical counterfactual surfaces;
 - defeat exact-pair, message-only, matter-only, token-overlap and simple structured baselines;
 - preserve same-id purpose switching;
