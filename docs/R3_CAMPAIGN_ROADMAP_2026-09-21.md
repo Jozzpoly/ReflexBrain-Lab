@@ -86,7 +86,7 @@ A statement-permutation metamorphic falsifier (Check #209, 19 files / 162 tests 
 
 Therefore the present ID-ablation label family is closed as semantic supervision in this substrate. Phase B must now discover a target/objective with a legitimate semantic grounding path before Phase C model work resumes. Counterbalancing the old target is no longer sufficient.
 
-## Phase B.5 — semantic consumer qualification — **ACTIVE · FIRST BOUNDED CONSUMER FAMILY QUALIFIED**
+## Phase B.5 — semantic consumer qualification — **ACTIVE · TWO BOUNDED ORACLE-ONLY FAMILIES QUALIFIED · JOINT THREE-WAY BOUNDARY OPEN**
 
 **Purpose:** prove that an ideal actor-private semantic judgement has a useful downstream role before choosing a learner to approximate it.
 
@@ -139,9 +139,37 @@ Boundary:
 - the oracle shape is not the final ReflexBrain API;
 - no Owner-facing clicker is required.
 
+### Qualified second consumer family
+
+A temporal semantic-settlement consumer now shows a distinct downstream need:
+- a genuinely changed report state should be acknowledged;
+- a paraphrased restatement of already settled meaning should not;
+- exact-text change cannot make that distinction;
+- unresolved semantic state leaves additional autonomous World speech pressure.
+
+The pressure has been extended to an unseen third state (`suspended`) and simple exact/current/history/token controls fail on held-out current/history state evaluation.
+
+However the current temporal corpus does **not** vary actor purpose for the same temporal evidence. Matter-dependence audit:
+- 32 examples;
+- 0 purpose counterfactual signatures;
+- 0 matter-dependent label switches.
+
+So Phase B.5 is not complete.
+
+### Three-way gate before Phase C
+
+Before any learner:
+- one consumer/target must require **purpose/matter meaning × settled semantic history × current evidence**;
+- same ids throughout;
+- fixed history/current evidence must be able to flip label under a purpose counterfactual;
+- fixed purpose/current evidence must be able to flip label under a history counterfactual;
+- preserve paraphrase and unseen semantic-state holdouts;
+- defeat null, surface-only, purpose-only, history-only, current-only, exact tuple and simple lexical controls;
+- demonstrate bounded causal consumer value in zero-input autonomous pressure.
+
 ## Phase C — representation probes, not product brain
 
-**Purpose:** only after Phase B.5 demonstrates a useful consumer boundary and the evaluation pressure is hardened against surface memorization, ask what small representation/learning objective can approximate the required actor-private semantic distinction.
+**Purpose:** only after Phase B.5 demonstrates a useful three-way actor-private consumer boundary and the evaluation pressure is hardened against surface/identity/history shortcuts, ask what small representation/learning objective can approximate the required semantic distinction.
 
 Initial candidates, selected only after the consumer boundary is known:
 - qualified R1 MiniLM frozen encoder;
