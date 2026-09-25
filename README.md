@@ -55,7 +55,7 @@ The campaign has deliberately falsified several tempting shortcuts.
 - concurrent-matter causal responsibility direct cosine: **FAIL at chance**, including after temporal alignment correction;
 - within-one-ecology mixed-pressure paired-ablation target: **QUALIFIED causal microscope / feasibility instrument, NOT semantic training ground truth**.
 
-The current mixed-pressure target uses one Janek with two simultaneous matters whose causal responsibility switches inside the same ecology. Paired matter ablation establishes which matter the authored fixture policy causally depended on for the next decision. A policy-wiring falsifier has now shown that this label can flip while baseline model-visible private life and decision remain identical, so intervention provenance must not be confused with semantic target authority.
+The current mixed-pressure target uses one Janek with two simultaneous matters whose causal responsibility switches inside the same ecology. Paired matter ablation establishes which matter identity the authored fixture policy causally depended on for the next decision. Policy-wiring and statement-permutation falsifiers now show that this label tracks authored identity/wiring rather than semantic statement meaning: swapping only the two semantic statements leaves causal life and the ablation label unchanged.
 
 Status:
 
@@ -67,16 +67,16 @@ The bounded frozen MiniLM evaluation has now executed in a real Opera/WebGPU bro
 
 Direct cosine is therefore rejected as the candidate relation mechanism.
 
-The next frontier is **semantic-grounding qualification before learning**. Paired ablation remains useful causal provenance, but the current label/corpus is not valid learned-relation supervision.
+The next frontier is **semantic-grounding objective discovery before learning**. Paired ablation remains useful causal provenance, but the present ID-ablation label family is closed as semantic supervision in the statement-blind R3 substrate.
 
-Before any small learned **joint relation function**:
+Before any learned mechanism:
+- require a real grounding path between semantic content and actor-private evidence/consequences;
+- reject objectives that merely encode the answer through authored ids, fixture wiring, parsers, teachers or labels;
 - defeat majority/null, context-only, matter-only, candidate-position and simple structured baselines;
-- break fixed cue→matter mappings;
-- require paraphrase, actor/domain and policy-family transfer controls;
-- require claimed semantic labels to survive irrelevant hidden fixture rewiring;
-- keep model input actor-private and outcome/future leakage excluded.
+- preserve paraphrase, actor/domain/policy-family and statement-permutation controls;
+- keep model input actor-private and future/hidden-World leakage excluded.
 
-The rejected cosine family must not be rescued by capacity, a head, wording tuning or target substitution. No learned head/model is currently earned.
+The rejected cosine family must not be rescued by capacity, a head, wording tuning or target substitution. The current causal label must not be rescued by more rows either. No learned head/model is currently earned.
 
 ## Defended boundaries
 
