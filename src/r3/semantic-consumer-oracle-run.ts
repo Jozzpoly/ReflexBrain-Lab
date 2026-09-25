@@ -58,6 +58,7 @@ export interface R3SemanticConsumerRunOptions {
   mode: R3SemanticConsumerMode;
   messageIntervalTicks?: number;
   initialSourceRaw?: number;
+  janekMatterOverrides?: readonly ResidentMatter[];
 }
 
 export interface R3SemanticConsumerRun {
@@ -129,7 +130,8 @@ export function createR3SemanticConsumerRun(
       "resident:janek",
       new AutonomousResidentAgent(
         new SemanticConsumerJanekPolicy(options.mode),
-        r3MixedPressureJanekMatters("baseline"),
+        options.janekMatterOverrides ??
+          r3MixedPressureJanekMatters("baseline"),
       ),
     ],
     [
