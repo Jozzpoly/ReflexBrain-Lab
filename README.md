@@ -101,9 +101,9 @@ The next frontier is **three-way actor-private relation qualification before mod
 - audit supervision provenance before using oracle outputs for training;
 - keep World/body authority deterministic and separate.
 
-Only after those gates should the project choose whether a learned approximation is supervised, relational, contrastive, predictive, self-supervised or something else.
+Those gates have now been passed for one authored three-way boundary, and one frozen supervised approximation has been executed. It produced **partial held-out signal but failed promotion**: BA 0.7167, TPR 0.475, TNR 0.9583, with all three explicit counterfactual families well below the 0.90 gate. The next step is failure localization of that exact frozen model, not tuning or immediate architecture escalation.
 
-The rejected cosine family must not be rescued by capacity, a head, wording tuning or target substitution. The current causal label must not be rescued by more rows either. No learned head/model is currently earned.
+The rejected cosine family must not be rescued by capacity, a head, wording tuning or target substitution. The current causal label must not be rescued by more rows either. Current learned status: **one frozen learned joint-relation probe executed; PARTIAL SIGNAL / NO PROMOTION. No learned actor authority is earned.**
 
 ## Defended boundaries
 
