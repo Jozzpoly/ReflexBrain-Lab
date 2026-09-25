@@ -1,123 +1,248 @@
 # ReflexBrain Lab — Project Charter
 
-Status: **CURRENT RESEARCH DIRECTION · NOT A FROZEN ARCHITECTURE**
+Status: **CURRENT RESEARCH CHARTER · ARCHITECTURE NOT FROZEN**
 
 ## Why this lab exists
 
-Two sibling projects expose the same missing competence from different directions.
+ReflexBrain Lab isolates a missing competence visible across the wider NPC work:
 
-Llm-Live-NPC already defends causal World truth, private perception/memory, local execution, event-driven cognition pressure and a slower LLM judgement layer. Its local fast brain is still semantically thin: routine execution is much stronger than continuous interpretation of what a moment means to the resident.
+> a cheap local learned mechanism that can continuously interpret actor-private experience in relation to the actor's own continuing life, without pretending to be the whole agent.
 
-Companion-Brain-Lab has deep physical and counterfactual evidence about candidate movement and outcomes, but intentionally stops before treating research evidence as a competent teammate decision policy.
+The target is not a mini-ChatGPT, a replacement for the World, a motor controller, or a hard-coded scheduler scorecard.
 
-ReflexBrain Lab isolates the missing middle layer instead of patching either project prematurely.
+The lab exists to discover whether a small local learned layer can add reusable semantic/reflex competence to an actor that already has:
 
-## North star
+- a factual World and body;
+- private perception;
+- private continuity/memory;
+- ongoing activity and concerns;
+- cheap local mechanical competence;
+- optional deeper cognition elsewhere.
 
-Investigate a reusable local mechanism with this responsibility:
+## Current north star
 
-bounded private actor state -> fast semantic appraisal/preferences -> local controller and/or cognition scheduler
+The research question is now:
 
-Candidate outputs include:
+> Can a small local learned system extract useful, generalizable actor-relative meaning from temporal private experience, cheaply enough to participate in continuous life, and can that meaning improve a living actor without becoming World authority or a benchmark-shaped classifier?
 
-- attention allocation;
-- interruption pressure;
-- novelty / anomaly;
-- social relevance;
-- threat / urgency appraisal;
-- local response preference;
-- whether deeper cognition is warranted.
+The important words are:
 
-The layer should be cheap enough to run frequently and local enough that ordinary embodied life does not depend on a cloud round-trip.
+- **actor-private** — no hidden World/debug truth;
+- **temporal** — not isolated NLP cards;
+- **autonomous pressure** — the research host continues without Owner input; this is a mechanistic substrate property, not by itself a claim that the actor feels alive;
+- **living** — a stronger experiential/product claim about an actor having convincing ongoing life and continuity; this remains Owner-sensitive and cannot be promoted from CI alone;
+- **actor-relative** — the same event can matter differently to different actors;
+- **learned** — the target competence must eventually exceed hand-authored fixture rules;
+- **generalizable** — success in one ecology is not enough;
+- **replaceable** — no model or representation becomes architectural destiny by arriving first.
+
+## Corrected decomposition
+
+Keep three layers distinct:
+
+1. **Host organism**  
+   World truth, bodies, private perception, private memory, material/social consequences, continuing activity and autonomous causal pressure.
+
+2. **Local live brain**  
+   Cheap continuous competence that keeps ordinary embodied life moving without waiting for a large LLM.
+
+3. **ReflexBrain candidate**  
+   A learned semantic/reflex mechanism inserted into an already-living actor.
+
+Do not use layer 3 to fake layers 1–2.
 
 ## Hard boundaries
 
-### World truth is not inferred truth
+### World truth != perception != belief != memory
 
-A model may judge that a situation is threatening. It may not create a weapon, collision, relationship, injury, ownership fact or physical outcome.
+A learned mechanism cannot create a collision, object, actor position, ownership fact, injury, social fact or successful action merely by predicting it.
 
-### Private state is not public debug state
+### Private state only
 
-Inputs must be derivable from information available to the actor. Hidden World truth must not leak through convenient test fixtures.
+Model inputs must be reconstructible from the actor's own state. Public debug snapshots and omniscient fixture data are forbidden as inference inputs.
 
-### Reflex judgement is not motor authority
+### Reflex judgement != body authority
 
-R0 is shadow-only. Even later, semantic outputs should normally inform a controller rather than emit unvalidated body mutations.
+Learned output begins shadow-only. Later authority, if any, must be earned behind a separate executive/World validation seam.
 
-### Semantic reflex is not long-horizon deliberation
+### Local reflex != full deliberation
 
-Planning, difficult reinterpretation, dialogue and open-ended semantic invention may remain a slower System-2 concern.
+Open-ended planning, difficult reinterpretation and long-horizon reasoning may belong to a slower cognition layer.
 
-### A model is replaceable
+### No scaffold promotion by inertia
 
-Rule baselines, stock local models, trained heads and future models must be able to consume the same bounded-state contract.
+A simple first implementation exists to answer a question.
 
-## Key architecture hypothesis
+It does **not** become:
+- the core ontology;
+- the final task model;
+- the final memory model;
+- the final world;
+- the final executive;
+- the final UI;
+- the final representation;
 
-A useful reflex system probably contains at least two separable mechanisms:
+merely because later work depends on it.
 
-1. **Reflex Core** — fast semantic evaluation of current bounded state.
-2. **Reflex Dynamics** — explicit local temporal continuity: inertia, decay, hysteresis, habituation, recent focus and interruption persistence.
+Every temporary scaffold must remain replaceable and must periodically face a qualitatively different pressure case.
 
-This is a hypothesis to falsify, not a permanent architecture law.
+### No benchmark-shaped product
 
-## What this project is not
+Benchmarks, fixtures, oracles and microscopes are instruments. The project goal is a learned competence that survives autonomous causal pressure and, later, real living-world evaluation.
 
-Do not turn the lab into:
+### Owner truth precedence
 
-- a third living-world game;
-- a general agent framework;
-- a Jev reimplementation for its own sake;
-- a chatbot benchmark;
-- a full memory / identity system;
-- a navigation stack;
-- a combat AI project;
-- a benchmark-accuracy exercise disconnected from embodied consequences.
+Product-level and experiential claims are governed by Owner-observed behavior.
+
+If the Owner reports that a specimen does not feel alive, useful, usable or functionally present, that product-level claim is **FAIL** until new real evidence is explicitly re-evaluated by the Owner.
+
+Machine evidence may preserve narrower facts such as:
+- deterministic correctness;
+- private-state invariants;
+- causal provenance;
+- autonomous zero-input execution;
+- shadow consistency;
+- benchmark or held-out performance.
+
+Those facts must not be used to reinterpret an Owner FAIL as a hidden product PASS.
+
+Evidence planes remain separate:
+1. mechanism correctness;
+2. autonomous research ecology;
+3. learned/shadow competence;
+4. bounded causal consequence;
+5. Owner-observed experiential/product value.
+
+No lower plane silently promotes a higher one.
+
+## Lessons already earned
+
+### R0
+
+Direct small generative readouts were too sensitive to prompt/label/token semantics to promote as the reflex mechanism.
+
+### R1
+
+Frozen semantic representation + exact actor-private structured facts carried real signal.
+
+However:
+- lexical leakage required stronger controls;
+- batching changed tiny margins and forced isolated embedding qualification;
+- the five axes `attention / interrupt / social / threat / cognition` were not coherent enough to promote as ontology;
+- more examples could rotate shared axes and regress earlier distinctions.
+
+R1 therefore preserves **representation/runtime methodology**, not its score ontology.
+
+### R2
+
+The Owner rejected the live intervention specimen.
+
+The failure was categorical:
+- it was click-driven;
+- instrumentation was richer than autonomous life;
+- buttons manufactured research activity;
+- causal bookkeeping was mistaken for organism evidence.
+
+R2 is evidence and instrumentation donor only.
+
+### R3
+
+R3 corrected the **click-driven pressure problem** before returning to learned-cognition research. It established a deterministic zero-input autonomous causal host. That is narrower than proving a living organism or convincing resident experience.
+
+Current machine evidence includes:
+- zero-input autonomous material ecology with three residents;
+- real cross-resident material dependence and causal lineage;
+- private object and actor-contact memory;
+- checked-absence invalidation;
+- private temporal experience capture;
+- a second non-material contact/search/communication ecology on the same host;
+- naturally occurring speech pressure from an actor's real blockage;
+- ontology-free temporal corpus infrastructure.
+
+R3 has **not** yet demonstrated learned ReflexBrain competence, and the autonomous fixture host is **not Owner-qualified as a living actor/product experience**.
 
 ## Donor policy
 
-All Jozzpoly repositories may be used as donors, but reuse must be selective.
+Use donors by invariant, not by architecture.
 
-Strong donor categories:
+### Llm-Live-NPC / SPC
 
-- Llm-Live-NPC: private perception, epistemic separation, event/cognition seams, resident-life pressure cases;
-- Companion-Brain-Lab: shadow mode, first-divergence evidence, observer non-interference, counterfactual/metamorphic methodology;
-- other game repositories: lightweight browser presentation, input, world or test apparatus when genuinely cheaper than rebuilding.
+Strong donors:
+- private perception and identity boundaries;
+- last-known contact;
+- checked absence;
+- autonomous resident/world separation;
+- execution authority;
+- cognition-pressure cases.
 
-Do not inherit a sibling architecture merely because it is already defended there.
+Treat its scheduler salience and matter lifecycle as hypotheses, not defaults.
 
-## Research ladder
+### Companion-Brain-Lab
 
-### R0 — Semantic Shadow Probe
+Strong donors:
+- shadow mode;
+- first-divergence evidence;
+- factual physical outcomes;
+- counterfactual/metamorphic testing;
+- observer non-interference.
 
-Determine whether semantic information already present in a small stock local language model can produce useful constrained reflex signals from compact actor-private state.
+Do not import combat/relationship policy as ReflexBrain ontology.
 
-No training required. No model authority.
+### Feniks / broader world research
 
-### R1 — Learned Reflex Readout
+Strong direction:
+- local knowledge;
+- material causality;
+- actors embedded in a world that continues;
+- world-grounded consequences;
+- permissive systemic interactions.
 
-Only if R0 is materially useful, test LoRA, dedicated decision heads and calibration approaches against direct token/logit scoring.
+Do not turn ReflexBrain Lab into Feniks or another game.
 
-### R2 — Embodied Reflex Brain
+## Promotion doctrine
 
-Only if R1/R0 justify it, develop temporal datasets built from actor-world episodes, counterfactual mutations and causal invariants rather than isolated NLP classification rows.
+A mechanism is promoted only if it survives **qualitatively different causal pressure** and improves something materially useful.
 
-## Promotion rule
+Evidence classes, in increasing scope rather than automatic promotion:
 
-A higher-complexity mechanism is earned only if it improves at least one material property under embodied tests:
+1. unit correctness;
+2. deterministic fixture evidence;
+3. autonomous ecology evidence;
+4. cross-ecology held-out generalization;
+5. shadow insertion into autonomous pressure;
+6. causal A/B consequence under controlled authority;
+7. Owner hands-on evidence for experiential/product claims.
 
-- attention quality;
-- interruption judgement;
-- continuity / anti-thrashing;
-- non-player-centric behavior;
-- reaction latency;
-- escalation quality;
-- generalization to counterfactual variants;
-- local cost / compute viability;
-- causal legibility.
+Higher-scope claims require evidence at their own plane. A lower-plane PASS cannot override an Owner-observed product FAIL.
 
-Accuracy alone is insufficient.
+Owner testing is an output of earned capability, not a substitute for implementation.
 
-## Current next move
+## Current frontier
 
-Build R0 as a tiny deterministic temporal micro-world with a rule baseline and a provider seam. The first learned provider is added only after shadow non-interference and actor-private state are inspectable and testable.
+R3 has now established both a negative and a positive boundary.
+
+Negative:
+- current ordinary fixture behavior consumes matter **identity**, not semantic statement meaning;
+- direct-cosine matter↔experience mechanisms are rejected;
+- ID-ablation labels are causal provenance, not semantic ground truth;
+- the old statement-blind causal-label family is closed as semantic supervision.
+
+Positive, but narrow:
+- one research-only actor-private semantic oracle has a qualified downstream consumer;
+- same-id purpose switching defeats fixed message-surface controls;
+- correct joint semantic routing resolves recurring required World pressure while avoiding respond-all decoy interruptions.
+
+This does **not** qualify a learner. The oracle is authored instrumentation and throughput did not improve.
+
+The earned frontier is now learnability/generalization hardening:
+
+1. preserve the qualified consumer as the downstream reason for learning;
+2. construct paraphrase and lexical counterfactual pressure that cannot be solved by exact-pair, message-only, matter-only, identity/order or simple token controls;
+3. preserve same-id actor-purpose switching;
+4. test at least one qualitatively different semantic-pressure family or counterfactual;
+5. audit where supervision comes from before any oracle answer is allowed into TRAIN;
+6. only then select a learned approximation and keep it shadow-only until held-out generalization exists.
+
+If the relation cannot be learned without memorizing authored fixtures or importing the oracle as the answer, narrow or reject the learned hypothesis while preserving the already-qualified consumer value.
+
+The architecture after that remains deliberately open.
