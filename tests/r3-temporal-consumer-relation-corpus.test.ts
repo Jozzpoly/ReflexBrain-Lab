@@ -119,6 +119,78 @@ describe(
       );
     });
 
+    it("shows that the current temporal target does not yet require actor-relative matter meaning", () => {
+      const corpus =
+        buildR3TemporalConsumerRelationCorpus();
+
+      const byTemporalEvidence = new Map<
+        string,
+        {
+          matterStatements: Set<string>;
+          labels: Set<boolean>;
+        }
+      >();
+
+      for (const example of corpus.examples) {
+        const key =
+          example.priorAcknowledgedText +
+          "\n<CURRENT>\n" +
+          example.currentMessageText;
+        const entry =
+          byTemporalEvidence.get(key) ?? {
+            matterStatements: new Set<string>(),
+            labels: new Set<boolean>(),
+          };
+        entry.matterStatements.add(
+          example.matterStatement,
+        );
+        entry.labels.add(
+          example.shouldRespond,
+        );
+        byTemporalEvidence.set(key, entry);
+      }
+
+      const matterCounterfactualSignatures =
+        [...byTemporalEvidence.values()].filter(
+          (entry) =>
+            entry.matterStatements.size > 1,
+        );
+      const matterDependentLabelSwitches =
+        matterCounterfactualSignatures.filter(
+          (entry) => entry.labels.size > 1,
+        );
+
+      expect(
+        matterCounterfactualSignatures,
+      ).toHaveLength(0);
+      expect(
+        matterDependentLabelSwitches,
+      ).toHaveLength(0);
+
+      // The label constructor itself is temporal-state inequality. Matter
+      // text is present in model-visible input, but changing actor purpose is
+      // not represented as a counterfactual that can alter the target.
+      for (const example of corpus.examples) {
+        expect(example.shouldRespond).toBe(
+          example.priorAcknowledgedState !==
+            example.currentState,
+        );
+      }
+
+      console.info(
+        "R3_TEMPORAL_RELATION_MATTER_DEPENDENCE_AUDIT",
+        JSON.stringify({
+          exampleCount: corpus.examples.length,
+          matterCounterfactualSignatureCount:
+            matterCounterfactualSignatures.length,
+          matterDependentLabelSwitchCount:
+            matterDependentLabelSwitches.length,
+          result:
+            "current temporal target can be solved without actor-relative matter meaning",
+        }),
+      );
+    });
+
     it("makes exact/current/history/token shortcuts fail on an unseen semantic state", () => {
       const corpus =
         buildR3TemporalConsumerRelationCorpus();
