@@ -33,6 +33,14 @@ export type R3SemanticConsumerMode =
   | "surface-courtyard-only"
   | "ideal-semantic-oracle";
 
+export type R3SemanticDomain =
+  | "depot"
+  | "courtyard";
+
+export type R3SemanticPressureRegime =
+  | "patterned"
+  | "persistent-relevant";
+
 export const R3_SEMANTIC_PRESSURE_MESSAGES = {
   relevant:
     "Janek, the depot inspection status is complete.",
@@ -61,6 +69,8 @@ export interface R3SemanticConsumerRunOptions {
   messageIntervalTicks?: number;
   initialSourceRaw?: number;
   janekMatterOverrides?: readonly ResidentMatter[];
+  pressureRegime?: R3SemanticPressureRegime;
+  requiredDomain?: R3SemanticDomain;
 }
 
 export interface R3SemanticConsumerRun {
@@ -139,7 +149,13 @@ export function createR3SemanticConsumerRun(
     [
       "resident:ida",
       new AutonomousResidentAgent(
-        new PatternedSemanticPressurePolicy(interval),
+        options.pressureRegime ===
+          "persistent-relevant"
+          ? new PersistentRelevantSemanticPressurePolicy(
+              interval,
+              options.requiredDomain ?? "depot",
+            )
+          : new PatternedSemanticPressurePolicy(interval),
         [],
       ),
     ],
@@ -415,6 +431,141 @@ function idealLocalReportApplicabilityOracle(
     acceptsGenericLocalUpdates &&
     isDepotReport
   );
+}
+
+class PersistentRelevantSemanticPressurePolicy
+  implements ResidentPolicy
+{
+  readonly residentId = "resident:ida" as const;
+
+  private ticksSinceSlot = 0;
+  private slotIndex = 0;
+  private pendingRequired = false;
+  private lastEmittedDomain:
+    R3SemanticDomain | null = null;
+
+  constructor(
+    private readonly messageIntervalTicks: number,
+    private readonly requiredDomain:
+      R3SemanticDomain,
+  ) {}
+
+  decide(
+    input: ResidentPolicyInput,
+  ): ResidentDecision {
+    const heardAcknowledgement =
+      input.observation.heardEvents.some(
+        (event) =>
+          event.kind === "speech" &&
+          event.actorId === "resident:janek" &&
+          event.payload.text === "Ida, received.",
+      );
+
+    if (
+      heardAcknowledgement &&
+      this.pendingRequired &&
+      this.lastEmittedDomain ===
+        this.requiredDomain
+    ) {
+      this.pendingRequired = false;
+    }
+
+    this.ticksSinceSlot += 1;
+    if (
+      this.ticksSinceSlot <
+      this.messageIntervalTicks
+    ) {
+      return {
+        intent: { kind: "idle" },
+        activity: speakerActivity(
+          input.previousActivity,
+          input.observation.tick,
+          this.pendingRequired
+            ? "await_required_ack"
+            : "wait",
+        ),
+      };
+    }
+
+    this.ticksSinceSlot = 0;
+    const slot = this.slotIndex % 4;
+    this.slotIndex += 1;
+
+    // Each four-slot block creates one required report episode and two
+    // one-shot decoys. If the required report is still unresolved, slot 2
+    // repeats it. Correct acknowledgement therefore removes a future World
+    // speech event; ignoring it leaves real autonomous pressure behind.
+    if (slot === 0) {
+      this.pendingRequired = true;
+      return this.emit(
+        input,
+        this.requiredDomain,
+        "required_report",
+      );
+    }
+
+    if (slot === 1 || slot === 3) {
+      return this.emit(
+        input,
+        oppositeDomain(this.requiredDomain),
+        "decoy_report",
+      );
+    }
+
+    if (this.pendingRequired) {
+      return this.emit(
+        input,
+        this.requiredDomain,
+        "repeat_required_report",
+      );
+    }
+
+    this.lastEmittedDomain = null;
+    return {
+      intent: { kind: "idle" },
+      activity: speakerActivity(
+        input.previousActivity,
+        input.observation.tick,
+        "resolved_required_report",
+      ),
+    };
+  }
+
+  private emit(
+    input: ResidentPolicyInput,
+    domain: R3SemanticDomain,
+    phase: string,
+  ): ResidentDecision {
+    this.lastEmittedDomain = domain;
+    return {
+      intent: {
+        kind: "speak",
+        text: semanticPressureMessage(domain),
+        radius: 5,
+      },
+      activity: speakerActivity(
+        input.previousActivity,
+        input.observation.tick,
+        phase,
+      ),
+    };
+  }
+}
+
+function oppositeDomain(
+  domain: R3SemanticDomain,
+): R3SemanticDomain {
+  return domain === "depot"
+    ? "courtyard"
+    : "depot";
+}
+
+function semanticPressureMessage(
+  domain: R3SemanticDomain,
+): string {
+  return domain === "depot"
+    ? R3_SEMANTIC_PRESSURE_MESSAGES.relevant
+    : R3_SEMANTIC_PRESSURE_MESSAGES.irrelevant;
 }
 
 class PatternedSemanticPressurePolicy
