@@ -194,6 +194,45 @@ Red flags:
 - larger model before representation failure is understood;
 - MLP used merely to fit the corpus.
 
+### Active Phase C finding — consumer-reachable three-way failure
+
+The first frozen learned three-way probe has executed.
+
+Full held-out:
+- BA 0.7167;
+- AUROC 0.8669.
+
+However causal-support stratification shows that the aggregate ranking signal is dominated by authored Cartesian cases outside the currently demonstrated settled-history trajectory.
+
+Consumer-reachable subset:
+- BA 0.5573;
+- TPR 0.1875;
+- AUROC 0.6797;
+- purpose counterfactual ordering 1.000;
+- history ordering 0.6667;
+- current-evidence ordering 0.5208.
+
+Synthetic cross-purpose-history subset:
+- BA 0.8333;
+- AUROC 0.9689.
+
+Reclassification:
+**SYNTHETIC PARTIAL SIGNAL / CONSUMER-REACHABLE RELATION FAIL / NO PROMOTION.**
+
+Before trying a richer head or alternative representation family, Phase C must localize the missing factor:
+
+> same-domain settled semantic history × current evidence → semantic change vs equivalent restatement.
+
+Use the already-qualified temporal consumer relation corpus as a factor diagnostic.
+
+The diagnostic must be frozen before execution and must not be interpreted as the full actor-relative target because purpose is intentionally irrelevant to that isolated label.
+
+Pass/fail purpose:
+- PASS would show that the frozen representation can support the missing temporal semantic factor and would shift suspicion toward three-way composition / decision calibration;
+- FAIL would show that the representation/relation formulation itself does not reliably carry the temporal novelty distinction under held-out semantic transfer.
+
+Do not tune the previously failed three-way probe while this remains unresolved.
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
