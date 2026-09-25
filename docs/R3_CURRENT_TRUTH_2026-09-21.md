@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **QUALIFIED CODE HEAD `c54579fc1ca239b6e2fe6710c8137f06700cd2ca` · CHECK #200 PASS · DIRECT-COSINE FAMILY REJECTED · CURRENT 12-EXAMPLE CORPUS NOT TRAINING-QUALIFIED**
+Status: **DIRECT-COSINE FAMILY REJECTED · PAIRED-ABLATION INSTRUMENT PRESERVED · CURRENT CAUSAL-RESPONSIBILITY LABEL IS POLICY-RELATIVE / NOT SEMANTIC-TRAINING-QUALIFIED**
 
 Branch:
 
@@ -774,3 +774,66 @@ Interpretation:
 Do not train a joint relation model on this corpus.
 
 The next earned move is to build broader, counterbalanced intervention-derived supervision where context-only and matter-only baselines cannot solve the label, then require paraphrase plus actor/domain transfer holdouts before any learned relation mechanism is allowed to claim useful actor-relative meaning.
+
+
+## Causal-target grounding audit — POLICY-RELATIVE LABEL, NOT SEMANTIC GROUND TRUTH
+
+A stronger falsifier now separates two claims that had been too close together:
+
+1. paired matter ablation can identify which authored matter a fixture decision causally depends on;
+2. that causal-responsibility label is a valid semantic target for learning actor-relative meaning.
+
+Claim 1 survives. Claim 2 does not yet.
+
+Qualified falsifier evidence:
+
+- evidence head: `e4c2bcc10573060debda6667a1b6692c2b92473f`;
+- Check #205: PASS;
+- 19 test files / 161 tests: PASS;
+- sampled mixed-pressure moment: tick 41;
+- baseline private observation: identical under both fixture variants;
+- baseline private memory/matters: identical;
+- baseline local decision: identical;
+- default hidden report gate -> ablation responsibility = `local-report-response`;
+- swapping only the hidden report gate to the workshop matter -> ablation responsibility = `workshop-processing`.
+
+The resident's model-visible private life and candidate matter statements therefore need not determine the current causal-responsibility label. The label can change solely because disposable fixture code binds a different matter id to the same baseline response.
+
+### Reclassification
+
+**PRESERVED**
+- paired one-matter ablation as causal provenance / research instrumentation;
+- same-actor, same-ecology, concurrent-matter pressure;
+- actor-private transition construction;
+- wording counterfactuals;
+- direct-cosine rejection.
+
+**NOT QUALIFIED**
+- `causallyResponsibleMatterId` as standalone semantic ground truth;
+- the current mixed-pressure corpus as learned-relation supervision;
+- merely broadening row count as a sufficient next step;
+- a learned joint relation model.
+
+The causal label currently means:
+
+> which actor-owned matter this particular authored fixture policy was wired to depend on for the next decision.
+
+That fact is useful, but narrower than:
+
+> which matter the private experience semantically concerns or makes relevant.
+
+### New frontier
+
+Before learning, establish a supervision contract whose semantic content cannot be changed by an irrelevant hidden fixture rewiring.
+
+Required pressure now includes:
+- context-only/null/simple structured baselines;
+- matter-only and candidate-position controls;
+- counterbalanced cues rather than fixed cue->matter mappings;
+- paraphrase holdout;
+- actor/domain holdout;
+- **policy-family / wiring holdout**;
+- positive pairs where the relation must depend jointly on private evidence and candidate meaning;
+- explicit separation of causal provenance from semantic target authority.
+
+If no intervention-derived target can survive those controls without importing hand-authored semantic answers, close the current event-to-matter target family rather than train it anyway.
