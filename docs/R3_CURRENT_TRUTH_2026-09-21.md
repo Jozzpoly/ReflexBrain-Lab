@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **DIRECT-COSINE FAMILY REJECTED · PAIRED-ABLATION INSTRUMENT PRESERVED · CURRENT ID-ABLATION SEMANTIC SUPERVISION NOT IDENTIFIABLE IN THE STATEMENT-BLIND R3 SUBSTRATE**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · OWNER-LIFE/PRODUCT CLAIM UNPROVEN · DIRECT-COSINE REJECTED · ID-ABLATION SEMANTIC SUPERVISION REJECTED**
 
 Branch:
 
@@ -10,9 +10,25 @@ PR:
 
 `#3 R3 autonomous life pressure host` — draft research PR.
 
+## Owner/product truth boundary
+
+The R2 live intervention specimen is an **OWNER FAIL** as a product/life direction. Its machine-valid instrumentation does not soften that result.
+
+R3 removed the click-driven dependency and established zero-input autonomous causal pressure. This is **machine-qualified research substrate evidence only**.
+
+Do not promote from that evidence:
+- that these fixture residents are convincingly alive;
+- that R3 solved the living-organism problem;
+- that the host is Owner-ready;
+- that green CI constitutes experiential/product success.
+
+Those claims remain **UNPROVEN** until the relevant real behavior is available and explicitly evaluated at the appropriate evidence plane.
+
+Owner-observed behavior and later Owner corrections are authoritative for product-level claims. Machine PASS may retain narrower diagnostic facts but cannot override an Owner FAIL.
+
 ## Live truth
 
-R3 is no longer the R2 clicker line.
+R3 is no longer the R2 clicker line. It is an autonomous causal **research host**, not an Owner-qualified living specimen.
 
 The current branch starts from the pre-clicker research checkpoint and contains no R2 live-intervention UI.
 
@@ -888,3 +904,53 @@ The target must first survive:
 Self-supervised temporal/predictive or contrastive objectives may be investigated, as may a different causal construction, but none is promoted yet.
 
 If no semantic grounding can be obtained without importing the desired answer, keep matters as context/instrumentation and move the ReflexBrain research question to a different learned objective rather than training this failed target by force.
+
+
+## R3-wide matter-statement causal inertness — QUALIFIED DIAGNOSTIC
+
+The mixed-pressure statement-permutation result was broadened to both existing autonomous R3 ecologies.
+
+Evidence:
+- implementation/falsifier head: `1fa1e12214e5c07a10278fc31de449a391034f58`;
+- Check #214: PASS;
+- 20 test files / 164 tests PASS;
+- material ecology: 420 ticks;
+- contact ecology: 420 ticks;
+- material World + decision trajectory unchanged under semantic-statement permutation across fixed matter ids;
+- contact World + decision trajectory unchanged under semantic-statement permutation across fixed matter ids.
+
+The first test attempt exposed a research-global activity-id serial isolation bug; it was corrected by executing the paired material runs sequentially so each fixture reset owns its serial state. The qualified result is from the corrected harness.
+
+Interpretation:
+
+**QUALIFIED**
+- current R3 material/contact fixture life is causally driven by matter identity/policy code, not `matter.statement` meaning;
+- actor-private semantic statements are stored/exposed context but are causally inert in the current fixture behavior;
+- the present autonomous host is useful for private-state, causality, continuity and intervention research.
+
+**NOT QUALIFIED**
+- semantic grounding from the current fixture life;
+- a learned semantic consumer;
+- living/personhood/product feel;
+- any Owner-level success claim.
+
+This strengthens the conclusion that a new learner should not be selected merely because a new self-supervised target is available.
+
+## Current strategic frontier — CONSUMER FIRST
+
+The next earned question is:
+
+> is there a bounded actor-private semantic judgement whose **ideal availability actually improves autonomous causal behavior or continuity**?
+
+Before choosing a learning objective:
+
+1. define one narrow downstream consumer need inside zero-input autonomous pressure;
+2. provide a research-only ideal semantic oracle using actor-private evidence;
+3. keep World/body authority in deterministic execution;
+4. compare oracle / null / simple non-semantic controls under identical exogenous conditions;
+5. require a material causal or continuity benefit;
+6. reject the semantic-output family if even the ideal oracle adds no useful consequence.
+
+The oracle is not a final ReflexBrain API and its authored answers are not automatically training supervision.
+
+Only after semantic utility survives this gate should the project decide whether the learned approximation is supervised, contrastive, predictive, self-supervised, relational or something else.
