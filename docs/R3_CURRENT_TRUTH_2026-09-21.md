@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **DIRECT-COSINE FAMILY REJECTED · PAIRED-ABLATION INSTRUMENT PRESERVED · CURRENT CAUSAL-RESPONSIBILITY LABEL IS POLICY-RELATIVE / NOT SEMANTIC-TRAINING-QUALIFIED**
+Status: **DIRECT-COSINE FAMILY REJECTED · PAIRED-ABLATION INSTRUMENT PRESERVED · CURRENT ID-ABLATION SEMANTIC SUPERVISION NOT IDENTIFIABLE IN THE STATEMENT-BLIND R3 SUBSTRATE**
 
 Branch:
 
@@ -837,3 +837,54 @@ Required pressure now includes:
 - explicit separation of causal provenance from semantic target authority.
 
 If no intervention-derived target can survive those controls without importing hand-authored semantic answers, close the current event-to-matter target family rather than train it anyway.
+
+
+## Statement-semantic identifiability audit — FAIL / CURRENT FAMILY CLOSED
+
+A stronger metamorphic falsifier now tests the semantic statement itself rather than only hidden policy wiring.
+
+Evidence:
+- commit `4f4c14e64e5ed046916168c0b400b30d53b7d2c6`;
+- Check #209: PASS;
+- 19 test files / 162 tests PASS;
+- anchor tick 41;
+- baseline observed/memory/decision trajectory remains identical when the two Janek matter statements are exchanged across their existing matter ids;
+- the ablation-responsible matter id remains `resident:janek:matter:local-report-response`;
+- only the semantic statements attached to the two ids are permuted.
+
+The current material, contact and mixed-pressure fixture policies gate behavior on `matter.id`. They do not consume `matter.statement` meaning. The resident validates/stores the statement and research serializers expose it, but current causal life does not use its semantic content.
+
+Therefore the present ablation label cannot identify the meaning of a matter statement. It identifies dependence on an authored matter identity/policy binding.
+
+This is stronger than a corpus-size or shortcut failure. Counterbalancing more rows cannot recover a semantic relation that is absent from the label-generating causal path.
+
+### Classification
+
+Preserve:
+- paired matter ablation as causal provenance / first-divergence instrumentation;
+- actor-owned semantic matter statements as legitimate private context;
+- private temporal transitions;
+- frozen semantic encoder/runtime methodology;
+- paraphrase, leakage and metamorphic controls.
+
+Close for the current statement-blind substrate:
+- `causallyResponsibleMatterId` as semantic ground truth;
+- ID-ablation-derived event→matter supervision as the route to a learned semantic relation;
+- the plan to make this target trainable merely by broadening/counterbalancing the corpus.
+
+This does **not** reject actor-relative semantic relation as a long-term ReflexBrain capability. It rejects the current supervision mechanism as evidence for that capability.
+
+## Current earned frontier
+
+Before another learned relation model, find or construct a pressure/objective in which semantic content has a legitimate grounding path to actor-private evidence or consequences.
+
+The target must first survive:
+- statement/permutation invariance checks appropriate to its claim;
+- context-only, matter-only, identity/order and simple structured baselines;
+- paraphrase and policy-family transfer controls;
+- hidden-World/future-outcome leakage checks;
+- an explicit audit of whether the desired answer was merely authored into a fixture, parser, teacher or label generator.
+
+Self-supervised temporal/predictive or contrastive objectives may be investigated, as may a different causal construction, but none is promoted yet.
+
+If no semantic grounding can be obtained without importing the desired answer, keep matters as context/instrumentation and move the ReflexBrain research question to a different learned objective rather than training this failed target by force.
