@@ -54,12 +54,14 @@ Work:
 - add negative controls capable of solving by surface tokens;
 - distinguish intervention-derived causal provenance from semantic target authority;
 - require policy-wiring invariance when a label is claimed to express model-visible semantic meaning;
+- require semantic-content identifiability: permuting candidate statement meaning must not leave a supposedly semantic label arbitrarily attached to authored ids;
 - preserve isolated examples where the same event reaches actors with different matters.
 
 Pass gate:
 - held-out ecology contains legitimate unseen relationships;
 - simple surface/identity/context-only/matter-only baselines fail where semantic representation should succeed;
 - a claimed semantic label does not flip under irrelevant hidden fixture rewiring that leaves model-visible private life and candidate meaning unchanged;
+- a claimed semantic target is actually sensitive to the semantic content it purports to supervise, rather than only to matter identity or policy binding;
 - actor/domain/policy-family holdouts distinguish transfer from fixture memorization;
 - temporal windows do not leak future outcomes.
 
@@ -67,7 +69,16 @@ Red flags:
 - hand-labeling OOD failures back into TRAIN;
 - tuning exact phrases to improve held-out score;
 - treating intervention provenance as semantic truth without an invariance test;
+- attempting to recover semantic supervision from a statement-blind causal generator merely by adding corpus size, balance or model capacity;
 - treating corpus size as progress.
+
+### Active Phase B finding — statement-blind causal labels cannot supervise statement meaning
+
+The current R3 fixture policies consume matter identity but not `matter.statement` semantics.
+
+A statement-permutation metamorphic falsifier (Check #209, 19 files / 162 tests PASS) swaps the semantic statements between fixed matter ids while preserving the observed/memory/decision trajectory and the ablation-responsible id.
+
+Therefore the present ID-ablation label family is closed as semantic supervision in this substrate. Phase B must now discover a target/objective with a legitimate semantic grounding path before Phase C model work resumes. Counterbalancing the old target is no longer sufficient.
 
 ## Phase C — representation probes, not product brain
 
