@@ -50,18 +50,23 @@ Work:
 - collect temporal windows from both ecologies;
 - classify fields by provenance: exact private fact / private memory / authored matter / future factual outcome;
 - add leakage controls for actor identity, absolute tick, place names and fixture-specific tokens;
-- create train/held-out splits across ecology, role and event families;
+- create train/held-out splits across ecology, role, event and policy families;
 - add negative controls capable of solving by surface tokens;
+- distinguish intervention-derived causal provenance from semantic target authority;
+- require policy-wiring invariance when a label is claimed to express model-visible semantic meaning;
 - preserve isolated examples where the same event reaches actors with different matters.
 
 Pass gate:
 - held-out ecology contains legitimate unseen relationships;
-- simple surface/identity baselines fail where semantic representation should succeed;
+- simple surface/identity/context-only/matter-only baselines fail where semantic representation should succeed;
+- a claimed semantic label does not flip under irrelevant hidden fixture rewiring that leaves model-visible private life and candidate meaning unchanged;
+- actor/domain/policy-family holdouts distinguish transfer from fixture memorization;
 - temporal windows do not leak future outcomes.
 
 Red flags:
 - hand-labeling OOD failures back into TRAIN;
 - tuning exact phrases to improve held-out score;
+- treating intervention provenance as semantic truth without an invariance test;
 - treating corpus size as progress.
 
 ## Phase C — representation probes, not product brain
