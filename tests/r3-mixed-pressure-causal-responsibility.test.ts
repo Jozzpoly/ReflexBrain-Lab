@@ -338,6 +338,167 @@ describe("R3 mixed-pressure causal responsibility", () => {
     );
   }, 30_000);
 
+  it("shows that semantic matter statements are not identifiable from the current causal label generator", () => {
+    const candidates =
+      r3MixedPressureJanekMatters("baseline");
+
+    const workerStatement =
+      candidates.find(
+        (matter) =>
+          matter.id ===
+          MATERIAL_FIXTURE_MATTER_IDS.worker,
+      )!.statement;
+    const reportStatement =
+      candidates.find(
+        (matter) =>
+          matter.id ===
+          MIXED_PRESSURE_MATTER_IDS.reportResponse,
+      )!.statement;
+
+    const statementSwapped = candidates.map(
+      (matter) => ({
+        ...matter,
+        statement:
+          matter.id ===
+          MATERIAL_FIXTURE_MATTER_IDS.worker
+            ? reportStatement
+            : workerStatement,
+      }),
+    );
+
+    const survey = createR3MixedPressureRun({
+      janekMatterOverrides: candidates,
+    });
+    survey.runTicks(700);
+
+    const reportRow =
+      survey.privateExperiences().find(
+        (experience) =>
+          experience.residentId ===
+            "resident:janek" &&
+          experience.observation.heardEvents.some(
+            (event) =>
+              event.kind === "speech" &&
+              event.actorId === "resident:ida",
+          ),
+      );
+
+    expect(reportRow).toBeDefined();
+    const anchorTick = reportRow!.tick;
+
+    function causalResult(
+      matters: readonly (typeof candidates)[number][],
+    ) {
+      function rowAfter(
+        retainedMatters:
+          readonly (typeof candidates)[number][],
+      ) {
+        const run = createR3MixedPressureRun({
+          janekMatterOverrides: matters,
+        });
+        run.runTicks(anchorTick);
+        run.researchReplaceResidentMatters(
+          "resident:janek",
+          retainedMatters,
+        );
+        run.advanceOneTick();
+
+        const row =
+          run.privateExperiences().find(
+            (experience) =>
+              experience.residentId ===
+                "resident:janek" &&
+              experience.tick === anchorTick,
+          );
+        expect(row).toBeDefined();
+
+        const privateLife =
+          run.privateExperiences()
+            .filter(
+              (experience) =>
+                experience.residentId ===
+                  "resident:janek" &&
+                experience.tick <= anchorTick,
+            )
+            .map((experience) => ({
+              tick: experience.tick,
+              observation: experience.observation,
+              memory: experience.memory,
+              decision: experience.decision,
+            }));
+
+        return {
+          row: row!,
+          privateLife,
+        };
+      }
+
+      const baseline = rowAfter(matters);
+      const changed: string[] = [];
+
+      for (const matter of matters) {
+        const ablated = rowAfter(
+          matters.filter(
+            (candidate) =>
+              candidate.id !== matter.id,
+          ),
+        );
+        if (
+          JSON.stringify(ablated.row.decision) !==
+          JSON.stringify(baseline.row.decision)
+        ) {
+          changed.push(matter.id);
+        }
+      }
+
+      expect(changed).toHaveLength(1);
+      return {
+        responsibleMatterId: changed[0]!,
+        privateLife: baseline.privateLife,
+      };
+    }
+
+    const ordinary = causalResult(candidates);
+    const swapped = causalResult(statementSwapped);
+
+    expect(swapped.privateLife).toEqual(
+      ordinary.privateLife,
+    );
+    expect(swapped.responsibleMatterId).toBe(
+      ordinary.responsibleMatterId,
+    );
+    expect(ordinary.responsibleMatterId).toBe(
+      MIXED_PRESSURE_MATTER_IDS.reportResponse,
+    );
+
+    expect(
+      statementSwapped.find(
+        (matter) =>
+          matter.id ===
+          MATERIAL_FIXTURE_MATTER_IDS.worker,
+      )!.statement,
+    ).toBe(reportStatement);
+    expect(
+      statementSwapped.find(
+        (matter) =>
+          matter.id ===
+          MIXED_PRESSURE_MATTER_IDS.reportResponse,
+      )!.statement,
+    ).toBe(workerStatement);
+
+    console.info(
+      "R3_MIXED_PRESSURE_STATEMENT_IDENTIFIABILITY_FALSIFIER",
+      JSON.stringify({
+        anchorTick,
+        privateLifeEqual: true,
+        causalLabelEqual: true,
+        responsibleMatterId:
+          ordinary.responsibleMatterId,
+        statementsPermutedAcrossMatterIds: true,
+      }),
+    );
+  }, 30_000);
+
   it("audits identifiability and lexical shortcuts before any mixed-pressure model run", () => {
     const audits = [
       auditR3MixedPressureCausalResponsibility(
