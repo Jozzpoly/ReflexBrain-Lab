@@ -157,7 +157,7 @@ At the 2026-09-24 recovered frontier:
 - frozen MiniLM direct cosine on that target: **FAIL · FAMILY REJECTED**;
 - current 12-example mixed-pressure corpus as learned-relation training benchmark: **FAIL · context-only speech shortcut reaches 1.000**;
 - paired matter ablation as causal provenance instrumentation: **PRESERVED**;
-- current `causallyResponsibleMatterId` as semantic ground truth: **NOT QUALIFIED · policy-wiring falsifier flips the label under identical model-visible baseline life**;
+- current `causallyResponsibleMatterId` as semantic ground truth: **REJECTED for the statement-blind R3 substrate · policy-wiring and statement-permutation falsifiers show that the label tracks authored identity/wiring, not semantic meaning**;
 - learned R3 ReflexBrain authority: **does not exist**.
 
 Therefore the next `kontynuuj` must **not** rerun/rescue direct cosine, must **not** train a joint relation model on the current corpus, and must **not** equate intervention-derived policy dependence with semantic meaning.
@@ -171,3 +171,26 @@ The earned frontier is:
 - only after those gates pass consider a small learned **joint relation function** over private temporal evidence + candidate matter.
 
 Do not add capacity/head to the rejected independent-embedding cosine formulation, do not treat corpus row count as progress, and do not interpret a model fitting authored fixture wiring as learned actor-relative meaning.
+
+
+### 2026-09-25 statement-semantic identifiability closure
+
+A metamorphic test permuted the semantic statements between Janek's two existing matter ids while keeping ids, fixture wiring and causal life fixed.
+
+Check #209 PASS:
+- 19 test files / 162 tests;
+- observed/memory/decision trajectory unchanged;
+- ablation-responsible id unchanged;
+- semantic statement assignment reversed.
+
+The active R3 fixture policies gate on matter ids, not on statement meaning. Therefore current ID-ablation labels cannot identify semantic statement meaning.
+
+For future `kontynuuj`:
+- do **not** try to make the current causal label trainable by adding rows or capacity;
+- keep paired ablation as causal provenance instrumentation;
+- treat actor-owned matter statements as private semantic context, not validated labels;
+- first search for a supervision/objective with a real semantic grounding path;
+- red-team any proposed target with statement permutation, identity/order, context-only, matter-only, policy-family and leakage controls before model training;
+- if semantic supervision requires an authored parser/oracle/teacher, name that source explicitly rather than calling the target intervention-derived ground truth.
+
+The next move is target/objective discovery and falsification, not a learned joint head.
