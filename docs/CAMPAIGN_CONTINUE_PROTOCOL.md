@@ -153,19 +153,21 @@ At the 2026-09-24 recovered frontier:
 - coarse direct matter↔context cosine relation: **REJECTED**;
 - same-actor two-domain frozen MiniLM result: **PARTIAL SIGNAL / GENERALIZATION FAIL**;
 - concurrent-matter causal-responsibility direct cosine: **FAIL at chance**, including after temporal-alignment correction;
-- within-one-ecology mixed-pressure causal-responsibility target: **QUALIFIED as causal feasibility evidence**;
+- within-one-ecology mixed-pressure causal-responsibility target: **QUALIFIED only as causal feasibility/microscope evidence**;
 - frozen MiniLM direct cosine on that target: **FAIL · FAMILY REJECTED**;
 - current 12-example mixed-pressure corpus as learned-relation training benchmark: **FAIL · context-only speech shortcut reaches 1.000**;
-- intervention-derived paired-ablation supervision: **PRESERVED**;
+- paired matter ablation as causal provenance instrumentation: **PRESERVED**;
+- current `causallyResponsibleMatterId` as semantic ground truth: **NOT QUALIFIED · policy-wiring falsifier flips the label under identical model-visible baseline life**;
 - learned R3 ReflexBrain authority: **does not exist**.
 
-Therefore the next `kontynuuj` must **not** rerun/rescue direct cosine and must **not** train a joint relation model on the current 12-example corpus.
+Therefore the next `kontynuuj` must **not** rerun/rescue direct cosine, must **not** train a joint relation model on the current corpus, and must **not** equate intervention-derived policy dependence with semantic meaning.
 
 The earned frontier is:
-- broaden and counterbalance intervention-derived causal supervision beyond the feasibility set;
-- require majority/null, context-only, matter-only and simple structured baselines;
-- break fixed cue→matter mappings while preserving same-actor/same-ecology causal switching;
-- preserve paraphrase controls and add candidate-order plus actor/domain transfer holdouts;
+- define and falsify a semantic-grounding contract before adding training capacity;
+- retain paired ablation as provenance, not automatic semantic authority;
+- construct counterbalanced pressure where context-only, matter-only, candidate-position and simple structured baselines cannot solve the task;
+- require the same semantic relation to survive irrelevant policy rewiring and require different relations under genuinely different actor-private meaning;
+- preserve paraphrase controls and add actor/domain/**policy-family** transfer holdouts;
 - only after those gates pass consider a small learned **joint relation function** over private temporal evidence + candidate matter.
 
-Do not add capacity/head to the rejected independent-embedding cosine formulation, and do not interpret a model fitting the current fixture as learned actor-relative meaning.
+Do not add capacity/head to the rejected independent-embedding cosine formulation, do not treat corpus row count as progress, and do not interpret a model fitting authored fixture wiring as learned actor-relative meaning.
