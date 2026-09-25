@@ -29,7 +29,8 @@ The important words are:
 
 - **actor-private** — no hidden World/debug truth;
 - **temporal** — not isolated NLP cards;
-- **living** — the host continues without Owner input;
+- **autonomous pressure** — the research host continues without Owner input; this is a mechanistic substrate property, not by itself a claim that the actor feels alive;
+- **living** — a stronger experiential/product claim about an actor having convincing ongoing life and continuity; this remains Owner-sensitive and cannot be promoted from CI alone;
 - **actor-relative** — the same event can matter differently to different actors;
 - **learned** — the target competence must eventually exceed hand-authored fixture rules;
 - **generalizable** — success in one ecology is not enough;
@@ -87,7 +88,32 @@ Every temporary scaffold must remain replaceable and must periodically face a qu
 
 ### No benchmark-shaped product
 
-Benchmarks, fixtures, oracles and microscopes are instruments. The project goal is a learned competence that survives autonomous causal life.
+Benchmarks, fixtures, oracles and microscopes are instruments. The project goal is a learned competence that survives autonomous causal pressure and, later, real living-world evaluation.
+
+### Owner truth precedence
+
+Product-level and experiential claims are governed by Owner-observed behavior.
+
+If the Owner reports that a specimen does not feel alive, useful, usable or functionally present, that product-level claim is **FAIL** until new real evidence is explicitly re-evaluated by the Owner.
+
+Machine evidence may preserve narrower facts such as:
+- deterministic correctness;
+- private-state invariants;
+- causal provenance;
+- autonomous zero-input execution;
+- shadow consistency;
+- benchmark or held-out performance.
+
+Those facts must not be used to reinterpret an Owner FAIL as a hidden product PASS.
+
+Evidence planes remain separate:
+1. mechanism correctness;
+2. autonomous research ecology;
+3. learned/shadow competence;
+4. bounded causal consequence;
+5. Owner-observed experiential/product value.
+
+No lower plane silently promotes a higher one.
 
 ## Lessons already earned
 
@@ -121,9 +147,9 @@ R2 is evidence and instrumentation donor only.
 
 ### R3
 
-R3 corrected the host problem before returning to learned cognition.
+R3 corrected the **click-driven pressure problem** before returning to learned-cognition research. It established a deterministic zero-input autonomous causal host. That is narrower than proving a living organism or convincing resident experience.
 
-Current evidence includes:
+Current machine evidence includes:
 - zero-input autonomous material ecology with three residents;
 - real cross-resident material dependence and causal lineage;
 - private object and actor-contact memory;
@@ -133,7 +159,7 @@ Current evidence includes:
 - naturally occurring speech pressure from an actor's real blockage;
 - ontology-free temporal corpus infrastructure.
 
-R3 has **not** yet demonstrated learned ReflexBrain competence.
+R3 has **not** yet demonstrated learned ReflexBrain competence, and the autonomous fixture host is **not Owner-qualified as a living actor/product experience**.
 
 ## Donor policy
 
@@ -177,26 +203,41 @@ Do not turn ReflexBrain Lab into Feniks or another game.
 
 A mechanism is promoted only if it survives **qualitatively different causal pressure** and improves something materially useful.
 
-Evidence classes, in increasing strength:
+Evidence classes, in increasing scope rather than automatic promotion:
 
 1. unit correctness;
 2. deterministic fixture evidence;
 3. autonomous ecology evidence;
 4. cross-ecology held-out generalization;
-5. shadow insertion into autonomous life;
+5. shadow insertion into autonomous pressure;
 6. causal A/B consequence under controlled authority;
-7. Owner hands-on evidence.
+7. Owner hands-on evidence for experiential/product claims.
+
+Higher-scope claims require evidence at their own plane. A lower-plane PASS cannot override an Owner-observed product FAIL.
 
 Owner testing is an output of earned capability, not a substitute for implementation.
 
 ## Current frontier
 
-Before the first R3 learned mechanism:
+The early R3 substrate and corpus work has now established a stronger negative boundary:
 
-1. make continuing matter/purpose genuinely actor-private rather than dataset-runner metadata;
-2. harden cross-ecology private trajectories and leakage controls;
-3. define learning questions from temporal/private relationships rather than resurrecting five appraisal scores;
-4. reuse the qualified R1 frozen encoder path only where justified;
-5. keep learned output shadow-only until generalization evidence exists.
+- continuing matters are actor-private, but current fixture behavior consumes matter **identity**, not semantic statement meaning;
+- direct-cosine matter↔experience mechanisms are rejected;
+- ID-ablation labels are causal provenance, not semantic ground truth;
+- full material and contact ecologies remain causally identical when matter statements are permuted across fixed ids.
+
+Therefore the next question is **not which learner to train**.
+
+The earned frontier is consumer-first / oracle-first:
+
+1. identify one bounded semantic judgement that could materially help an autonomous actor while using actor-private evidence only;
+2. implement an ideal research oracle for that judgement without giving it World authority or direct body control;
+3. give it one explicit deterministic consumer/executive seam inside zero-input autonomous pressure;
+4. compare oracle / null / simple non-semantic baselines under identical exogenous conditions;
+5. require a material causal or continuity benefit before choosing a learned objective to approximate that boundary;
+6. treat oracle answers as research instrumentation, **not automatic training labels or final API**;
+7. keep any later learned candidate shadow-only until generalization evidence exists.
+
+If ideal semantic information has no useful downstream consumer effect, reject or reformulate that output family instead of training a model to predict it.
 
 The architecture after that remains deliberately open.
