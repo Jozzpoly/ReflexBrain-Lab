@@ -177,7 +177,7 @@ At the 2026-09-25 recovered frontier:
 - first bounded semantic consumer value: **QUALIFIED ORACLE-ONLY** — same-id purpose switching plus persistent required pressure show a purpose×current-evidence relation can resolve recurring pressure with fewer unnecessary acknowledgements than respond-all and better resolution than fixed-surface/null controls;
 - second bounded temporal semantic consumer: **QUALIFIED ORACLE-ONLY** — semantic state-change settlement uses private history to suppress paraphrased duplicate pressure that exact-text change cannot distinguish;
 - current temporal relation corpus: **PARTIAL / NOT YET ACTOR-RELATIVE** — unseen-state and shortcut controls pass, but a matter-dependence audit finds zero counterfactual signatures where purpose meaning can change the label;
-- first learned joint relation probe: **PARTIAL SIGNAL / NO PROMOTION** — held-out BA 0.7167, TPR 0.475, TNR 0.9583; purpose/history/current counterfactual success 0.467/0.383/0.475; the precommitted gate failed;
+- first learned joint relation probe: **SYNTHETIC PARTIAL SIGNAL / CONSUMER-REACHABLE RELATION FAIL / NO PROMOTION** — full held-out BA 0.7167 and AUROC 0.8669 are materially inflated by synthetic cross-purpose-history cases; the consumer-reachable subset is BA 0.5573, TPR 0.1875, AUROC 0.6797, with current-evidence counterfactual ordering 0.5208;
 - learned R3 ReflexBrain authority: **does not exist**.
 
 Therefore the next `kontynuuj` must **not** rerun/rescue direct cosine, must **not** train a joint relation model on the current corpus, and must **not** equate intervention-derived policy dependence with semantic meaning.
@@ -302,3 +302,52 @@ For future `kontynuuj`:
 - first add diagnostics that leave the frozen model unchanged;
 - determine whether unseen `suspended` semantics, three-way composition, or both dominate the failure;
 - only then state a new falsifiable architecture hypothesis.
+
+
+### 2026-09-26 consumer-support diagnostic correction
+
+The frozen three-way learned probe was not changed after its failed promotion gate. Diagnostic-only reruns added:
+- state stratification;
+- AUROC / threshold-free pair ordering;
+- causal-support split.
+
+Exact diagnostic head:
+`a5a405f25592e466aa2a18e63f0079efc26b30d9`
+
+Real Opera/WebGPU findings:
+- full held-out AUROC: 0.8669;
+- purpose ordering: 1.000;
+- history ordering: 0.808;
+- current ordering: 0.783;
+- unseen `suspended` is not the primary failure.
+
+But the model's signal is highly uneven by causal support.
+
+Consumer-reachable history:
+`priorAcknowledgedDomain === matterDomain`
+- BA 0.5573;
+- TPR 0.1875;
+- AUROC 0.6797;
+- purpose ordering 1.000;
+- history ordering 0.6667;
+- current ordering 0.5208.
+
+Synthetic cross-purpose-history:
+`priorAcknowledgedDomain !== matterDomain`
+- BA 0.8333;
+- TPR 0.6667;
+- AUROC 0.9689;
+- history ordering 0.9028;
+- current ordering 0.9583.
+
+Therefore the aggregate partial signal must not be used as evidence that the learned head approximates the causally demonstrated consumer relation.
+
+For future `kontynuuj`:
+- do not tune the current threshold/head/encoder;
+- do not celebrate aggregate AUROC without causal-support stratification;
+- do not train on more Cartesian examples merely to recover score;
+- treat purpose applicability as comparatively strong representation evidence;
+- localize the missing capability as **same-domain settled-history × current semantic novelty**;
+- use the existing temporal consumer relation corpus only as a diagnostic factor target;
+- freeze any such factor probe before execution;
+- remember that this factor target is not the complete actor-relative ReflexBrain relation because purpose does not change its label.
