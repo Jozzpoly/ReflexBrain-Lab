@@ -174,17 +174,21 @@ At the 2026-09-25 recovered frontier:
 - current 12-example mixed-pressure corpus as learned-relation training benchmark: **FAIL · context-only speech shortcut reaches 1.000**;
 - paired matter ablation as causal provenance instrumentation: **PRESERVED**;
 - current `causallyResponsibleMatterId` as semantic ground truth: **REJECTED for the statement-blind R3 substrate · policy-wiring and statement-permutation falsifiers show that the label tracks authored identity/wiring, not semantic meaning**;
-- first bounded semantic consumer value: **QUALIFIED ORACLE-ONLY** — same-id purpose switching plus persistent required pressure show a joint semantic relation can resolve recurring pressure with fewer unnecessary acknowledgements than respond-all and better resolution than fixed-surface/null controls;
+- first bounded semantic consumer value: **QUALIFIED ORACLE-ONLY** — same-id purpose switching plus persistent required pressure show a purpose×current-evidence relation can resolve recurring pressure with fewer unnecessary acknowledgements than respond-all and better resolution than fixed-surface/null controls;
+- second bounded temporal semantic consumer: **QUALIFIED ORACLE-ONLY** — semantic state-change settlement uses private history to suppress paraphrased duplicate pressure that exact-text change cannot distinguish;
+- current temporal relation corpus: **PARTIAL / NOT YET ACTOR-RELATIVE** — unseen-state and shortcut controls pass, but a matter-dependence audit finds zero counterfactual signatures where purpose meaning can change the label;
 - learned R3 ReflexBrain authority: **does not exist**.
 
 Therefore the next `kontynuuj` must **not** rerun/rescue direct cosine, must **not** train a joint relation model on the current corpus, and must **not** equate intervention-derived policy dependence with semantic meaning.
 
-The first bounded consumer utility gate is now **QUALIFIED ORACLE-ONLY**. The earned frontier moves one step forward but remains pre-model:
+Two bounded consumer utilities are now **QUALIFIED ORACLE-ONLY**: static purpose×evidence routing and temporal semantic settlement. The earned frontier remains pre-model because the two dependencies have not yet been required jointly:
 
 - preserve paired ablation as provenance, not automatic semantic authority;
-- preserve the qualified report-applicability consumer as evidence that a useful semantic relation can exist;
-- harden that consumer-shaped pressure against exact-pair and lexical memorization;
-- add held-out paraphrase/surface controls and at least one qualitatively different semantic-pressure family or counterfactual;
+- preserve both qualified consumer families as evidence that purpose meaning and settled semantic history can each matter downstream;
+- do not train the current temporal corpus as the full actor-relative target: its labels do not depend on matter meaning;
+- construct one bounded three-way pressure where purpose × settled history × current evidence are each necessary;
+- require counterfactual label switches under both purpose changes and history changes while ids remain fixed;
+- preserve held-out paraphrase/unseen-state and simple shortcut controls;
 - audit supervision provenance explicitly before any oracle output is used for training;
 - only after those gates choose what supervision/representation family deserves to approximate the boundary.
 
@@ -213,7 +217,7 @@ For future `kontynuuj`:
 - red-team any proposed target with statement permutation, identity/order, context-only, matter-only, policy-family and leakage controls before model training;
 - if semantic supervision requires an authored parser/oracle/teacher, name that source explicitly rather than calling the target intervention-derived ground truth.
 
-The next move is **consumer-shaped learnability/generalization hardening**, not immediate model training and not premature selection of a self-supervised objective.
+The next move is **three-way actor-private consumer/target qualification** — purpose × settled semantic history × current evidence — not immediate model training and not premature selection of a self-supervised objective.
 
 
 ### R3-wide statement inertness
@@ -257,3 +261,21 @@ Do not inflate this result:
 - no broad semantic generality or Owner/product value is established.
 
 For future `kontynuuj`, do not regress to “find any target and train it”. First make the consumer-shaped relation resistant to exact-pair/surface shortcuts and test another meaningful pressure boundary.
+
+
+### 2026-09-25 temporal target matter-dependence audit
+
+The temporal consumer itself remains qualified oracle-only, and the held-out `suspended` state defeats the tested simple memorization controls.
+
+But head `1a14c6cc567ca415366521ff6933e8f00fbb2ac5` / Check #248 shows:
+- 32 temporal examples;
+- 0 same temporal-evidence signatures with alternative matter meanings;
+- 0 matter-dependent label switches.
+
+Therefore a learner can solve the current temporal target while ignoring actor purpose.
+
+For future `kontynuuj`:
+- do not promote this corpus into TRAIN as the complete ReflexBrain relation;
+- combine the already-qualified static purpose relation with temporal settlement in one bounded consumer/target;
+- require purpose, history and current evidence to each have causal/label necessity;
+- only after that gate consider the first learned approximation.
