@@ -219,25 +219,30 @@ Owner testing is an output of earned capability, not a substitute for implementa
 
 ## Current frontier
 
-The early R3 substrate and corpus work has now established a stronger negative boundary:
+R3 has now established both a negative and a positive boundary.
 
-- continuing matters are actor-private, but current fixture behavior consumes matter **identity**, not semantic statement meaning;
+Negative:
+- current ordinary fixture behavior consumes matter **identity**, not semantic statement meaning;
 - direct-cosine matter↔experience mechanisms are rejected;
 - ID-ablation labels are causal provenance, not semantic ground truth;
-- full material and contact ecologies remain causally identical when matter statements are permuted across fixed ids.
+- the old statement-blind causal-label family is closed as semantic supervision.
 
-Therefore the next question is **not which learner to train**.
+Positive, but narrow:
+- one research-only actor-private semantic oracle has a qualified downstream consumer;
+- same-id purpose switching defeats fixed message-surface controls;
+- correct joint semantic routing resolves recurring required World pressure while avoiding respond-all decoy interruptions.
 
-The earned frontier is consumer-first / oracle-first:
+This does **not** qualify a learner. The oracle is authored instrumentation and throughput did not improve.
 
-1. identify one bounded semantic judgement that could materially help an autonomous actor while using actor-private evidence only;
-2. implement an ideal research oracle for that judgement without giving it World authority or direct body control;
-3. give it one explicit deterministic consumer/executive seam inside zero-input autonomous pressure;
-4. compare oracle / null / simple non-semantic baselines under identical exogenous conditions;
-5. require a material causal or continuity benefit before choosing a learned objective to approximate that boundary;
-6. treat oracle answers as research instrumentation, **not automatic training labels or final API**;
-7. keep any later learned candidate shadow-only until generalization evidence exists.
+The earned frontier is now learnability/generalization hardening:
 
-If ideal semantic information has no useful downstream consumer effect, reject or reformulate that output family instead of training a model to predict it.
+1. preserve the qualified consumer as the downstream reason for learning;
+2. construct paraphrase and lexical counterfactual pressure that cannot be solved by exact-pair, message-only, matter-only, identity/order or simple token controls;
+3. preserve same-id actor-purpose switching;
+4. test at least one qualitatively different semantic-pressure family or counterfactual;
+5. audit where supervision comes from before any oracle answer is allowed into TRAIN;
+6. only then select a learned approximation and keep it shadow-only until held-out generalization exists.
+
+If the relation cannot be learned without memorizing authored fixtures or importing the oracle as the answer, narrow or reject the learned hypothesis while preserving the already-qualified consumer value.
 
 The architecture after that remains deliberately open.
