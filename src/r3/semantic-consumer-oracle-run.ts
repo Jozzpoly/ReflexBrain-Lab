@@ -28,6 +28,7 @@ import { AutonomousResidentAgent } from "./resident-agent";
 export type R3SemanticConsumerMode =
   | "ignore-all"
   | "respond-all"
+  | "cadence-only"
   | "ideal-semantic-oracle";
 
 export const R3_SEMANTIC_PRESSURE_MESSAGES = {
@@ -36,6 +37,22 @@ export const R3_SEMANTIC_PRESSURE_MESSAGES = {
   irrelevant:
     "Janek, the courtyard flowers are blooming.",
 } as const;
+
+export const R3_SEMANTIC_PRESSURE_PATTERN =
+  [
+    "relevant",
+    "irrelevant",
+    "irrelevant",
+    "relevant",
+    "irrelevant",
+    "relevant",
+    "relevant",
+    "irrelevant",
+    "relevant",
+    "irrelevant",
+    "irrelevant",
+    "relevant",
+  ] as const;
 
 export interface R3SemanticConsumerRunOptions {
   mode: R3SemanticConsumerMode;
@@ -55,7 +72,7 @@ export interface R3SemanticConsumerRun {
  * Research-only consumer-feasibility ecology.
  *
  * The pressure speaker is deliberately simple and autonomous: it emits
- * alternating meaningful-status and irrelevant-local utterances on a fixed
+ * patterned meaningful-status and irrelevant-local utterances on a fixed
  * internal cadence, independent of Janek's decisions. The point is controlled
  * semantic pressure, not a candidate resident architecture.
  *
@@ -118,7 +135,7 @@ export function createR3SemanticConsumerRun(
     [
       "resident:ida",
       new AutonomousResidentAgent(
-        new AlternatingSemanticPressurePolicy(interval),
+        new PatternedSemanticPressurePolicy(interval),
         [],
       ),
     ],
@@ -258,6 +275,7 @@ class SemanticConsumerJanekPolicy
 {
   readonly residentId = "resident:janek" as const;
   private readonly worker = new WorkerFixturePolicy();
+  private observedSpeechCount = 0;
 
   constructor(
     private readonly mode: R3SemanticConsumerMode,
@@ -277,20 +295,30 @@ class SemanticConsumerJanekPolicy
       hasMatter(
         input,
         MIXED_PRESSURE_MATTER_IDS.reportResponse,
-      ) &&
-      this.shouldRespond(input, heard.payload.text as string)
+      )
     ) {
-      return {
-        intent: {
-          kind: "speak",
-          text: "Ida, received.",
-          radius: 5,
-        },
-        activity: responseActivity(
-          input.previousActivity,
-          input.observation.tick,
-        ),
-      };
+      const speechIndex = this.observedSpeechCount;
+      this.observedSpeechCount += 1;
+
+      if (
+        this.shouldRespond(
+          input,
+          heard.payload.text as string,
+          speechIndex,
+        )
+      ) {
+        return {
+          intent: {
+            kind: "speak",
+            text: "Ida, received.",
+            radius: 5,
+          },
+          activity: responseActivity(
+            input.previousActivity,
+            input.observation.tick,
+          ),
+        };
+      }
     }
 
     return this.worker.decide(input);
@@ -299,12 +327,15 @@ class SemanticConsumerJanekPolicy
   private shouldRespond(
     input: ResidentPolicyInput,
     speechText: string,
+    speechIndex: number,
   ): boolean {
     switch (this.mode) {
       case "ignore-all":
         return false;
       case "respond-all":
         return true;
+      case "cadence-only":
+        return speechIndex % 2 === 0;
       case "ideal-semantic-oracle":
         return idealLocalReportApplicabilityOracle(
           input,
@@ -350,7 +381,7 @@ function idealLocalReportApplicabilityOracle(
   );
 }
 
-class AlternatingSemanticPressurePolicy
+class PatternedSemanticPressurePolicy
   implements ResidentPolicy
 {
   readonly residentId = "resident:ida" as const;
@@ -372,16 +403,18 @@ class AlternatingSemanticPressurePolicy
       this.messageIntervalTicks
     ) {
       this.ticksSinceSpeech = 0;
-      const relevant =
-        this.messageIndex % 2 === 0;
+      const kind =
+        R3_SEMANTIC_PRESSURE_PATTERN[
+          this.messageIndex %
+            R3_SEMANTIC_PRESSURE_PATTERN.length
+        ]!;
       this.messageIndex += 1;
 
       return {
         intent: {
           kind: "speak",
-          text: relevant
-            ? R3_SEMANTIC_PRESSURE_MESSAGES.relevant
-            : R3_SEMANTIC_PRESSURE_MESSAGES.irrelevant,
+          text:
+            R3_SEMANTIC_PRESSURE_MESSAGES[kind],
           radius: 5,
         },
         activity: speakerActivity(
