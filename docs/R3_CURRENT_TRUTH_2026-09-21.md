@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · OWNER-LIFE/PRODUCT CLAIM UNPROVEN · DIRECT-COSINE REJECTED · ID-ABLATION SEMANTIC SUPERVISION REJECTED**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · FIRST BOUNDED SEMANTIC CONSUMER VALUE QUALIFIED · LEARNED REFLEXBRAIN STILL UNPROVEN · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -954,3 +954,81 @@ Before choosing a learning objective:
 The oracle is not a final ReflexBrain API and its authored answers are not automatically training supervision.
 
 Only after semantic utility survives this gate should the project decide whether the learned approximation is supervised, contrastive, predictive, self-supervised, relational or something else.
+
+
+## Bounded semantic consumer value — QUALIFIED / ORACLE-ONLY
+
+Qualified evidence:
+- head: `3cfff490e9ee02331ace8787aa450be7954320af`;
+- Check #231 PASS;
+- build PASS;
+- deploy PASS;
+- 22 test files / 168 tests PASS;
+- detailed evidence: `docs/R3_SEMANTIC_CONSUMER_ORACLE_RESULT_2026-09-25.md`.
+
+A research-only ideal oracle now drives one explicit deterministic consumer seam: whether Janek acknowledges a locally heard report while ordinary workshop work continues.
+
+### Same-id joint relation
+
+Across two private-purpose variants:
+- matter ids are identical;
+- pressure timeline is identical;
+- only the semantic meaning of the report matter changes.
+
+Result:
+- ideal joint semantic relation: **1.000**;
+- fixed depot-surface rule: **0.500**;
+- fixed courtyard-surface rule: **0.500**.
+
+The useful response therefore cannot be a fixed function of message surface or matter id in this bounded pressure family. It depends jointly on actor-private purpose meaning and current evidence meaning.
+
+### Causal consequence
+
+A persistent-pressure variant repeats a required report if Janek does not acknowledge it.
+
+Aggregated over depot-purpose and courtyard-purpose runs:
+
+- ideal oracle: 50 required responses, 0 decoy responses, 150 Ida speech events, 50 Janek acknowledgements;
+- ignore-all: 0 required responses, 200 Ida speech events;
+- respond-all: 50 required responses, 100 decoy responses, 150 Ida speech events, 150 Janek acknowledgements;
+- either fixed-surface rule: 25 required responses, 50 decoy responses, 175 Ida speech events.
+
+All modes completed 22 processing cycles.
+
+### Classification
+
+**QUALIFIED**
+- a bounded actor-private semantic relation can have a real downstream causal consumer;
+- correct semantic routing can resolve recurring autonomous pressure while avoiding unnecessary interruptions;
+- purpose meaning can alter the correct response while matter identity remains fixed;
+- oracle utility is stronger than ignore-all, respond-all and fixed-surface controls in the exact claimed tradeoff.
+
+**NOT QUALIFIED**
+- learned semantic competence;
+- throughput improvement;
+- oracle answers as training labels by default;
+- cross-domain/cross-actor/cross-policy generalization;
+- the current tiny fixture as a training benchmark;
+- broader living/personhood/product claims.
+
+The consumer question is therefore no longer purely hypothetical, but **Phase B.5 is not globally complete**. One bounded consumer family is qualified; qualitatively different pressure/generalization remains open.
+
+## Current strategic frontier — LEARNABILITY WITHOUT BENCHMARK GRAVITY
+
+Do not jump from oracle success directly to model training on the tiny fixture.
+
+The next earned work is to determine whether the consumer-required relation can be learned and transferred without:
+- memorizing exact message↔matter pairs;
+- reading fixed ids/order;
+- importing oracle answers as the solution;
+- collapsing back into a benchmark-shaped text classifier.
+
+Before model training, harden the consumer-shaped evaluation with:
+1. paraphrased matter and message surfaces;
+2. exact-pair, message-only, matter-only, token-overlap and simple structured controls;
+3. same-id purpose switching;
+4. held-out relation surfaces;
+5. at least one qualitatively different semantic-pressure family or counterfactual;
+6. an explicit supervision-source audit.
+
+Only after those gates should a learned approximation be selected. Direct cosine remains rejected; no learned head currently has earned promotion.
