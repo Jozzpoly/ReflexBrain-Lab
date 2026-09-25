@@ -30,6 +30,22 @@ Before material work:
 
 Do not start by blindly editing the file touched last.
 
+## Owner-observed truth precedence
+
+For product-level and experiential claims, explicit Owner-observed behavior and later Owner corrections are authoritative.
+
+If machine evidence and Owner experience disagree:
+- preserve the narrower machine fact;
+- mark the product/experience claim according to the Owner result;
+- do not explain the discrepancy away by internal state, CI, logs, benchmark score or prior roadmap;
+- do not re-promote the product claim until new real behavior is explicitly re-evaluated by the Owner.
+
+Examples:
+- correct input capture does not prove a control feels functional;
+- autonomous ticks do not prove a resident feels alive;
+- semantic benchmark accuracy does not prove useful cognition;
+- causal instrumentation does not prove product agency.
+
 ## Decision hierarchy
 
 When choosing the next action, prefer in this order:
@@ -143,10 +159,10 @@ Before a major new layer:
 
 ## Current application
 
-At the 2026-09-24 recovered frontier:
+At the 2026-09-25 recovered frontier:
 
 - R2 clicker: **REJECTED as product direction**; retained only as causal research evidence;
-- R3 autonomous host: **QUALIFIED research substrate**;
+- R3 autonomous host: **MACHINE-QUALIFIED causal/private research substrate; NOT Owner-qualified as a living/product specimen**;
 - fixture work/contact/mixed-pressure policies: **FIXTURE-ONLY**;
 - actor-private perception/memory and temporal corpus: **research/reusable substrate candidates**;
 - actor-owned continuing matters: **QUALIFIED for the current research substrate**;
@@ -162,15 +178,18 @@ At the 2026-09-24 recovered frontier:
 
 Therefore the next `kontynuuj` must **not** rerun/rescue direct cosine, must **not** train a joint relation model on the current corpus, and must **not** equate intervention-derived policy dependence with semantic meaning.
 
-The earned frontier is:
-- define and falsify a semantic-grounding contract before adding training capacity;
-- retain paired ablation as provenance, not automatic semantic authority;
-- construct counterbalanced pressure where context-only, matter-only, candidate-position and simple structured baselines cannot solve the task;
-- require the same semantic relation to survive irrelevant policy rewiring and require different relations under genuinely different actor-private meaning;
-- preserve paraphrase controls and add actor/domain/**policy-family** transfer holdouts;
-- only after those gates pass consider a small learned **joint relation function** over private temporal evidence + candidate matter.
+The earned frontier is now **consumer-first semantic utility**, before another training target is chosen:
+- preserve paired ablation as provenance, not automatic semantic authority;
+- identify one bounded downstream need where actor-relative semantic judgement could materially affect autonomous behavior or continuity;
+- test that boundary first with a research-only ideal oracle using actor-private evidence;
+- compare oracle / null / simple non-semantic controls under identical exogenous conditions;
+- require material causal usefulness before selecting a learned objective;
+- keep oracle answers separate from training authority;
+- only after utility is established decide what supervision/representation family deserves to approximate the boundary.
 
 Do not add capacity/head to the rejected independent-embedding cosine formulation, do not treat corpus row count as progress, and do not interpret a model fitting authored fixture wiring as learned actor-relative meaning.
+
+Likewise, do not jump directly from failure of the current causal label to CPC/JEPA/predictive/self-supervised learning. A representation objective is not progress unless a useful semantic consumer has first been demonstrated.
 
 
 ### 2026-09-25 statement-semantic identifiability closure
@@ -193,4 +212,19 @@ For future `kontynuuj`:
 - red-team any proposed target with statement permutation, identity/order, context-only, matter-only, policy-family and leakage controls before model training;
 - if semantic supervision requires an authored parser/oracle/teacher, name that source explicitly rather than calling the target intervention-derived ground truth.
 
-The next move is target/objective discovery and falsification, not a learned joint head.
+The next move is **semantic consumer/oracle qualification inside zero-input autonomous pressure**, not a learned joint head and not premature selection of a self-supervised objective.
+
+
+### R3-wide statement inertness
+
+The statement-blind boundary now holds across both existing autonomous R3 ecologies, not only the mixed-pressure tick-41 specimen.
+
+Qualified diagnostic evidence:
+- head `1fa1e12214e5c07a10278fc31de449a391034f58`;
+- Check #214 PASS;
+- 20 test files / 164 tests PASS;
+- 420-tick material and contact trajectories remain causally identical after semantic statement permutation across fixed matter ids.
+
+This proves a limitation of the current fixture substrate. It does **not** qualify life, intelligence, semantic competence or Owner value.
+
+For future `kontynuuj`, treat the current host as pressure/instrumentation and recover the real goal before adding another benchmark or learner.
