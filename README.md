@@ -101,9 +101,27 @@ The next frontier is **three-way actor-private relation qualification before mod
 - audit supervision provenance before using oracle outputs for training;
 - keep World/body authority deterministic and separate.
 
-Those gates have now been passed for one authored three-way boundary, and one frozen supervised approximation has been executed. It produced **partial held-out signal but failed promotion**: BA 0.7167, TPR 0.475, TNR 0.9583, with all three explicit counterfactual families well below the 0.90 gate. The next step is failure localization of that exact frozen model, not tuning or immediate architecture escalation.
+Those gates have now been passed for one authored three-way boundary, and one frozen supervised approximation has been executed. Its original full-held-out result was BA 0.7167, TPR 0.475 and TNR 0.9583, so it failed promotion. Later diagnostic-only reruns revealed a stronger boundary: the consumer-reachable subset is only BA 0.5573 / TPR 0.1875 / AUROC 0.6797, while the synthetic cross-purpose-history subset reaches BA 0.8333 / AUROC 0.9689. The attractive aggregate signal is therefore not evidence of a useful learned three-way consumer relation.
 
-The rejected cosine family must not be rescued by capacity, a head, wording tuning or target substitution. The current causal label must not be rescued by more rows either. Current learned status: **one frozen learned joint-relation probe executed; PARTIAL SIGNAL / NO PROMOTION. No learned actor authority is earned.**
+The rejected cosine family must not be rescued by capacity, a head, wording tuning or target substitution. The current causal label must not be rescued by more rows either. Current learned status: **one frozen joint-relation probe executed; SYNTHETIC PARTIAL SIGNAL / CONSUMER-REACHABLE RELATION FAIL / NO PROMOTION. No learned actor authority is earned.**
+
+### Immediate research frontier
+
+The failed consumer-reachable relation localizes the weakest learned factor to:
+
+> **same-domain settled semantic history × current semantic evidence**
+
+In plain terms: can the representation distinguish a genuine semantic state change from a paraphrased restatement of already settled meaning?
+
+The existing temporal consumer relation corpus already isolates this factor and has:
+- downstream oracle utility;
+- held-out paraphrases;
+- unseen `suspended` state;
+- exact/current/history/token shortcut controls.
+
+Use it next only as a **diagnostic factor probe**. It is not the complete actor-relative target because its label does not depend on actor purpose.
+
+Do not tune the failed three-way head before this factor is understood.
 
 ## Defended boundaries
 
