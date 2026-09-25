@@ -15,6 +15,7 @@ interface TemporalSummary {
   processingCompleted: number;
   completeExposureCount: number;
   delayedExposureCount: number;
+  suspendedExposureCount: number;
   firstSurfaceExposureCount: number;
   paraphraseExposureCount: number;
 }
@@ -26,6 +27,7 @@ function classifyStatus(
     const state of [
       "complete",
       "delayed",
+      "suspended",
     ] as const
   ) {
     if (
@@ -60,6 +62,7 @@ function summarize(
     string | null = null;
   let completeExposureCount = 0;
   let delayedExposureCount = 0;
+  let suspendedExposureCount = 0;
   let firstSurfaceExposureCount = 0;
   let paraphraseExposureCount = 0;
 
@@ -117,6 +120,10 @@ function summarize(
         state === "delayed"
       ) {
         delayedExposureCount += 1;
+      } else if (
+        state === "suspended"
+      ) {
+        suspendedExposureCount += 1;
       }
 
       if (
@@ -171,6 +178,7 @@ function summarize(
       ).length,
     completeExposureCount,
     delayedExposureCount,
+    suspendedExposureCount,
     firstSurfaceExposureCount,
     paraphraseExposureCount,
   };
@@ -206,12 +214,15 @@ describe(
           summary.delayedExposureCount,
         ).toBeGreaterThan(0);
         expect(
+          summary.suspendedExposureCount,
+        ).toBeGreaterThan(0);
+        expect(
           summary.paraphraseExposureCount,
         ).toBeGreaterThan(0);
       }
 
       // Every episode begins with a genuinely changed semantic state because
-      // the source alternates complete/delayed. The ideal temporal oracle
+      // the source cycles complete/delayed/suspended. The ideal temporal oracle
       // acknowledges it once and ignores the semantically equivalent
       // restatement even though its text surface is different.
       expect(
