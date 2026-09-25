@@ -620,6 +620,9 @@ function pairFamily(
     >,
 ) {
   let success = 0;
+  let orderingSuccess = 0;
+  let orderingTies = 0;
+  let probabilityMarginSum = 0;
   let count = 0;
 
   for (const positive of positives) {
@@ -659,6 +662,18 @@ function pairFamily(
     ) {
       success += 1;
     }
+
+    const probabilityMargin =
+      positivePrediction.probability -
+      negativePrediction.probability;
+    probabilityMarginSum +=
+      probabilityMargin;
+
+    if (probabilityMargin > 0) {
+      orderingSuccess += 1;
+    } else if (probabilityMargin === 0) {
+      orderingTies += 1;
+    }
   }
 
   return {
@@ -667,6 +682,20 @@ function pairFamily(
     rate:
       count > 0
         ? success / count
+        : 0,
+    orderingSuccess,
+    orderingTies,
+    orderingRate:
+      count > 0
+        ? (
+            orderingSuccess +
+            orderingTies * 0.5
+          ) / count
+        : 0,
+    meanProbabilityMargin:
+      count > 0
+        ? probabilityMarginSum /
+          count
         : 0,
   };
 }
@@ -703,6 +732,12 @@ function buildFailureDiagnostics(
 
   return {
     modelContractUnchanged: true,
+    heldOutAll:
+      subsetDiagnostics(
+        heldOut,
+        predictionById,
+        () => true,
+      ),
     heldOutSeenStatesOnly:
       subsetDiagnostics(
         heldOut,
@@ -868,11 +903,57 @@ function subsetDiagnostics(
       evaluateR3JointPredictions(
         predictions,
       ),
+    auc:
+      pairwiseAuc(
+        positives,
+        negatives,
+      ),
     meanPositiveProbability:
       meanProbability(positives),
     meanNegativeProbability:
       meanProbability(negatives),
   };
+}
+
+function pairwiseAuc(
+  positives:
+    readonly R3JointHeadPrediction[],
+  negatives:
+    readonly R3JointHeadPrediction[],
+): number | null {
+  if (
+    positives.length === 0 ||
+    negatives.length === 0
+  ) {
+    return null;
+  }
+
+  let wins = 0;
+  let ties = 0;
+
+  for (const positive of positives) {
+    for (const negative of negatives) {
+      if (
+        positive.probability >
+        negative.probability
+      ) {
+        wins += 1;
+      } else if (
+        positive.probability ===
+        negative.probability
+      ) {
+        ties += 1;
+      }
+    }
+  }
+
+  return (
+    wins + ties * 0.5
+  ) /
+  (
+    positives.length *
+    negatives.length
+  );
 }
 
 function meanProbability(
