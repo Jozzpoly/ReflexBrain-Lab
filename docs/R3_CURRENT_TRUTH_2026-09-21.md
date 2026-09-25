@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · TWO BOUNDED ORACLE-ONLY SEMANTIC CONSUMER FAMILIES QUALIFIED · CURRENT TEMPORAL TRAINING TARGET UNDER-SPECIFIES ACTOR PURPOSE · LEARNED REFLEXBRAIN UNPROVEN · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · THREE-WAY BOUNDED ORACLE-ONLY SEMANTIC CONSUMER VALUE QUALIFIED · LEARNED REFLEXBRAIN UNPROVEN · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -1077,3 +1077,68 @@ Required counterfactual structure:
 Only after that relation survives should model selection resume.
 
 This supersedes the weaker reading that the current temporal corpus alone is ready for model training.
+
+
+## Three-way purpose × history × evidence consumer — QUALIFIED / ORACLE-ONLY
+
+The two earlier useful semantic dimensions have now been required together inside one bounded autonomous consumer family.
+
+Evidence:
+- head `ffe580a82a66507981e84e5014893dc4cc9beb61`;
+- Check #252 PASS;
+- build PASS;
+- deploy PASS;
+- 26 test files / 176 tests PASS;
+- detailed evidence: `docs/R3_JOINT_SEMANTIC_TEMPORAL_CONSUMER_RESULT_2026-09-25.md`.
+
+The ideal research oracle must jointly use:
+1. actor-private purpose/matter meaning;
+2. last settled semantic state;
+3. current heard evidence.
+
+Aggregated across depot-purpose and courtyard-purpose variants:
+- ideal oracle: 150 Ida speech events, 50 Janek acknowledgements, 0 decoy responses, 0 paraphrased-duplicate responses, 2352 ordinary worker ticks;
+- ignore-all: 200 Ida speech events;
+- respond-all: 150 acknowledgements, including 50 decoy + 50 duplicate responses;
+- purpose-only: 100 acknowledgements, 0 decoy but 50 duplicate responses;
+- temporal-only: 150 acknowledgements, including 50 decoy + 50 duplicate responses;
+- exact-text + purpose: 100 acknowledgements, 50 duplicate responses;
+- all modes: 22 processing completions.
+
+### Exact classification
+
+**QUALIFIED**
+- a bounded autonomous consumer can require purpose × settled semantic history × current evidence together;
+- purpose-only and temporal-only partial semantic rules are each insufficient;
+- semantic equivalence across paraphrase is useful beyond exact-string memory;
+- correct joint routing reduces unresolved pressure relative to ignore-all and unnecessary interruption relative to over-responsive controls.
+
+**NOT QUALIFIED**
+- any learned approximation;
+- oracle internals as architecture;
+- oracle output as automatic training supervision;
+- throughput gain;
+- cross-actor/cross-policy generalization;
+- mid-life purpose switching;
+- Owner/product life success.
+
+## Current strategic frontier — THREE-WAY LEARNABILITY TARGET
+
+The consumer boundary is now strong enough to justify constructing, but not yet training on, one explicit three-way relation target.
+
+Required model-visible relation:
+- actor-private purpose statement;
+- actor-private prior acknowledged semantic evidence/history;
+- current actor-private evidence.
+
+Required structural falsifiers:
+- purpose counterfactuals that flip the label with history/current evidence fixed;
+- history counterfactuals that flip the label with purpose/current evidence fixed;
+- current-evidence counterfactuals that flip the label with purpose/history fixed;
+- unseen semantic-state holdout;
+- paraphrased purpose/history/current surfaces;
+- exact-tuple, no-purpose, no-history, no-current, majority and simple lexical controls.
+
+Supervision provenance must be explicit. If the first target uses an authored semantic teacher, call it that; do not relabel it as intervention-derived ground truth.
+
+Only after this target survives should the first learned joint relation mechanism be chosen.
