@@ -738,6 +738,22 @@ function buildFailureDiagnostics(
         predictionById,
         () => true,
       ),
+    heldOutConsumerReachableHistory:
+      subsetDiagnostics(
+        heldOut,
+        predictionById,
+        (example) =>
+          example.priorAcknowledgedDomain ===
+          example.matterDomain,
+      ),
+    heldOutSyntheticCrossPurposeHistory:
+      subsetDiagnostics(
+        heldOut,
+        predictionById,
+        (example) =>
+          example.priorAcknowledgedDomain !==
+          example.matterDomain,
+      ),
     heldOutSeenStatesOnly:
       subsetDiagnostics(
         heldOut,
@@ -836,6 +852,22 @@ function buildFailureDiagnostics(
             "courtyard",
         ),
     },
+    counterfactualsConsumerReachableHistory:
+      evaluateCounterfactualFamilies(
+        heldOut,
+        predictionById,
+        (example) =>
+          example.priorAcknowledgedDomain ===
+          example.matterDomain,
+      ),
+    counterfactualsSyntheticCrossPurposeHistory:
+      evaluateCounterfactualFamilies(
+        heldOut,
+        predictionById,
+        (example) =>
+          example.priorAcknowledgedDomain !==
+          example.matterDomain,
+      ),
     counterfactualsSeenStatesOnly:
       evaluateCounterfactualFamilies(
         heldOut,
