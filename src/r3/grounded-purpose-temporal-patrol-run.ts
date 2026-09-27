@@ -459,10 +459,19 @@ class GroundedPatrolMiraPolicy implements ResidentPolicy {
 
     if (!heard) return;
 
+    const currentRackStock =
+      visibleFreeRawAt(
+        input,
+        input.places.input_rack,
+      ) !== null;
+
     switch (this.mode) {
       case "supply-ideal":
       case "reserve-purpose-blind":
-        if (!this.pendingSupply) {
+        if (
+          !this.pendingSupply &&
+          !currentRackStock
+        ) {
           this.acceptedReportCount += 1;
           this.acceptedReportTicks.push(input.observation.tick);
           this.pendingSupply = true;
