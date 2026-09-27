@@ -257,6 +257,29 @@ Any new test must be independently frozen and must target the already-qualified 
 
 Do not rescue the executed probe by tuning threshold, adding states to TRAIN, larger encoder, hidden layers or feature sweeps.
 
+
+### Active Phase C finding — symmetric fixed pair interaction also fails
+
+The post-`PAIR_RELATION_READOUT_FAIL` hypothesis tested one independently frozen, symmetry-preserving multiplicative relation:
+
+`[abs(H-C), H⊙C]`
+
+Same pinned MiniLM, same 16 TRAIN temporal pairs, same held-out known/unseen splits, same deterministic linear head, no sweep.
+
+Real Opera/WebGPU:
+- TRAIN BA/AUROC 1.000;
+- held-out known BA 0.59375 / TPR 0.9375 / TNR 0.2500 / AUROC 0.66015625;
+- held-out current BA 0.750 / AUROC 0.500;
+- held-out history BA 0.750 / AUROC 0.500.
+
+Classification:
+
+**SYMMETRIC_INTERACTION_FAIL_KNOWN**
+
+This closes further simple fixed pair-feature permutation on the current frozen temporal corpus. The next earned architecture question is not another pair operator. It is whether the useful semantic direction must be learned/projected into an actor-relative relation space before temporal comparison.
+
+Do not treat this as permission to add generic capacity. Any learned-projection candidate must be structurally justified, independently frozen and tested against the already-qualified oracle consumer need.
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
