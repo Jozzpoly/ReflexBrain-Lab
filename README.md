@@ -136,44 +136,41 @@ Next:
 Detailed result:
 `docs/R3_TEMPORAL_FACTOR_PROBE_RESULT_2026-09-27.md`.
 
-### Grounded temporal target reconsideration
+### Grounded temporal frontier
 
-The temporal learned line exhausted several increasingly favorable abstractions:
+The old authored temporal equality/change line is closed as the default target:
+- sentence-state signal exists;
+- multiple pair/readout formulations fail;
+- privileged authored-state projection also fails.
 
-- per-sentence known-state signal: BA 0.875 / AUROC 0.9375 — PASS;
-- `abs(H-C)` — FAIL;
-- one joint-pair sentence embedding — FAIL;
-- `[abs(H-C), H⊙C]` — FAIL;
-- privileged authored-state projection then comparison — FAIL.
+The current stronger path begins from lived private facts.
 
-That closed model rescue and triggered a pre-model grounding audit.
+Qualified grounding evidence:
+- 10/10 material objects enter at least two residents' private experience;
+- all 10 participate in held↔visible co-observation;
+- ordinary Janek naturally emits `The input rack is empty.` from a real private shortage condition;
+- the same surface recurs across distinct real shortage episodes.
 
-Current material-life host evidence:
-- 10/10 material objects enter at least two actors' private experience;
-- 9/10 enter all three;
-- Mira↔Janek jointly observe 10 raw objects;
-- Janek↔Ida jointly observe 9 finished objects;
-- all 10 objects participate in held↔visible private co-observation.
+A frozen consumer-only experiment now qualifies the downstream temporal need.
 
-The stricter non-overlapping sequential-handoff audit remains **GROUNDING_OPPORTUNITY_TOO_NARROW** and is not relaxed post-result. The qualified narrower claim is that the ordinary R3 ecology contains a useful **material multi-view grounding donor**.
-
-More importantly, ordinary Janek already produces a fact-caused utterance:
-
-`The input rack is empty.`
-
-In a 1200-tick specimen:
-- 2/2 occurrences were true under Janek's same-tick private perception;
-- they belonged to two distinct shortage episodes separated by replenishment;
-- Mira heard one and privately corroborated the empty rack.
+Across 1800 ticks:
+- `ignore-all`: 0 processed parts;
+- `exact-text-once`: 1;
+- `respond-all`: 7, but with one redundant duplicate acknowledgement;
+- `ideal-grounded-episode`: 7, while suppressing the unresolved duplicate and accepting the same exact report again after private settlement and recurrence.
 
 Classification:
 
-**GROUNDED_PRIVATE_REPORT_SEED_AVAILABLE**
+**GROUNDED_TEMPORAL_CONSUMER_VALUE_QUALIFIED**
 
-Detailed result:
-`docs/R3_GROUNDED_SUPERVISION_OPPORTUNITY_RESULT_2026-09-27.md`
+The first actionable report reaches Mira while the rack is outside direct sight. Settlement uses Mira-private confirmation rather than a hidden shortage id. All request utterances in the consumer fixture remain 100% grounded in Janek-private evidence.
 
-The next step remains **pre-model**: qualify a bounded grounded consumer in which a real private report can change another actor's local understanding/useful behavior, while the same surface can be redundant in one history and newly meaningful after real recurrence. Do not return to MiniLM/head selection before consumer value and supervision provenance are earned.
+Detailed evidence:
+- `docs/R3_GROUNDED_SUPERVISION_OPPORTUNITY_RESULT_2026-09-27.md`
+- `docs/R3_GROUNDED_RECURRENT_REPORT_CONSUMER_CONTRACT_2026-09-27.md`
+- `docs/R3_GROUNDED_RECURRENT_REPORT_CONSUMER_RESULT_2026-09-27.md`
+
+Next is still **pre-model**: construct and falsify the smallest grounded consumer-shaped corpus. It must defeat exact text, timing, actor-id, position, activity-phase and policy-state leakage, and it must include a purpose counterfactual before any new representation probe.
 
 ## Defended boundaries
 
