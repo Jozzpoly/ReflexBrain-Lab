@@ -196,10 +196,39 @@ export class StewardFixturePolicy implements ResidentPolicy {
   }
 }
 
+export interface WorkerFixturePolicyOptions {
+  blockedRequestAfterTicks?: number;
+  requestCooldownTicks?: number;
+}
+
 export class WorkerFixturePolicy implements ResidentPolicy {
   readonly residentId = "resident:janek" as const;
   private emptyRackTicks = 0;
   private lastRequestTick = -10_000;
+  private readonly blockedRequestAfterTicks: number;
+  private readonly requestCooldownTicks: number;
+
+  constructor(
+    options: WorkerFixturePolicyOptions = {},
+  ) {
+    this.blockedRequestAfterTicks =
+      options.blockedRequestAfterTicks ??
+      WORKER_BLOCKED_REQUEST_AFTER_TICKS;
+    this.requestCooldownTicks =
+      options.requestCooldownTicks ??
+      WORKER_REQUEST_COOLDOWN_TICKS;
+
+    if (
+      !Number.isSafeInteger(this.blockedRequestAfterTicks) ||
+      this.blockedRequestAfterTicks < 1 ||
+      !Number.isSafeInteger(this.requestCooldownTicks) ||
+      this.requestCooldownTicks < 1
+    ) {
+      throw new Error(
+        "worker report timings require positive safe integers",
+      );
+    }
+  }
 
   decide(input: ResidentPolicyInput): ResidentDecision {
     if (!hasFixtureMatter(input, MATERIAL_FIXTURE_MATTER_IDS.worker)) {
@@ -304,8 +333,8 @@ export class WorkerFixturePolicy implements ResidentPolicy {
 
     this.emptyRackTicks += 1;
     if (
-      this.emptyRackTicks >= WORKER_BLOCKED_REQUEST_AFTER_TICKS &&
-      tick - this.lastRequestTick >= WORKER_REQUEST_COOLDOWN_TICKS
+      this.emptyRackTicks >= this.blockedRequestAfterTicks &&
+      tick - this.lastRequestTick >= this.requestCooldownTicks
     ) {
       this.lastRequestTick = tick;
       return {
