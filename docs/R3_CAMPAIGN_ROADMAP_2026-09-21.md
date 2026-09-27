@@ -233,6 +233,30 @@ Pass/fail purpose:
 
 Do not tune the previously failed three-way probe while this remains unresolved.
 
+### Active Phase C finding — isolated temporal factor also fails qualification
+
+The precommitted `abs(H-C)` temporal-factor probe has executed in real Opera/WebGPU.
+
+Result on both unseen-state directions:
+- BA 0.750;
+- TPR 1.000;
+- TNR 0.500;
+- AUROC 0.500.
+
+Classification:
+**PARTIAL_TEMPORAL_FACTOR_SIGNAL / QUALIFICATION FAIL / NO PROMOTION.**
+
+This rejects the interpretation that the earlier consumer-reachable three-way failure can be explained only by three-way composition or threshold calibration.
+
+Before another learned candidate, Phase C must separate:
+- semantic representation sufficiency;
+- relation formulation sufficiency;
+- readout sufficiency.
+
+Any new test must be independently frozen and must target the already-qualified downstream distinction: semantic change versus equivalent restatement under held-out paraphrase/unseen-state pressure.
+
+Do not rescue the executed probe by tuning threshold, adding states to TRAIN, larger encoder, hidden layers or feature sweeps.
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
