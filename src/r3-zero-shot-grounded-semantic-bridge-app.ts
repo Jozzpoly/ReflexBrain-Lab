@@ -99,9 +99,6 @@ Promise<void> {
         "ZERO_SHOT_GROUNDED_SEMANTIC_BRIDGE_EXECUTION_FAIL"
           ? "FAIL_EXECUTION"
           : "PASS_EXECUTION",
-      classification:
-        evaluation
-          .classification,
       interpretationBoundary:
         "Frozen externally pretrained semantic geometry evaluated zero-shot. No local oracle fitting, no threshold tuning, no actor authority, no Owner/product claim.",
       training: {
