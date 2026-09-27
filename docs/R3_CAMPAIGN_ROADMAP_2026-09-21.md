@@ -280,6 +280,41 @@ This closes further simple fixed pair-feature permutation on the current frozen 
 
 Do not treat this as permission to add generic capacity. Any learned-projection candidate must be structurally justified, independently frozen and tested against the already-qualified oracle consumer need.
 
+
+### Active Phase C finding — privileged projection still fails temporal relation
+
+After the simple fixed pair-feature family failed, one deliberately privileged upper-bound diagnostic tested whether the useful semantic direction must be learned before comparison.
+
+Stage 1 trained the already-qualified `complete` vs `delayed` state direction directly from authored state labels and reproduced the held-out sentence result:
+- BA 0.875;
+- AUROC 0.9375;
+- PASS.
+
+Stage 2 compared only:
+`abs(P(complete|H) - P(complete|C))`.
+
+Held-out known relation:
+- BA 0.5625;
+- TPR 0.2500;
+- TNR 0.8750;
+- AUROC 0.73828125;
+- FAIL.
+
+Both unseen-state directions also fail.
+
+Classification:
+
+**PRIVILEGED_PROJECT_THEN_COMPARE_FAIL_KNOWN**
+
+This is diagnostic evidence only; authored state labels are not acceptable ReflexBrain authority.
+
+Campaign consequence:
+- do not automatically implement pair-supervised projection as the next rescue;
+- stop treating binary semantic equality/change as unquestioned architecture;
+- return to the downstream oracle consumer and project north star;
+- reconsider whether the learned primitive should instead capture richer actor-relative relations such as contradiction, entailment, update-worthiness, relevance-to-purpose or evidence-to-belief transition;
+- require any new target to have legitimate supervision provenance and causal downstream utility before learned implementation.
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
