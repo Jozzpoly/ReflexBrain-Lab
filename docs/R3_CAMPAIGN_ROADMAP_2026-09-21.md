@@ -614,6 +614,47 @@ Evidence:
 - `docs/R3_LEARNED_TARGET_RECONSIDERATION_2026-09-27.md`
 - `docs/R3_GROUNDED_SEMANTIC_OPPORTUNITY_AUDIT_RESULT_2026-09-27.md`
 
+
+### Active pre-model finding — grounded material semantic consumer qualified
+
+The frozen rack-empty × source-empty consumer executes cleanly after one memory-only harness recovery.
+
+Qualified head:
+`fee885b02d118894fd29a78c7b36e324df36b820`
+
+Stage A:
+- grounded provenance PASS;
+- timeline invariance PASS;
+- ideal relation accuracy 1.000;
+- each surface-only / speaker-only control 0.500;
+- matter-id diagnostic 0.500.
+
+Stage B:
+- ignore-all relevant repeats: rack 85 / source 85;
+- ideal relevant repeats: 0 / 0;
+- ideal decoy acknowledgements: 0;
+- ideal aggregate communication actions: 279;
+- respond-all aggregate actions: 372;
+- fixed controls only succeed when their hard-coded domain happens to match the current purpose.
+
+Classification:
+
+**GROUNDED_MATERIAL_SEMANTIC_CONSUMER_QUALIFIED**
+
+This is consumer value, not learned competence.
+
+Immediate next stage:
+1. freeze semantic corpus + supervision provenance audit;
+2. keep grounded factual report, purpose/context, evaluation oracle and training signal as four distinct layers;
+3. audit whether any legal actor-private or causal signal can supervise relation learning without importing the oracle;
+4. audit exact text / lexical overlap / speaker / matter-id shortcuts;
+5. preserve deterministic temporal bookkeeping;
+6. reserve `output_has_finished` and local contact for held-out semantic-pressure transfer;
+7. only after provenance is defensible choose a learned hypothesis.
+
+Detailed result:
+`docs/R3_GROUNDED_MATERIAL_SEMANTIC_CONSUMER_RESULT_2026-09-27.md`
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
