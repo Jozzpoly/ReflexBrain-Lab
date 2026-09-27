@@ -19,6 +19,8 @@ export default defineConfig({
           "r3-temporal-symmetric-interaction-probe.html",
         r3TemporalProjectThenCompareDiagnostic:
           "r3-temporal-project-then-compare-diagnostic.html",
+        r3ZeroShotGroundedSemanticBridge:
+          "r3-zero-shot-grounded-semantic-bridge.html",
       },
     },
   },
