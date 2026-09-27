@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED PRIVATE REPORT + TEMPORAL CONSUMER VALUE QUALIFIED · MATERIAL MULTI-VIEW GROUNDING DONOR PRESENT · GROUNDED LEARNED CORPUS NOT YET QUALIFIED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL CONSUMER VALUE QUALIFIED · FIRST GROUNDED CORPUS FALSIFIED AS UNDERIDENTIFIED · PRESSURE REDESIGN REQUIRED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -1719,4 +1719,56 @@ Current frontier:
 - audit exact text, event id, actor id, absolute timing, position, activity phase, request ordinal and direct policy-state leakage;
 - require a purpose counterfactual before model work;
 - if those constraints cannot be satisfied without leaking the ideal consumer policy, broaden grounded pressure first;
+- no learned authority and no Owner/product claim changes.
+
+
+### 2026-09-27 grounded consumer corpus audit result
+
+Frozen contract:
+`docs/R3_GROUNDED_CONSUMER_CORPUS_AUDIT_CONTRACT_2026-09-27.md`
+
+Detailed result:
+`docs/R3_GROUNDED_CONSUMER_CORPUS_AUDIT_RESULT_2026-09-27.md`
+
+Qualified evidence head:
+`89ce3a196360a727ab4142b56fb4415a8ebc07d3`
+
+Qualification:
+- Check #320 PASS;
+- 35/35 test files PASS;
+- 198/198 tests PASS;
+- build PASS.
+
+The smallest corpus extracted from the qualified ideal consumer contains:
+- 9 rows;
+- 8 update-worthy / 1 redundant;
+- 1 report surface;
+- 1 speaker;
+- 1 listener matter;
+- no purpose counterfactual.
+
+Shortcut BA:
+- activity phase 1.000;
+- holding object 1.000;
+- listener X threshold 1.000;
+- visible source stock 1.000;
+- absolute tick 0.9375;
+- known raw belief count 0.9375;
+- prior heard count 0.9375;
+- request ordinal 0.9375.
+
+The negative row is the unresolved duplicate while Mira is physically carrying the response object. The current dataset therefore exposes fixture execution state far more directly than the desired grounded temporal relation.
+
+Precommitted classification:
+
+**GROUNDED_CONSUMER_CORPUS_UNDERIDENTIFIED**
+
+The earlier consumer qualification remains valid. This result blocks model selection on the first obvious corpus.
+
+Next:
+- do not extend/rebalance the same run as a rescue;
+- design new grounded pressure that makes both classes occur under overlapping listener activity/position conditions;
+- add a causally meaningful same-report purpose counterfactual;
+- preserve listener-private settlement and speaker-private grounding;
+- only after pressure redesign freeze another corpus audit;
 - no learned authority and no Owner/product claim changes.
