@@ -181,7 +181,24 @@ Classification:
 Detailed result:
 `docs/R3_GROUNDED_CONSUMER_CORPUS_AUDIT_RESULT_2026-09-27.md`
 
-The consumer value result survives; the dataset does not. Next is pressure redesign, not model selection or row inflation: create grounded reports whose update-worthiness crosses overlapping activity/position states and add a causally meaningful same-report purpose counterfactual before another corpus audit.
+The consumer value result survives; the first dataset does not.
+
+A frozen patrol-pressure redesign then tested two things simultaneously:
+- whether temporal labels can be deconfounded from listener body/activity state;
+- whether the exact same grounded report can flip causal usefulness under a perfectly paired listener-purpose counterfactual.
+
+Purpose succeeds: at the first report, supply and reserve runs have identical non-purpose private state, but supply accepts and reserve-aware rejects; supply produces 13 parts, while reserve-aware preserves the source with 0 deficit ticks versus 1680 for the purpose-blind reserve control.
+
+Temporal deconfounding still fails: 41 rows / 14 positive / 27 negative are now plentiful, but `holdingObject` predicts the target at BA **1.000**, while activity phase, listener X and visible source stock each reach **0.9643**.
+
+Overall classification:
+
+**GROUNDED_PURPOSE_TEMPORAL_PRESSURE_FAIL**
+
+Detailed result:
+`docs/R3_GROUNDED_PURPOSE_TEMPORAL_PATROL_PRESSURE_RESULT_2026-09-27.md`
+
+The failure localizes the next problem: the listener is still also the material effector, so unresolved semantic/history state becomes physically encoded in carrying and route state. Next redesign must separate listener/interpreter from supplier/effector rather than hiding those features or tuning the patrol.
 
 ## Defended boundaries
 
