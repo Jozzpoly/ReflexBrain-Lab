@@ -266,7 +266,22 @@ Classification:
 Detailed result:
 `docs/R3_GROUNDED_MATERIAL_SEMANTIC_CONSUMER_RESULT_2026-09-27.md`
 
-Next remains pre-model: audit semantic corpus and **supervision provenance**. The consumer oracle is evaluation instrumentation, not automatically TRAIN truth. Grounded evidence, actor-private purpose, evaluation relation and legal learning signal must stay separate.
+That supervision-provenance audit is now qualified.
+
+In Stage A, **93/93** report events keep identical grounded evidence and identical non-purpose private trajectory while their relevance label flips solely with the same-id purpose statement. Grounded rack/source report provenance is 1.000.
+
+Stage B is unusable as relation supervision: even under `ignore-all`, changing purpose changes reporter persistence (rack/source counts **133/45** vs **48/130**), proving that the answer is authored into the pressure generator upstream.
+
+Classification:
+
+**GROUNDED_FACT_SUPERVISION_ONLY**
+
+The original 2×2 wording is also lexically trivial (token-overlap retrieval **1.000**); frozen evaluation paraphrases reduce that baseline to **0.667**.
+
+Detailed result:
+`docs/R3_GROUNDED_SEMANTIC_SUPERVISION_PROVENANCE_AUDIT_RESULT_2026-09-27.md`
+
+Next remains pre-model but now has a clean fork. Do **not** train a local relation head from oracle labels. First test a frozen externally pretrained zero-shot semantic bridge on grounded reports × purpose statements with held-out wording. If that cannot carry the relation, the alternative is to create genuine purpose-statement grounding rather than manufacture supervision.
 
 ## Defended boundaries
 
