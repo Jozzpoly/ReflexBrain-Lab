@@ -77,6 +77,7 @@ export interface R3ListenerEffectorMetrics {
 export interface R3ListenerEffectorRunOptions {
   idaPosition?: Vec2;
   janekWorkerOptions?: WorkerFixturePolicyOptions;
+  supplierBackgroundPatrolDwellTicks?: number | null;
 }
 
 export interface R3ListenerEffectorRun {
@@ -160,7 +161,9 @@ export function createR3ListenerEffectorRun(
   );
 
   const idaPolicy = new ListenerIdaPolicy(mode);
-  const miraPolicy = new SupplierMiraPolicy();
+  const miraPolicy = new SupplierMiraPolicy(
+    options.supplierBackgroundPatrolDwellTicks ?? null,
+  );
 
   const agents = new Map<ResidentId, AutonomousResidentAgent>([
     [
@@ -460,6 +463,29 @@ class SupplierMiraPolicy implements ResidentPolicy {
   private completionPending = false;
   private acceptedForwardCount = 0;
   private stockedReportCount = 0;
+  private patrolPhase:
+    | "dwell_source"
+    | "to_rack"
+    | "dwell_rack"
+    | "to_source" = "dwell_source";
+  private patrolDwellRemaining = 0;
+
+  constructor(
+    private readonly backgroundPatrolDwellTicks: number | null,
+  ) {
+    if (backgroundPatrolDwellTicks !== null) {
+      if (
+        !Number.isSafeInteger(backgroundPatrolDwellTicks) ||
+        backgroundPatrolDwellTicks < 1
+      ) {
+        throw new Error(
+          "supplier background patrol dwell requires a positive safe integer",
+        );
+      }
+      this.patrolDwellRemaining =
+        backgroundPatrolDwellTicks;
+    }
+  }
 
   debug(): R3SupplierPolicyDebug {
     return {
@@ -488,6 +514,17 @@ class SupplierMiraPolicy implements ResidentPolicy {
     ) {
       this.servicing = true;
       this.acceptedForwardCount += 1;
+    }
+
+    if (
+      this.backgroundPatrolDwellTicks !== null
+    ) {
+      return this.decideBackgroundPatrol(
+        input,
+        tick,
+        source,
+        rack,
+      );
     }
 
     if (
@@ -628,6 +665,203 @@ class SupplierMiraPolicy implements ResidentPolicy {
         "wait_for_forward",
       ),
     };
+  }
+
+  private decideBackgroundPatrol(
+    input: ResidentPolicyInput,
+    tick: number,
+    source: LifePlace,
+    rack: LifePlace,
+  ): ResidentDecision {
+    const dwell =
+      this.backgroundPatrolDwellTicks;
+    if (dwell === null) {
+      throw new Error(
+        "background patrol decision requires configured dwell",
+      );
+    }
+
+    for (;;) {
+      const held =
+        input.observation.heldObject;
+
+      if (this.patrolPhase === "dwell_source") {
+        if (this.patrolDwellRemaining > 0) {
+          this.patrolDwellRemaining -= 1;
+        }
+
+        if (
+          this.servicing &&
+          held === null
+        ) {
+          const raw =
+            visibleFreeRawAt(
+              input,
+              source,
+            );
+
+          if (raw) {
+            return {
+              intent: {
+                kind: "pickup",
+                objectId: raw.id,
+              },
+              activity:
+                supplierActivity(
+                  input.previousActivity,
+                  tick,
+                  "patrol_pick_raw",
+                  raw.id,
+                ),
+            };
+          }
+        }
+
+        if (
+          this.patrolDwellRemaining <= 0
+        ) {
+          this.patrolPhase =
+            "to_rack";
+          continue;
+        }
+
+        return {
+          intent: { kind: "idle" },
+          activity:
+            supplierActivity(
+              input.previousActivity,
+              tick,
+              "patrol_dwell_source",
+            ),
+        };
+      }
+
+      if (this.patrolPhase === "to_rack") {
+        if (
+          near(
+            input.observation.self.position,
+            rack.position,
+          )
+        ) {
+          this.patrolPhase =
+            "dwell_rack";
+          this.patrolDwellRemaining =
+            dwell;
+          continue;
+        }
+
+        return {
+          intent: {
+            kind: "move_to",
+            target: rack.position,
+          },
+          activity:
+            supplierActivity(
+              input.previousActivity,
+              tick,
+              "patrol_to_rack",
+              held?.id ?? null,
+            ),
+        };
+      }
+
+      if (this.patrolPhase === "dwell_rack") {
+        if (this.patrolDwellRemaining > 0) {
+          this.patrolDwellRemaining -= 1;
+        }
+
+        if (
+          this.servicing &&
+          held?.kind === "raw_blank"
+        ) {
+          this.completionPending = true;
+          return {
+            intent: {
+              kind: "place",
+              objectId: held.id,
+              position: rack.position,
+            },
+            activity:
+              supplierActivity(
+                input.previousActivity,
+                tick,
+                "patrol_place_at_rack",
+                held.id,
+              ),
+          };
+        }
+
+        if (
+          this.completionPending &&
+          held === null &&
+          visibleFreeRawAt(
+            input,
+            rack,
+          )
+        ) {
+          this.completionPending = false;
+          this.servicing = false;
+          this.stockedReportCount += 1;
+          return {
+            intent: {
+              kind: "speak",
+              text: R3_SUPPLIER_STOCKED_TEXT,
+              radius: 5,
+            },
+            activity:
+              supplierActivity(
+                input.previousActivity,
+                tick,
+                "patrol_report_stocked",
+              ),
+          };
+        }
+
+        if (
+          this.patrolDwellRemaining <= 0
+        ) {
+          this.patrolPhase =
+            "to_source";
+          continue;
+        }
+
+        return {
+          intent: { kind: "idle" },
+          activity:
+            supplierActivity(
+              input.previousActivity,
+              tick,
+              "patrol_dwell_rack",
+            ),
+        };
+      }
+
+      if (
+        near(
+          input.observation.self.position,
+          source.position,
+        )
+      ) {
+        this.patrolPhase =
+          "dwell_source";
+        this.patrolDwellRemaining =
+          dwell;
+        continue;
+      }
+
+      return {
+        intent: {
+          kind: "move_to",
+          target: source.position,
+        },
+        activity:
+          supplierActivity(
+            input.previousActivity,
+            tick,
+            "patrol_to_source",
+          ),
+      };
+    }
   }
 }
 
