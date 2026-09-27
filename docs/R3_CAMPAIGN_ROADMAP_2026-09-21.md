@@ -477,6 +477,48 @@ Next redesign:
 Detailed result:
 `docs/R3_GROUNDED_PURPOSE_TEMPORAL_PATROL_PRESSURE_RESULT_2026-09-27.md`
 
+
+### Active pre-model finding — separation works, repeat pressure does not
+
+The listener–effector separation pressure is now cleanly qualified as a structural experiment.
+
+Qualified recovery head:
+`e8dab1a4b817045c7e9c1233263dcb0a70cb5cd2`
+
+Passes:
+- Janek grounded shortage provenance;
+- Mira grounded completion provenance;
+- paired purpose counterfactual;
+- respond-all duplicate-cost comparison;
+- body/activity deconfounding.
+
+Body/activity shortcut BA:
+- holding 0.500;
+- activity kind 0.500;
+- activity phase 0.500;
+- listener X/Y 0.500.
+
+Failure:
+- only 1 redundant row among 25 requests;
+- tick / ordinal / heard-count threshold BA 0.9792;
+- temporal gate fails.
+
+Overall:
+
+**LISTENER_EFFECTOR_TEMPORAL_PRESSURE_FAIL**
+
+Next pressure:
+- keep Ida stationary listener and Mira separate supplier;
+- keep Janek's report fact grounded in private empty-rack evidence;
+- make Janek persistently repeat the same report after another meaningful blocked interval while shortage remains unresolved;
+- stop naturally when rack stock becomes privately visible;
+- freeze one cadence before execution, no sweep;
+- audit request-ordinal modulo and absolute-tick periodicity shortcuts in addition to threshold shortcuts;
+- do not return to a learned model yet.
+
+Detailed result:
+`docs/R3_GROUNDED_LISTENER_EFFECTOR_PRESSURE_RESULT_2026-09-27.md`
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
