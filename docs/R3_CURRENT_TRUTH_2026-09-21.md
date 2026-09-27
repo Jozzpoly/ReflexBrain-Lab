@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED PURPOSE + TEMPORAL CONSUMER NEED QUALIFIED · ROW-LEVEL UPDATE-WORTHINESS REJECTED AS NEXT LEARNED TARGET · ORDINARY GROUNDED SEMANTIC DIVERSITY SEED QUALIFIED · GROUNDED MATERIAL SEMANTIC CONSUMER NEXT · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL BOOKKEEPING KEPT DETERMINISTIC · GROUNDED MATERIAL SEMANTIC CONSUMER QUALIFIED · SEMANTIC SUPERVISION PROVENANCE NOT YET QUALIFIED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -2068,5 +2068,74 @@ Next:
 - preserve deterministic temporal bookkeeping outside learned target;
 - require causal consumer value before any new model;
 - keep contact as qualitatively different second-pressure donor.
+
+No learned authority and no Owner/product claim changes.
+
+
+### 2026-09-27 grounded material semantic consumer result
+
+Frozen contract:
+`docs/R3_GROUNDED_MATERIAL_SEMANTIC_CONSUMER_CONTRACT_2026-09-27.md`
+
+Detailed result:
+`docs/R3_GROUNDED_MATERIAL_SEMANTIC_CONSUMER_RESULT_2026-09-27.md`
+
+Qualified recovery head:
+`fee885b02d118894fd29a78c7b36e324df36b820`
+
+Qualification:
+- Check #372 PASS;
+- Research Preview #394 PASS;
+- 41/41 test files PASS;
+- 204/204 tests PASS;
+- build PASS;
+- preview deploy PASS.
+
+One earlier matrix execution OOMed because the harness retained all 28 full 5400-tick runs. That was apparatus failure only. Recovery streamed the same frozen runs into compact audits without changing pressure or gates.
+
+Stage A:
+- grounding PASS;
+- all reports heard;
+- Ida direct source/rack sight excluded;
+- minimum rack reports/run 48;
+- minimum source reports/run 45;
+- report timelines invariant across modes;
+- ideal relation accuracy 1.000;
+- rack/source surface-only controls 0.500;
+- rack/source speaker-only controls 0.500;
+- fixed matter-id diagnostic 0.500.
+
+Stage B:
+- both relevant domains generate real persistent repeat pressure under ignore-all: 85 unresolved repeats each;
+- ideal reduces relevant repeats to 0;
+- ideal decoy acknowledgements 0;
+- ideal aggregate communication actions 279;
+- respond-all aggregate communication actions 372;
+- respond-all decoy acknowledgements 93;
+- fixed surface/speaker controls succeed only in the purpose world they happen to match;
+- physical processing remains 47 completions/run, so the advantage is selective communication-pressure resolution rather than throughput.
+
+Precommitted classification:
+
+**GROUNDED_MATERIAL_SEMANTIC_CONSUMER_QUALIFIED**
+
+Bounded qualified claim:
+
+> grounded material report meaning × same-id actor-private purpose meaning has causal consumer value.
+
+Important boundary:
+- the authored ideal oracle is evaluation instrumentation, not qualified training supervision;
+- Stage-B purpose-aware retry pressure is evaluation apparatus, not learning-label provenance;
+- report-domain ids, speaker ids and matter ids are not promoted as model inputs or semantic truth.
+
+Current frontier:
+- remain pre-model;
+- freeze a semantic corpus + supervision-provenance audit;
+- separate grounded evidence, actor-private purpose, evaluation oracle and legal learning signal;
+- preserve deterministic temporal episode state outside the learned target;
+- audit exact-surface / lexical / speaker / matter-id shortcuts;
+- add factual paraphrases only after provenance is explicit;
+- keep `output_has_finished` and local contact as qualitatively different held-out donors;
+- if no honest actor-private supervision source exists, do not train merely because the evaluation relation is easy to label.
 
 No learned authority and no Owner/product claim changes.
