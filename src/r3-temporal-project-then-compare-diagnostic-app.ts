@@ -50,7 +50,58 @@ if (!statusElement || !resultElement) {
 const statusOutput = statusElement;
 const resultOutput = resultElement;
 
-void run();
+const RECOVERY_RUN_TOKEN =
+  "r3-temporal-project-then-compare-recovery-20260927-a";
+const RECOVERY_RUN_KEY =
+  "reflexbrain:" +
+  RECOVERY_RUN_TOKEN;
+
+let acquiredRunLock = false;
+
+try {
+  if (
+    localStorage.getItem(
+      RECOVERY_RUN_KEY,
+    ) === null
+  ) {
+    localStorage.setItem(
+      RECOVERY_RUN_KEY,
+      "started",
+    );
+    acquiredRunLock = true;
+  }
+} catch (error) {
+  const message =
+    error instanceof Error
+      ? error.message
+      : String(error);
+  throw new Error(
+    "project-then-compare recovery run lock unavailable: " +
+      message,
+  );
+}
+
+if (acquiredRunLock) {
+  void run();
+} else {
+  resultOutput.textContent =
+    JSON.stringify(
+      {
+        status:
+          "BLOCKED_DUPLICATE_EXECUTION",
+        runToken:
+          RECOVERY_RUN_TOKEN,
+      },
+      null,
+      2,
+    );
+  document.documentElement.dataset
+    .r3TemporalProjectThenCompareDiagnostic =
+    "blocked-duplicate";
+  setStatus(
+    "R3 temporal project-then-compare duplicate execution blocked before model work.",
+  );
+}
 
 async function run(): Promise<void> {
   try {
