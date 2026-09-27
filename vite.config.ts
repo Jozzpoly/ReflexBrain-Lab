@@ -13,6 +13,8 @@ export default defineConfig({
           "r3-joint-relation-probe.html",
         r3TemporalFactorProbe:
           "r3-temporal-factor-probe.html",
+        r3TemporalRepresentationRelationFalsifier:
+          "r3-temporal-representation-relation-falsifier.html",
       },
     },
   },
