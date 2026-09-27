@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · THREE-WAY ORACLE CONSUMER VALUE QUALIFIED · SENTENCE REPRESENTATION LEG PASS · SIMPLE FROZEN PAIR-RELATION FAMILY FAIL · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · THREE-WAY ORACLE CONSUMER VALUE QUALIFIED · SENTENCE-STATE SIGNAL EXISTS · TEMPORAL EQUALITY/CHANGE REPRESENTATION TARGET UNDER RECONSIDERATION · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -1530,3 +1530,58 @@ For future `kontynuuj`:
 - the next earned architecture question is whether actor-relative meaning must be learned/projected before temporal comparison instead of comparing generic frozen sentence embeddings directly;
 - freeze any learned-projection hypothesis independently before implementation;
 - no learned actor authority or Owner/product claim changes.
+
+
+### 2026-09-27 privileged project-then-compare diagnostic result
+
+A privileged diagnostic tested whether temporal comparison becomes reliable if each sentence is first projected onto the authored semantic state direction already shown to be decodable.
+
+Execution provenance includes one apparatus incident:
+- three duplicate auto-running pages were accidentally created during an Opera reconnect loop;
+- no result content was read from them;
+- all three were invalidated and closed;
+- recovery added only a persistent run lock, with no semantic/model changes;
+- clean recovery executed once on qualified head `08982be95426718f422661ab7fafd3dccf23fcbe`.
+
+Stage 1 reproduced the sentence-state result:
+- held-out BA 0.875;
+- TPR 1.000;
+- TNR 0.750;
+- AUROC 0.9375;
+- **PASS**.
+
+Stage 2 used only:
+`abs(P(complete|H) - P(complete|C))`.
+
+Held-out known relation:
+- BA 0.5625;
+- TPR 0.2500;
+- TNR 0.8750;
+- AUROC 0.73828125;
+- **FAIL**.
+
+Both unseen directions:
+- BA 0.500;
+- AUROC 0.750;
+- **FAIL**.
+
+Precommitted classification:
+
+**PRIVILEGED_PROJECT_THEN_COMPARE_FAIL_KNOWN**
+
+Detailed result:
+`docs/R3_TEMPORAL_PROJECT_THEN_COMPARE_DIAGNOSTIC_RESULT_2026-09-27.md`.
+
+Current interpretation:
+- bounded per-sentence state information remains real;
+- classification probability is not a qualified semantic state metric;
+- fixed pair-feature tinkering remains closed;
+- privileged state-projection-before-comparison also fails the known-state relation gate;
+- do not automatically build a pair-supervised projection or add capacity.
+
+For future `kontynuuj`:
+- reconsider the learned temporal target before another model;
+- ask whether binary semantic state equality/change is itself the wrong compression of the actor-relative problem;
+- preserve the oracle consumer as downstream evidence, not as supervision authority;
+- do not confuse another benchmark architecture with progress toward the cheap local learned organ;
+- no learned authority or Owner/product claim changes.
