@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL BOOKKEEPING KEPT DETERMINISTIC · GROUNDED MATERIAL SEMANTIC CONSUMER QUALIFIED · SEMANTIC SUPERVISION PROVENANCE NOT YET QUALIFIED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED MATERIAL SEMANTIC CONSUMER QUALIFIED · GROUNDED FACT SUPERVISION AVAILABLE · LOCAL ACTOR-RELATIVE RELATION SUPERVISION NOT QUALIFIED · ORACLE DISTILLATION BLOCKED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -2139,5 +2139,63 @@ Current frontier:
 - add factual paraphrases only after provenance is explicit;
 - keep `output_has_finished` and local contact as qualitatively different held-out donors;
 - if no honest actor-private supervision source exists, do not train merely because the evaluation relation is easy to label.
+
+No learned authority and no Owner/product claim changes.
+
+
+### 2026-09-27 grounded semantic supervision provenance result
+
+Frozen contract:
+`docs/R3_GROUNDED_SEMANTIC_SUPERVISION_PROVENANCE_AUDIT_CONTRACT_2026-09-27.md`
+
+Detailed result:
+`docs/R3_GROUNDED_SEMANTIC_SUPERVISION_PROVENANCE_AUDIT_RESULT_2026-09-27.md`
+
+Qualified head:
+`76d20cb92ffa34fbb8a6b83dc0a6f7b758d882dd`
+
+Qualification:
+- Check #382 PASS;
+- Research Preview #406 PASS;
+- 42/42 test files PASS;
+- 205/205 tests PASS;
+- build PASS;
+- preview deploy PASS.
+
+Stage-A clean purpose counterfactual:
+- same matter id;
+- different purpose statements;
+- identical grounded report timeline;
+- identical complete non-matter Ida-private trajectory;
+- 93 paired report events;
+- 93/93 evaluation relation labels flip when only purpose meaning changes;
+- rack grounding 48/48;
+- source grounding 45/45.
+
+Stage-B leakage:
+- rack-purpose ignore-all: rack 133 / source 45 reports;
+- source-purpose ignore-all: rack 48 / source 130;
+- reporter persistence therefore encodes purpose relevance upstream and is circular as relation supervision.
+
+Lexical diagnostic:
+- original 2×2 surface retrieval 2/2 = 1.000;
+- frozen evaluation-only paraphrases 8/12 = 0.667.
+
+Precommitted classification:
+
+**GROUNDED_FACT_SUPERVISION_ONLY**
+
+Qualified consequence:
+- same-observation report↔private-fact and material multi-view evidence are legal factual representation signals;
+- no current non-circular local signal distinguishes positive vs negative fact×purpose relevance;
+- Stage-A oracle labels are evaluation-only;
+- ideal ACKs and Stage-B retry consequences are forbidden as TRAIN labels;
+- matter-id ablation proves fixture causal responsibility, not statement semantics;
+- deterministic temporal bookkeeping remains outside the learned target.
+
+Current next question:
+- first test the cheaper route: a **frozen externally pretrained zero-shot semantic bridge** with no local relation training;
+- require held-out wording/paraphrase robustness and later qualitatively different grounded pressure;
+- if zero-shot semantics fail, the alternative is to build genuine purpose-statement grounding rather than distill the oracle.
 
 No learned authority and no Owner/product claim changes.
