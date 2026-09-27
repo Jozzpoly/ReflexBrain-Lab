@@ -57,6 +57,9 @@ export interface R3GroundedConsumerCorpusAudit {
 
 export function buildR3GroundedConsumerCorpus(
   experiences: readonly ResidentPrivateExperience[],
+  options: {
+    currentRackStockBlocksUpdate?: boolean;
+  } = {},
 ): readonly R3GroundedConsumerCorpusRow[] {
   const mira = experiences
     .filter(
@@ -89,7 +92,17 @@ export function buildR3GroundedConsumerCorpus(
     if (!heard) continue;
 
     requestOrdinal += 1;
-    const updateWorthy = !awaitingPrivateSettlement;
+    const currentRackStock =
+      visibleRawAt(
+        experience,
+        R3_GROUNDED_REPORT_PLACES.input_rack.position,
+      );
+    const updateWorthy =
+      !awaitingPrivateSettlement &&
+      !(
+        options.currentRackStockBlocksUpdate &&
+        currentRackStock
+      );
     if (updateWorthy) {
       awaitingPrivateSettlement = true;
     }
