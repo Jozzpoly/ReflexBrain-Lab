@@ -136,25 +136,30 @@ Next:
 Detailed result:
 `docs/R3_TEMPORAL_FACTOR_PROBE_RESULT_2026-09-27.md`.
 
-### Representation-vs-relation falsifier result
+### Temporal pair-relation closure
 
-The frozen localization experiment has now executed exactly once in real Opera/WebGPU.
+The representation-vs-relation falsifier first established:
+- per-sentence known-state representation: BA 0.875 / AUROC 0.9375 — PASS;
+- frozen `abs(H-C)`: known-state BA 0.59375 / AUROC 0.6602 — FAIL;
+- one joint-pair sentence embedding: known-state BA 0.515625 / AUROC 0.5771 — FAIL.
 
-Result:
-`docs/R3_TEMPORAL_REPRESENTATION_RELATION_FALSIFIER_RESULT_2026-09-27.md`
+A separately frozen follow-up then added exactly one symmetric multiplicative interaction:
+
+`[abs(H-C), H⊙C]`
+
+Real Opera/WebGPU result:
+- TRAIN BA/AUROC 1.000;
+- held-out known BA 0.59375 / AUROC 0.6602 — FAIL;
+- both unseen-state directions BA 0.750 / AUROC 0.500 — FAIL.
 
 Precommitted classification:
 
-**PAIR_RELATION_READOUT_FAIL**
+**SYMMETRIC_INTERACTION_FAIL_KNOWN**
 
-Key evidence:
-- Leg A known-state sentence representation: BA 0.875 / AUROC 0.9375 — PASS;
-- Leg B frozen `abs(H-C)`: BA 0.59375 / AUROC 0.6602 — FAIL;
-- Leg C joint-pair embedding: known-state BA 0.515625 / AUROC 0.5771 — FAIL;
-- both Leg C unseen directions also fail their gates.
+Detailed result:
+`docs/R3_TEMPORAL_SYMMETRIC_INTERACTION_PROBE_RESULT_2026-09-27.md`
 
-The pinned sentence representation therefore carries recoverable known-state semantic information, while neither tested simple pair relation/readout robustly recovers semantic equality/change. Do not tune or rescue these probes, return to direct cosine, or jump back to the full three-way learner.
-
+Simple fixed pair-feature tinkering on the frozen temporal corpus is now closed. The next architecture question is whether actor-relative meaning must be learned/projected before temporal comparison instead of comparing generic frozen sentence embeddings directly. Do not rescue with another feature permutation, threshold tuning, hidden-layer capacity or a larger encoder.
 ## Defended boundaries
 
 - World truth is authoritative and independent from model judgement.
