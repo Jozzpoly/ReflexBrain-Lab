@@ -1339,3 +1339,69 @@ The next probe must therefore answer only:
 Freeze that diagnostic before execution. Passing it would localize the earlier failure to three-way composition/calibration; failing it would implicate the representation/relation formulation for the missing temporal factor itself.
 
 No Owner/product claim changes.
+
+
+## Temporal semantic factor probe — PARTIAL / NO PROMOTION
+
+The precommitted temporal-factor diagnostic has now executed in real Opera/WebGPU.
+
+Executed candidate:
+- head `7e764eb4828a0c9c1cb03afbd516c94029124383`;
+- pinned `Xenova/paraphrase-MiniLM-L3-v2`;
+- revision `4b544e74dfc3256b2b56849ea5d7064fee1ac846`;
+- q8, WebGPU, isolated batch size 1, 384 dimensions;
+- feature `abs(H-C)`;
+- one frozen linear logistic head;
+- TRAIN 16;
+- HELD-OUT CURRENT 8;
+- HELD-OUT HISTORY 8;
+- no held-out fitting or threshold tuning.
+
+TRAIN:
+- BA 1.000;
+- AUROC 1.000.
+
+HELD-OUT CURRENT:
+- BA **0.750**;
+- TPR **1.000**;
+- TNR **0.500**;
+- AUROC **0.500**.
+
+HELD-OUT HISTORY:
+- BA **0.750**;
+- TPR **1.000**;
+- TNR **0.500**;
+- AUROC **0.500**.
+
+Precommitted classification:
+
+> **PARTIAL_TEMPORAL_FACTOR_SIGNAL**
+
+This fails `QUALIFIED_TEMPORAL_FACTOR_SUPPORT`.
+
+Interpretation:
+- the head can fit TRAIN;
+- both unseen-state directions show the same thresholded partial behavior;
+- half of held-out negatives are false positives;
+- threshold-free ranking is exactly chance on both held-out directions;
+- therefore the isolated temporal semantic novelty factor is **not qualified** under the pinned frozen representation + `abs(H-C)` linear formulation.
+
+This materially changes the failure localization of the earlier three-way learned probe. The consumer-reachable failure cannot now be attributed only to purpose×history×current composition or decision calibration. The missing temporal novelty capability itself is not robustly carried by this frozen relation formulation under held-out semantic transfer.
+
+Detailed result:
+`docs/R3_TEMPORAL_FACTOR_PROBE_RESULT_2026-09-27.md`
+
+### Current earned frontier after temporal-factor failure
+
+Do not tune or rescue the executed temporal-factor probe.
+
+Before selecting another learned architecture:
+1. preserve the already-qualified oracle consumer value;
+2. separate **representation sufficiency** from **relation/readout sufficiency** with a new independently frozen falsifier;
+3. require any new hypothesis to explain semantic equivalence/change under held-out paraphrase and unseen-state pressure;
+4. do not reintroduce direct cosine, threshold tuning, larger encoder, hidden layers or feature sweeps as post-hoc rescue;
+5. keep the full three-way consumer relation as the long-term useful boundary, but do not train another three-way model until the temporal novelty failure is understood.
+
+Possible future hypothesis families include relation-aware/joint encoding or objectives that learn semantic equivalence/change more directly, but none is promoted yet.
+
+No Owner/product claim changes.
