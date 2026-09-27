@@ -136,23 +136,24 @@ Next:
 Detailed result:
 `docs/R3_TEMPORAL_FACTOR_PROBE_RESULT_2026-09-27.md`.
 
-### Ready next falsifier
+### Representation-vs-relation falsifier result
 
-The representation-vs-relation localization experiment is already frozen, implemented and deployed.
+The frozen localization experiment has now executed exactly once in real Opera/WebGPU.
 
-Contract:
-`docs/R3_TEMPORAL_REPRESENTATION_RELATION_FALSIFIER_CONTRACT_2026-09-27.md`
+Result:
+`docs/R3_TEMPORAL_REPRESENTATION_RELATION_FALSIFIER_RESULT_2026-09-27.md`
 
-Implementation/deploy head:
-`3622a260029229f8c279f747b7e1721ec21c0be7`
+Precommitted classification:
 
-Qualification:
-- Check #282 PASS;
-- 30 test files / 189 tests PASS;
-- build/deploy PASS;
-- page `/r3-temporal-representation-relation-falsifier.html`.
+**PAIR_RELATION_READOUT_FAIL**
 
-Real Opera/WebGPU execution is still pending. The Opera connector is currently reachable again, so the next research action is execution and strict classification of this frozen falsifier — not further implementation or model selection.
+Key evidence:
+- Leg A known-state sentence representation: BA 0.875 / AUROC 0.9375 — PASS;
+- Leg B frozen `abs(H-C)`: BA 0.59375 / AUROC 0.6602 — FAIL;
+- Leg C joint-pair embedding: known-state BA 0.515625 / AUROC 0.5771 — FAIL;
+- both Leg C unseen directions also fail their gates.
+
+The pinned sentence representation therefore carries recoverable known-state semantic information, while neither tested simple pair relation/readout robustly recovers semantic equality/change. Do not tune or rescue these probes, return to direct cosine, or jump back to the full three-way learner.
 
 ## Defended boundaries
 
