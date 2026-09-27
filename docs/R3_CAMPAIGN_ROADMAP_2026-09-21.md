@@ -392,6 +392,51 @@ Immediate campaign consequence:
 Detailed result:
 `docs/R3_GROUNDED_RECURRENT_REPORT_CONSUMER_RESULT_2026-09-27.md`
 
+
+### Active pre-model finding — first grounded corpus is underidentified
+
+The frozen corpus audit derived labels only from Mira-private report/settlement history and then attacked the resulting dataset before model selection.
+
+Result:
+- rows: 9;
+- positives/negatives: 8/1;
+- report surfaces: 1;
+- speakers: 1;
+- matters: 1;
+- purpose counterfactual: absent.
+
+Perfect shortcut BA:
+- activity phase;
+- holding object;
+- listener X;
+- visible source stock.
+
+Near-perfect BA 0.9375:
+- absolute tick;
+- request ordinal;
+- prior heard count;
+- known raw belief count.
+
+Classification:
+
+**GROUNDED_CONSUMER_CORPUS_UNDERIDENTIFIED**
+
+Interpretation:
+- consumer need is real;
+- first obvious dataset is not a semantic/temporal learning problem yet;
+- it mostly fingerprints Mira's scripted response state.
+
+Required next pressure redesign:
+- produce redundant and update-worthy reports under overlapping positions/activity states;
+- let unresolved repeats occur without a uniquely identifying carried-object state;
+- let new recurrences arrive during non-idle/non-source activity;
+- add at least two listener purposes for the same grounded report with causal outcome differences;
+- preserve speaker-private grounding and listener-private settlement;
+- do not simply add rows/paraphrases.
+
+Detailed result:
+`docs/R3_GROUNDED_CONSUMER_CORPUS_AUDIT_RESULT_2026-09-27.md`
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
