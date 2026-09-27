@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED PURPOSE + TEMPORAL CONSUMER NEED QUALIFIED · LISTENER DECONFOUNDING PASS · PERSISTENT REPORT CLASS BALANCE PASS · PERIODICITY SHORTCUT FAIL · ASYNCHRONOUS EFFECTOR PRESSURE REQUIRED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED PURPOSE + TEMPORAL CONSUMER NEED QUALIFIED · TEMPORAL ROW GATE NOW PASSING UNDER DECONFOUNDED PRESSURE · DETERMINISTIC ECOLOGY PHASE-LOCK STILL FAILS EPISODE/PERIODICITY GATES · LEARNED UPDATE-WORTHINESS TARGET UNDER RECONSIDERATION · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -1944,3 +1944,62 @@ Interpretation:
 - next pressure must vary supplier latency endogenously through an independent background activity, not randomize/tune the reporter;
 - keep listener deconfounded and keep periodicity audits;
 - no learner yet.
+
+
+### 2026-09-27 asynchronous supplier pressure result
+
+Frozen contract:
+`docs/R3_ASYNC_SUPPLIER_PRESSURE_CONTRACT_2026-09-27.md`
+
+Detailed result:
+`docs/R3_ASYNC_SUPPLIER_PRESSURE_RESULT_2026-09-27.md`
+
+Qualified head:
+`019097bab11994fdbb8fcfc926d1cb54b41a1eae`
+
+Qualification:
+- Check #354 PASS;
+- Research Preview #373 PASS;
+- 39/39 test files PASS;
+- 202/202 tests PASS;
+- build PASS;
+- preview deploy PASS.
+
+Passes:
+- Janek grounding 100%;
+- Mira completion grounding 100%;
+- listener deconfounding;
+- temporal row gate;
+- purpose gate;
+- duplicate-cost gate.
+
+Temporal row evidence:
+- 80 rows;
+- 17 positive / 63 negative;
+- body/activity/memory fingerprint shared across both classes;
+- exact text BA 0.500;
+- tick / ordinal / heard-count threshold BA 0.543;
+- known raw-belief BA 0.500;
+- ordered private-history oracle exact.
+
+Failure:
+- settled episode lengths `[3,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]`;
+- only 2 distinct lengths;
+- dominant length share 0.9375;
+- no one-report episode;
+- tick mod 120 BA 1.000;
+- tick mod 24 BA 1.000;
+- ordinal mod 5 BA 0.9706.
+
+Overall:
+
+**ASYNC_SUPPLIER_EPISODE_DIVERSITY_FAIL**
+
+Campaign-level interpretation:
+- body leakage, class balance and simple threshold shortcuts have now been repaired;
+- the remaining failure is deterministic limit-cycle phase locking of the fixture;
+- ordered private history already reconstructs unresolved/settled state exactly;
+- do not continue tuning cadence/dwell/speed merely to beat modulo;
+- explicitly reconsider whether row-level `updateWorthy` deserves to be a learned primitive at all.
+
+No learned authority and no Owner/product claim changes.
