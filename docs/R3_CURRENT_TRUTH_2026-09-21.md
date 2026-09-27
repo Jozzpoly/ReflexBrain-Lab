@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL CONSUMER VALUE QUALIFIED · GROUNDED PURPOSE COUNTERFACTUAL PASS · LISTENER–EFFECTOR BODY DECONFOUNDING PASS · TEMPORAL DUPLICATE PRESSURE STILL UNDERIDENTIFIED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED PURPOSE + TEMPORAL CONSUMER NEED QUALIFIED · LISTENER DECONFOUNDING PASS · PERSISTENT REPORT CLASS BALANCE PASS · PERIODICITY SHORTCUT FAIL · ASYNCHRONOUS EFFECTOR PRESSURE REQUIRED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -1900,3 +1900,47 @@ Interpretation:
 - future audit must include ordinal/tick periodicity shortcuts.
 
 No learned authority and no Owner/product claim changes.
+
+
+### 2026-09-27 persistent grounded report pressure result
+
+Frozen contract:
+`docs/R3_PERSISTENT_GROUNDED_REPORT_PRESSURE_CONTRACT_2026-09-27.md`
+
+Detailed result:
+`docs/R3_PERSISTENT_GROUNDED_REPORT_PRESSURE_RESULT_2026-09-27.md`
+
+Qualified head:
+`a5c17b5c193c8f80dd166742d1d7f93245e5bdfb`
+
+Qualification:
+- Check #347 PASS;
+- Research Preview #364 PASS;
+- 38/38 test files PASS;
+- 201/201 tests PASS;
+- build PASS;
+- deploy PASS.
+
+Passes:
+- Janek report grounding 100%;
+- Mira completion grounding 100%;
+- listener body/activity/memory deconfounding;
+- 72 rows with 24 positive / 48 negative;
+- ordinary threshold shortcuts ~chance;
+- purpose counterfactual;
+- duplicate-cost gate.
+
+Failure:
+- request ordinal mod 3 BA 1.000;
+- request ordinal mod 6 BA 1.000;
+- absolute tick mod 120 BA 0.9167.
+
+Overall:
+
+**PERSISTENT_GROUNDED_REPORT_TEMPORAL_FAIL**
+
+Interpretation:
+- fixed persistent-report cadence + fixed supplier latency phase-lock into a trivial 3-report episode;
+- next pressure must vary supplier latency endogenously through an independent background activity, not randomize/tune the reporter;
+- keep listener deconfounded and keep periodicity audits;
+- no learner yet.
