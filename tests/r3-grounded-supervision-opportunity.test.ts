@@ -100,5 +100,11 @@ describe("R3 grounded supervision opportunity audit", () => {
     expect(
       audit.crossKindLifecycleObjectCount,
     ).toBeGreaterThan(0);
+    expect(
+      audit.sharedObservationObjectCount,
+    ).toBeGreaterThan(0);
+    expect(
+      audit.heldVisibleSharedObjectCount,
+    ).toBeGreaterThan(0);
   });
 });
