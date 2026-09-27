@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL CONSUMER VALUE QUALIFIED · FIRST GROUNDED CORPUS FALSIFIED AS UNDERIDENTIFIED · PRESSURE REDESIGN REQUIRED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL CONSUMER VALUE QUALIFIED · GROUNDED PURPOSE COUNTERFACTUAL GATE PASSES · LISTENER-EFFECTOR TEMPORAL PRESSURE FAILS FROM BODY-STATE LEAKAGE · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -1772,3 +1772,72 @@ Next:
 - preserve listener-private settlement and speaker-private grounding;
 - only after pressure redesign freeze another corpus audit;
 - no learned authority and no Owner/product claim changes.
+
+
+### 2026-09-27 grounded purpose × temporal patrol pressure result
+
+Frozen contract:
+`docs/R3_GROUNDED_PURPOSE_TEMPORAL_PATROL_PRESSURE_CONTRACT_2026-09-27.md`
+
+Detailed result:
+`docs/R3_GROUNDED_PURPOSE_TEMPORAL_PATROL_PRESSURE_RESULT_2026-09-27.md`
+
+Qualified recovery head:
+`40606e400dc3d48a82d2caad87a8b78fa6e1d6ec`
+
+Qualification:
+- Check #333 PASS;
+- Research Preview #345 PASS;
+- 36/36 test files PASS;
+- 199/199 tests PASS;
+- build PASS.
+
+A prior identical-semantic run timed out only because Vitest kept its default 5-second test limit. Its research output is not authority. Recovery changed only the test timeout to 30 seconds.
+
+All Janek requests remain privately grounded at rate 1.000 in all four modes.
+
+Purpose counterfactual gate:
+- paired first grounded report tick: 54;
+- non-purpose private state identical across supply vs reserve purpose;
+- supply accepts first report;
+- reserve-aware does not;
+- supply processing: 13;
+- reserve-aware processing: 0;
+- reserve-aware source-reserve deficit: 0;
+- reserve-blind source-reserve deficit: 1680;
+- reserve-aware accepted reports: 0;
+- reserve-blind: 14.
+
+Purpose gate: **PASS**.
+
+Temporal structural gate on supply-ideal:
+- rows 41;
+- positives 14;
+- negatives 27;
+- holding shortcut BA 1.000;
+- activity phase BA 0.964286;
+- listener-X threshold BA 0.964286;
+- visible-source-stock BA 0.964286;
+- both classes with holding=false: false.
+
+Temporal gate: **FAIL**.
+
+Overall precommitted classification:
+
+**GROUNDED_PURPOSE_TEMPORAL_PRESSURE_FAIL**
+
+Current interpretation:
+- grounded same-report purpose sensitivity is now causally qualified in a perfectly paired first-report counterfactual;
+- the patrol fixes sample size and weak timing/ordinal shortcuts, but does not deconfound temporal update-worthiness;
+- listener and material effector being the same actor couples unresolved state to carrying/route state;
+- deleting leaked features from model input would not solve the underlying causal confound.
+
+Next:
+- separate listener/interpreter from material supplier/effector;
+- preserve grounded Janek shortage reports;
+- have supplier action occur through a distinct actor;
+- give the listener private settlement evidence through grounded completion/stocked communication or another actor-private channel;
+- keep listener body/activity independent from the supply cycle;
+- then freeze a new structural pressure audit before corpus/model work.
+
+No learned authority and no Owner/product claim changes.
