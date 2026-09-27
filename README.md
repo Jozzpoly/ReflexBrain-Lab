@@ -253,7 +253,7 @@ Detailed decisions/evidence:
 - `docs/R3_LEARNED_TARGET_RECONSIDERATION_2026-09-27.md`
 - `docs/R3_GROUNDED_SEMANTIC_OPPORTUNITY_AUDIT_RESULT_2026-09-27.md`
 
-Next is still pre-model: qualify one grounded material semantic consumer using rack-status versus output-status facts and same-id purpose switching. Temporal duplicate settlement remains deterministic rather than becoming the learner target.
+Next is still pre-model: execute the frozen grounded material semantic consumer using `rack-empty` versus `source-empty` with same-id purpose switching. `output_has_finished` remains a later qualitatively different donor. Temporal duplicate settlement remains deterministic rather than becoming the learner target.
 
 ## Defended boundaries
 
