@@ -1445,3 +1445,50 @@ Do not modify:
 Do not implement another model or redesign the probe before this exact falsifier is executed.
 
 No learned actor authority or Owner/product claim changes.
+
+
+### 2026-09-27 representation-vs-relation falsifier result
+
+The frozen representation-vs-relation falsifier executed exactly once in real Opera/WebGPU.
+
+Evidence:
+- result: `docs/R3_TEMPORAL_REPRESENTATION_RELATION_FALSIFIER_RESULT_2026-09-27.md`;
+- pinned MiniLM/q8/WebGPU/batch-1 runtime preserved;
+- no threshold/model/wrapper/feature sweep or post-result rescue.
+
+Leg A — known-state sentence representation:
+- BA 0.875;
+- TPR 1.000;
+- TNR 0.750;
+- AUROC 0.9375;
+- **PASS**.
+
+Leg B — frozen `abs(H-C)` on held-out known-state paraphrases:
+- BA 0.59375;
+- TPR 0.9375;
+- TNR 0.2500;
+- AUROC 0.66015625;
+- **FAIL**.
+
+Leg C — single frozen joint-pair embedding + linear head:
+- known-state BA 0.515625 / AUROC 0.5771484375 — **FAIL**;
+- unseen-current BA 0.500 / AUROC 0.8125 — **FAIL**;
+- unseen-history BA 0.625 / AUROC 0.8125 — **FAIL**.
+
+Precommitted classification:
+
+**PAIR_RELATION_READOUT_FAIL**
+
+Current learned frontier:
+- the pinned representation contains recoverable known-state semantic information under the frozen Leg A diagnostic;
+- the semantic novelty/equivalence relation is not robustly recovered by either tested simple pair formulation/readout;
+- unseen-state transfer is not required to expose the failure;
+- direct cosine remains rejected;
+- no learned actor authority exists;
+- no Owner/product claim changes.
+
+For future `kontynuuj`:
+- do not rescue these heads with tuning, capacity, alternate wrappers or a larger encoder;
+- do not return to the full three-way learner yet;
+- formulate the next falsifiable architecture hypothesis around why pairwise semantic equality/change is not linearly recoverable despite recoverable per-sentence state information;
+- keep the qualified oracle consumer as the downstream utility anchor.
