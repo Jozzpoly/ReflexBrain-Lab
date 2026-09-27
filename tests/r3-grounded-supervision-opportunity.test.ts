@@ -91,5 +91,14 @@ describe("R3 grounded supervision opportunity audit", () => {
     expect(
       audit.positiveGapCount,
     ).toBeGreaterThan(0);
+    expect(
+      audit.adjacentCrossActorHandoffObjectCount,
+    ).toBeGreaterThan(0);
+    expect(
+      audit.sameKindCrossActorObjectCount,
+    ).toBeGreaterThan(0);
+    expect(
+      audit.crossKindLifecycleObjectCount,
+    ).toBeGreaterThan(0);
   });
 });
