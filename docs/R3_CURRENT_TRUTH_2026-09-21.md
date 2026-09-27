@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL BOOKKEEPING KEPT DETERMINISTIC · GROUNDED MATERIAL SEMANTIC CONSUMER QUALIFIED · GROUNDED FACT SUPERVISION QUALIFIED · ACTOR-RELATIVE RELATION SUPERVISION NOT QUALIFIED · ORACLE DISTILLATION BLOCKED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL BOOKKEEPING KEPT DETERMINISTIC · GROUNDED MATERIAL SEMANTIC CONSUMER QUALIFIED · GROUNDED FACT SUPERVISION QUALIFIED · ZERO-SHOT PRETRAINED BRIDGE PARTIAL · PURPOSE-SIDE SEMANTIC GROUNDING IS CURRENT BLOCKER · ORACLE DISTILLATION BLOCKED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -2197,5 +2197,64 @@ Current next question:
 - first test the cheaper route: a **frozen externally pretrained zero-shot semantic bridge** with no local relation training;
 - require held-out wording/paraphrase robustness and later qualitatively different grounded pressure;
 - if zero-shot semantics fail, the alternative is to build genuine purpose-statement grounding rather than distill the oracle.
+
+No learned authority and no Owner/product claim changes.
+
+
+### 2026-09-27 frozen zero-shot grounded semantic bridge result
+
+Frozen contract:
+`docs/R3_FROZEN_ZERO_SHOT_GROUNDED_SEMANTIC_BRIDGE_CONTRACT_2026-09-27.md`
+
+Detailed result:
+`docs/R3_ZERO_SHOT_GROUNDED_SEMANTIC_BRIDGE_RESULT_2026-09-27.md`
+
+Qualified implementation head:
+`5958e49b6b9c927c262ec60847ac9f6b8cf8ddc5`
+
+Qualification:
+- Check #393 PASS;
+- 43/43 test files PASS;
+- 209/209 tests PASS;
+- build PASS;
+- Research Preview #418 build + deploy PASS.
+
+Real Opera/WebGPU runtime:
+- pinned `Xenova/paraphrase-MiniLM-L3-v2`;
+- revision `4b544e74dfc3256b2b56849ea5d7064fee1ac846`;
+- q8 / WebGPU / batch 1 / 384d;
+- 14 frozen texts;
+- no local relation training;
+- no threshold/projection fitting;
+- one frozen model.
+
+Results:
+- exact baseline: 2/2 = 1.000;
+- report paraphrase -> baseline purpose: 5/6 = 0.8333, lexical 4/6 = 0.6667;
+- baseline report -> purpose paraphrase: 2/4 = 0.500, lexical 3/4 = 0.750;
+- cross-paraphrase: 6/12 = 0.500, lexical 8/12 = 0.6667;
+- cross-paraphrase mean semantic margin slightly negative.
+
+Precommitted classification:
+
+**ZERO_SHOT_GROUNDED_SEMANTIC_BRIDGE_PARTIAL**
+
+Interpretation:
+- frozen pretrained semantics carries a real bounded grounded report-side signal;
+- purpose-side wording changes are not represented robustly enough for the actor-relative relation;
+- strongest wording-shift family is at chance and worse than lexical control;
+- this aligns with the provenance finding that factual semantics has legal grounding while purpose statement meaning lacks an equivalent grounded local channel.
+
+No-rescue consequence:
+- do not locally oracle-train a relation head;
+- do not fit thresholds/projections;
+- do not change prompts/paraphrases after result;
+- do not sweep sentence encoders on this same 24-case relation.
+
+Current next problem:
+- audit whether purpose meaning can be grounded/represented by legal actor-private causal structure already present in R3 rather than matter id;
+- require wording-only invariance at the purpose representation layer;
+- preserve report factual grounding as the qualified donor;
+- only if purpose-side representation becomes adequate reconsider relation formulation/model family.
 
 No learned authority and no Owner/product claim changes.
