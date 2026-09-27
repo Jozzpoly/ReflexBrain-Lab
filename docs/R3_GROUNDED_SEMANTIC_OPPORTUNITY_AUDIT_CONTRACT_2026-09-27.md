@@ -93,6 +93,13 @@ For every material fact axis × resident:
 - false episode count;
 - truth transitions.
 
+Episode definition:
+- consecutive inspected ticks with the same truth value belong to one episode;
+- leaving inspection range ends the current private observation episode;
+- re-entering inspection range starts a new episode even if the truth value matches the last earlier observation.
+
+This is frozen before execution so movement through and away from a place is not silently treated as continuous knowledge.
+
 For every observer→target contact pair:
 - true/false ticks;
 - true/false episodes;
