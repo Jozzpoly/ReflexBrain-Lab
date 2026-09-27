@@ -519,6 +519,31 @@ Next pressure:
 Detailed result:
 `docs/R3_GROUNDED_LISTENER_EFFECTOR_PRESSURE_RESULT_2026-09-27.md`
 
+
+### Active pre-model finding — persistent reports phase-lock into modulo-3
+
+The persistent grounded-report pressure executes cleanly and repairs the previous sample imbalance:
+- 72 rows;
+- 24 update-worthy;
+- 48 redundant;
+- listener body/activity/raw-belief fingerprint identical across classes;
+- conventional threshold shortcuts ~0.52;
+- purpose and duplicate-cost gates pass.
+
+But:
+- request ordinal mod 3 BA 1.000;
+- request ordinal mod 6 BA 1.000;
+- tick mod 120 BA 0.9167.
+
+Classification:
+
+**PERSISTENT_GROUNDED_REPORT_TEMPORAL_FAIL**
+
+Next pressure must vary service latency through independent supplier activity. Do not tune report cadence, remove modulo features, or train on the current phase-locked corpus.
+
+Detailed result:
+`docs/R3_PERSISTENT_GROUNDED_REPORT_PRESSURE_RESULT_2026-09-27.md`
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
