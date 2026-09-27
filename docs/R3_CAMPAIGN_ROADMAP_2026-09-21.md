@@ -437,6 +437,46 @@ Required next pressure redesign:
 Detailed result:
 `docs/R3_GROUNDED_CONSUMER_CORPUS_AUDIT_RESULT_2026-09-27.md`
 
+
+### Active pre-model finding — listener-effector coupling survives patrol redesign
+
+The frozen grounded purpose × temporal patrol pressure executed cleanly after one timeout-only apparatus recovery.
+
+Qualified head:
+`40606e400dc3d48a82d2caad87a8b78fa6e1d6ec`
+
+Purpose gate **passes**:
+- exact same first grounded report;
+- identical non-purpose listener-private state;
+- supply purpose accepts;
+- reserve purpose rejects;
+- supply yields 13 processing completions;
+- reserve-aware preserves source reserve at 0 deficit ticks versus 1680 for purpose-blind.
+
+Temporal structural gate **fails** despite 41 rows / 14 positive / 27 negative:
+- holding object BA 1.000;
+- activity phase BA 0.9643;
+- listener X BA 0.9643;
+- visible source stock BA 0.9643;
+- redundant and update-worthy rows do not both occur empty-handed.
+
+Overall:
+
+**GROUNDED_PURPOSE_TEMPORAL_PRESSURE_FAIL**
+
+The failure is structural, not a sample-size problem. The listener physically performs the supply response, so unresolved listener state is materialized into her body and route state.
+
+Next redesign:
+- separate listener/interpreter from supplier/effector;
+- keep listener body/activity invariant or independently varying across report states;
+- let accepted reports cause a separate actor to replenish;
+- return settlement evidence to listener through an actor-private grounded channel;
+- preserve the now-qualified purpose counterfactual;
+- freeze pressure and structural gates before execution.
+
+Detailed result:
+`docs/R3_GROUNDED_PURPOSE_TEMPORAL_PATROL_PRESSURE_RESULT_2026-09-27.md`
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
