@@ -48,6 +48,7 @@ export const R3_GROUNDED_PATROL_PLACES:
 
 export interface R3GroundedPatrolPolicyDebug {
   acceptedReportCount: number;
+  acceptedReportTicks: readonly number[];
   pendingSupply: boolean;
   patrolPhase: string;
 }
@@ -318,6 +319,7 @@ class GroundedPatrolMiraPolicy implements ResidentPolicy {
 
   private pendingSupply = false;
   private acceptedReportCount = 0;
+  private readonly acceptedReportTicks: number[] = [];
   private phase:
     | "dwell_source"
     | "to_rack"
@@ -332,6 +334,7 @@ class GroundedPatrolMiraPolicy implements ResidentPolicy {
   debug(): R3GroundedPatrolPolicyDebug {
     return {
       acceptedReportCount: this.acceptedReportCount,
+      acceptedReportTicks: [...this.acceptedReportTicks],
       pendingSupply: this.pendingSupply,
       patrolPhase: this.phase,
     };
@@ -461,12 +464,14 @@ class GroundedPatrolMiraPolicy implements ResidentPolicy {
       case "reserve-purpose-blind":
         if (!this.pendingSupply) {
           this.acceptedReportCount += 1;
+          this.acceptedReportTicks.push(input.observation.tick);
           this.pendingSupply = true;
         }
         return;
 
       case "supply-respond-all":
         this.acceptedReportCount += 1;
+        this.acceptedReportTicks.push(input.observation.tick);
         this.pendingSupply = true;
         return;
 
