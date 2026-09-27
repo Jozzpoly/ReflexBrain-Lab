@@ -7,6 +7,9 @@ import {
   createR3GroundedRecurrentReportRun,
   type R3GroundedRecurrentReportMode,
 } from "../src/r3/grounded-recurrent-report-consumer-run";
+import {
+  auditR3GroundedSpeechOpportunity,
+} from "../src/r3/grounded-speech-opportunity";
 
 const MODES:
   readonly R3GroundedRecurrentReportMode[] =
@@ -28,9 +31,23 @@ describe("R3 grounded recurrent report consumer", () => {
                 mode,
               );
             run.runTicks(1800);
+            const metrics =
+              run.metrics();
+            const grounding =
+              auditR3GroundedSpeechOpportunity(
+                run.privateExperiences(),
+              );
+            expect(
+              grounding.groundedRequestCount,
+            ).toBe(
+              metrics.requestCount,
+            );
+            expect(
+              grounding.groundedRate,
+            ).toBe(1);
             return [
               mode,
-              run.metrics(),
+              metrics,
             ];
           },
         ),
