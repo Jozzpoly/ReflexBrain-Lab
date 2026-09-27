@@ -315,6 +315,52 @@ Campaign consequence:
 - reconsider whether the learned primitive should instead capture richer actor-relative relations such as contradiction, entailment, update-worthiness, relevance-to-purpose or evidence-to-belief transition;
 - require any new target to have legitimate supervision provenance and causal downstream utility before learned implementation.
 
+
+### Active pre-model finding — grounded private report seed
+
+After `PRIVILEGED_PROJECT_THEN_COMPARE_FAIL_KNOWN`, the campaign returned to supervision provenance instead of selecting another model.
+
+A deterministic audit of the ordinary autonomous material ecology found:
+- 10 unique material objects;
+- all 10 seen privately by at least two residents;
+- 9 by all three;
+- both `raw_blank` and `finished_part` represented;
+- Mira↔Janek co-observe 10 raw objects;
+- Janek↔Ida co-observe 9 finished objects;
+- all 10 objects appear in held↔visible co-observation.
+
+A stricter non-overlapping adjacent handoff requirement survives on only 1 object, so the audit's hard classification remains:
+
+**GROUNDING_OPPORTUNITY_TOO_NARROW**
+
+Do not rewrite that gate. Instead preserve the narrower donor finding: common material referents are richly present through overlapping/private multi-view experience.
+
+The same ordinary host also already contains one naturally grounded utterance:
+
+`The input rack is empty.`
+
+In a 1200-tick run:
+- 2 requests occur;
+- 2/2 are grounded in Janek's same-tick private rack observation;
+- the identical surface recurs across two distinct shortage episodes separated by real replenishment;
+- Mira hears one and privately corroborates the empty condition;
+- Ida hears both without local confirmation.
+
+Classification:
+
+**GROUNDED_PRIVATE_REPORT_SEED_AVAILABLE**
+
+Campaign consequence:
+- authored status equality/change is no longer the default next learning target;
+- next qualify a bounded grounded communication/belief-update consumer;
+- preserve purpose × history × current evidence as downstream constraints, but do not force them into a binary benchmark label prematurely;
+- make communication causally useful without making direct perception solve every case;
+- preserve later listener-private confirmation/contradiction as potential supervision/evaluation provenance;
+- no new learned model until that consumer and its supervision path survive falsification.
+
+Detailed evidence:
+`docs/R3_GROUNDED_SUPERVISION_OPPORTUNITY_RESULT_2026-09-27.md`
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
