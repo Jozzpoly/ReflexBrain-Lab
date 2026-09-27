@@ -40,7 +40,7 @@ The harness was changed only to:
 - release full World/private-history state before the next run;
 - retain the same 5400-tick horizon, modes, purposes, metrics and gates.
 
-Qualified recovery head:
+First qualified recovery head:
 
 `fee885b02d118894fd29a78c7b36e324df36b820`
 
@@ -53,6 +53,34 @@ Qualification:
 - preview deploy PASS.
 
 The semantic consumer matrix test itself completed in the Preview run in about 175 s.
+
+## Strengthened current requalification
+
+After the first qualified recovery, the branch briefly drifted to a later harness variant that preserved the frozen world but dropped two strict Stage-B diagnostics. Before continuing the campaign, the test was restored to the qualified gate set and strengthened with an explicit geometry-based direct-sight exclusion check.
+
+Current strengthened evidence head:
+
+`0f6efb62800f146ebff061d46872b1547a18cc18`
+
+Qualification:
+- Check #377 PASS;
+- Research Preview #400 PASS;
+- 41/41 test files PASS;
+- 204/204 tests PASS;
+- build PASS;
+- preview deploy PASS.
+
+The current harness additionally preserves:
+- decision-level acknowledgement provenance for relevant primary reports;
+- all report-event -> listener-decision mappings;
+- explicit listener distance > sight radius for both source and rack on report rows.
+
+The full Stage-A/Stage-B result reproduced exactly:
+- Stage A semantic gate PASS;
+- Stage B consumer gate PASS;
+- overall classification **GROUNDED_MATERIAL_SEMANTIC_CONSUMER_QUALIFIED**.
+
+This current head supersedes `fee885b...` as the primary qualification reference while preserving it as the first successful recovery evidence.
 
 ## Stage A — grounded same-pressure relation
 
