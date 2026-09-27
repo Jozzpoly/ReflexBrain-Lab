@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · THREE-WAY ORACLE CONSUMER VALUE QUALIFIED · REPRESENTATION LEG PASS · PAIR RELATION/READOUT FAIL · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · THREE-WAY ORACLE CONSUMER VALUE QUALIFIED · SENTENCE REPRESENTATION LEG PASS · SIMPLE FROZEN PAIR-RELATION FAMILY FAIL · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -1492,3 +1492,41 @@ For future `kontynuuj`:
 - do not return to the full three-way learner yet;
 - formulate the next falsifiable architecture hypothesis around why pairwise semantic equality/change is not linearly recoverable despite recoverable per-sentence state information;
 - keep the qualified oracle consumer as the downstream utility anchor.
+
+
+### 2026-09-27 symmetric interaction probe result
+
+The independently frozen follow-up tested exactly one new symmetric relation operator on the same pinned sentence embeddings:
+
+`[abs(H-C), H⊙C]`
+
+Real Opera/WebGPU result:
+- TRAIN BA/AUROC 1.000;
+- held-out known BA 0.59375 / TPR 0.9375 / TNR 0.2500 / AUROC 0.66015625;
+- held-out current BA 0.750 / AUROC 0.500;
+- held-out history BA 0.750 / AUROC 0.500.
+
+Precommitted classification:
+
+**SYMMETRIC_INTERACTION_FAIL_KNOWN**
+
+Detailed evidence:
+`docs/R3_TEMPORAL_SYMMETRIC_INTERACTION_PROBE_RESULT_2026-09-27.md`
+
+The known-state metrics are numerically identical to the already-failed `abs(H-C)` result. This does not prove why the product block failed to help, because post-hoc weight/feature ablation was not part of the contract.
+
+Current bounded conclusion:
+- per-sentence known-state semantic information remains recoverable;
+- three tested simple frozen pair/readout routes do not robustly recover semantic equality/change:
+  1. `abs(H-C)`;
+  2. one joint-pair sentence embedding;
+  3. `[abs(H-C), H⊙C]`;
+- the failure occurs before unseen-state transfer becomes necessary.
+
+For future `kontynuuj`:
+- stop pair-feature permutation/model-shopping on this frozen temporal corpus;
+- do not rescue with threshold tuning, hidden layers, larger encoder or extra TRAIN states;
+- recover the larger ReflexBrain objective before choosing another architecture;
+- the next earned architecture question is whether actor-relative meaning must be learned/projected before temporal comparison instead of comparing generic frozen sentence embeddings directly;
+- freeze any learned-projection hypothesis independently before implementation;
+- no learned actor authority or Owner/product claim changes.
