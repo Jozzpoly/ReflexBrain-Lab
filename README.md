@@ -235,7 +235,25 @@ Classification:
 Detailed result:
 `docs/R3_ASYNC_SUPPLIER_PRESSURE_RESULT_2026-09-27.md`
 
-This changes the research question. Ordered private history already reconstructs the unresolved/settled state exactly, while successive attempts to make that state a clean row-level learned label mostly manufacture fixture-code problems. The next step is to audit whether temporal settlement should remain deterministic and whether learning should instead focus on the genuinely semantic grounded report↔purpose relation.
+That target audit is now complete.
+
+**Row-level `updateWorthy` is rejected as the next learned target.** Deterministic actor-private bookkeeping keeps unresolved/settled continuity, while learned research returns to actor-relative meaning.
+
+A frozen audit of the untouched ordinary material ecology then found a real grounded semantic diversity seed:
+- `input_rack_has_raw`: 47 true episodes; both truth values privately observed by Mira and Janek;
+- `output_has_finished`: 46 true episodes; both truth values privately observed by Janek and Ida;
+- `source_has_raw`: 48 true / 79 false episodes for Mira;
+- `coworker_nearby`: dozens of true/false contact episodes across several pairs.
+
+Classification:
+
+**GROUNDED_SEMANTIC_DIVERSITY_SEED_AVAILABLE**
+
+Detailed decisions/evidence:
+- `docs/R3_LEARNED_TARGET_RECONSIDERATION_2026-09-27.md`
+- `docs/R3_GROUNDED_SEMANTIC_OPPORTUNITY_AUDIT_RESULT_2026-09-27.md`
+
+Next is still pre-model: qualify one grounded material semantic consumer using rack-status versus output-status facts and same-id purpose switching. Temporal duplicate settlement remains deterministic rather than becoming the learner target.
 
 ## Defended boundaries
 
