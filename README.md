@@ -136,30 +136,26 @@ Next:
 Detailed result:
 `docs/R3_TEMPORAL_FACTOR_PROBE_RESULT_2026-09-27.md`.
 
-### Temporal pair-relation closure
+### Temporal target reconsideration
 
-The representation-vs-relation falsifier first established:
-- per-sentence known-state representation: BA 0.875 / AUROC 0.9375 — PASS;
-- frozen `abs(H-C)`: known-state BA 0.59375 / AUROC 0.6602 — FAIL;
-- one joint-pair sentence embedding: known-state BA 0.515625 / AUROC 0.5771 — FAIL.
+The current temporal line has now passed through four increasingly favorable diagnostics:
 
-A separately frozen follow-up then added exactly one symmetric multiplicative interaction:
+- per-sentence known-state signal: BA 0.875 / AUROC 0.9375 — **PASS**;
+- `abs(H-C)` pair relation — **FAIL**;
+- one joint-pair sentence embedding — **FAIL**;
+- `[abs(H-C), H⊙C]` symmetric pair relation — **FAIL**;
+- privileged authored-state projection followed by `abs(z(H)-z(C))` — **FAIL** on held-out known-state paraphrases (BA 0.5625 / AUROC 0.7383).
 
-`[abs(H-C), H⊙C]`
+Latest precommitted classification:
 
-Real Opera/WebGPU result:
-- TRAIN BA/AUROC 1.000;
-- held-out known BA 0.59375 / AUROC 0.6602 — FAIL;
-- both unseen-state directions BA 0.750 / AUROC 0.500 — FAIL.
-
-Precommitted classification:
-
-**SYMMETRIC_INTERACTION_FAIL_KNOWN**
+**PRIVILEGED_PROJECT_THEN_COMPARE_FAIL_KNOWN**
 
 Detailed result:
-`docs/R3_TEMPORAL_SYMMETRIC_INTERACTION_PROBE_RESULT_2026-09-27.md`
+`docs/R3_TEMPORAL_PROJECT_THEN_COMPARE_DIAGNOSTIC_RESULT_2026-09-27.md`
 
-Simple fixed pair-feature tinkering on the frozen temporal corpus is now closed. The next architecture question is whether actor-relative meaning must be learned/projected before temporal comparison instead of comparing generic frozen sentence embeddings directly. Do not rescue with another feature permutation, threshold tuning, hidden-layer capacity or a larger encoder.
+The next question is no longer “which pair feature?” or “which small head?”. Before more model work, the temporal target itself must be reconsidered against the project north star. Binary semantic-state equality/change may be too compressed or incorrectly shaped to stand in for useful actor-relative meaning.
+
+Do not automatically build a pair-supervised projection, increase model capacity, or return to the full three-way learner.
 ## Defended boundaries
 
 - World truth is authoritative and independent from model judgement.
