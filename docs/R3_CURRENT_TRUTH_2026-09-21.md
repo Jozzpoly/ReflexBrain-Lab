@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · THREE-WAY ORACLE CONSUMER VALUE QUALIFIED · SENTENCE-STATE SIGNAL EXISTS · TEMPORAL EQUALITY/CHANGE REPRESENTATION TARGET UNDER RECONSIDERATION · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · THREE-WAY ORACLE CONSUMER VALUE QUALIFIED · GROUNDED PRIVATE REPORT SEED QUALIFIED · MATERIAL MULTI-VIEW GROUNDING DONOR PRESENT · LEARNED TARGET STILL PRE-MODEL · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -1584,4 +1584,59 @@ For future `kontynuuj`:
 - ask whether binary semantic state equality/change is itself the wrong compression of the actor-relative problem;
 - preserve the oracle consumer as downstream evidence, not as supervision authority;
 - do not confuse another benchmark architecture with progress toward the cheap local learned organ;
+- no learned authority or Owner/product claim changes.
+
+
+### 2026-09-27 grounded supervision opportunity result
+
+After the privileged temporal projection also failed, the campaign stopped model rescue and audited whether R3 contains a legitimate grounding path from ordinary actor-private life.
+
+Detailed result:
+`docs/R3_GROUNDED_SUPERVISION_OPPORTUNITY_RESULT_2026-09-27.md`
+
+Qualified audit head before result documentation:
+`33c2aa43fd0d38c33a021f98335faa270faf3291`
+
+Qualification:
+- Check #306 PASS;
+- 33/33 test files PASS;
+- 196/196 tests PASS;
+- build PASS;
+- Research Preview #315 PASS.
+
+Material multi-view evidence:
+- 10 unique objects;
+- all 10 seen privately by >=2 residents;
+- 9 seen by all three residents;
+- both `raw_blank` and `finished_part` participate;
+- Mira<->Janek share 10 raw objects;
+- Janek<->Ida share 9 finished objects;
+- all 10 objects participate in held<->visible co-observation;
+- 417 shared tick×object observations.
+
+A strict non-overlapping adjacent-handoff red-team yields only 1 object, so the existing broad audit classification remains:
+
+**GROUNDING_OPPORTUNITY_TOO_NARROW**
+
+Do not weaken that gate after the result. The narrower finding is that **material multi-view grounding exists as a donor**, while a strict sequential-handoff supervision formulation is not qualified.
+
+Naturally grounded speech evidence:
+- ordinary Janek emitted `The input rack is empty.` twice in 1200 ticks;
+- both 2/2 utterances were grounded in Janek's same-tick private observation of an empty rack;
+- the two identical surfaces belonged to two distinct shortage episodes separated by real replenishment;
+- Mira heard one request and privately corroborated the empty rack;
+- Ida heard both but had no local visual confirmation.
+
+Audit classification:
+
+**GROUNDED_PRIVATE_REPORT_SEED_AVAILABLE**
+
+Current frontier:
+- authored `complete/delayed/suspended` equality/change is no longer the default learned target;
+- the next earned step is a bounded **grounded actor-private consumer**, starting from real fact-caused communication rather than a scripted semantic-state benchmark;
+- consumer utility and supervision provenance must be qualified before any next learned model;
+- direct perception must not trivialize every useful report;
+- same language surface should be able to be stale/redundant in one history and newly useful after real recurrence;
+- listener purpose, settled private history and later private confirmation/contradiction are candidate required factors;
+- object ids may be research join provenance, not model-visible semantic answers;
 - no learned authority or Owner/product claim changes.
