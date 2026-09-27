@@ -211,7 +211,20 @@ Classification:
 Detailed result:
 `docs/R3_GROUNDED_LISTENER_EFFECTOR_PRESSURE_RESULT_2026-09-27.md`
 
-The next redesign should preserve separation and introduce persistent grounded repeat reporting while a shortage remains physically unresolved, with explicit periodicity/modulo shortcut audits.
+That persistent-report pressure has now executed.
+
+It repairs the class-balance problem: **72 rows = 24 update-worthy / 48 redundant**, all listener body/activity/memory shortcuts sit at **0.500**, and ordinary tick/ordinal threshold BA falls to **0.5208**. Grounding, purpose and duplicate-cost gates all pass.
+
+But the new periodicity falsifier finds the apparatus code directly: `requestOrdinal mod 3` and `mod 6` both reach **BA 1.000**. Every shortage emits exactly three reports: one new report and two unresolved repeats.
+
+Classification:
+
+**PERSISTENT_GROUNDED_REPORT_TEMPORAL_FAIL**
+
+Detailed result:
+`docs/R3_PERSISTENT_GROUNDED_REPORT_PRESSURE_RESULT_2026-09-27.md`
+
+Next: keep the deconfounded listener and persistent reporter, but make supplier latency vary through Mira's independent background activity rather than cadence tuning or random label jitter.
 
 ## Defended boundaries
 
