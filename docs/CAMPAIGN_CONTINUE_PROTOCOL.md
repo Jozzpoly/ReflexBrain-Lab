@@ -376,3 +376,31 @@ For future `kontynuuj`:
 - freeze that hypothesis before execution;
 - retain the qualified oracle consumer as the downstream reason for caring about the factor;
 - preserve Owner/product truth separation.
+
+
+### 2026-09-27 representation-vs-relation falsifier ready
+
+The post-temporal-factor localization step is no longer a design task.
+
+Frozen contract:
+`docs/R3_TEMPORAL_REPRESENTATION_RELATION_FALSIFIER_CONTRACT_2026-09-27.md`
+
+Implementation/deploy evidence:
+- implementation/deploy head `3622a260029229f8c279f747b7e1721ec21c0be7`;
+- Check #282 PASS;
+- 30 test files / 189 tests PASS;
+- build/deploy PASS;
+- deployed page `/r3-temporal-representation-relation-falsifier.html`.
+
+The Opera Browser Connector is currently reachable again. The experiment itself is still **UNEXECUTED**.
+
+For the next `kontynuuj`:
+1. recover fresh live HEAD/PR first;
+2. open the already-deployed falsifier page in Opera;
+3. execute the frozen real WebGPU probe exactly once under its contract;
+4. capture exact JSON/metrics;
+5. classify only through the precommitted matrix;
+6. update canonical truth from the result;
+7. do not rescue/tune/model-shop after observing it.
+
+Do not repeat implementation, create a new target, or return to the full three-way learner before this localization result exists.
