@@ -1405,3 +1405,43 @@ Before selecting another learned architecture:
 Possible future hypothesis families include relation-aware/joint encoding or objectives that learn semantic equivalence/change more directly, but none is promoted yet.
 
 No Owner/product claim changes.
+
+
+## Temporal representation-vs-relation falsifier — READY / EXECUTION PENDING
+
+The next localization hypothesis has already been frozen, implemented, tested and deployed.
+
+Frozen contract:
+`docs/R3_TEMPORAL_REPRESENTATION_RELATION_FALSIFIER_CONTRACT_2026-09-27.md`
+
+Exact implementation/deploy head before this documentation sync:
+`3622a260029229f8c279f747b7e1721ec21c0be7`
+
+Qualification:
+- Check #282 PASS;
+- 30 test files / 189 tests PASS;
+- build PASS;
+- deploy PASS;
+- page: `/r3-temporal-representation-relation-falsifier.html`.
+
+The experiment separates three frozen diagnostic legs under the same pinned MiniLM runtime:
+1. single-sentence known-state paraphrase representation;
+2. existing `abs(H-C)` relation on known-state paraphrases;
+3. one precommitted same-encoder joint-pair encoding on known and unseen-`suspended` pressure.
+
+No execution result exists yet.
+
+The Opera Browser Connector is currently reachable again, so the previous infrastructure blocker is no longer live. **Do not infer PASS/FAIL from connectivity.** The next earned action is to execute the already-deployed frozen page in real Opera/WebGPU, capture the exact JSON/result, and classify it strictly by the precommitted interpretation matrix.
+
+Do not modify:
+- frozen texts/splits;
+- encoder/revision/q8/WebGPU/batch regime;
+- thresholds;
+- optimizer;
+- relation features;
+- pair wrapper;
+- gates.
+
+Do not implement another model or redesign the probe before this exact falsifier is executed.
+
+No learned actor authority or Owner/product claim changes.
