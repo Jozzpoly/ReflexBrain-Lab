@@ -11,7 +11,7 @@ import {
   type R3GroundedMaterialDomain,
   type R3GroundedMaterialPurpose,
   type R3GroundedMaterialRegime,
-  type R3GroundedMaterialSemanticRun,
+  type R3GroundedMaterialRunMetrics,
 } from "../src/r3/grounded-material-semantic-consumer-run";
 import type {
   LifeEvent,
@@ -38,14 +38,6 @@ const MODES:
     "ideal-semantic-oracle",
   ];
 
-type RunTable = Record<
-  R3GroundedMaterialPurpose,
-  Record<
-    R3GroundedMaterialConsumerMode,
-    R3GroundedMaterialSemanticRun
-  >
->;
-
 interface GroundedReportRecord {
   tick: number;
   eventId: string | null;
@@ -55,6 +47,39 @@ interface GroundedReportRecord {
   grounded: boolean;
 }
 
+interface PersistentSummary {
+  reportCount: number;
+  allReportsHeard: boolean;
+  relevantPrimaryReports: number;
+  relevantPrimaryDecisionAcks: number;
+  relevantRepeatReports: number;
+  relevantActualAcks: number;
+  decoyReportCount: number;
+  decoyDecisionAcks: number;
+  decoyActualAcks: number;
+  totalActualAcks: number;
+  totalCommunicationActions: number;
+  processingCompletedCount: number;
+}
+
+interface CompactRunAudit {
+  purpose: R3GroundedMaterialPurpose;
+  mode: R3GroundedMaterialConsumerMode;
+  regime: R3GroundedMaterialRegime;
+  ticks: number;
+  reports: readonly GroundedReportRecord[];
+  groundingPass: boolean;
+  allReportsHeard: boolean;
+  listenerDirectSightExcluded: boolean;
+  timeline: readonly string[];
+  relationCorrect: number;
+  relationTotal: number;
+  relationTargetPositive: number;
+  relationTargetNegative: number;
+  metrics: R3GroundedMaterialRunMetrics;
+  persistent: PersistentSummary;
+}
+
 describe(
   "R3 grounded material semantic consumer",
   () => {
@@ -62,11 +87,11 @@ describe(
       "executes the frozen relation and persistent consumer gates without a learner",
       () => {
         const relation =
-          runRegime(
+          executeRegime(
             "relation",
           );
         const persistent =
-          runRegime(
+          executeRegime(
             "persistent",
           );
 
@@ -131,15 +156,17 @@ describe(
         );
 
         expect(
-          allRunsAtHorizon(
-            relation,
-            5400,
+          relation.every(
+            (audit) =>
+              audit.ticks ===
+              5400,
           ),
         ).toBe(true);
         expect(
-          allRunsAtHorizon(
-            persistent,
-            5400,
+          persistent.every(
+            (audit) =>
+              audit.ticks ===
+              5400,
           ),
         ).toBe(true);
         expect(
@@ -160,76 +187,184 @@ describe(
   },
 );
 
-function runRegime(
+function executeRegime(
   regime:
     R3GroundedMaterialRegime,
-): RunTable {
-  return Object.fromEntries(
-    PURPOSES.map(
-      (purpose) => [
-        purpose,
-        Object.fromEntries(
-          MODES.map(
-            (mode) => {
-              const run =
-                createR3GroundedMaterialSemanticRun(
-                  purpose,
-                  mode,
-                  regime,
-                );
-              run.runTicks(
-                5400,
-              );
-              return [
-                mode,
-                run,
-              ];
-            },
-          ),
+): readonly CompactRunAudit[] {
+  const audits:
+    CompactRunAudit[] = [];
+
+  for (
+    const purpose of
+      PURPOSES
+  ) {
+    for (
+      const mode of
+        MODES
+    ) {
+      audits.push(
+        executeOne(
+          purpose,
+          mode,
+          regime,
         ),
-      ],
-    ),
-  ) as RunTable;
+      );
+    }
+  }
+
+  return audits;
+}
+
+function executeOne(
+  purpose:
+    R3GroundedMaterialPurpose,
+  mode:
+    R3GroundedMaterialConsumerMode,
+  regime:
+    R3GroundedMaterialRegime,
+): CompactRunAudit {
+  const run =
+    createR3GroundedMaterialSemanticRun(
+      purpose,
+      mode,
+      regime,
+    );
+
+  run.runTicks(
+    5400,
+  );
+
+  const experiences =
+    run.privateExperiences();
+  const events =
+    run.allEvents();
+  const debug =
+    run.listenerDebug();
+  const metrics =
+    run.metrics();
+  const reports =
+    auditGroundedReports(
+      experiences,
+    );
+
+  const decisionsByEvent =
+    new Map(
+      debug.decisions.map(
+        (decision) => [
+          decision.eventId,
+          decision,
+        ],
+      ),
+    );
+
+  const relationCorrect =
+    debug.decisions.filter(
+      (decision) =>
+        decision.shouldAcknowledge ===
+        (
+          decision.domain ===
+          purpose
+        ),
+    ).length;
+
+  const relationTargetPositive =
+    debug.decisions.filter(
+      (decision) =>
+        decision.domain ===
+        purpose,
+    ).length;
+
+  const relationTargetNegative =
+    debug.decisions.length -
+    relationTargetPositive;
+
+  const listenerReportExperiences =
+    experiences.filter(
+      (experience) =>
+        experience.residentId ===
+          "resident:ida" &&
+        experience.observation
+          .heardEvents.some(
+            (event) =>
+              reportEventDomain(
+                event,
+              ) !== null,
+          ),
+    );
+
+  return {
+    purpose,
+    mode,
+    regime,
+    ticks:
+      metrics.ticks,
+    reports,
+    groundingPass:
+      reports.every(
+        (report) =>
+          report.grounded,
+      ),
+    allReportsHeard:
+      reports.every(
+        (report) =>
+          report.eventId !==
+            null &&
+          decisionsByEvent.has(
+            report.eventId,
+          ),
+      ),
+    listenerDirectSightExcluded:
+      listenerReportExperiences.every(
+        (experience) =>
+          !visibleRawAt(
+            experience,
+            "rack",
+          ) &&
+          !visibleRawAt(
+            experience,
+            "source",
+          ),
+      ),
+    timeline:
+      reportTimeline(
+        events,
+      ),
+    relationCorrect,
+    relationTotal:
+      debug.decisions.length,
+    relationTargetPositive,
+    relationTargetNegative,
+    metrics,
+    persistent:
+      persistentSummary(
+        reports,
+        debug.decisions,
+        metrics,
+        purpose,
+      ),
+  };
 }
 
 function auditStageA(
-  runs: RunTable,
+  audits:
+    readonly CompactRunAudit[],
 ) {
-  const audits =
-    collectRunAudits(
-      runs,
-    );
-
   const groundingPass =
     audits.every(
       (audit) =>
-        audit.reports.every(
-          (report) =>
-            report.grounded,
-        ),
+        audit.groundingPass,
     );
 
   const allReportsHeard =
     audits.every(
       (audit) =>
-        audit.listenerDecisionCount ===
-        audit.reports.length,
+        audit.allReportsHeard,
     );
 
   const listenerDirectSightExcluded =
     audits.every(
       (audit) =>
-        audit.listenerReportExperiences.every(
-          (experience) =>
-            !visibleRawAt(
-              experience,
-              "rack",
-            ) &&
-            !visibleRawAt(
-              experience,
-              "source",
-            ),
-        ),
+        audit.listenerDirectSightExcluded,
     );
 
   const minRackReports =
@@ -260,34 +395,31 @@ function auditStageA(
     PURPOSES.every(
       (purpose) => {
         const baseline =
-          JSON.stringify(
-            reportTimeline(
-              runs[
-                purpose
-              ]["ignore-all"]
-                .allEvents(),
-            ),
+          findAudit(
+            audits,
+            purpose,
+            "ignore-all",
           );
 
         return MODES.every(
           (mode) =>
             JSON.stringify(
-              reportTimeline(
-                runs[
-                  purpose
-                ][
-                  mode
-                ].allEvents(),
-              ),
+              findAudit(
+                audits,
+                purpose,
+                mode,
+              ).timeline,
             ) ===
-            baseline,
+            JSON.stringify(
+              baseline.timeline,
+            ),
         );
       },
     );
 
   const idealAccuracy =
     aggregateRelationAccuracy(
-      runs,
+      audits,
       "ideal-semantic-oracle",
     );
 
@@ -302,48 +434,63 @@ function auditStageA(
         (mode) => [
           mode,
           aggregateRelationAccuracy(
-            runs,
+            audits,
             mode as R3GroundedMaterialConsumerMode,
           ),
         ],
       ),
     );
 
-  const baselineTargets =
-    PURPOSES.flatMap(
+  const baseline =
+    PURPOSES.map(
       (purpose) =>
-        runs[
-          purpose
-        ]["ignore-all"]
-          .listenerDebug()
-          .decisions.map(
-            (decision) =>
-              decision.domain ===
-              purpose,
-          ),
+        findAudit(
+          audits,
+          purpose,
+          "ignore-all",
+        ),
     );
 
   const positives =
-    baselineTargets.filter(
-      Boolean,
-    ).length;
+    baseline.reduce(
+      (sum, audit) =>
+        sum +
+        audit.relationTargetPositive,
+      0,
+    );
+
+  const negatives =
+    baseline.reduce(
+      (sum, audit) =>
+        sum +
+        audit.relationTargetNegative,
+      0,
+    );
+
   const majorityAccuracy =
-    baselineTargets.length > 0
+    positives +
+      negatives >
+    0
       ? Math.max(
           positives,
-          baselineTargets.length -
-            positives,
+          negatives,
         ) /
-        baselineTargets.length
+        (
+          positives +
+          negatives
+        )
       : 0;
 
   const matterIdOnlyAccuracy =
     majorityAccuracy;
 
   const semanticGatePass =
-    minRackReports >= 10 &&
-    minSourceReports >= 10 &&
-    idealAccuracy === 1 &&
+    minRackReports >=
+      10 &&
+    minSourceReports >=
+      10 &&
+    idealAccuracy ===
+      1 &&
     Object.values(
       fixedControlAccuracy,
     ).every(
@@ -369,58 +516,23 @@ function auditStageA(
 }
 
 function auditStageB(
-  runs: RunTable,
+  audits:
+    readonly CompactRunAudit[],
 ) {
-  const audits =
-    collectRunAudits(
-      runs,
-    );
-
   const groundingPass =
     audits.every(
       (audit) =>
-        audit.reports.every(
-          (report) =>
-            report.grounded,
-        ),
+        audit.groundingPass,
     );
-
-  const summaries =
-    Object.fromEntries(
-      PURPOSES.map(
-        (purpose) => [
-          purpose,
-          Object.fromEntries(
-            MODES.map(
-              (mode) => [
-                mode,
-                persistentSummary(
-                  runs[
-                    purpose
-                  ][mode],
-                  purpose,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ) as Record<
-      R3GroundedMaterialPurpose,
-      Record<
-        R3GroundedMaterialConsumerMode,
-        ReturnType<
-          typeof persistentSummary
-        >
-      >
-    >;
 
   const repeatPressurePass =
     PURPOSES.every(
       (purpose) =>
-        summaries[
-          purpose
-        ]["ignore-all"]
+        findAudit(
+          audits,
+          purpose,
+          "ignore-all",
+        ).persistent
           .relevantRepeatReports >
         0,
     );
@@ -429,16 +541,21 @@ function auditStageB(
     PURPOSES.every(
       (purpose) => {
         const value =
-          summaries[
-            purpose
-          ][
-            "ideal-semantic-oracle"
-          ];
+          findAudit(
+            audits,
+            purpose,
+            "ideal-semantic-oracle",
+          ).persistent;
+
         return (
           value
-            .relevantPrimaryActualAcks ===
+            .relevantPrimaryDecisionAcks ===
+            value
+              .relevantPrimaryReports &&
           value
-            .relevantPrimaryReports
+            .relevantActualAcks ===
+            value
+              .relevantPrimaryReports
         );
       },
     );
@@ -446,99 +563,117 @@ function auditStageB(
   const idealZeroDecoyPass =
     PURPOSES.every(
       (purpose) =>
-        summaries[
-          purpose
-        ][
-          "ideal-semantic-oracle"
-        ].decoyActualAcks ===
+        findAudit(
+          audits,
+          purpose,
+          "ideal-semantic-oracle",
+        ).persistent
+          .decoyActualAcks ===
         0,
     );
 
   const ignoreVsIdealPass =
     PURPOSES.every(
       (purpose) =>
-        summaries[
-          purpose
-        ]["ignore-all"]
+        findAudit(
+          audits,
+          purpose,
+          "ignore-all",
+        ).persistent
           .relevantRepeatReports >
-        summaries[
-          purpose
-        ][
-          "ideal-semantic-oracle"
-        ].relevantRepeatReports,
+        findAudit(
+          audits,
+          purpose,
+          "ideal-semantic-oracle",
+        ).persistent
+          .relevantRepeatReports,
     );
 
   const respondAllPass =
     PURPOSES.every(
       (purpose) =>
-        summaries[
-          purpose
-        ]["respond-all"]
+        findAudit(
+          audits,
+          purpose,
+          "respond-all",
+        ).persistent
           .relevantRepeatReports <
-          summaries[
-            purpose
-          ]["ignore-all"]
+          findAudit(
+            audits,
+            purpose,
+            "ignore-all",
+          ).persistent
             .relevantRepeatReports &&
-        summaries[
-          purpose
-        ]["respond-all"]
+        findAudit(
+          audits,
+          purpose,
+          "respond-all",
+        ).persistent
           .decoyActualAcks >
-          summaries[
-            purpose
-          ][
-            "ideal-semantic-oracle"
-          ].decoyActualAcks,
+          findAudit(
+            audits,
+            purpose,
+            "ideal-semantic-oracle",
+          ).persistent
+            .decoyActualAcks,
     );
 
   const rackSurfacePass =
     directionalControlPass(
-      summaries,
+      audits,
       "rack-surface-only",
       "rack",
     );
 
   const rackSpeakerPass =
     directionalControlPass(
-      summaries,
+      audits,
       "rack-speaker-only",
       "rack",
     );
 
   const sourceSurfacePass =
     directionalControlPass(
-      summaries,
+      audits,
       "source-surface-only",
       "source",
     );
 
   const sourceSpeakerPass =
     directionalControlPass(
-      summaries,
+      audits,
       "source-speaker-only",
       "source",
     );
 
   const idealAggregate =
     aggregatePersistent(
-      summaries,
+      audits,
       "ideal-semantic-oracle",
     );
 
   const respondAggregate =
     aggregatePersistent(
-      summaries,
+      audits,
       "respond-all",
     );
 
   const communicationAdvantage =
-    idealAggregate.totalCommunicationActions <
-      respondAggregate.totalCommunicationActions ||
+    idealAggregate
+      .totalCommunicationActions <
+      respondAggregate
+        .totalCommunicationActions ||
     (
-      idealAggregate.relevantRepeatReports ===
-        respondAggregate.relevantRepeatReports &&
-      idealAggregate.totalActualAcks <
-        respondAggregate.totalActualAcks &&
-      idealAggregate.decoyActualAcks ===
+      idealAggregate
+        .relevantRepeatReports ===
+        respondAggregate
+          .relevantRepeatReports &&
+      idealAggregate
+        .totalActualAcks <
+        respondAggregate
+          .totalActualAcks &&
+      idealAggregate
+        .decoyActualAcks ===
         0
     );
 
@@ -567,70 +702,53 @@ function auditStageB(
     communicationAdvantage,
     idealAggregate,
     respondAggregate,
-    summaries,
+    runSummaries:
+      audits.map(
+        (audit) => ({
+          purpose:
+            audit.purpose,
+          mode:
+            audit.mode,
+          rackReports:
+            audit.reports.filter(
+              (report) =>
+                report.domain ===
+                "rack",
+            ).length,
+          sourceReports:
+            audit.reports.filter(
+              (report) =>
+                report.domain ===
+                "source",
+            ).length,
+          ...audit.persistent,
+        }),
+      ),
     consumerGatePass,
   };
 }
 
-function collectRunAudits(
-  runs: RunTable,
-) {
-  return PURPOSES.flatMap(
-    (purpose) =>
-      MODES.map(
-        (mode) => {
-          const run =
-            runs[
-              purpose
-            ][mode];
-          const reports =
-            auditGroundedReports(
-              run.privateExperiences(),
-            );
-          const listener =
-            run.listenerDebug();
-          const listenerReportExperiences =
-            run.privateExperiences().filter(
-              (experience) =>
-                experience.residentId ===
-                  "resident:ida" &&
-                experience.observation
-                  .heardEvents.some(
-                    (event) =>
-                      reportEventDomain(
-                        event,
-                      ) !== null,
-                  ),
-            );
-
-          return {
-            purpose,
-            mode,
-            reports,
-            listenerDecisionCount:
-              listener.decisions.length,
-            listenerReportExperiences,
-          };
-        },
-      ),
-  );
-}
-
 function persistentSummary(
-  run:
-    R3GroundedMaterialSemanticRun,
+  reports:
+    readonly GroundedReportRecord[],
+  decisions:
+    readonly {
+      eventId: string;
+      domain:
+        R3GroundedMaterialDomain;
+      purpose:
+        R3GroundedMaterialPurpose;
+      shouldAcknowledge:
+        boolean;
+    }[],
+  metrics:
+    R3GroundedMaterialRunMetrics,
   purpose:
     R3GroundedMaterialPurpose,
-) {
-  const reports =
-    auditGroundedReports(
-      run.privateExperiences(),
-    );
-  const debug =
-    run.listenerDebug();
-  const decisions =
+): PersistentSummary {
+  const decisionsByEvent =
     new Map(
-      debug.decisions.map(
+      decisions.map(
         (decision) => [
           decision.eventId,
           decision,
@@ -644,6 +762,7 @@ function persistentSummary(
         report.domain ===
         purpose,
     );
+
   const decoy =
     reports.filter(
       (report) =>
@@ -651,8 +770,11 @@ function persistentSummary(
         purpose,
     );
 
-  const metrics =
-    run.metrics();
+  const relevantPrimary =
+    relevant.filter(
+      (report) =>
+        report.primary,
+    );
 
   const relevantActualAcks =
     purpose === "rack"
@@ -664,38 +786,6 @@ function persistentSummary(
       ? metrics.sourceAckCount
       : metrics.rackAckCount;
 
-  const relevantPrimaryReports =
-    relevant.filter(
-      (report) =>
-        report.primary,
-    );
-
-  const relevantPrimaryDecisionAcks =
-    relevantPrimaryReports.filter(
-      (report) =>
-        report.eventId !== null &&
-        decisions.get(
-          report.eventId,
-        )?.shouldAcknowledge ===
-          true,
-    ).length;
-
-  const relevantRepeatReports =
-    relevant.filter(
-      (report) =>
-        report.repeat,
-    ).length;
-
-  const decoyDecisionAcks =
-    decoy.filter(
-      (report) =>
-        report.eventId !== null &&
-        decisions.get(
-          report.eventId,
-        )?.shouldAcknowledge ===
-          true,
-    ).length;
-
   return {
     reportCount:
       reports.length,
@@ -704,23 +794,40 @@ function persistentSummary(
         (report) =>
           report.eventId !==
             null &&
-          decisions.has(
+          decisionsByEvent.has(
             report.eventId,
           ),
       ),
     relevantPrimaryReports:
-      relevantPrimaryReports.length,
-    relevantPrimaryDecisionAcks,
-    relevantPrimaryActualAcks:
-      Math.min(
-        relevantActualAcks,
-        relevantPrimaryReports.length,
-      ),
-    relevantRepeatReports,
+      relevantPrimary.length,
+    relevantPrimaryDecisionAcks:
+      relevantPrimary.filter(
+        (report) =>
+          report.eventId !==
+            null &&
+          decisionsByEvent.get(
+            report.eventId,
+          )?.shouldAcknowledge ===
+            true,
+      ).length,
+    relevantRepeatReports:
+      relevant.filter(
+        (report) =>
+          report.repeat,
+      ).length,
     relevantActualAcks,
     decoyReportCount:
       decoy.length,
-    decoyDecisionAcks,
+    decoyDecisionAcks:
+      decoy.filter(
+        (report) =>
+          report.eventId !==
+            null &&
+          decisionsByEvent.get(
+            report.eventId,
+          )?.shouldAcknowledge ===
+            true,
+      ).length,
     decoyActualAcks,
     totalActualAcks:
       metrics.totalAckCount,
@@ -733,16 +840,8 @@ function persistentSummary(
 }
 
 function directionalControlPass(
-  summaries:
-    Record<
-      R3GroundedMaterialPurpose,
-      Record<
-        R3GroundedMaterialConsumerMode,
-        ReturnType<
-          typeof persistentSummary
-        >
-      >
-    >,
+  audits:
+    readonly CompactRunAudit[],
   mode:
     R3GroundedMaterialConsumerMode,
   matchingPurpose:
@@ -756,59 +855,65 @@ function directionalControlPass(
         : "rack";
 
   const matching =
-    summaries[
-      matchingPurpose
-    ][mode];
+    findAudit(
+      audits,
+      matchingPurpose,
+      mode,
+    ).persistent;
 
   const matchingIgnore =
-    summaries[
-      matchingPurpose
-    ]["ignore-all"];
+    findAudit(
+      audits,
+      matchingPurpose,
+      "ignore-all",
+    ).persistent;
 
   const nonmatching =
-    summaries[
-      other
-    ][mode];
+    findAudit(
+      audits,
+      other,
+      mode,
+    ).persistent;
 
   const nonmatchingIgnore =
-    summaries[
-      other
-    ]["ignore-all"];
+    findAudit(
+      audits,
+      other,
+      "ignore-all",
+    ).persistent;
 
   return (
-    matching.relevantActualAcks >
+    matching
+      .relevantActualAcks >
       0 &&
-    matching.relevantRepeatReports <
+    matching
+      .relevantRepeatReports <
       matchingIgnore
         .relevantRepeatReports &&
-    nonmatching.relevantActualAcks ===
+    nonmatching
+      .relevantActualAcks ===
       0 &&
-    nonmatching.relevantRepeatReports >=
+    nonmatching
+      .relevantRepeatReports >=
       nonmatchingIgnore
         .relevantRepeatReports
   );
 }
 
 function aggregatePersistent(
-  summaries:
-    Record<
-      R3GroundedMaterialPurpose,
-      Record<
-        R3GroundedMaterialConsumerMode,
-        ReturnType<
-          typeof persistentSummary
-        >
-      >
-    >,
+  audits:
+    readonly CompactRunAudit[],
   mode:
     R3GroundedMaterialConsumerMode,
 ) {
   const values =
     PURPOSES.map(
       (purpose) =>
-        summaries[
-          purpose
-        ][mode],
+        findAudit(
+          audits,
+          purpose,
+          mode,
+        ).persistent,
     );
 
   return {
@@ -844,42 +949,65 @@ function aggregatePersistent(
 }
 
 function aggregateRelationAccuracy(
-  runs: RunTable,
+  audits:
+    readonly CompactRunAudit[],
   mode:
     R3GroundedMaterialConsumerMode,
 ): number {
-  const decisions =
-    PURPOSES.flatMap(
-      (purpose) =>
-        runs[
-          purpose
-        ][mode]
-          .listenerDebug()
-          .decisions.map(
-            (decision) => ({
-              predicted:
-                decision.shouldAcknowledge,
-              target:
-                decision.domain ===
-                purpose,
-            }),
-          ),
+  const selected =
+    audits.filter(
+      (audit) =>
+        audit.mode === mode,
     );
 
-  if (
-    decisions.length === 0
-  ) {
-    return 0;
+  const correct =
+    selected.reduce(
+      (sum, audit) =>
+        sum +
+        audit.relationCorrect,
+      0,
+    );
+
+  const total =
+    selected.reduce(
+      (sum, audit) =>
+        sum +
+        audit.relationTotal,
+      0,
+    );
+
+  return total > 0
+    ? correct / total
+    : 0;
+}
+
+function findAudit(
+  audits:
+    readonly CompactRunAudit[],
+  purpose:
+    R3GroundedMaterialPurpose,
+  mode:
+    R3GroundedMaterialConsumerMode,
+): CompactRunAudit {
+  const found =
+    audits.find(
+      (audit) =>
+        audit.purpose ===
+          purpose &&
+        audit.mode ===
+          mode,
+    );
+
+  if (!found) {
+    throw new Error(
+      "missing grounded material audit " +
+        purpose +
+        " / " +
+        mode,
+    );
   }
 
-  return (
-    decisions.filter(
-      (item) =>
-        item.predicted ===
-        item.target,
-    ).length /
-    decisions.length
-  );
+  return found;
 }
 
 function auditGroundedReports(
@@ -931,7 +1059,8 @@ function auditDomain(
 
   let episodeActive =
     false;
-  let reportCountInEpisode = 0;
+  let reportCountInEpisode =
+    0;
   const output:
     GroundedReportRecord[] =
       [];
@@ -1029,7 +1158,8 @@ function auditDomain(
       grounded,
     });
 
-    reportCountInEpisode += 1;
+    reportCountInEpisode +=
+      1;
   }
 
   return output;
@@ -1067,7 +1197,8 @@ function reportEventDomain(
 ):
 R3GroundedMaterialDomain | null {
   if (
-    event.kind !== "speech"
+    event.kind !==
+      "speech"
   ) {
     return null;
   }
@@ -1120,22 +1251,4 @@ function visibleRawAt(
           place.position,
         ) <= 0.75,
     );
-}
-
-function allRunsAtHorizon(
-  runs: RunTable,
-  ticks: number,
-): boolean {
-  return PURPOSES.every(
-    (purpose) =>
-      MODES.every(
-        (mode) =>
-          runs[
-            purpose
-          ][mode]
-            .metrics()
-            .ticks ===
-          ticks,
-      ),
-  );
 }
