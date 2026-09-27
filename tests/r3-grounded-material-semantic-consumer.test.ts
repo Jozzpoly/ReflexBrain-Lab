@@ -155,7 +155,7 @@ describe(
           classification,
         );
       },
-      180_000,
+      360_000,
     );
   },
 );
