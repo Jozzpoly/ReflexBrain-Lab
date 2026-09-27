@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL CONSUMER VALUE QUALIFIED · GROUNDED PURPOSE COUNTERFACTUAL GATE PASSES · LISTENER-EFFECTOR TEMPORAL PRESSURE FAILS FROM BODY-STATE LEAKAGE · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL CONSUMER VALUE QUALIFIED · GROUNDED PURPOSE COUNTERFACTUAL PASS · LISTENER–EFFECTOR BODY DECONFOUNDING PASS · TEMPORAL DUPLICATE PRESSURE STILL UNDERIDENTIFIED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -1839,5 +1839,64 @@ Next:
 - give the listener private settlement evidence through grounded completion/stocked communication or another actor-private channel;
 - keep listener body/activity independent from the supply cycle;
 - then freeze a new structural pressure audit before corpus/model work.
+
+No learned authority and no Owner/product claim changes.
+
+
+### 2026-09-27 grounded listener–effector separation result
+
+Frozen contract:
+`docs/R3_GROUNDED_LISTENER_EFFECTOR_PRESSURE_CONTRACT_2026-09-27.md`
+
+Detailed result:
+`docs/R3_GROUNDED_LISTENER_EFFECTOR_PRESSURE_RESULT_2026-09-27.md`
+
+Qualified recovery head:
+`e8dab1a4b817045c7e9c1233263dcb0a70cb5cd2`
+
+Qualification:
+- Check #340 PASS;
+- Research Preview #354 PASS;
+- 37/37 test files PASS;
+- 200/200 tests PASS;
+- build PASS;
+- preview deploy PASS.
+
+Grounding:
+- all Janek shortage reports grounded at rate 1.000;
+- all emitted Mira stocked-completion reports grounded at rate 1.000.
+
+Structural body/activity result:
+- holding BA 0.500;
+- activity-kind BA 0.500;
+- activity-phase BA 0.500;
+- listener-X BA 0.500;
+- listener-Y BA 0.500;
+- listener body/activity/source/rack visibility are constant across request rows.
+
+Purpose gate: **PASS**.
+
+Duplicate-cost gate: **PASS**.
+
+Temporal rows:
+- 25 total;
+- 24 update-worthy;
+- 1 redundant.
+
+Remaining shortcuts:
+- absolute tick BA 0.979167;
+- request ordinal BA 0.979167;
+- prior-heard-count BA 0.979167;
+- known-raw-belief-count BA 0.958333.
+
+Overall:
+
+**LISTENER_EFFECTOR_TEMPORAL_PRESSURE_FAIL**
+
+Interpretation:
+- listener-as-effector confound is repaired;
+- temporal pressure is still underidentified because ordinary Janek request cadence is too sparse relative to separate-supplier settlement;
+- next redesign should create persistent **grounded** repeat reporting during unresolved shortages, not tune the learner or hide leaked features;
+- future audit must include ordinal/tick periodicity shortcuts.
 
 No learned authority and no Owner/product claim changes.
