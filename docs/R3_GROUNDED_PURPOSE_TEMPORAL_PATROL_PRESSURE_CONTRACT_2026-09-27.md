@@ -125,6 +125,8 @@ Settlement:
 Repeated reports before settlement are redundant.
 After settlement, a later same-surface report may open a new need.
 
+**Pre-execution event-ordering correction:** speech is perceived from the previous World step. Therefore, if the listener hears an older empty-rack report in the same private observation where she directly sees a free raw blank already present at the rack, current direct evidence dominates and that report is stale/non-actionable. It must not reopen a need.
+
 ## Modes
 
 ### supply-ideal
