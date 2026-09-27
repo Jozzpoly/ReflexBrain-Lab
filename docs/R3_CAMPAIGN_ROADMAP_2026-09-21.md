@@ -602,7 +602,7 @@ Classification:
 **GROUNDED_SEMANTIC_DIVERSITY_SEED_AVAILABLE**
 
 Next:
-1. qualify a grounded material semantic consumer using rack-status vs output-status facts;
+1. execute the frozen grounded material semantic consumer using `rack-empty` vs `source-empty`; keep `output_has_finished` for a later held-out pressure;
 2. same listener matter id must switch meaning;
 3. reports must be same-observation grounded;
 4. temporal bookkeeping stays deterministic;
