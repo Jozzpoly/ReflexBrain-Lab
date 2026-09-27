@@ -136,6 +136,24 @@ Next:
 Detailed result:
 `docs/R3_TEMPORAL_FACTOR_PROBE_RESULT_2026-09-27.md`.
 
+### Ready next falsifier
+
+The representation-vs-relation localization experiment is already frozen, implemented and deployed.
+
+Contract:
+`docs/R3_TEMPORAL_REPRESENTATION_RELATION_FALSIFIER_CONTRACT_2026-09-27.md`
+
+Implementation/deploy head:
+`3622a260029229f8c279f747b7e1721ec21c0be7`
+
+Qualification:
+- Check #282 PASS;
+- 30 test files / 189 tests PASS;
+- build/deploy PASS;
+- page `/r3-temporal-representation-relation-falsifier.html`.
+
+Real Opera/WebGPU execution is still pending. The Opera connector is currently reachable again, so the next research action is execution and strict classification of this frozen falsifier — not further implementation or model selection.
+
 ## Defended boundaries
 
 - World truth is authoritative and independent from model judgement.
