@@ -544,6 +544,40 @@ Next pressure must vary service latency through independent supplier activity. D
 Detailed result:
 `docs/R3_PERSISTENT_GROUNDED_REPORT_PRESSURE_RESULT_2026-09-27.md`
 
+
+### Active pre-model finding — async supplier reaches row gate but deterministic world phase-locks
+
+The frozen async supplier pressure passes the ordinary temporal row gate:
+- 80 rows;
+- 17 positive / 63 negative;
+- body/activity/raw-belief shortcuts 0.500;
+- monotonic tick / ordinal / heard-count BA 0.543;
+- private-history oracle exact;
+- grounding, purpose and duplicate-cost gates pass.
+
+But settled shortage episodes are:
+`[3,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]`.
+
+Periodicity:
+- tick mod 120 BA 1.000;
+- tick mod 24 BA 1.000;
+- ordinal mod 5 BA 0.9706.
+
+Classification:
+
+**ASYNC_SUPPLIER_EPISODE_DIVERSITY_FAIL**
+
+This is now a campaign-level warning against continuing to optimize one deterministic fixture for a row-level `updateWorthy` label.
+
+Before another pressure redesign or model run:
+1. audit what part of the qualified consumer actually requires learning;
+2. compare deterministic actor-private temporal bookkeeping against learned temporal update-worthiness;
+3. preserve grounded purpose causality;
+4. require broader grounded semantic diversity before another representation probe.
+
+Detailed result:
+`docs/R3_ASYNC_SUPPLIER_PRESSURE_RESULT_2026-09-27.md`
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
