@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · THREE-WAY ORACLE CONSUMER VALUE QUALIFIED · GROUNDED PRIVATE REPORT SEED QUALIFIED · MATERIAL MULTI-VIEW GROUNDING DONOR PRESENT · LEARNED TARGET STILL PRE-MODEL · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED PRIVATE REPORT + TEMPORAL CONSUMER VALUE QUALIFIED · MATERIAL MULTI-VIEW GROUNDING DONOR PRESENT · GROUNDED LEARNED CORPUS NOT YET QUALIFIED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -1640,3 +1640,83 @@ Current frontier:
 - listener purpose, settled private history and later private confirmation/contradiction are candidate required factors;
 - object ids may be research join provenance, not model-visible semantic answers;
 - no learned authority or Owner/product claim changes.
+
+
+### 2026-09-27 grounded recurrent report consumer result
+
+Frozen contract:
+`docs/R3_GROUNDED_RECURRENT_REPORT_CONSUMER_CONTRACT_2026-09-27.md`
+
+Detailed result:
+`docs/R3_GROUNDED_RECURRENT_REPORT_CONSUMER_RESULT_2026-09-27.md`
+
+Qualified evidence head:
+`2ba1535b40ed3c7a786e1e3b9a4dbb8bf74a1714`
+
+Qualification:
+- Check #314 PASS;
+- Research Preview #324 PASS;
+- 34/34 test files PASS;
+- 197/197 tests PASS;
+- build PASS;
+- consumer-fixture grounded-speech provenance invariant PASS.
+
+Frozen 1800-tick mode comparison:
+
+`ignore-all`
+- requests 15;
+- accepted 0;
+- rack placements 0;
+- processing completed 0;
+- worker blocked ticks 1791.
+
+`respond-all`
+- requests 9;
+- accepted 9;
+- rack placements 8;
+- processing completed 7;
+- worker blocked ticks 1269;
+- first shortage contains 2 requests and 2 responses.
+
+`exact-text-once`
+- requests 15;
+- accepted 1;
+- rack placements 1;
+- processing completed 1;
+- worker blocked ticks 1721;
+- second shortage contains 13 ignored exact-surface recurrences.
+
+`ideal-grounded-episode`
+- requests 9;
+- accepted 8;
+- rack placements 8;
+- processing completed 7;
+- worker blocked ticks 1269;
+- first shortage contains 2 requests but only 1 response;
+- same exact surface is accepted again after private settlement and later recurrence.
+
+Pressure invariants:
+- first accepted report reaches Mira while rack is outside her direct sight;
+- repeated same-surface evidence occurs inside an unresolved shortage;
+- same surface recurs after settled shortage episodes;
+- settlement is based on Mira-private evidence of successful replenishment, not a hidden shortage id;
+- every Janek request in every consumer mode is re-audited as grounded in Janek-private shortage evidence.
+
+Precommitted classification:
+
+**GROUNDED_TEMPORAL_CONSUMER_VALUE_QUALIFIED**
+
+Bounded qualified claim:
+
+> actor-private temporal settlement of a naturally grounded recurrent report has causal consumer value in this ecology.
+
+This replaces authored semantic-state equality/change as the most useful current temporal utility anchor.
+
+Current frontier:
+- remain pre-model;
+- build the smallest grounded consumer-shaped corpus from private provenance;
+- require the exact same report surface to receive different update-worthiness across private histories;
+- audit exact text, event id, actor id, absolute timing, position, activity phase, request ordinal and direct policy-state leakage;
+- require a purpose counterfactual before model work;
+- if those constraints cannot be satisfied without leaking the ideal consumer policy, broaden grounded pressure first;
+- no learned authority and no Owner/product claim changes.
