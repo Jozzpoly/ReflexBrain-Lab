@@ -281,7 +281,24 @@ The original 2×2 wording is also lexically trivial (token-overlap retrieval **1
 Detailed result:
 `docs/R3_GROUNDED_SEMANTIC_SUPERVISION_PROVENANCE_AUDIT_RESULT_2026-09-27.md`
 
-Next remains pre-model but now has a clean fork. Do **not** train a local relation head from oracle labels. First test a frozen externally pretrained zero-shot semantic bridge on grounded reports × purpose statements with held-out wording. If that cannot carry the relation, the alternative is to create genuine purpose-statement grounding rather than manufacture supervision.
+That frozen zero-shot bridge has now executed in real Opera/WebGPU without local oracle fitting.
+
+Classification:
+
+**ZERO_SHOT_GROUNDED_SEMANTIC_BRIDGE_PARTIAL**
+
+Pinned MiniLM:
+- exact original relation: **2/2**;
+- report paraphrase → original purpose: **5/6**, beating lexical **4/6**;
+- original report → purpose paraphrase: **2/4**;
+- full cross-paraphrase: **6/12 = 0.500**, below lexical **8/12 = 0.667**.
+
+The result localizes the current blocker to the purpose side: factual report semantics carry useful pretrained signal, but alternate purpose wording does not preserve the actor-relative relation robustly.
+
+Detailed result:
+`docs/R3_ZERO_SHOT_GROUNDED_SEMANTIC_BRIDGE_RESULT_2026-09-27.md`
+
+Do not rescue this with oracle training, threshold fitting, prompt edits or encoder shopping. Next audit purpose-side semantic grounding/representation from legal actor-private causal structure; preserve grounded factual representation as the already-qualified donor.
 
 ## Defended boundaries
 
