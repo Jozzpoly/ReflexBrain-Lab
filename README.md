@@ -170,7 +170,18 @@ Detailed evidence:
 - `docs/R3_GROUNDED_RECURRENT_REPORT_CONSUMER_CONTRACT_2026-09-27.md`
 - `docs/R3_GROUNDED_RECURRENT_REPORT_CONSUMER_RESULT_2026-09-27.md`
 
-Next is still **pre-model**: construct and falsify the smallest grounded consumer-shaped corpus. It must defeat exact text, timing, actor-id, position, activity-phase and policy-state leakage, and it must include a purpose counterfactual before any new representation probe.
+The first frozen grounded consumer-shaped corpus audit has now executed and **failed qualification**.
+
+It contains only 9 rows (8/1), one report surface, one speaker and one listener matter. Worse, activity phase, held-object state, listener X and visible source stock each recover the label at BA **1.000**; several timing/ordinal features reach **0.9375**. No purpose counterfactual exists.
+
+Classification:
+
+**GROUNDED_CONSUMER_CORPUS_UNDERIDENTIFIED**
+
+Detailed result:
+`docs/R3_GROUNDED_CONSUMER_CORPUS_AUDIT_RESULT_2026-09-27.md`
+
+The consumer value result survives; the dataset does not. Next is pressure redesign, not model selection or row inflation: create grounded reports whose update-worthiness crosses overlapping activity/position states and add a causally meaningful same-report purpose counterfactual before another corpus audit.
 
 ## Defended boundaries
 
