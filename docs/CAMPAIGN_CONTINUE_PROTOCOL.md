@@ -351,3 +351,28 @@ For future `kontynuuj`:
 - use the existing temporal consumer relation corpus only as a diagnostic factor target;
 - freeze any such factor probe before execution;
 - remember that this factor target is not the complete actor-relative ReflexBrain relation because purpose does not change its label.
+
+
+### 2026-09-27 temporal factor WebGPU result
+
+The frozen diagnostic factor probe has executed in real Opera/WebGPU.
+
+Evidence:
+- executed candidate `7e764eb4828a0c9c1cb03afbd516c94029124383`;
+- exact result: `docs/R3_TEMPORAL_FACTOR_PROBE_RESULT_2026-09-27.md`;
+- TRAIN BA/AUROC 1.000;
+- held-out-current BA 0.750, TPR 1.000, TNR 0.500, AUROC 0.500;
+- held-out-history BA 0.750, TPR 1.000, TNR 0.500, AUROC 0.500;
+- classification: **PARTIAL_TEMPORAL_FACTOR_SIGNAL**;
+- qualification gate: FAIL.
+
+For future `kontynuuj`:
+- do not tune this probe;
+- do not move `suspended` into TRAIN;
+- do not enlarge the encoder or add hidden layers as rescue;
+- do not return to the rejected direct-cosine family;
+- do not assume the earlier three-way failure is merely a composition/calibration problem;
+- first design a new falsifier that separates representation sufficiency from relation/readout sufficiency for same-domain semantic novelty/equivalence;
+- freeze that hypothesis before execution;
+- retain the qualified oracle consumer as the downstream reason for caring about the factor;
+- preserve Owner/product truth separation.
