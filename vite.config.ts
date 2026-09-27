@@ -15,6 +15,8 @@ export default defineConfig({
           "r3-temporal-factor-probe.html",
         r3TemporalRepresentationRelationFalsifier:
           "r3-temporal-representation-relation-falsifier.html",
+        r3TemporalSymmetricInteractionProbe:
+          "r3-temporal-symmetric-interaction-probe.html",
       },
     },
   },
