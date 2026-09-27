@@ -361,6 +361,37 @@ Campaign consequence:
 Detailed evidence:
 `docs/R3_GROUNDED_SUPERVISION_OPPORTUNITY_RESULT_2026-09-27.md`
 
+
+### Active pre-model finding — grounded temporal consumer value
+
+The grounded recurrent-report consumer contract executed without rescue.
+
+Frozen 1800-tick results:
+- `ignore-all`: 0 processed parts;
+- `exact-text-once`: 1;
+- `respond-all`: 7 processed parts / 9 accepted reports;
+- `ideal-grounded-episode`: 7 processed parts / 8 accepted reports.
+
+The first shortage contains two identical reports before Mira can settle it. `respond-all` accepts both; ideal accepts only one. After private settlement, later shortages emit the same exact text and ideal accepts it again. Permanent exact-text suppression therefore fails recurrent reality.
+
+All consumer request utterances remain grounded in Janek-private shortage evidence, and the first accepted report reaches Mira outside direct rack sight.
+
+Classification:
+
+**GROUNDED_TEMPORAL_CONSUMER_VALUE_QUALIFIED**
+
+This qualifies causal value for one bounded actor-private temporal settlement problem. It does not qualify `pendingSupply` as architecture and does not qualify any learned mechanism.
+
+Immediate campaign consequence:
+1. build the smallest consumer-shaped grounded corpus from private episode provenance;
+2. force same-surface label flips across histories;
+3. add a same-report purpose counterfactual;
+4. falsify text/event-id/actor-id/timing/position/activity/ordinal/policy-state shortcuts;
+5. only if the corpus survives, freeze a learned approximation hypothesis.
+
+Detailed result:
+`docs/R3_GROUNDED_RECURRENT_REPORT_CONSUMER_RESULT_2026-09-27.md`
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
