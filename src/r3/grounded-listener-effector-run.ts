@@ -10,11 +10,13 @@ import type {
   ResidentPolicy,
   ResidentPolicyInput,
   ResidentPrivateExperience,
+  Vec2,
 } from "./life-contracts";
 import {
   MATERIAL_FIXTURE_MATTER_IDS,
   resetFixtureActivitySerials,
   WorkerFixturePolicy,
+  type WorkerFixturePolicyOptions,
 } from "./life-fixture-policies";
 import {
   AutonomousLifeWorld,
@@ -72,6 +74,11 @@ export interface R3ListenerEffectorMetrics {
   sourceReserveDeficitTicks: number;
 }
 
+export interface R3ListenerEffectorRunOptions {
+  idaPosition?: Vec2;
+  janekWorkerOptions?: WorkerFixturePolicyOptions;
+}
+
 export interface R3ListenerEffectorRun {
   readonly world: AutonomousLifeWorld;
   advanceOneTick(): AutonomousLifeStep;
@@ -117,6 +124,7 @@ const MIRA_SUPPLIER_MATTER: ResidentMatter = {
 
 export function createR3ListenerEffectorRun(
   mode: R3ListenerEffectorMode,
+  options: R3ListenerEffectorRunOptions = {},
 ): R3ListenerEffectorRun {
   resetFixtureActivitySerials();
 
@@ -130,7 +138,7 @@ export function createR3ListenerEffectorRun(
 
   world.addResident(
     "resident:ida",
-    { x: 6, y: 0 },
+    options.idaPosition ?? { x: 6, y: 0 },
     {
       sightRadius: 0.75,
       hearingRadius: 5,
@@ -169,7 +177,9 @@ export function createR3ListenerEffectorRun(
     [
       "resident:janek",
       new AutonomousResidentAgent(
-        new WorkerFixturePolicy(),
+        new WorkerFixturePolicy(
+          options.janekWorkerOptions,
+        ),
         [JANEK_MATTER],
       ),
     ],
