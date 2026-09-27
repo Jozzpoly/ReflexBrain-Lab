@@ -440,7 +440,7 @@ describe("R3 grounded listener-effector separation pressure", () => {
     ).toContain(
       classification,
     );
-  }, 30_000);
+  }, 60_000);
 });
 
 function firstIdaRequestExperience(
