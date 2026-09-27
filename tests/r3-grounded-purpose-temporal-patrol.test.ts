@@ -73,6 +73,9 @@ describe("R3 grounded purpose temporal patrol pressure", () => {
     const supplyRows =
       buildR3GroundedConsumerCorpus(
         runs["supply-ideal"]!.privateExperiences(),
+        {
+          currentRackStockBlocksUpdate: true,
+        },
       );
     const supplyAudit =
       auditR3GroundedConsumerCorpus(
