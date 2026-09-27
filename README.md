@@ -224,7 +224,18 @@ Classification:
 Detailed result:
 `docs/R3_PERSISTENT_GROUNDED_REPORT_PRESSURE_RESULT_2026-09-27.md`
 
-Next: keep the deconfounded listener and persistent reporter, but make supplier latency vary through Mira's independent background activity rather than cadence tuning or random label jitter.
+That asynchronous-supplier pressure has now executed. The ordinary temporal row gate finally passes cleanly: **80 rows = 17 update-worthy / 63 redundant**, all listener/body/memory shortcuts are 0.500 and monotonic timing/ordinal BA is only **0.543**.
+
+But the full deterministic ecology locks into a stable limit cycle after one transient: settled episode lengths are **[3, 5, 5, 5, ...]**, tick mod 24/120 both reach **BA 1.000**, and ordinal mod 5 reaches **0.9706**.
+
+Classification:
+
+**ASYNC_SUPPLIER_EPISODE_DIVERSITY_FAIL**
+
+Detailed result:
+`docs/R3_ASYNC_SUPPLIER_PRESSURE_RESULT_2026-09-27.md`
+
+This changes the research question. Ordered private history already reconstructs the unresolved/settled state exactly, while successive attempts to make that state a clean row-level learned label mostly manufacture fixture-code problems. The next step is to audit whether temporal settlement should remain deterministic and whether learning should instead focus on the genuinely semantic grounded report↔purpose relation.
 
 ## Defended boundaries
 
