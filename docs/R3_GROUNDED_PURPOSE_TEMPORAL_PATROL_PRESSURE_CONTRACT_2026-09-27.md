@@ -156,14 +156,13 @@ Incorrect control: treat rack-empty reports exactly like `supply-ideal`, consumi
 
 Continue the identical patrol.
 
-## Acknowledgement
+## Acceptance instrumentation
 
-Every accepted report emits:
+**Pre-implementation apparatus correction:** the World supports one intent per resident per tick. A spoken acknowledgement would therefore replace that tick's movement intent and make route timing depend on report acceptance, violating this contract's central patrol-independence requirement.
 
-`I'll handle the rack report.`
+Accepted reports are therefore counted through research-only policy trace/counters and do **not** emit a separate speech action.
 
-This makes accepted reports countable.
-Speech is instrumentation, not product design.
+This correction is frozen before implementation/execution and changes no semantic gate.
 
 ## Evaluation-only metrics
 
