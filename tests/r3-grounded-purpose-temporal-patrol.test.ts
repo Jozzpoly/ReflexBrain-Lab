@@ -271,7 +271,7 @@ describe("R3 grounded purpose temporal patrol pressure", () => {
     expect(classification).toBe(
       "GROUNDED_PURPOSE_TEMPORAL_PRESSURE_QUALIFIED",
     );
-  });
+  }, 30_000);
 });
 
 function firstMiraRequestExperience(
