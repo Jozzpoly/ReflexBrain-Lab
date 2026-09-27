@@ -253,7 +253,20 @@ Detailed decisions/evidence:
 - `docs/R3_LEARNED_TARGET_RECONSIDERATION_2026-09-27.md`
 - `docs/R3_GROUNDED_SEMANTIC_OPPORTUNITY_AUDIT_RESULT_2026-09-27.md`
 
-Next is still pre-model: execute the frozen grounded material semantic consumer using `rack-empty` versus `source-empty` with same-id purpose switching. `output_has_finished` remains a later qualitatively different donor. Temporal duplicate settlement remains deterministic rather than becoming the learner target.
+That grounded material semantic consumer is now qualified.
+
+Stage A keeps the same material report timelines while switching one fixed matter id between rack-purpose and source-purpose: ideal semantic routing scores **1.000**, while every fixed surface/speaker control and the matter-id diagnostic score **0.500**.
+
+Stage B gives the relation a causal consumer: ignore-all leaves **85** unresolved repeats in each relevant domain; ideal reduces them to **0** with **0** decoy acknowledgements. Aggregated communication cost is **279** actions for ideal vs **372** for respond-all, with identical physical throughput.
+
+Classification:
+
+**GROUNDED_MATERIAL_SEMANTIC_CONSUMER_QUALIFIED**
+
+Detailed result:
+`docs/R3_GROUNDED_MATERIAL_SEMANTIC_CONSUMER_RESULT_2026-09-27.md`
+
+Next remains pre-model: audit semantic corpus and **supervision provenance**. The consumer oracle is evaluation instrumentation, not automatically TRAIN truth. Grounded evidence, actor-private purpose, evaluation relation and legal learning signal must stay separate.
 
 ## Defended boundaries
 
