@@ -578,6 +578,42 @@ Before another pressure redesign or model run:
 Detailed result:
 `docs/R3_ASYNC_SUPPLIER_PRESSURE_RESULT_2026-09-27.md`
 
+
+### Active pre-model decision — learn meaning, not exact bookkeeping
+
+Evidence from the grounded temporal campaign now rejects row-level `updateWorthy` as the default next learned target.
+
+Preserve deterministically:
+- actor-private unresolved/settled state;
+- ordered grounded evidence history;
+- exact inspectable duplicate suppression.
+
+Open learned frontier:
+- grounded current evidence × actor purpose/context semantic relation.
+
+The ordinary material host already contains a qualified semantic diversity seed:
+- rack stock changes recurrently and is cross-observed by Mira/Janek;
+- output finished-part availability changes recurrently and is cross-observed by Janek/Ida;
+- source stock changes recurrently for Mira;
+- local contact changes recurrently for several pairs.
+
+Classification:
+
+**GROUNDED_SEMANTIC_DIVERSITY_SEED_AVAILABLE**
+
+Next:
+1. qualify a grounded material semantic consumer using rack-status vs output-status facts;
+2. same listener matter id must switch meaning;
+3. reports must be same-observation grounded;
+4. temporal bookkeeping stays deterministic;
+5. semantic routing must beat fixed-surface/id/cadence controls in a causal consumer;
+6. contact becomes a later qualitatively different second-pressure family;
+7. only then audit semantic supervision/corpus and choose a learner.
+
+Evidence:
+- `docs/R3_LEARNED_TARGET_RECONSIDERATION_2026-09-27.md`
+- `docs/R3_GROUNDED_SEMANTIC_OPPORTUNITY_AUDIT_RESULT_2026-09-27.md`
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
