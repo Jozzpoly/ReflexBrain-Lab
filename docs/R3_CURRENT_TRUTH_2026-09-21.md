@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED PURPOSE + TEMPORAL CONSUMER NEED QUALIFIED · TEMPORAL ROW GATE NOW PASSING UNDER DECONFOUNDED PRESSURE · DETERMINISTIC ECOLOGY PHASE-LOCK STILL FAILS EPISODE/PERIODICITY GATES · LEARNED UPDATE-WORTHINESS TARGET UNDER RECONSIDERATION · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED PURPOSE + TEMPORAL CONSUMER NEED QUALIFIED · ROW-LEVEL UPDATE-WORTHINESS REJECTED AS NEXT LEARNED TARGET · ORDINARY GROUNDED SEMANTIC DIVERSITY SEED QUALIFIED · GROUNDED MATERIAL SEMANTIC CONSUMER NEXT · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -2001,5 +2001,72 @@ Campaign-level interpretation:
 - ordered private history already reconstructs unresolved/settled state exactly;
 - do not continue tuning cadence/dwell/speed merely to beat modulo;
 - explicitly reconsider whether row-level `updateWorthy` deserves to be a learned primitive at all.
+
+No learned authority and no Owner/product claim changes.
+
+
+### 2026-09-27 learned-target reconsideration
+
+Decision:
+`docs/R3_LEARNED_TARGET_RECONSIDERATION_2026-09-27.md`
+
+Current decision:
+
+**ROW-LEVEL UPDATE-WORTHINESS REJECTED AS NEXT LEARNED TARGET**
+
+Reason:
+- grounded temporal consumer value is real;
+- deterministic ordered actor-private history exactly reconstructs unresolved/settled state;
+- repeated attempts to turn that state into a row-level learner target primarily exposed fixture body/timing/periodicity codes;
+- the charter does not require learning cheap inspectable bookkeeping that the local live brain can perform exactly.
+
+Preserve:
+- deterministic actor-private temporal settlement;
+- temporal context as legal future learned input/context.
+
+Open learned problem:
+- actor-relative semantic relation between grounded current evidence and actor purpose/context.
+
+No claim is made that learned temporal dynamics are permanently useless.
+
+### 2026-09-27 grounded semantic opportunity audit
+
+Frozen contract:
+`docs/R3_GROUNDED_SEMANTIC_OPPORTUNITY_AUDIT_CONTRACT_2026-09-27.md`
+
+Result:
+`docs/R3_GROUNDED_SEMANTIC_OPPORTUNITY_AUDIT_RESULT_2026-09-27.md`
+
+Qualified head:
+`4ded46d52fc61c0c23f70e7fb8727c5b7ed79df3`
+
+Qualification:
+- Check #362 PASS;
+- Research Preview #382 PASS;
+- 40/40 test files PASS;
+- 203/203 tests PASS;
+- build PASS;
+- deploy PASS.
+
+Precommitted classification:
+
+**GROUNDED_SEMANTIC_DIVERSITY_SEED_AVAILABLE**
+
+Strong ordinary material facts:
+- `input_rack_has_raw`: recurrent both ways; Mira + Janek observe both values;
+- `output_has_finished`: recurrent both ways; Janek + Ida observe both values;
+- `source_has_raw`: recurrent both ways; Mira-only in ordinary life.
+
+Strong contact donor:
+- `coworker_nearby` changes repeatedly for multiple observer→target pairs.
+
+`depot_has_finished` is grounded but not recurrent both ways over this horizon and is not promoted.
+
+Next:
+- build one bounded grounded **material semantic consumer** from rack-status vs output-status facts;
+- use same listener matter id with alternate meaning;
+- preserve deterministic temporal bookkeeping outside learned target;
+- require causal consumer value before any new model;
+- keep contact as qualitatively different second-pressure donor.
 
 No learned authority and no Owner/product claim changes.
