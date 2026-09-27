@@ -693,6 +693,48 @@ Campaign consequence:
 Detailed result:
 `docs/R3_GROUNDED_SEMANTIC_SUPERVISION_PROVENANCE_AUDIT_RESULT_2026-09-27.md`
 
+
+### Active pre-model finding — zero-shot bridge is report-strong / purpose-fragile
+
+Frozen contract:
+`docs/R3_FROZEN_ZERO_SHOT_GROUNDED_SEMANTIC_BRIDGE_CONTRACT_2026-09-27.md`
+
+Result:
+`docs/R3_ZERO_SHOT_GROUNDED_SEMANTIC_BRIDGE_RESULT_2026-09-27.md`
+
+Real browser/WebGPU result:
+- pinned MiniLM-L3-v2 q8 / revision fixed;
+- no local fit, no threshold, no projection, one model;
+- exact baseline 2/2;
+- report paraphrase -> baseline purpose 5/6, lexical 4/6;
+- baseline report -> purpose paraphrases 2/4, lexical 3/4;
+- cross-paraphrase 6/12, lexical 8/12;
+- cross semantic mean margin < 0.
+
+Classification:
+
+**ZERO_SHOT_GROUNDED_SEMANTIC_BRIDGE_PARTIAL**
+
+Interpretation:
+- factual report side has real frozen semantic robustness;
+- purpose statement representation is the dominant current failure;
+- this converges with supervision provenance: facts have honest grounding, purpose meaning does not.
+
+Do not:
+- train on oracle relevance labels;
+- fit a local relation head;
+- tune thresholds/prompts/paraphrases;
+- sweep sentence encoders on the same relation.
+
+Next:
+1. audit purpose-side grounding already present in life;
+2. distinguish matter identity/commitment from statement semantics;
+3. look for legal actor-private causal representation of purpose content;
+4. require wording-only paraphrase invariance before another relation probe;
+5. preserve report factual grounding and multiview donors;
+6. keep output/contact as later cross-family validation;
+7. only if purpose representation is adequate reconsider a different relation formulation or separately frozen model-family hypothesis.
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
