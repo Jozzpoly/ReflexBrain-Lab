@@ -2063,7 +2063,7 @@ Strong contact donor:
 `depot_has_finished` is grounded but not recurrent both ways over this horizon and is not promoted.
 
 Next:
-- build one bounded grounded **material semantic consumer** from rack-status vs output-status facts;
+- execute the frozen bounded grounded **material semantic consumer** using `rack-empty` vs `source-empty`; `output_has_finished` remains a strong later held-out donor;
 - use same listener matter id with alternate meaning;
 - preserve deterministic temporal bookkeeping outside learned target;
 - require causal consumer value before any new model;
