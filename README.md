@@ -198,7 +198,20 @@ Overall classification:
 Detailed result:
 `docs/R3_GROUNDED_PURPOSE_TEMPORAL_PATROL_PRESSURE_RESULT_2026-09-27.md`
 
-The failure localizes the next problem: the listener is still also the material effector, so unresolved semantic/history state becomes physically encoded in carrying and route state. Next redesign must separate listener/interpreter from supplier/effector rather than hiding those features or tuning the patrol.
+That listener–effector separation has now executed.
+
+It succeeds at the structural goal: Ida never carries material, never moves, never directly sees source/rack stock, and keeps one constant background activity. Body/activity/position shortcuts all fall to BA **0.500**. Grounded Janek shortage reports, grounded Mira completion reports, the purpose counterfactual and duplicate-cost gate all pass.
+
+But the temporal pressure still fails because the ordinary reporter cadence is too sparse: 25 report rows contain **24 update-worthy / 1 redundant**. Tick, ordinal and heard-count thresholds therefore each reach BA **0.9792**.
+
+Classification:
+
+**LISTENER_EFFECTOR_TEMPORAL_PRESSURE_FAIL**
+
+Detailed result:
+`docs/R3_GROUNDED_LISTENER_EFFECTOR_PRESSURE_RESULT_2026-09-27.md`
+
+The next redesign should preserve separation and introduce persistent grounded repeat reporting while a shortage remains physically unresolved, with explicit periodicity/modulo shortcut audits.
 
 ## Defended boundaries
 
