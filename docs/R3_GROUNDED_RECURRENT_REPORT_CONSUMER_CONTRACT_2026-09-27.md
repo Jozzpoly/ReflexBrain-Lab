@@ -42,12 +42,17 @@ Keep:
 - World truth and action validation unchanged.
 
 For this consumer fixture only:
+- enabled residents: Mira + Janek only;
+- initial source raw objects: 3;
 - move material source to x=4;
-- start Mira at the source;
+- start Mira at x=4, y=0;
+- start Janek at x=9.6, y=0.6;
 - Mira sight radius: 2.5;
 - Mira hearing radius: 5;
 - Mira speed: 0.03 per tick;
-- Janek remains able to speak at radius 5.
+- Janek uses ordinary default sight/hearing/speed;
+- Janek remains able to speak at radius 5;
+- frozen execution horizon: **1800 ticks per mode**.
 
 Reason:
 - source→rack distance is 4, so Mira can hear Janek from source while the rack is outside direct sight;
