@@ -2080,16 +2080,18 @@ Frozen contract:
 Detailed result:
 `docs/R3_GROUNDED_MATERIAL_SEMANTIC_CONSUMER_RESULT_2026-09-27.md`
 
-Qualified recovery head:
-`fee885b02d118894fd29a78c7b36e324df36b820`
+Current strengthened qualification head:
+`0f6efb62800f146ebff061d46872b1547a18cc18`
 
 Qualification:
-- Check #372 PASS;
-- Research Preview #394 PASS;
+- Check #377 PASS;
+- Research Preview #400 PASS;
 - 41/41 test files PASS;
 - 204/204 tests PASS;
 - build PASS;
 - preview deploy PASS.
+
+The earlier first recovery head `fee885b...` also passed. The current harness restores its strict decision-level acknowledgement provenance checks and adds an explicit geometry-based direct-sight exclusion check.
 
 One earlier matrix execution OOMed because the harness retained all 28 full 5400-tick runs. That was apparatus failure only. Recovery streamed the same frozen runs into compact audits without changing pressure or gates.
 
