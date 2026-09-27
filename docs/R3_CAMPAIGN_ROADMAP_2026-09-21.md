@@ -658,6 +658,41 @@ Immediate next stage:
 Detailed result:
 `docs/R3_GROUNDED_MATERIAL_SEMANTIC_CONSUMER_RESULT_2026-09-27.md`
 
+
+### Active pre-model finding — factual supervision yes, relation supervision no
+
+The frozen provenance audit is qualified.
+
+Stage A proves a clean semantic-purpose counterfactual:
+- 93 paired grounded report events;
+- non-purpose private trajectory invariant;
+- relation target flips 93/93 when only same-id matter meaning changes.
+
+Stage B proves retry pressure is circular as relation supervision:
+- rack-purpose ignore-all: rack/source = 133/45;
+- source-purpose ignore-all: rack/source = 48/130.
+
+Lexical diagnostic:
+- current 2×2 surfaces: 1.000 retrieval accuracy;
+- evaluation-only paraphrases: 0.667.
+
+Classification:
+
+**GROUNDED_FACT_SUPERVISION_ONLY**
+
+Campaign consequence:
+1. preserve legal fact-grounding signals;
+2. block oracle-label / ACK / retry-pattern distillation;
+3. do not call matter-id ablation statement-semantic supervision;
+4. preserve deterministic temporal state;
+5. next freeze a **zero-shot pretrained semantic bridge** with no local relation TRAIN;
+6. evaluate on held-out paraphrases first;
+7. require later transfer to output/contact grounded donors before broad promotion;
+8. if zero-shot fails, build purpose-semantic grounding rather than inventing labels.
+
+Detailed result:
+`docs/R3_GROUNDED_SEMANTIC_SUPERVISION_PROVENANCE_AUDIT_RESULT_2026-09-27.md`
+
 ## Phase D — discover the output contract
 
 **Purpose:** learn what ReflexBrain should emit from downstream evidence rather than naming outputs first.
