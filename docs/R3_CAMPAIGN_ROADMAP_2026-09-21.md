@@ -619,7 +619,10 @@ Evidence:
 
 The frozen rack-empty × source-empty consumer executes cleanly after one memory-only harness recovery.
 
-Qualified head:
+Current strengthened qualified head:
+`0f6efb62800f146ebff061d46872b1547a18cc18`
+
+First successful recovery head:
 `fee885b02d118894fd29a78c7b36e324df36b820`
 
 Stage A:
