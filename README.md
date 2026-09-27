@@ -136,26 +136,45 @@ Next:
 Detailed result:
 `docs/R3_TEMPORAL_FACTOR_PROBE_RESULT_2026-09-27.md`.
 
-### Temporal target reconsideration
+### Grounded temporal target reconsideration
 
-The current temporal line has now passed through four increasingly favorable diagnostics:
+The temporal learned line exhausted several increasingly favorable abstractions:
 
-- per-sentence known-state signal: BA 0.875 / AUROC 0.9375 — **PASS**;
-- `abs(H-C)` pair relation — **FAIL**;
-- one joint-pair sentence embedding — **FAIL**;
-- `[abs(H-C), H⊙C]` symmetric pair relation — **FAIL**;
-- privileged authored-state projection followed by `abs(z(H)-z(C))` — **FAIL** on held-out known-state paraphrases (BA 0.5625 / AUROC 0.7383).
+- per-sentence known-state signal: BA 0.875 / AUROC 0.9375 — PASS;
+- `abs(H-C)` — FAIL;
+- one joint-pair sentence embedding — FAIL;
+- `[abs(H-C), H⊙C]` — FAIL;
+- privileged authored-state projection then comparison — FAIL.
 
-Latest precommitted classification:
+That closed model rescue and triggered a pre-model grounding audit.
 
-**PRIVILEGED_PROJECT_THEN_COMPARE_FAIL_KNOWN**
+Current material-life host evidence:
+- 10/10 material objects enter at least two actors' private experience;
+- 9/10 enter all three;
+- Mira↔Janek jointly observe 10 raw objects;
+- Janek↔Ida jointly observe 9 finished objects;
+- all 10 objects participate in held↔visible private co-observation.
+
+The stricter non-overlapping sequential-handoff audit remains **GROUNDING_OPPORTUNITY_TOO_NARROW** and is not relaxed post-result. The qualified narrower claim is that the ordinary R3 ecology contains a useful **material multi-view grounding donor**.
+
+More importantly, ordinary Janek already produces a fact-caused utterance:
+
+`The input rack is empty.`
+
+In a 1200-tick specimen:
+- 2/2 occurrences were true under Janek's same-tick private perception;
+- they belonged to two distinct shortage episodes separated by replenishment;
+- Mira heard one and privately corroborated the empty rack.
+
+Classification:
+
+**GROUNDED_PRIVATE_REPORT_SEED_AVAILABLE**
 
 Detailed result:
-`docs/R3_TEMPORAL_PROJECT_THEN_COMPARE_DIAGNOSTIC_RESULT_2026-09-27.md`
+`docs/R3_GROUNDED_SUPERVISION_OPPORTUNITY_RESULT_2026-09-27.md`
 
-The next question is no longer “which pair feature?” or “which small head?”. Before more model work, the temporal target itself must be reconsidered against the project north star. Binary semantic-state equality/change may be too compressed or incorrectly shaped to stand in for useful actor-relative meaning.
+The next step remains **pre-model**: qualify a bounded grounded consumer in which a real private report can change another actor's local understanding/useful behavior, while the same surface can be redundant in one history and newly meaningful after real recurrence. Do not return to MiniLM/head selection before consumer value and supervision provenance are earned.
 
-Do not automatically build a pair-supervised projection, increase model capacity, or return to the full three-way learner.
 ## Defended boundaries
 
 - World truth is authoritative and independent from model judgement.
