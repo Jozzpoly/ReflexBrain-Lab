@@ -107,21 +107,34 @@ The rejected cosine family must not be rescued by capacity, a head, wording tuni
 
 ### Immediate research frontier
 
-The failed consumer-reachable relation localizes the weakest learned factor to:
+The isolated temporal semantic factor has now also been executed as a frozen real Opera/WebGPU probe.
 
-> **same-domain settled semantic history × current semantic evidence**
+Frozen mechanism:
+- pinned MiniLM-L3 q8 representation;
+- `abs(H-C)` relation feature;
+- one linear head;
+- no sweep or threshold tuning.
 
-In plain terms: can the representation distinguish a genuine semantic state change from a paraphrased restatement of already settled meaning?
+Result on both held-out unseen-state directions:
+- BA **0.750**;
+- TPR **1.000**;
+- TNR **0.500**;
+- AUROC **0.500**.
 
-The existing temporal consumer relation corpus already isolates this factor and has:
-- downstream oracle utility;
-- held-out paraphrases;
-- unseen `suspended` state;
-- exact/current/history/token shortcut controls.
+Classification:
+**PARTIAL_TEMPORAL_FACTOR_SIGNAL · QUALIFICATION FAIL · NO PROMOTION.**
 
-Use it next only as a **diagnostic factor probe**. It is not the complete actor-relative target because its label does not depend on actor purpose.
+This means the earlier consumer-reachable three-way failure cannot be blamed only on composing purpose with temporal evidence. The isolated same-domain novelty/equivalence relation itself is not robustly supported by this frozen representation+relation formulation under held-out semantic transfer.
 
-Do not tune the failed three-way head before this factor is understood.
+Next:
+- do not tune/rescue the executed probe;
+- preserve the qualified oracle consumer as the reason this distinction matters;
+- independently falsify **representation sufficiency vs relation/readout sufficiency**;
+- freeze any new hypothesis before execution;
+- only return to the full three-way learned relation after the temporal novelty failure is understood.
+
+Detailed result:
+`docs/R3_TEMPORAL_FACTOR_PROBE_RESULT_2026-09-27.md`.
 
 ## Defended boundaries
 
