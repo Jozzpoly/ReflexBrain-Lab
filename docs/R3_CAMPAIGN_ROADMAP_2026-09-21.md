@@ -850,3 +850,38 @@ Before donor promotion ask:
 - is the learned competence still useful in the recipient's richer substrate?
 - which R3 scaffolds should be thrown away?
 - can the recipient preserve its own World/private-state authority?
+
+
+### Active pre-model finding — purpose commitment is identity-only
+
+Frozen audit:
+`docs/R3_PURPOSE_SEMANTIC_GROUNDING_AUDIT_CONTRACT_2026-09-28.md`
+
+Result:
+`docs/R3_PURPOSE_SEMANTIC_GROUNDING_AUDIT_RESULT_2026-09-28.md`
+
+Qualification:
+- Check #400 PASS;
+- Research Preview #425 PASS;
+- 44/44 files, 210/210 tests;
+- build + deploy PASS.
+
+Classification:
+
+**PURPOSE_COMMITMENT_IDENTITY_ONLY**
+
+Evidence:
+- semantic statement permutation across fixed ids leaves material/contact life causally identical;
+- same-meaning paraphrase leaves life causally identical;
+- matter removal changes next decisions;
+- semantic-consumer same-id purpose switch changes only authored semantic interpretation, not ordinary private trajectory.
+
+Campaign consequence:
+1. do not treat identity-gated life as grounded purpose semantics;
+2. preserve grounded fact/report donors;
+3. preserve deterministic temporal state;
+4. freeze a new purpose-grounding ecology before implementation;
+5. require purpose content to affect ordinary causal behavior through a non-ID actor-private representation;
+6. require same-meaning wording paraphrase invariance;
+7. require different meanings to produce distinct grounded structure under matched conditions;
+8. no learner until that substrate is independently qualified.
