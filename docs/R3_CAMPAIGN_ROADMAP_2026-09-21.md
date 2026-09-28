@@ -885,3 +885,27 @@ Campaign consequence:
 6. require same-meaning wording paraphrase invariance;
 7. require different meanings to produce distinct grounded structure under matched conditions;
 8. no learner until that substrate is independently qualified.
+
+
+### Active pre-model finding — grounded purpose structure causal core / pressure fail
+
+Result:
+\`docs/R3_GROUNDED_PURPOSE_STRUCTURE_ECOLOGY_RESULT_2026-09-28.md\`
+
+Classification:
+
+**GROUNDED_PURPOSE_STRUCTURE_PRESSURE_FAIL**
+
+Defended:
+- same-id non-ID purpose structure causally changes actor behavior;
+- statement wording is inert when structure is fixed;
+- private provenance is clean.
+
+Open:
+- recurrent neutral pressure is asymmetric and rack-side insufficient.
+
+Immediate next:
+1. diagnose background route/visit opportunity mechanics without changing purpose semantics;
+2. localize starvation/race/visibility cause;
+3. only then freeze a purpose-independent pressure recovery delta;
+4. no learner until this substrate is recurrently qualified.
