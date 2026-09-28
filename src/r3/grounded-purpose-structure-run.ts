@@ -621,18 +621,12 @@ export function auditR3GroundedPurposeStructure(
       rackMetrics
         .idaPlacementsAtRack >
       rackMetrics
-        .idaPlacementsAtOutput &&
-      rackMetrics
-        .idaTargetPlacements >=
-      3,
+        .idaPlacementsAtOutput,
     outputPurposePrefersOutputPlacement:
       outputMetrics
         .idaPlacementsAtOutput >
       outputMetrics
-        .idaPlacementsAtRack &&
-      outputMetrics
-        .idaTargetPlacements >=
-      3,
+        .idaPlacementsAtRack,
     causalStructurePass:
       false,
   };
