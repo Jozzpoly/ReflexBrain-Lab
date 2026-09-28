@@ -298,7 +298,22 @@ The result localizes the current blocker to the purpose side: factual report sem
 Detailed result:
 `docs/R3_ZERO_SHOT_GROUNDED_SEMANTIC_BRIDGE_RESULT_2026-09-27.md`
 
-Do not rescue this with oracle training, threshold fitting, prompt edits or encoder shopping. Next audit purpose-side semantic grounding/representation from legal actor-private causal structure; preserve grounded factual representation as the already-qualified donor.
+Do not rescue this with oracle training, threshold fitting, prompt edits or encoder shopping.
+
+That purpose-side grounding audit is now qualified.
+
+Classification:
+
+**PURPOSE_COMMITMENT_IDENTITY_ONLY**
+
+Across 420-tick material and contact worlds, permuting statement meanings across fixed matter ids leaves both World and actor-private causal trajectories exactly unchanged. Same-meaning paraphrases also leave them unchanged. Removing the matter itself, however, changes the next decision in both representative ecologies.
+
+Therefore current R3 life causally consumes commitment identity/presence, not the natural-language meaning attached to the matter. The semantic consumer can evaluate alternate same-id purpose meanings, but ordinary life supplies no non-oracle grounded purpose structure.
+
+Detailed result:
+`docs/R3_PURPOSE_SEMANTIC_GROUNDING_AUDIT_RESULT_2026-09-28.md`
+
+Next: build and freeze a genuinely causal purpose-grounding ecology before any further semantic model/relation experiment.
 
 ## Defended boundaries
 
