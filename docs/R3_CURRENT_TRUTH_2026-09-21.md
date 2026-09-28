@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL BOOKKEEPING DETERMINISTIC · GROUNDED MATERIAL SEMANTIC CONSUMER QUALIFIED · GROUNDED FACT SUPERVISION QUALIFIED · ZERO-SHOT PRETRAINED BRIDGE PARTIAL · PURPOSE COMMITMENT IS IDENTITY-GROUNDED BUT PURPOSE STATEMENT SEMANTICS IS NOT GROUNDED · ORACLE DISTILLATION BLOCKED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL BOOKKEEPING DETERMINISTIC · GROUNDED MATERIAL SEMANTIC CONSUMER QUALIFIED · GROUNDED FACT SUPERVISION QUALIFIED · ZERO-SHOT PRETRAINED BRIDGE PARTIAL · ORDINARY PURPOSE STATEMENTS IDENTITY-ONLY · NON-ID GROUNDED PURPOSE STRUCTURE CAUSAL CORE DEMONSTRATED BUT RECURRENT PRESSURE FAILED · ORACLE DISTILLATION BLOCKED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -2322,5 +2322,65 @@ Hard boundary:
 Current next problem:
 - design and freeze the smallest new causal ecology in which purpose meaning itself is represented by actor-private lived/causal structure rather than opaque matter id;
 - qualify that substrate before another model/relation probe.
+
+No learned authority and no Owner/product claim changes.
+
+
+### 2026-09-28 grounded purpose structure ecology result
+
+Frozen contract:
+\`docs/R3_GROUNDED_PURPOSE_STRUCTURE_ECOLOGY_CONTRACT_2026-09-28.md\`
+
+Detailed result:
+\`docs/R3_GROUNDED_PURPOSE_STRUCTURE_ECOLOGY_RESULT_2026-09-28.md\`
+
+Qualified corrected head:
+\`9aab22ad9e9a31c13fdd6a4a717960765a8498d3\`
+
+Qualification:
+- Check #406 PASS;
+- Research Preview #433 PASS;
+- 45/45 test files PASS;
+- 211/211 tests PASS;
+- build PASS;
+- preview deploy PASS.
+
+The first valid run exposed a gate-partition bug in the audit: the Stage-A directional check incorrectly also required >=3 replenishments, which belongs to Stage C. No ecology parameter changed; the corrected run reproduced identical raw metrics.
+
+Stage A — causal structured purpose: PASS.
+- same matter id across meanings;
+- structure is \`raw_blank + targetPlaceId + desiredPresence\`;
+- first purpose-dependent decision divergence at tick 0;
+- rack purpose placements rack/output = 1/0;
+- output purpose placements rack/output = 0/17.
+
+Stage B — statement paraphrase invariance: PASS.
+- baseline/paraphrase wording changes;
+- purpose structure fixed;
+- World and private causal trajectories identical.
+
+Stage C — recurrent grounded pressure: FAIL.
+- rack: 1 placement, 1 depleter pickup, 1 satisfied episode, 3 unsatisfied episodes, 2 transitions;
+- output: 17 placements, 16 pickups, 17 satisfied episodes, 34 unsatisfied episodes, 33 transitions.
+
+Stage D — provenance: PASS.
+- maintainer reads neither matter id nor statement;
+- background actor receives no purpose;
+- satisfaction is audited from Ida-private observation;
+- no semantic oracle.
+
+Precommitted classification:
+
+**GROUNDED_PURPOSE_STRUCTURE_PRESSURE_FAIL**
+
+Material finding:
+- a legal same-id non-ID purpose-content carrier can causally control ordinary embodied behavior;
+- the current neutral pressure ecology is asymmetric and not qualified;
+- do not tune semantics/model in response.
+
+Next:
+- audit neutral depleter route/visit opportunities before any recovery;
+- keep purpose structure, maintainer policy, matter id, wordings and gates frozen;
+- only purpose-independent pressure apparatus may be reconsidered after diagnosis.
 
 No learned authority and no Owner/product claim changes.
