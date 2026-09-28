@@ -1,6 +1,6 @@
 # R3 Current Truth — 2026-09-21
 
-Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL BOOKKEEPING KEPT DETERMINISTIC · GROUNDED MATERIAL SEMANTIC CONSUMER QUALIFIED · GROUNDED FACT SUPERVISION QUALIFIED · ZERO-SHOT PRETRAINED BRIDGE PARTIAL · PURPOSE-SIDE SEMANTIC GROUNDING IS CURRENT BLOCKER · ORACLE DISTILLATION BLOCKED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
+Status: **R3 AUTONOMOUS CAUSAL SUBSTRATE MACHINE-QUALIFIED · GROUNDED TEMPORAL BOOKKEEPING DETERMINISTIC · GROUNDED MATERIAL SEMANTIC CONSUMER QUALIFIED · GROUNDED FACT SUPERVISION QUALIFIED · ZERO-SHOT PRETRAINED BRIDGE PARTIAL · PURPOSE COMMITMENT IS IDENTITY-GROUNDED BUT PURPOSE STATEMENT SEMANTICS IS NOT GROUNDED · ORACLE DISTILLATION BLOCKED · NO LEARNED AUTHORITY · OWNER-LIFE/PRODUCT CLAIM UNPROVEN**
 
 Branch:
 
@@ -2256,5 +2256,71 @@ Current next problem:
 - require wording-only invariance at the purpose representation layer;
 - preserve report factual grounding as the qualified donor;
 - only if purpose-side representation becomes adequate reconsider relation formulation/model family.
+
+No learned authority and no Owner/product claim changes.
+
+
+### 2026-09-28 purpose semantic grounding audit result
+
+Frozen contract:
+`docs/R3_PURPOSE_SEMANTIC_GROUNDING_AUDIT_CONTRACT_2026-09-28.md`
+
+Detailed result:
+`docs/R3_PURPOSE_SEMANTIC_GROUNDING_AUDIT_RESULT_2026-09-28.md`
+
+Qualified head:
+`5e5ff5b2127c69dfd2a12e88f3aabfc9804b821b`
+
+Qualification:
+- Check #400 PASS;
+- Research Preview #425 PASS;
+- 44/44 test files PASS;
+- 210/210 tests PASS;
+- build PASS;
+- preview deploy PASS.
+
+Ordinary material + contact life:
+- statement meanings permuted across fixed matter ids;
+- 420-tick World trajectories identical;
+- actor-private causal trajectories identical;
+- wording-only paraphrase trajectories also identical.
+
+Identity/presence intervention:
+- removing Janek's material matter changes the next decision;
+- removing Janek's contact matter changes the next decision.
+
+Semantic-consumer boundary:
+- same Ida matter id across rack/source purposes;
+- purpose statements differ;
+- non-matter Ida-private trajectory identical;
+- grounded report timeline identical;
+- 11 grounded report events in the audit horizon.
+
+Qualified non-identity purpose-semantic channels: 0.
+
+Precommitted classification:
+
+**PURPOSE_COMMITMENT_IDENTITY_ONLY**
+
+Bounded interpretation:
+- R3 ordinary life causally consumes matter commitment presence/identity;
+- natural-language statement meaning is causally inert in ordinary material/contact life;
+- activity/trajectory is an identity-conditioned consequence, not statement-semantic grounding;
+- observation/memory grounds world facts, not which purpose the actor has;
+- only the research semantic oracle currently interprets alternate purpose meaning.
+
+This converges with:
+- `GROUNDED_FACT_SUPERVISION_ONLY`;
+- `ZERO_SHOT_GROUNDED_SEMANTIC_BRIDGE_PARTIAL`.
+
+Hard boundary:
+- do not call matter-id ablation statement grounding;
+- do not train authored purpose classes;
+- do not use activity kind/phase as semantic truth;
+- do not rescue MiniLM with oracle fitting.
+
+Current next problem:
+- design and freeze the smallest new causal ecology in which purpose meaning itself is represented by actor-private lived/causal structure rather than opaque matter id;
+- qualify that substrate before another model/relation probe.
 
 No learned authority and no Owner/product claim changes.
