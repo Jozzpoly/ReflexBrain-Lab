@@ -331,3 +331,19 @@ Next: build and freeze a genuinely causal purpose-grounding ecology before any f
 - **R1** — representation/geometry/head experiments and falsifiers;
 - **R2** — causal-organism campaign; interactive clicker product direction rejected;
 - **R3** — autonomous-life pressure and causal supervision — **CURRENT**.
+
+
+The first non-ID grounded purpose-structure donor has now executed.
+
+Classification:
+
+**GROUNDED_PURPOSE_STRUCTURE_PRESSURE_FAIL**
+
+The positive core is real: with one fixed matter id, changing only the actor-private structured target changes Ida's behavior from rack-directed to output-directed immediately, while statement paraphrases leave behavior invariant and the maintainer reads neither id nor text.
+
+The ecology does not qualify because neutral recurrent pressure is asymmetric: rack-purpose produces only 1 replenishment/1 depleter pickup, while output-purpose produces 17/16.
+
+Detailed result:
+\`docs/R3_GROUNDED_PURPOSE_STRUCTURE_ECOLOGY_RESULT_2026-09-28.md\`
+
+Next is mechanical diagnosis of the purpose-independent pressure apparatus, not another semantic model or purpose label.
