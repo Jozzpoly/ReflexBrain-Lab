@@ -253,6 +253,7 @@ export function createR3GroundedPurposeStructureRun(
     new AutonomousResidentAgent(
       new GroundedPurposeMaintainerPolicy(
         structure,
+        world.options.actionRange,
       ),
       [matter],
     );
@@ -866,6 +867,8 @@ implements ResidentPolicy {
   constructor(
     private readonly purpose:
       R3GroundedPurposeStructure,
+    private readonly actionRange:
+      number,
   ) {}
 
   decide(
@@ -963,6 +966,32 @@ implements ResidentPolicy {
         );
 
       if (raw) {
+        if (
+          raw.location.kind ===
+            "free" &&
+          distance(
+            self.position,
+            raw.location.position,
+          ) >
+            this.actionRange
+        ) {
+          return {
+            intent: {
+              kind: "move_to",
+              target:
+                raw.location
+                  .position,
+            },
+            activity:
+              purposeActivity(
+                input,
+                "grounded_purpose_maintain",
+                "approach_source_stock",
+                target.id,
+              ),
+          };
+        }
+
         return {
           intent: {
             kind: "pickup",
