@@ -25,6 +25,13 @@ export interface R3GroundedPurposeMaintainerEpisode {
   sourceNearTick: number | null;
   sourceRawVisibleTick: number | null;
   pickupIntentTick: number | null;
+  pickupIntentObjectId: string | null;
+  pickupIntentObjectDistance: number | null;
+  pickupRejectedRows: readonly {
+    rowTick: number;
+    objectId: string | null;
+    reason: string | null;
+  }[];
   factualPickupTick: number | null;
   carryToTargetTick: number | null;
   rackNearHoldingRawTick: number | null;
@@ -396,9 +403,8 @@ function diagnoseEpisode(
         ),
     );
 
-  const pickupIntentTick =
-    firstTick(
-      window,
+  const pickupIntentRow =
+    window.find(
       (row) =>
         row.decision.intent
           .kind ===
@@ -406,6 +412,57 @@ function diagnoseEpisode(
         visibleRawIdMatchesIntent(
           row,
         ),
+    ) ?? null;
+
+  const pickupIntentTick =
+    pickupIntentRow?.tick ??
+    null;
+
+  const pickupIntentObjectId =
+    pickupIntentRow &&
+    pickupIntentRow.decision
+      .intent.kind ===
+      "pickup"
+      ? pickupIntentRow
+          .decision.intent
+          .objectId
+      : null;
+
+  const pickupIntentObjectDistance =
+    pickupIntentRow &&
+    pickupIntentObjectId
+      ? visibleObjectDistance(
+          pickupIntentRow,
+          pickupIntentObjectId,
+        )
+      : null;
+
+  const pickupRejectedRows =
+    window.flatMap(
+      (row) =>
+        row.factualOutcomeEvents
+          .filter(
+            (event) =>
+              event.kind ===
+                "action_rejected" &&
+              event.payload.reason ===
+                "pickup_rejected",
+          )
+          .map(
+            (event) => ({
+              rowTick:
+                row.tick,
+              objectId:
+                event.subjectId,
+              reason:
+                typeof event.payload
+                  .reason ===
+                  "string"
+                  ? event.payload
+                      .reason
+                  : null,
+            }),
+          ),
     );
 
   const factualPickupTick =
@@ -516,6 +573,9 @@ function diagnoseEpisode(
     sourceNearTick,
     sourceRawVisibleTick,
     pickupIntentTick,
+    pickupIntentObjectId,
+    pickupIntentObjectDistance,
+    pickupRejectedRows,
     factualPickupTick,
     carryToTargetTick,
     rackNearHoldingRawTick,
@@ -574,6 +634,36 @@ function visibleFreeRawAt(
         ) <=
         STOCK_RADIUS,
     );
+}
+
+function visibleObjectDistance(
+  row:
+    ResidentPrivateExperience,
+  objectId: string,
+): number | null {
+  const object =
+    row.observation
+      .visibleObjects.find(
+        (candidate) =>
+          candidate.id ===
+          objectId &&
+        candidate.location.kind ===
+          "free",
+      );
+
+  if (
+    !object ||
+    object.location.kind !==
+      "free"
+  ) {
+    return null;
+  }
+
+  return distance(
+    row.observation.self
+      .position,
+    object.location.position,
+  );
 }
 
 function visibleRawIdMatchesIntent(
