@@ -425,8 +425,12 @@ function booleanWindows(
         ? index
         : index - 1;
 
+    const startIndex =
+      start;
+
     windows.push({
-      start,
+      start:
+        startIndex,
       end,
     });
 
