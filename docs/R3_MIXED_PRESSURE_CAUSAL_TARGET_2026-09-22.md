@@ -1,0 +1,212 @@
+# R3 Mixed-Pressure Causal Target — Qualification 2026-09-22
+
+Status: **CAUSAL FEASIBILITY INSTRUMENT QUALIFIED · ID-ABLATION SEMANTIC TARGET CLOSED IN CURRENT STATEMENT-BLIND SUBSTRATE**
+
+Qualified code head:
+
+`07448da82be795661fbecea39a23d74f3ac939a9`
+
+CI:
+- Check: PASS;
+- Research Preview: PASS.
+
+## Why this target exists
+
+The prior concurrent-matter causal probe improved supervision by using paired matter ablation, but causal responsibility was still perfectly associated with separate ecologies.
+
+That allowed a hypothetical learned relation function to succeed by recognizing ecology/domain rather than actor-relative relevance.
+
+The mixed-pressure fixture removes that shortcut.
+
+## Setup
+
+One Janek remains inside one continuous autonomous ecology.
+
+He owns two matters simultaneously:
+- `resident:janek:matter:workshop-processing`;
+- `resident:janek:matter:local-report-response`.
+
+Different private local conditions make different matters causally necessary for the next local decision.
+
+Ground truth remains intervention-derived:
+
+1. replay identical deterministic prefix with both matters;
+2. include decision-time private observation in the query;
+3. remove one matter only in the paired variant;
+4. advance one tick;
+5. compare the next local decision;
+6. retain the state only when exactly one matter ablation changes that decision.
+
+## Qualified audit
+
+Each wording variant yields:
+
+| Property | Result |
+| --- | ---: |
+| retained examples | 12 |
+| workshop-responsible | 6 |
+| report-responsible | 6 |
+| unique transition histories | 9 |
+| ambiguous histories | 0 |
+| chance top-1 | 0.5 |
+
+Lexical control:
+
+| Wording | Top-1 | Tie rate |
+| --- | ---: | ---: |
+| baseline | 0.333 | 0.333 |
+| paraphrase | 0.583 | 0.583 |
+
+The paraphrase lexical result is one hit above a 6/12 chance outcome and the corpus is intentionally tiny. It is not evidence of a lexical solver.
+
+## Important property
+
+Responsibility now switches **within the same ecology for the same actor with both matters concurrently present**.
+
+This removes the strongest structural confound from the previous causal probe.
+
+## What this qualifies
+
+- the research-only mixed-pressure ecology;
+- the causal-ablation target;
+- responsibility switching within one ecology;
+- decision-time temporal alignment;
+- baseline/paraphrase pairing;
+- a small feasibility corpus suitable for the next frozen-representation falsifier.
+
+## What it does not qualify
+
+- MiniLM or another encoder on this target;
+- direct cosine;
+- a learned head;
+- semantic generalization;
+- production matter architecture;
+- ReflexBrain authority.
+
+The next model run must be a separate, bounded experiment and must not silently promote the fixture or target into production architecture.
+
+
+## Post-rejection supervision-readiness audit — FAIL
+
+After the frozen direct-cosine family was rejected, the same 12-example feasibility corpus was audited as a possible source for a later learned joint relation mechanism.
+
+A simple model-blind baseline exposes a decisive shortcut:
+
+- majority/chance baseline: **0.500**;
+- predict report-responsibility iff the **last private transition contains heard speech**: **1.000** on baseline wording;
+- the same speech gate: **1.000** on paraphrase wording;
+- all report-responsible examples have decision-time speech;
+- no workshop-responsible example has decision-time speech.
+
+This follows directly from the disposable fixture:
+- a direct non-empty Ida speech event takes the report branch when the report matter exists;
+- ordinary candidate sampling explicitly excludes that event.
+
+Therefore the current corpus is still valid evidence that:
+- paired matter ablation can generate causal-responsibility labels;
+- responsibility can switch between simultaneous matters for one actor in one ecology;
+- the direct-cosine family fails even on this clean causal target.
+
+But it is **not** sufficient evidence or training data for a learned joint relation mechanism. A learner could succeed by exploiting the fixture's context gate rather than learning a reusable actor-relative relation.
+
+Before any learned relation model, the causal-supervision corpus must be broadened and counterbalanced so that:
+- simple context-only cues do not identify the responsible matter;
+- matter-only priors do not identify the label;
+- the same model-visible cue can occur under different causal responsibilities;
+- candidate order/identity cannot carry the answer;
+- paraphrase remains a held-out control;
+- actor/domain holdouts test transfer rather than fixture memorization.
+
+The intervention-derived causal instrument survives. **Training readiness does not.**
+
+
+## Policy-wiring invariance falsifier — FAIL
+
+The next red-team asked whether the ablation label is determined by the actor-private evidence + candidate matter meanings, or can instead be changed by invisible fixture wiring.
+
+A research-only variant made the report-response branch's required matter id configurable without changing the ordinary baseline policy behavior when both matters are present.
+
+At the first direct-report moment (tick 41):
+
+| Property | default gate | swapped gate |
+| --- | --- | --- |
+| actor-private observation | identical | identical |
+| private memory | identical | identical |
+| owned candidate matters/statements | identical | identical |
+| baseline decision | identical | identical |
+| ablation-responsible matter | report-response | workshop-processing |
+
+Only the hidden fixture matter gate changed.
+
+Evidence:
+- head `e4c2bcc10573060debda6667a1b6692c2b92473f`;
+- Check #205 PASS;
+- 19 test files / 161 tests PASS.
+
+### Interpretation
+
+Paired ablation still correctly answers a causal question:
+
+> which matter id did this authored policy implementation require for this next decision?
+
+But that answer is **policy-relative**. It is not automatically a semantic truth recoverable from the resident's private experience and matter statements.
+
+Therefore do not use the current causal-responsibility label as learned semantic supervision merely because it is intervention-derived.
+
+The stronger future requirement is **semantic-grounding invariance**: supervision intended to teach actor-relative meaning must not flip under a fixture rewiring that leaves the relevant model-visible private life and semantic candidate content unchanged.
+
+If a future target deliberately depends on policy binding, that binding must either:
+- be a legitimate actor-private input whose meaning the mechanism is supposed to learn; or
+- be held out/varied so a learned mechanism must transfer across policy families rather than memorize the fixture.
+
+This downgrades the current mixed-pressure target from candidate semantic supervision to a **qualified causal microscope / feasibility instrument**.
+
+
+## Statement-permutation identifiability falsifier — FAIL
+
+The policy-wiring falsifier showed that the ablation label is policy-relative. A stricter metamorphic test now asks whether the semantic statements themselves are identifiable from that label generator.
+
+At the first direct-report moment (tick 41), keep:
+- the same actor;
+- the same World and deterministic prefix;
+- the same two matter ids;
+- the same fixture policy wiring;
+- the same observations, memory and baseline decision trajectory.
+
+Then exchange only the two semantic `matter.statement` strings between the existing matter ids.
+
+Result:
+- private observed/memory/decision trajectory: identical;
+- semantic statement→id assignment: reversed;
+- ablation-responsible matter id: unchanged.
+
+Evidence:
+- commit `4f4c14e64e5ed046916168c0b400b30d53b7d2c6`;
+- Check #209 PASS;
+- 19 test files / 162 tests PASS.
+
+### Consequence
+
+The current causal label generator is statement-blind.
+
+Paired ablation remains correct causal instrumentation for:
+
+> which authored matter identity did this fixture decision depend on?
+
+It does not provide an intervention-derived answer to:
+
+> which candidate semantic statement best matches or matters to this private experience?
+
+Because changing the semantic statement assignment does not change the generated label, semantic meaning is not identifiable from this supervision mechanism.
+
+This failure cannot be repaired by:
+- more examples of the same fixture relation;
+- balancing the current classes;
+- stronger context-only baselines;
+- a larger encoder;
+- a learned head;
+- policy-family holdout alone.
+
+A future semantic target needs a genuine grounding path for semantic content, or an explicitly acknowledged external semantic teacher/annotation. The latter must not be mislabeled as intervention-derived semantic ground truth.
+
+The mixed-pressure target therefore remains a **causal microscope only**. Its current ID-ablation label family is closed as semantic training supervision in the present R3 substrate.
