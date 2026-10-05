@@ -18,6 +18,11 @@ button:hover{background:#304050}
 kbd{background:#252c34;border:1px solid #46515d;border-radius:3px;padding:1px 4px}
 .row{display:flex;flex-wrap:wrap;gap:3px}
 #boot{font-weight:650}
+#ownerNote{display:none;margin:12px 0;color:#b9c7d4}
+body.owner-blind:not(.owner-revealed) .forensic{display:none}
+body.owner-blind #ownerNote{display:block}
+body.owner-blind:not(.owner-revealed){grid-template-columns:minmax(0,1fr) 280px}
+body.owner-blind.owner-revealed #ownerNote{display:none}
 textarea{box-sizing:border-box;width:100%;height:82px;resize:vertical;background:#0d1217;color:#b9c7d4;border:1px solid #2a333e;border-radius:6px;padding:7px;font:11px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace}
 </style>
 </head>
@@ -25,11 +30,12 @@ textarea{box-sizing:border-box;width:100%;height:82px;resize:vertical;background
 <main><canvas id="c"></canvas></main>
 <aside>
 <h1>ReflexBrain E0.0 — authoritative body probe</h1>
-<div id="boot" class="muted">Loading deterministic Rapier…</div>
-<h2>Automated causal probe</h2>
-<pre id="auto">pending</pre>
+<div id="boot" class="muted forensic">Loading deterministic Rapier…</div>
+<h2 class="forensic">Automated causal probe</h2>
+<pre id="auto" class="forensic">pending</pre>
 <h2>Owner control</h2>
-<div><kbd>W</kbd>/<kbd>S</kbd> drive, <kbd>A</kbd>/<kbd>D</kbd> turn. Same MotorDemand interface intended for the future brain.</div>
+<div><kbd>W</kbd>/<kbd>S</kbd> drive, <kbd>A</kbd>/<kbd>D</kbd> turn.</div>
+<div id="ownerNote">Po prostu pojeździj i pobaw się światem. Nie szukaj „poprawnej” odpowiedzi. Gdy uznasz, że wystarczy, kliknij <b>Pause</b> — wtedy odsłonimy zapis runu.</div>
 <div class="row" style="margin-top:8px">
 <button id="pause">Run</button><button id="reset">Reset</button>
 </div>
@@ -37,16 +43,18 @@ textarea{box-sizing:border-box;width:100%;height:82px;resize:vertical;background
 <button data-shove="-1,0">Shove ←</button><button data-shove="1,0">Shove →</button>
 <button data-shove="0,-1">Shove ↑</button><button data-shove="0,1">Shove ↓</button>
 </div>
-<h2>Live forensic truth</h2>
-<pre id="live"></pre>
-<h2>Owner-run recorder</h2>
-<pre id="replay">Replay not yet verified.</pre>
-<textarea id="events" readonly aria-label="Committed simulation event stream"></textarea>
-<div class="muted">Circle collider is intentional E0 null. Visual nose is orientation only, not hidden collision geometry. No brain, fatigue, action timer, target oracle, or shared drive/turn budget.</div>
+<h2 class="forensic">Live forensic truth</h2>
+<pre id="live" class="forensic"></pre>
+<h2 class="forensic">Owner-run recorder</h2>
+<pre id="replay" class="forensic">Replay not yet verified.</pre>
+<textarea id="events" class="forensic" readonly aria-label="Committed simulation event stream"></textarea>
+<div class="muted forensic">Circle collider is intentional E0 null. Visual nose is orientation only, not hidden collision geometry. No brain, fatigue, action timer, target oracle, or shared drive/turn budget.</div>
 </aside>
 <script type="module">
 const autoEl=document.querySelector('#auto'), bootEl=document.querySelector('#boot'), liveEl=document.querySelector('#live');
 const replayEl=document.querySelector('#replay'), eventEl=document.querySelector('#events');
+const OWNER_VIEW=new URLSearchParams(location.search).get('view')==='owner';
+if(OWNER_VIEW) document.body.classList.add('owner-blind');
 const canvas=document.querySelector('#c'), ctx=canvas.getContext('2d');
 const DPR=()=>Math.max(1,devicePixelRatio||1);
 function resize(){const r=canvas.getBoundingClientRect(),d=DPR();canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0)}
@@ -430,6 +438,12 @@ try{
   function recorderPayload(){
     return {
       schema:'e0-owner-events-v1',
+      probeVersion:'e0.0-owner-v1',
+      config:{
+        dt:DT,radius:R,actorMass:MASS,
+        vmax:VMAX,tauMove:TAU_MOVE,omegaMax:OMEGA_MAX,tauTurn:TAU_TURN,
+        lightMass:1,heavyMass:4
+      },
       runId:sim.runId,
       tick:sim.tick,
       events:sim.eventLog,
@@ -532,11 +546,15 @@ try{
     if(sim.paused && sim.tick===0) sim.realStart=performance.now();
     sim.paused=!sim.paused;
     document.querySelector('#pause').textContent=sim.paused?'Run':'Pause';
-    if(sim.paused) replayCurrent();
+    if(sim.paused){
+      replayCurrent();
+      if(OWNER_VIEW && sim.tick>0) document.body.classList.add('owner-revealed');
+    }
   };
   document.querySelector('#reset').onclick=()=>{
     sim.world.free();uiHeld.clear();sim=buildInteractive();
     document.querySelector('#pause').textContent='Run';
+    if(OWNER_VIEW) document.body.classList.remove('owner-revealed');
     replayEl.className='';replayEl.textContent='Replay not yet verified.';
     refreshRecorder();
   };
