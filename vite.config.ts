@@ -21,6 +21,8 @@ export default defineConfig({
           "r3-temporal-project-then-compare-diagnostic.html",
         r3ZeroShotGroundedSemanticBridge:
           "r3-zero-shot-grounded-semantic-bridge.html",
+        e0AuthoritativeBody:
+          "probes/e0-authoritative-body.html",
       },
     },
   },
