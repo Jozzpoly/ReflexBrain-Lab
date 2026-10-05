@@ -48,7 +48,7 @@ function resize(){const r=canvas.getBoundingClientRect(),d=DPR();canvas.width=Ma
 addEventListener('resize',resize);resize();
 
 try{
-  const mod=await import('https://cdn.jsdelivr.net/npm/@dimforge/rapier2d-deterministic-compat@0.20.0/dist/rapier.mjs');
+  const mod=await import('@dimforge/rapier2d-deterministic-compat');
   const RAPIER=mod.default ?? mod;
   await RAPIER.init();
   bootEl.textContent='Rapier deterministic-compat 0.20.0 loaded';
