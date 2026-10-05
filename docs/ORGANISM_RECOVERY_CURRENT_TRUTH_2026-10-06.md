@@ -90,12 +90,18 @@ O0 does not yet require a learned ReflexBrain, LLM/SPC, crowd simulation, full v
 
 ## Current next research action
 
+The pre-E0 donor recovery is now recorded in:
+
+**`docs/ORGANISM_RECOVERY_DONOR_AUDIT_2026-10-06.md`**
+
+It preserves the strongest actual phenomena from Proto-Life / Persistent Playground / L0 while rejecting their known artifacts and overclaims.
+
 Before implementing O0:
 
-1. recover the strongest actual phenomena from the earlier Proto-Life / persistent Playground / L0 line;
-2. distinguish which effects were genuine organism-level donors from artifacts, limit cycles, authored routes or labels;
-3. choose the smallest set of donor phenomena that creates an autonomous persistent organism loop;
-4. only then freeze an O0 implementation hypothesis.
+1. red-team the current minimal O0 hypothesis against the strongest failure mode: accidentally rebuilding Playground bookkeeping with better physics;
+2. require a causal post-washout history effect on later ordinary behaviour, with a matched irrelevant intervention control;
+3. keep Owner perturbation distinguishable from self-caused consequence rather than granting that distinction semantically;
+4. only then freeze the first O0 implementation contract.
 
 No E0 tuning or E1 implementation should happen unless O0 creates a specific body-level question that earns it.
 
