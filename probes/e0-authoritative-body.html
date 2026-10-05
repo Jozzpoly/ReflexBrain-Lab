@@ -84,6 +84,17 @@ try{
     rb.addTorque(TMAX*turn,true);
   }
 
+  function pairImpulse(w,h1,h2){
+    const c1=w.getCollider(h1), c2=w.getCollider(h2);
+    let impulse=0, solverContacts=0;
+    w.contactPair(c1,c2,(m)=>{
+      const n=m.numSolverContacts();
+      solverContacts+=n;
+      for(let i=0;i<n;i++) impulse+=Math.abs(m.contactImpulse(i));
+    });
+    return {impulse,solverContacts};
+  }
+
   function runFreeReverse(){
     const w=new RAPIER.World({x:0,y:0}); w.timestep=DT;
     const a=createBody(w,0,0,1,1);
@@ -194,16 +205,6 @@ try{
     const wall=createWall(world,5,0,.25,3);
     const ah=actor.rb.handle, hh=heavy.rb.handle;
     const ac=actor.co.handle, hc=heavy.co.handle, wc=wall.co.handle;
-    const pairImpulse=(w,h1,h2)=>{
-      const c1=w.getCollider(h1), c2=w.getCollider(h2);
-      let impulse=0, solverContacts=0;
-      w.contactPair(c1,c2,(m)=>{
-        const n=m.numSolverContacts();
-        solverContacts+=n;
-        for(let i=0;i<n;i++) impulse+=Math.abs(m.contactImpulse(i));
-      });
-      return {impulse,solverContacts};
-    };
     const scripted=(w,t,perturb=false)=>{
       const a=w.getRigidBody(ah);
       let drive=1, turn=(t>=280&&t<330)?.35:0;
