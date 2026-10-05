@@ -89,6 +89,17 @@ try{
     const actor=createBody(world,0,0,1,1), heavy=createBody(world,2.5,0,3,1);
     const wall=createWall(world,5,0,.25,3);
     const ah=actor.rb.handle, hh=heavy.rb.handle;
+    const ac=actor.co.handle, hc=heavy.co.handle, wc=wall.co.handle;
+    const pairImpulse=(w,h1,h2)=>{
+      const c1=w.getCollider(h1), c2=w.getCollider(h2);
+      let impulse=0, solverContacts=0;
+      w.contactPair(c1,c2,(m)=>{
+        const n=m.numSolverContacts();
+        solverContacts+=n;
+        for(let i=0;i<n;i++) impulse+=Math.abs(m.contactImpulse(i));
+      });
+      return {impulse,solverContacts};
+    };
     const scripted=(w,t,perturb=false)=>{
       const a=w.getRigidBody(ah);
       let drive=1, turn=(t>=280&&t<330)?.35:0;
@@ -99,7 +110,16 @@ try{
     for(let t=0;t<240;t++) scripted(world,t,false);
     const cp=world.takeSnapshot();
     const a0=world.getRigidBody(ah), h0=world.getRigidBody(hh);
-    const cpState={ax:a0.translation().x,av:a0.linvel().x,hx:h0.translation().x,hv:h0.linvel().x};
+    const actorHeavy=pairImpulse(world,ac,hc);
+    const heavyWall=pairImpulse(world,hc,wc);
+    const cpState={
+      ax:a0.translation().x,av:a0.linvel().x,
+      hx:h0.translation().x,hv:h0.linvel().x,
+      actorHeavyImpulse:actorHeavy.impulse,
+      heavyWallImpulse:heavyWall.impulse,
+      actorHeavyContacts:actorHeavy.solverContacts,
+      heavyWallContacts:heavyWall.solverContacts,
+    };
     for(let t=240;t<480;t++) scripted(world,t,false);
     const endA=world.takeSnapshot();
     const hashA=await sha(endA);
@@ -115,16 +135,24 @@ try{
     const hashC=await sha(endC);
 
     const exact=bytesEqual(endA,endB), divergent=!bytesEqual(endA,endC);
-    const braced=Math.abs(cpState.av)<.08 && Math.abs(cpState.hv)<.08 && cpState.hx>3.65 && cpState.hx<3.85;
+    const jammed=Math.abs(cpState.av)<.08 && Math.abs(cpState.hv)<.08 && cpState.hx>3.65 && cpState.hx<3.85;
+    const reciprocalContact=
+      cpState.actorHeavyContacts>0 && cpState.heavyWallContacts>0 &&
+      cpState.actorHeavyImpulse>1e-5 && cpState.heavyWallImpulse>1e-5;
+    const braced=jammed && reciprocalContact;
     const pass=exact&&divergent&&braced;
     autoEl.className=pass?'good':'bad';
     autoEl.textContent=[
       'snapshot identical branch: '+(exact?'PASS':'FAIL'),
       'single-tick perturbation diverges: '+(divergent?'PASS':'FAIL'),
       'actor→heavy→wall bracing checkpoint: '+(braced?'PASS':'FAIL'),
+      '  jammed geometry/velocity: '+(jammed?'PASS':'FAIL'),
+      '  solver contact reaction: '+(reciprocalContact?'PASS':'FAIL'),
       '',
       'checkpoint actor x='+cpState.ax.toFixed(6)+' vx='+cpState.av.toFixed(6),
       'checkpoint heavy x='+cpState.hx.toFixed(6)+' vx='+cpState.hv.toFixed(6),
+      'actor↔heavy impulse='+cpState.actorHeavyImpulse.toFixed(8)+' contacts='+cpState.actorHeavyContacts,
+      'heavy↔wall impulse='+cpState.heavyWallImpulse.toFixed(8)+' contacts='+cpState.heavyWallContacts,
       'future A hash '+hashA,
       'future B hash '+hashB,
       'changed  hash '+hashC
