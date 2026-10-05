@@ -10,6 +10,7 @@
     "check": "tsc -p tsconfig.json --noEmit && vitest run && vite build"
   },
   "dependencies": {
+    "@dimforge/rapier2d-deterministic-compat": "0.20.0",
     "@huggingface/transformers": "4.3.0"
   },
   "devDependencies": {
