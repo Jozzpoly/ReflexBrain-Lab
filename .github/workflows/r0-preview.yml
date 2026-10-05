@@ -12,6 +12,7 @@ on:
       - experiment/r1-isolated-embedding-v1
       - experiment/r1-expanded-representation-ab-v1
       - experiment/r3-autonomous-life-pressure-v0
+      - probe/e0-authoritative-body-2026-10-05
   workflow_dispatch:
 
 permissions:
