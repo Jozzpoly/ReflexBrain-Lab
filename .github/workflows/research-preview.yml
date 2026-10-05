@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - experiment/organism-recovery-v0
+      - experiment/o0-persistent-micro-ecology-v0
   workflow_dispatch:
 
 permissions:
