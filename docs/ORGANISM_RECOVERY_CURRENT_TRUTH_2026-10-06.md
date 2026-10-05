@@ -105,6 +105,50 @@ Before implementing O0:
 
 No E0 tuning or E1 implementation should happen unless O0 creates a specific body-level question that earns it.
 
+
+## Owner direction — Persistent Playground
+
+Owner judgement after reviewing the recovered history:
+
+> Persistent Playground v1 showed that the persistent embodied-organism direction is worth pursuing.
+
+Scope of this judgement:
+
+- it is positive evidence for the **direction and experiment shape**;
+- it is not approval of the old learner, region representation, sensory model, movement model or architecture;
+- the next organism may be redesigned fundamentally from first principles if that produces a cleaner and more capable system;
+- the project should extract maximum value from all previous ReflexBrain work and available donors without inheriting old implementation shape by inertia.
+
+This Owner judgement is current product/research-direction evidence and should not be weakened by the technical shortcomings of Playground v1.
+
+## Clean-forward repository state
+
+The active recovery worktree was deliberately reduced after a full salvage audit.
+
+Pre-prune full snapshot:
+
+`archive/pre-o0-full-lab-2026-10-06` @ `98f4fe1cee50573d1516c7b20e4f1b65003a8b2d`
+
+Historical implementations remain recoverable from their exact branch/SHA references in:
+
+`docs/REFLEXBRAIN_SALVAGE_MAP_2026-10-06.md`
+
+The active worktree now intentionally carries only:
+
+- recovery/current-truth documentation;
+- Project Charter;
+- salvage/donor audits;
+- the frozen E0.0 specimen;
+- minimal build/CI infrastructure.
+
+R0/R1/R2/R3 runtime code, narrow probe pages and historical tests are no longer part of the active build surface.
+
+This is a cleanup of the **forward workspace**, not deletion of project history.
+
+Policy:
+
+> keep the project clean forward and rich backward.
+
 ## Repository authority map
 
 ### Current active frontier
