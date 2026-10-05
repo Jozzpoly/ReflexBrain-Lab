@@ -8,27 +8,27 @@ Experimental laboratory for a **fast local semantic/reflex capability** inside e
 
 ## Start here
 
-Current branch:
+Active research branch:
 
-`experiment/r3-autonomous-life-pressure-v0`
+`experiment/organism-recovery-v0`
 
-Canonical current truth:
+Canonical active truth:
 
-**`docs/R3_CURRENT_TRUTH_2026-09-21.md`**
+**`docs/ORGANISM_RECOVERY_CURRENT_TRUTH_2026-10-06.md`**
 
-Current mixed-pressure target qualification:
+Recovery reclassification:
 
-**`docs/R3_MIXED_PRESSURE_CAUSAL_TARGET_2026-09-22.md`**
+**`docs/ORGANISM_RECOVERY_RECLASSIFICATION_2026-10-05.md`**
 
-Continuation protocol:
+Historical R3 truth and campaign evidence remain authoritative for their original scope:
 
-**`docs/CAMPAIGN_CONTINUE_PROTOCOL.md`**
+- `docs/R3_CURRENT_TRUTH_2026-09-21.md`
+- `docs/CAMPAIGN_CONTINUE_PROTOCOL.md`
+- `docs/R3_CAMPAIGN_ROADMAP_2026-09-21.md`
 
-Current semantic consumer evidence:
+Those R3 documents are **not the immediate execution frontier** on this branch. Do not resume the learned-model campaign from them without first resolving the organism-recovery frontier.
 
-**`docs/R3_SEMANTIC_CONSUMER_ORACLE_RESULT_2026-09-25.md`**
-
-Historical R0/R1/R2 documents remain evidence and falsifiers. They are not the current feature sequence.
+E0.0 is frozen as a qualified body/microscope donor. O0 Persistent Organism Recovery is the active research target and is not yet implemented.
 
 ## Core research question
 
