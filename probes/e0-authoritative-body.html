@@ -31,7 +31,7 @@ textarea{box-sizing:border-box;width:100%;height:82px;resize:vertical;background
 <h2>Owner control</h2>
 <div><kbd>W</kbd>/<kbd>S</kbd> drive, <kbd>A</kbd>/<kbd>D</kbd> turn. Same MotorDemand interface intended for the future brain.</div>
 <div class="row" style="margin-top:8px">
-<button id="pause">Pause</button><button id="reset">Reset</button>
+<button id="pause">Run</button><button id="reset">Reset</button>
 </div>
 <div class="row">
 <button data-shove="-1,0">Shove ←</button><button data-shove="1,0">Shove →</button>
@@ -324,11 +324,13 @@ try{
     const passiveShove=runPassiveShove();
     const curveSignature=runCurveSignature();
     const longBracing=runLongBracing();
+    const syntheticReplay=runSyntheticEventReplay();
 
     const pass=
       exact&&divergent&&observableDivergent&&braced &&
       freeReverse.pass && transientMass.pass && massContrast.pass &&
-      passiveShove.pass && curveSignature.pass && longBracing.pass;
+      passiveShove.pass && curveSignature.pass && longBracing.pass &&
+      syntheticReplay.pass;
 
     autoEl.className=pass?'good':'bad';
     autoEl.textContent=[
@@ -369,6 +371,10 @@ try{
         ' omega='+curveSignature.omega.toFixed(5)+
         ' slipDeg='+(curveSignature.slip*180/Math.PI).toFixed(2)+
         ' predictedDeg='+(curveSignature.predicted*180/Math.PI).toFixed(2),
+      'synthetic Owner-event replay: '+(syntheticReplay.pass?'PASS':'FAIL'),
+      '  physics='+(syntheticReplay.physicsExact?'PASS':'FAIL')+
+        ' controls='+(syntheticReplay.controlExact?'PASS':'FAIL')+
+        ' events='+syntheticReplay.eventCount+' ticks='+syntheticReplay.ticks,
       'long bracing soak: '+(longBracing.pass?'PASS':'FAIL'),
       '  actorDrift='+longBracing.actorDrift.toExponential(3)+
         ' heavyDrift='+longBracing.heavyDrift.toExponential(3),
@@ -389,8 +395,8 @@ try{
   function makeInteractiveWorld(){
     const world=new RAPIER.World({x:0,y:0});world.timestep=DT;
     const actor=createBody(world,-3,0,1,1);
-    const light=createBody(world,1,-1.65,1,.7,LIN_D,ANG_D);
-    const heavy=createBody(world,1,1.65,4,.7,LIN_D,ANG_D);
+    const light=createBody(world,1,-2.2,1,.7,LIN_D,ANG_D);
+    const heavy=createBody(world,1,2.2,4,.7,LIN_D,ANG_D);
     const walls=[
       createWall(world,-8,0,.25,5),createWall(world,8,0,.25,5),
       createWall(world,0,-5,8,.25),createWall(world,0,5,8,.25)
@@ -402,7 +408,7 @@ try{
     return {
       ...makeInteractiveWorld(),
       runId:++runSerial,
-      tick:0,paused:false,keys:{},
+      tick:0,paused:true,keys:{},
       pendingEvents:[],eventLog:[],seq:0,
       realStart:performance.now(),
     };
@@ -434,12 +440,12 @@ try{
     eventEl.value=JSON.stringify(recorderPayload());
   }
 
-  function replayCurrent(){
+  function simulateEventStream(events,targetTicks){
     const r={...makeInteractiveWorld(),keys:{}};
     let i=0;
-    for(let tick=0;tick<sim.tick;tick++){
-      while(i<sim.eventLog.length && sim.eventLog[i].tick===tick){
-        applyRecordedEvent(r,sim.eventLog[i]); i++;
+    for(let tick=0;tick<targetTicks;tick++){
+      while(i<events.length && events[i].tick===tick){
+        applyRecordedEvent(r,events[i]); i++;
       }
       const k=r.keys;
       const drive=(k.KeyW?1:0)-(k.KeyS?1:0);
@@ -447,7 +453,21 @@ try{
       applyDemand(r.actor.rb,drive,turn);
       r.world.step();
     }
-    const exact=bytesEqual(sim.world.takeSnapshot(),r.world.takeSnapshot());
+    return r;
+  }
+
+  function controlStateEqual(a,b){
+    for(const code of controlKeys){
+      if(Boolean(a[code])!==Boolean(b[code])) return false;
+    }
+    return true;
+  }
+
+  function replayCurrent(){
+    const r=simulateEventStream(sim.eventLog,sim.tick);
+    const physicsExact=bytesEqual(sim.world.takeSnapshot(),r.world.takeSnapshot());
+    const controlExact=controlStateEqual(sim.keys,r.keys);
+    const exact=physicsExact&&controlExact;
     const a=sim.actor.rb, b=r.actor.rb;
     const stateDelta=
       Math.abs(a.translation().x-b.translation().x)+
@@ -459,6 +479,8 @@ try{
     replayEl.className=exact?'good':'bad';
     replayEl.textContent=
       'Owner event replay: '+(exact?'PASS':'FAIL')+
+      '\\nphysics bytes: '+(physicsExact?'PASS':'FAIL')+
+      '  control state: '+(controlExact?'PASS':'FAIL')+
       '\\nrun='+sim.runId+' tick='+sim.tick+
       ' events='+sim.eventLog.length+
       '\\nstate delta='+stateDelta.toExponential(3);
@@ -467,8 +489,32 @@ try{
     return exact;
   }
 
+  function runSyntheticEventReplay(){
+    const events=[
+      {tick:4,seq:0,type:'key',code:'KeyW',down:true,realMs:0},
+      {tick:61,seq:1,type:'key',code:'KeyD',down:true,realMs:0},
+      {tick:103,seq:2,type:'impulse',x:0,y:-4,realMs:0},
+      {tick:149,seq:3,type:'key',code:'KeyD',down:false,realMs:0},
+      {tick:211,seq:4,type:'key',code:'KeyA',down:true,realMs:0},
+      {tick:267,seq:5,type:'key',code:'KeyA',down:false,realMs:0},
+      {tick:301,seq:6,type:'key',code:'KeyW',down:false,realMs:0},
+    ];
+    const a=simulateEventStream(events,360);
+    const b=simulateEventStream(events,360);
+    const physicsExact=bytesEqual(a.world.takeSnapshot(),b.world.takeSnapshot());
+    const controlExact=controlStateEqual(a.keys,b.keys);
+    const pass=physicsExact&&controlExact;
+    a.world.free(); b.world.free();
+    return {pass,physicsExact,controlExact,eventCount:events.length,ticks:360};
+  }
+
   addEventListener('keydown',e=>{
     if(controlKeys.has(e.code) && !e.repeat && !uiHeld.has(e.code)){
+      if(sim.paused && sim.tick===0){
+        sim.realStart=performance.now();
+        sim.paused=false;
+        document.querySelector('#pause').textContent='Pause';
+      }
       uiHeld.add(e.code);queueEvent({type:'key',code:e.code,down:true});e.preventDefault();
     }
   });
@@ -483,12 +529,14 @@ try{
   });
 
   document.querySelector('#pause').onclick=()=>{
+    if(sim.paused && sim.tick===0) sim.realStart=performance.now();
     sim.paused=!sim.paused;
     document.querySelector('#pause').textContent=sim.paused?'Run':'Pause';
     if(sim.paused) replayCurrent();
   };
   document.querySelector('#reset').onclick=()=>{
     sim.world.free();uiHeld.clear();sim=buildInteractive();
+    document.querySelector('#pause').textContent='Run';
     replayEl.className='';replayEl.textContent='Replay not yet verified.';
     refreshRecorder();
   };
@@ -534,7 +582,7 @@ try{
     // walls
     ctx.fillStyle='#39434e';
     for(const o of sim.walls){const p=o.rb.translation(),[x,y]=worldToScreen(p.x,p.y);ctx.fillRect(x-o.hx*PX,y-o.hy*PX,o.hx*2*PX,o.hy*2*PX)}
-    circle(sim.light,.7,'1×','#83b9db');circle(sim.heavy,.7,'4×','#c69a64');circle(sim.actor,1,'','#95d69f');
+    circle(sim.light,.7,'A','#8ea5b7');circle(sim.heavy,.7,'B','#8ea5b7');circle(sim.actor,1,'','#95d69f');
     const p=sim.actor.rb.translation(),[ax,ay]=worldToScreen(p.x,p.y),a=sim.actor.rb.rotation();
     ctx.strokeStyle='#102417';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(ax+Math.cos(a)*.9*PX,ay+Math.sin(a)*.9*PX);ctx.stroke();
     const v=sim.actor.rb.linvel(),drive=(sim.keys.KeyW?1:0)-(sim.keys.KeyS?1:0),turn=(sim.keys.KeyD?1:0)-(sim.keys.KeyA?1:0);
