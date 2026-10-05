@@ -395,7 +395,7 @@ try{
       'future B hash '+hashB,
       'changed  hash '+hashC
     ].join('\n');
-    document.title=(pass?'E0_CAMPAIGN_PASS':'E0_CAMPAIGN_FAIL')+' '+hashA;
+    document.title=OWNER_VIEW?'ReflexBrain E0.0':((pass?'E0_CAMPAIGN_PASS':'E0_CAMPAIGN_FAIL')+' '+hashA);
     return pass;
   }
 
