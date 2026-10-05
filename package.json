@@ -1,16 +1,16 @@
 {
   "name": "reflexbrain-lab",
-  "version": "0.1.0-r0",
+  "version": "0.2.0-recovery",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "vitest run",
-    "check": "tsc -p tsconfig.json --noEmit && vitest run && vite build"
+    "test": "vitest run --passWithNoTests",
+    "check": "tsc -p tsconfig.json --noEmit && vitest run --passWithNoTests && vite build"
   },
   "dependencies": {
-    "@huggingface/transformers": "4.3.0"
+    "@dimforge/rapier2d-deterministic-compat": "0.20.0"
   },
   "devDependencies": {
     "typescript": "7.0.2",

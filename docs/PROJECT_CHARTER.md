@@ -2,6 +2,9 @@
 
 Status: **CURRENT RESEARCH CHARTER · ARCHITECTURE NOT FROZEN**
 
+> **2026-10-06 frontier note:** the charter's principles and decomposition remain current, but its later `Current frontier` section records the historical R3 semantic frontier. The active execution frontier on `experiment/organism-recovery-v0` is defined by `docs/ORGANISM_RECOVERY_CURRENT_TRUTH_2026-10-06.md`. Do not resume R3 learned-model work from this charter alone.
+
+
 ## Why this lab exists
 
 ReflexBrain Lab isolates a missing competence visible across the wider NPC work:

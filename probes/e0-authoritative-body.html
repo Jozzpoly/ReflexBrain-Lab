@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReflexBrain E0 probe — boot</title>
+<style>
+html,body{margin:0;height:100%;background:#11151a;color:#d8e0e8;font:14px/1.35 system-ui,sans-serif}
+body{display:grid;grid-template-columns:minmax(0,1fr) 330px;overflow:hidden}
+main{min-width:0;display:grid;place-items:center;background:#0b0f13}
+canvas{width:100%;height:100%;display:block}
+aside{padding:16px;background:#151b22;border-left:1px solid #2a333e;overflow:auto}
+h1{font-size:16px;margin:0 0 12px} h2{font-size:13px;margin:18px 0 8px;color:#9fb3c8}
+.good{color:#8fe3a2}.bad{color:#ff8f8f}.muted{color:#8494a5}
+pre{white-space:pre-wrap;background:#0d1217;border:1px solid #2a333e;padding:10px;border-radius:6px;font-size:12px}
+button{background:#25303b;color:#e7eef5;border:1px solid #3b4957;border-radius:5px;padding:7px 9px;margin:2px;cursor:pointer}
+button:hover{background:#304050}
+kbd{background:#252c34;border:1px solid #46515d;border-radius:3px;padding:1px 4px}
+.row{display:flex;flex-wrap:wrap;gap:3px}
+#boot{font-weight:650}
+#ownerNote{display:none;margin:12px 0;color:#b9c7d4}
+body.owner-blind:not(.owner-revealed) .forensic{display:none}
+body.owner-blind #ownerNote{display:block}
+body.owner-blind:not(.owner-revealed){grid-template-columns:minmax(0,1fr) 280px}
+body.owner-blind.owner-revealed #ownerNote{display:none}
+textarea{box-sizing:border-box;width:100%;height:82px;resize:vertical;background:#0d1217;color:#b9c7d4;border:1px solid #2a333e;border-radius:6px;padding:7px;font:11px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace}
+</style>
+</head>
+<body>
+<main><canvas id="c"></canvas></main>
+<aside>
+<h1>ReflexBrain E0.0 — authoritative body probe</h1>
+<div id="boot" class="muted forensic">Loading deterministic Rapier…</div>
+<h2 class="forensic">Automated causal probe</h2>
+<pre id="auto" class="forensic">pending</pre>
+<h2>Owner control</h2>
+<div><kbd>W</kbd>/<kbd>S</kbd> drive, <kbd>A</kbd>/<kbd>D</kbd> turn.</div>
+<div id="ownerNote">Po prostu pojeździj i pobaw się światem. Nie szukaj „poprawnej” odpowiedzi. Gdy uznasz, że wystarczy, kliknij <b>Pause</b> — wtedy odsłonimy zapis runu.</div>
+<div class="row" style="margin-top:8px">
+<button id="pause">Run</button><button id="reset">Reset</button>
+</div>
+<div class="row">
+<button data-shove="-1,0">Shove ←</button><button data-shove="1,0">Shove →</button>
+<button data-shove="0,-1">Shove ↑</button><button data-shove="0,1">Shove ↓</button>
+</div>
+<h2 class="forensic">Live forensic truth</h2>
+<pre id="live" class="forensic"></pre>
+<h2 class="forensic">Owner-run recorder</h2>
+<pre id="replay" class="forensic">Replay not yet verified.</pre>
+<textarea id="events" class="forensic" readonly aria-label="Committed simulation event stream"></textarea>
+<div class="muted forensic">Circle collider is intentional E0 null. Visual nose is orientation only, not hidden collision geometry. No brain, fatigue, action timer, target oracle, or shared drive/turn budget.</div>
+</aside>
+<script type="module">
+const autoEl=document.querySelector('#auto'), bootEl=document.querySelector('#boot'), liveEl=document.querySelector('#live');
+const replayEl=document.querySelector('#replay'), eventEl=document.querySelector('#events');
+const OWNER_VIEW=new URLSearchParams(location.search).get('view')==='owner';
+if(OWNER_VIEW) document.body.classList.add('owner-blind');
+const canvas=document.querySelector('#c'), ctx=canvas.getContext('2d');
+const DPR=()=>Math.max(1,devicePixelRatio||1);
+function resize(){const r=canvas.getBoundingClientRect(),d=DPR();canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0)}
+addEventListener('resize',resize);resize();
+
+try{
+  const mod=await import('@dimforge/rapier2d-deterministic-compat');
+  const RAPIER=mod.default ?? mod;
+  await RAPIER.init();
+  bootEl.textContent='Rapier deterministic-compat 0.20.0 loaded';
+  bootEl.className='good';
+
+  const DT=1/120, R=1, MASS=1;
+  // Historical v1-lineage priors, not frozen product values.
+  const VMAX=5.2631578947, TAU_MOVE=0.196, OMEGA_MAX=2.0, TAU_TURN=0.143;
+  const LIN_D=(Math.exp(DT/TAU_MOVE)-1)/DT;
+  const ANG_D=(Math.exp(DT/TAU_TURN)-1)/DT;
+  const FMAX=MASS*LIN_D*VMAX;
+  const DISC_I=0.5*MASS*R*R;
+  const TMAX=DISC_I*ANG_D*OMEGA_MAX;
+
+  const bytesEqual=(a,b)=>a.length===b.length && a.every((v,i)=>v===b[i]);
+  async function sha(bytes){const d=await crypto.subtle.digest('SHA-256',bytes);return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('').slice(0,16)}
+
+  function createBody(world,x,y,mass,r=R,linearD=LIN_D,angularD=ANG_D){
+    const rb=world.createRigidBody(RAPIER.RigidBodyDesc.dynamic()
+      .setTranslation(x,y).setLinearDamping(linearD).setAngularDamping(angularD));
+    const co=world.createCollider(RAPIER.ColliderDesc.ball(r).setMass(mass).setFriction(0).setRestitution(0),rb);
+    return {rb,co};
+  }
+  function createWall(world,x,y,hx,hy){
+    const rb=world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(x,y));
+    const co=world.createCollider(RAPIER.ColliderDesc.cuboid(hx,hy).setFriction(0).setRestitution(0),rb);
+    return {rb,co,hx,hy};
+  }
+  function applyDemand(rb,drive,turn){
+    rb.resetForces(true); rb.resetTorques(true);
+    const a=rb.rotation(), c=Math.cos(a), s=Math.sin(a);
+    rb.addForce({x:c*FMAX*drive,y:s*FMAX*drive},true);
+    rb.addTorque(TMAX*turn,true);
+  }
+
+  function pairImpulse(w,h1,h2){
+    const c1=w.getCollider(h1), c2=w.getCollider(h2);
+    let impulse=0, solverContacts=0;
+    w.contactPair(c1,c2,(m)=>{
+      const n=m.numSolverContacts();
+      solverContacts+=n;
+      for(let i=0;i<n;i++) impulse+=Math.abs(m.contactImpulse(i));
+    });
+    return {impulse,solverContacts};
+  }
+
+  function runFreeReverse(){
+    const w=new RAPIER.World({x:0,y:0}); w.timestep=DT;
+    const a=createBody(w,0,0,1,1);
+    for(let t=0;t<240;t++){ applyDemand(a.rb,1,0); w.step(); }
+    const steady=a.rb.linvel().x;
+    const x0=a.rb.translation().x;
+    applyDemand(a.rb,-1,0); w.step();
+    const afterOne=a.rb.linvel().x;
+    let crossTick=null, crossX=null;
+    for(let t=1;t<=120;t++){
+      applyDemand(a.rb,-1,0); w.step();
+      if(crossTick===null && a.rb.linvel().x<=0){
+        crossTick=t+1; crossX=a.rb.translation().x;
+        break;
+      }
+    }
+    const overshoot=(crossX??a.rb.translation().x)-x0;
+    const pass=
+      steady>VMAX*.97 &&
+      afterOne>0 &&
+      crossTick!==null && crossTick>=5 && crossTick<=40 &&
+      overshoot>0.10*R && overshoot<0.60*R;
+    w.free();
+    return {pass,steady,afterOne,crossTick,overshoot};
+  }
+
+  function runPushMass(objectMass){
+    const w=new RAPIER.World({x:0,y:0}); w.timestep=DT;
+    const a=createBody(w,0,0,1,1);
+    const o=createBody(w,1.70,0,objectMass,.7);
+    let contactTicks=0;
+    for(let t=0;t<480;t++){
+      applyDemand(a.rb,1,0); w.step();
+      w.contactPair(a.co,o.co,()=>{contactTicks++});
+    }
+    const out={
+      speed:a.rb.linvel().x,
+      actorX:a.rb.translation().x,
+      objectX:o.rb.translation().x,
+      contactTicks,
+    };
+    w.free(); return out;
+  }
+
+  function runMassContrast(){
+    const light=runPushMass(1), heavy=runPushMass(4);
+    const ratio=light.speed/Math.max(1e-9,heavy.speed);
+    const pass=
+      light.contactTicks>300 && heavy.contactTicks>300 &&
+      light.speed>heavy.speed*1.8 &&
+      heavy.speed>0.25;
+    return {pass,light,heavy,ratio};
+  }
+
+  function runTransientPush(objectMass){
+    const w=new RAPIER.World({x:0,y:0}); w.timestep=DT;
+    // Zero damping here isolates near-rest inertial response from sustained drag.
+    const a=createBody(w,0,0,1,1,0,0);
+    const o=createBody(w,1.70,0,objectMass,.7,0,0);
+    applyDemand(a.rb,1,0); w.step();
+    let contacts=0;
+    w.contactPair(a.co,o.co,()=>{contacts++});
+    const out={
+      actorV:a.rb.linvel().x,
+      objectV:o.rb.linvel().x,
+      contacts,
+    };
+    w.free(); return out;
+  }
+
+  function runTransientMassContrast(){
+    const light=runTransientPush(1), heavy=runTransientPush(4);
+    const ratio=light.actorV/Math.max(1e-12,heavy.actorV);
+    const pass=
+      light.contacts>0 && heavy.contacts>0 &&
+      light.actorV>heavy.actorV*1.8 &&
+      heavy.actorV>0;
+    return {pass,light,heavy,ratio};
+  }
+
+  function wrapPi(x){
+    while(x>Math.PI)x-=Math.PI*2;
+    while(x<-Math.PI)x+=Math.PI*2;
+    return x;
+  }
+
+  function runCurveSignature(){
+    const w=new RAPIER.World({x:0,y:0}); w.timestep=DT;
+    const a=createBody(w,0,0,1,1);
+    for(let t=0;t<720;t++){ applyDemand(a.rb,1,1); w.step(); }
+    const v=a.rb.linvel(), heading=a.rb.rotation();
+    const speed=Math.hypot(v.x,v.y);
+    const omega=a.rb.angvel();
+    const slip=Math.abs(wrapPi(Math.atan2(v.y,v.x)-heading));
+    const predicted=Math.atan(OMEGA_MAX/LIN_D);
+    const pass=
+      Number.isFinite(speed)&&Number.isFinite(omega)&&Number.isFinite(slip) &&
+      Math.abs(omega-OMEGA_MAX)<.08 &&
+      Math.abs(slip-predicted)<4*Math.PI/180;
+    const out={pass,speed,omega,slip,predicted};
+    w.free(); return out;
+  }
+
+  function runPassiveShove(){
+    const w=new RAPIER.World({x:0,y:0}); w.timestep=DT;
+    const a=createBody(w,0,0,1,1);
+    a.rb.applyImpulse({x:0,y:4},true);
+    w.step();
+    const initial=Math.abs(a.rb.linvel().y);
+    let prev=initial, monotonic=true, maxRise=0;
+    for(let t=0;t<120;t++){
+      applyDemand(a.rb,0,0); w.step();
+      const cur=Math.abs(a.rb.linvel().y);
+      maxRise=Math.max(maxRise,cur-prev);
+      if(cur>prev+1e-7) monotonic=false;
+      prev=cur;
+    }
+    const final=Math.abs(a.rb.linvel().y);
+    const pass=initial>1 && final<initial*.02 && monotonic;
+    const out={pass,initial,final,ratio:final/initial,maxRise};
+    w.free(); return out;
+  }
+
+  function runLongBracing(){
+    const w=new RAPIER.World({x:0,y:0}); w.timestep=DT;
+    const a=createBody(w,0,0,1,1), h=createBody(w,2.5,0,3,1);
+    const wall=createWall(w,5,0,.25,3);
+    let minAX=Infinity,maxAX=-Infinity,minHX=Infinity,maxHX=-Infinity;
+    let maxAV=0,maxHV=0,lastAH=0,lastHW=0;
+    for(let t=0;t<1440;t++){
+      applyDemand(a.rb,1,0); w.step();
+      if(t>=720){
+        const ap=a.rb.translation(), hp=h.rb.translation();
+        minAX=Math.min(minAX,ap.x);maxAX=Math.max(maxAX,ap.x);
+        minHX=Math.min(minHX,hp.x);maxHX=Math.max(maxHX,hp.x);
+        maxAV=Math.max(maxAV,Math.abs(a.rb.linvel().x));
+        maxHV=Math.max(maxHV,Math.abs(h.rb.linvel().x));
+      }
+      if(t===1439){
+        lastAH=pairImpulse(w,a.co.handle,h.co.handle).impulse;
+        lastHW=pairImpulse(w,h.co.handle,wall.co.handle).impulse;
+      }
+    }
+    const actorDrift=maxAX-minAX, heavyDrift=maxHX-minHX;
+    const finite=[actorDrift,heavyDrift,maxAV,maxHV,lastAH,lastHW].every(Number.isFinite);
+    const pass=finite &&
+      actorDrift<.01 && heavyDrift<.01 &&
+      maxAV<.01 && maxHV<.01 &&
+      lastAH>1e-5 && lastHW>1e-5;
+    const out={pass,actorDrift,heavyDrift,maxAV,maxHV,lastAH,lastHW};
+    w.free(); return out;
+  }
+
+  async function runAuto(){
+    let world=new RAPIER.World({x:0,y:0}); world.timestep=DT;
+    const actor=createBody(world,0,0,1,1), heavy=createBody(world,2.5,0,3,1);
+    const wall=createWall(world,5,0,.25,3);
+    const ah=actor.rb.handle, hh=heavy.rb.handle;
+    const ac=actor.co.handle, hc=heavy.co.handle, wc=wall.co.handle;
+    const scripted=(w,t,perturb=false)=>{
+      const a=w.getRigidBody(ah);
+      let drive=1, turn=(t>=280&&t<330)?.35:0;
+      if(perturb && t===317) turn+=.001;
+      applyDemand(a,drive,turn);
+      w.step();
+    };
+    for(let t=0;t<240;t++) scripted(world,t,false);
+    const cp=world.takeSnapshot();
+    const a0=world.getRigidBody(ah), h0=world.getRigidBody(hh);
+    const actorHeavy=pairImpulse(world,ac,hc);
+    const heavyWall=pairImpulse(world,hc,wc);
+    const cpState={
+      ax:a0.translation().x,av:a0.linvel().x,
+      hx:h0.translation().x,hv:h0.linvel().x,
+      actorHeavyImpulse:actorHeavy.impulse,
+      heavyWallImpulse:heavyWall.impulse,
+      actorHeavyContacts:actorHeavy.solverContacts,
+      heavyWallContacts:heavyWall.solverContacts,
+    };
+    for(let t=240;t<480;t++) scripted(world,t,false);
+    const endA=world.takeSnapshot();
+    const endARb=world.getRigidBody(ah);
+    const endAState={
+      x:endARb.translation().x,y:endARb.translation().y,
+      a:endARb.rotation(),
+      vx:endARb.linvel().x,vy:endARb.linvel().y,w:endARb.angvel(),
+    };
+    const hashA=await sha(endA);
+
+    let twin=RAPIER.World.restoreSnapshot(cp); twin.timestep=DT;
+    for(let t=240;t<480;t++) scripted(twin,t,false);
+    const endB=twin.takeSnapshot();
+    const hashB=await sha(endB);
+
+    let changed=RAPIER.World.restoreSnapshot(cp); changed.timestep=DT;
+    for(let t=240;t<480;t++) scripted(changed,t,true);
+    const endC=changed.takeSnapshot();
+    const endCRb=changed.getRigidBody(ah);
+    const endCState={
+      x:endCRb.translation().x,y:endCRb.translation().y,
+      a:endCRb.rotation(),
+      vx:endCRb.linvel().x,vy:endCRb.linvel().y,w:endCRb.angvel(),
+    };
+    const hashC=await sha(endC);
+
+    const exact=bytesEqual(endA,endB), divergent=!bytesEqual(endA,endC);
+    const stateDelta=
+      Math.abs(endAState.x-endCState.x)+Math.abs(endAState.y-endCState.y)+
+      Math.abs(endAState.a-endCState.a)+
+      Math.abs(endAState.vx-endCState.vx)+Math.abs(endAState.vy-endCState.vy)+
+      Math.abs(endAState.w-endCState.w);
+    const observableDivergent=stateDelta>1e-8;
+    const jammed=Math.abs(cpState.av)<.08 && Math.abs(cpState.hv)<.08 && cpState.hx>3.65 && cpState.hx<3.85;
+    const reciprocalContact=
+      cpState.actorHeavyContacts>0 && cpState.heavyWallContacts>0 &&
+      cpState.actorHeavyImpulse>1e-5 && cpState.heavyWallImpulse>1e-5;
+    const braced=jammed && reciprocalContact;
+
+    const freeReverse=runFreeReverse();
+    const transientMass=runTransientMassContrast();
+    const massContrast=runMassContrast();
+    const passiveShove=runPassiveShove();
+    const curveSignature=runCurveSignature();
+    const longBracing=runLongBracing();
+    const syntheticReplay=runSyntheticEventReplay();
+
+    const pass=
+      exact&&divergent&&observableDivergent&&braced &&
+      freeReverse.pass && transientMass.pass && massContrast.pass &&
+      passiveShove.pass && curveSignature.pass && longBracing.pass &&
+      syntheticReplay.pass;
+
+    autoEl.className=pass?'good':'bad';
+    autoEl.textContent=[
+      'CAUSAL APPARATUS',
+      'snapshot identical branch: '+(exact?'PASS':'FAIL'),
+      'single-tick perturbation bytes diverge: '+(divergent?'PASS':'FAIL'),
+      'single-tick perturbation state diverges: '+(observableDivergent?'PASS':'FAIL')+
+        ' delta='+stateDelta.toExponential(3),
+      'actor→heavy→wall bracing checkpoint: '+(braced?'PASS':'FAIL'),
+      '  jammed geometry/velocity: '+(jammed?'PASS':'FAIL'),
+      '  solver contact reaction: '+(reciprocalContact?'PASS':'FAIL'),
+      '  actor↔heavy impulse='+cpState.actorHeavyImpulse.toFixed(8),
+      '  heavy↔wall impulse='+cpState.heavyWallImpulse.toFixed(8),
+      '',
+      'E0.0 MECHANICAL CAMPAIGN',
+      'free response / reverse: '+(freeReverse.pass?'PASS':'FAIL'),
+      '  steady='+freeReverse.steady.toFixed(5)+
+        ' after1reverse='+freeReverse.afterOne.toFixed(5)+
+        ' zeroCrossTick='+freeReverse.crossTick+
+        ' overshootR='+freeReverse.overshoot.toFixed(5),
+      'transient inertial contrast: '+(transientMass.pass?'PASS':'FAIL'),
+      '  light actorV='+transientMass.light.actorV.toFixed(6)+
+        ' heavy actorV='+transientMass.heavy.actorV.toFixed(6)+
+        ' ratio='+transientMass.ratio.toFixed(3),
+      'sustained mass+damping self-outcome: '+(massContrast.pass?'PASS':'FAIL'),
+      '  light v='+massContrast.light.speed.toFixed(5)+
+        ' heavy v='+massContrast.heavy.speed.toFixed(5)+
+        ' ratio='+massContrast.ratio.toFixed(3),
+      '  contactTicks light='+massContrast.light.contactTicks+
+        ' heavy='+massContrast.heavy.contactTicks,
+      'passive shove decay: '+(passiveShove.pass?'PASS':'FAIL'),
+      '  vy0='+passiveShove.initial.toFixed(5)+
+        ' vy1s='+passiveShove.final.toFixed(5)+
+        ' ratio='+passiveShove.ratio.toFixed(5)+
+        ' maxRise='+passiveShove.maxRise.toExponential(2),
+      'isotropic curve signature: '+(curveSignature.pass?'PASS':'FAIL'),
+      '  speed='+curveSignature.speed.toFixed(5)+
+        ' omega='+curveSignature.omega.toFixed(5)+
+        ' slipDeg='+(curveSignature.slip*180/Math.PI).toFixed(2)+
+        ' predictedDeg='+(curveSignature.predicted*180/Math.PI).toFixed(2),
+      'synthetic Owner-event replay: '+(syntheticReplay.pass?'PASS':'FAIL'),
+      '  physics='+(syntheticReplay.physicsExact?'PASS':'FAIL')+
+        ' controls='+(syntheticReplay.controlExact?'PASS':'FAIL')+
+        ' events='+syntheticReplay.eventCount+' ticks='+syntheticReplay.ticks,
+      'long bracing soak: '+(longBracing.pass?'PASS':'FAIL'),
+      '  actorDrift='+longBracing.actorDrift.toExponential(3)+
+        ' heavyDrift='+longBracing.heavyDrift.toExponential(3),
+      '  maxV actor='+longBracing.maxAV.toExponential(3)+
+        ' heavy='+longBracing.maxHV.toExponential(3),
+      '  final impulses '+longBracing.lastAH.toFixed(8)+
+        ' / '+longBracing.lastHW.toFixed(8),
+      '',
+      'future A hash '+hashA,
+      'future B hash '+hashB,
+      'changed  hash '+hashC
+    ].join('\n');
+    document.title=OWNER_VIEW?'ReflexBrain E0.0':((pass?'E0_CAMPAIGN_PASS':'E0_CAMPAIGN_FAIL')+' '+hashA);
+    return pass;
+  }
+
+  let runSerial=0;
+  function makeInteractiveWorld(){
+    const world=new RAPIER.World({x:0,y:0});world.timestep=DT;
+    const actor=createBody(world,-3,0,1,1);
+    const light=createBody(world,1,-2.2,1,.7,LIN_D,ANG_D);
+    const heavy=createBody(world,1,2.2,4,.7,LIN_D,ANG_D);
+    const walls=[
+      createWall(world,-8,0,.25,5),createWall(world,8,0,.25,5),
+      createWall(world,0,-5,8,.25),createWall(world,0,5,8,.25)
+    ];
+    return {world,actor,light,heavy,walls};
+  }
+
+  function buildInteractive(){
+    return {
+      ...makeInteractiveWorld(),
+      runId:++runSerial,
+      tick:0,paused:true,keys:{},
+      pendingEvents:[],eventLog:[],seq:0,
+      realStart:performance.now(),
+    };
+  }
+
+  let sim=buildInteractive();
+  const controlKeys=new Set(['KeyW','KeyS','KeyA','KeyD']);
+  const uiHeld=new Set();
+
+  function queueEvent(ev){
+    sim.pendingEvents.push({...ev,realMs:+(performance.now()-sim.realStart).toFixed(3)});
+  }
+
+  function applyRecordedEvent(state,ev){
+    if(ev.type==='key') state.keys[ev.code]=ev.down;
+    if(ev.type==='impulse') state.actor.rb.applyImpulse({x:ev.x,y:ev.y},true);
+  }
+
+  function recorderPayload(){
+    return {
+      schema:'e0-owner-events-v1',
+      probeVersion:'e0.0-owner-v1',
+      config:{
+        dt:DT,radius:R,actorMass:MASS,
+        vmax:VMAX,tauMove:TAU_MOVE,omegaMax:OMEGA_MAX,tauTurn:TAU_TURN,
+        lightMass:1,heavyMass:4
+      },
+      runId:sim.runId,
+      tick:sim.tick,
+      events:sim.eventLog,
+    };
+  }
+
+  function refreshRecorder(){
+    eventEl.value=JSON.stringify(recorderPayload());
+  }
+
+  function simulateEventStream(events,targetTicks){
+    const r={...makeInteractiveWorld(),keys:{}};
+    let i=0;
+    for(let tick=0;tick<targetTicks;tick++){
+      while(i<events.length && events[i].tick===tick){
+        applyRecordedEvent(r,events[i]); i++;
+      }
+      const k=r.keys;
+      const drive=(k.KeyW?1:0)-(k.KeyS?1:0);
+      const turn=(k.KeyD?1:0)-(k.KeyA?1:0);
+      applyDemand(r.actor.rb,drive,turn);
+      r.world.step();
+    }
+    return r;
+  }
+
+  function controlStateEqual(a,b){
+    for(const code of controlKeys){
+      if(Boolean(a[code])!==Boolean(b[code])) return false;
+    }
+    return true;
+  }
+
+  function replayCurrent(){
+    const r=simulateEventStream(sim.eventLog,sim.tick);
+    const physicsExact=bytesEqual(sim.world.takeSnapshot(),r.world.takeSnapshot());
+    const controlExact=controlStateEqual(sim.keys,r.keys);
+    const exact=physicsExact&&controlExact;
+    const a=sim.actor.rb, b=r.actor.rb;
+    const stateDelta=
+      Math.abs(a.translation().x-b.translation().x)+
+      Math.abs(a.translation().y-b.translation().y)+
+      Math.abs(a.rotation()-b.rotation())+
+      Math.abs(a.linvel().x-b.linvel().x)+
+      Math.abs(a.linvel().y-b.linvel().y)+
+      Math.abs(a.angvel()-b.angvel());
+    replayEl.className=exact?'good':'bad';
+    replayEl.textContent=
+      'Owner event replay: '+(exact?'PASS':'FAIL')+
+      '\\nphysics bytes: '+(physicsExact?'PASS':'FAIL')+
+      '  control state: '+(controlExact?'PASS':'FAIL')+
+      '\\nrun='+sim.runId+' tick='+sim.tick+
+      ' events='+sim.eventLog.length+
+      '\\nstate delta='+stateDelta.toExponential(3);
+    r.world.free();
+    refreshRecorder();
+    return exact;
+  }
+
+  function runSyntheticEventReplay(){
+    const events=[
+      {tick:4,seq:0,type:'key',code:'KeyW',down:true,realMs:0},
+      {tick:61,seq:1,type:'key',code:'KeyD',down:true,realMs:0},
+      {tick:103,seq:2,type:'impulse',x:0,y:-4,realMs:0},
+      {tick:149,seq:3,type:'key',code:'KeyD',down:false,realMs:0},
+      {tick:211,seq:4,type:'key',code:'KeyA',down:true,realMs:0},
+      {tick:267,seq:5,type:'key',code:'KeyA',down:false,realMs:0},
+      {tick:301,seq:6,type:'key',code:'KeyW',down:false,realMs:0},
+    ];
+    const a=simulateEventStream(events,360);
+    const b=simulateEventStream(events,360);
+    const physicsExact=bytesEqual(a.world.takeSnapshot(),b.world.takeSnapshot());
+    const controlExact=controlStateEqual(a.keys,b.keys);
+    const pass=physicsExact&&controlExact;
+    a.world.free(); b.world.free();
+    return {pass,physicsExact,controlExact,eventCount:events.length,ticks:360};
+  }
+
+  addEventListener('keydown',e=>{
+    if(controlKeys.has(e.code) && !e.repeat && !uiHeld.has(e.code)){
+      if(sim.paused && sim.tick===0){
+        sim.realStart=performance.now();
+        sim.paused=false;
+        document.querySelector('#pause').textContent='Pause';
+      }
+      uiHeld.add(e.code);queueEvent({type:'key',code:e.code,down:true});e.preventDefault();
+    }
+  });
+  addEventListener('keyup',e=>{
+    if(controlKeys.has(e.code) && uiHeld.has(e.code)){
+      uiHeld.delete(e.code);queueEvent({type:'key',code:e.code,down:false});e.preventDefault();
+    }
+  });
+  addEventListener('blur',()=>{
+    for(const code of [...uiHeld]) queueEvent({type:'key',code,down:false});
+    uiHeld.clear();
+  });
+
+  document.querySelector('#pause').onclick=()=>{
+    if(sim.paused && sim.tick===0) sim.realStart=performance.now();
+    sim.paused=!sim.paused;
+    document.querySelector('#pause').textContent=sim.paused?'Run':'Pause';
+    if(sim.paused){
+      replayCurrent();
+      if(OWNER_VIEW && sim.tick>0) document.body.classList.add('owner-revealed');
+    }
+  };
+  document.querySelector('#reset').onclick=()=>{
+    sim.world.free();uiHeld.clear();sim=buildInteractive();
+    document.querySelector('#pause').textContent='Run';
+    if(OWNER_VIEW) document.body.classList.remove('owner-revealed');
+    replayEl.className='';replayEl.textContent='Replay not yet verified.';
+    refreshRecorder();
+  };
+  document.querySelectorAll('[data-shove]').forEach(b=>b.onclick=()=>{
+    const [x,y]=b.dataset.shove.split(',').map(Number);
+    queueEvent({type:'impulse',x:x*4,y:y*4});
+  });
+
+  function oneTick(){
+    const committed=sim.pendingEvents.splice(0);
+    for(const raw of committed){
+      const ev={...raw,tick:sim.tick,seq:sim.seq++};
+      sim.eventLog.push(ev);
+      applyRecordedEvent(sim,ev);
+    }
+    const k=sim.keys;
+    const drive=(k.KeyW?1:0)-(k.KeyS?1:0);
+    const turn=(k.KeyD?1:0)-(k.KeyA?1:0);
+    applyDemand(sim.actor.rb,drive,turn);
+    sim.world.step();
+    sim.tick++;
+    if(committed.length || sim.tick%60===0) refreshRecorder();
+  }
+
+  refreshRecorder();
+
+  const PX=48;
+  function worldToScreen(x,y){
+    const w=canvas.clientWidth,h=canvas.clientHeight;
+    return [w/2+x*PX,h/2+y*PX];
+  }
+  function circle(body,r,label,fill){
+    const p=body.rb.translation(),[x,y]=worldToScreen(p.x,p.y);
+    ctx.beginPath();ctx.arc(x,y,r*PX,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle='#c5d2df';ctx.lineWidth=2;ctx.stroke();
+    if(label){ctx.fillStyle='#0c1116';ctx.font='600 12px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,x,y)}
+  }
+  function render(){
+    const w=canvas.clientWidth,h=canvas.clientHeight;
+    ctx.clearRect(0,0,w,h);ctx.fillStyle='#0b0f13';ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle='#27313a';ctx.lineWidth=1;
+    for(let gx=-8;gx<=8;gx++){const [x]=worldToScreen(gx,0);ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+    for(let gy=-5;gy<=5;gy++){const [,y]=worldToScreen(0,gy);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+    // walls
+    ctx.fillStyle='#39434e';
+    for(const o of sim.walls){const p=o.rb.translation(),[x,y]=worldToScreen(p.x,p.y);ctx.fillRect(x-o.hx*PX,y-o.hy*PX,o.hx*2*PX,o.hy*2*PX)}
+    circle(sim.light,.7,'A','#8ea5b7');circle(sim.heavy,.7,'B','#8ea5b7');circle(sim.actor,1,'','#95d69f');
+    const p=sim.actor.rb.translation(),[ax,ay]=worldToScreen(p.x,p.y),a=sim.actor.rb.rotation();
+    ctx.strokeStyle='#102417';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(ax+Math.cos(a)*.9*PX,ay+Math.sin(a)*.9*PX);ctx.stroke();
+    const v=sim.actor.rb.linvel(),drive=(sim.keys.KeyW?1:0)-(sim.keys.KeyS?1:0),turn=(sim.keys.KeyD?1:0)-(sim.keys.KeyA?1:0);
+    liveEl.textContent=[
+      'tick '+sim.tick+(sim.paused?'  [PAUSED]':'')+
+        '  events='+sim.eventLog.length,
+      'demand drive='+drive.toFixed(2)+' turn='+turn.toFixed(2),
+      'actor x='+p.x.toFixed(3)+' y='+p.y.toFixed(3)+' θ='+a.toFixed(3),
+      'velocity x='+v.x.toFixed(3)+' y='+v.y.toFixed(3),
+      'speed='+Math.hypot(v.x,v.y).toFixed(3)+'  ω='+sim.actor.rb.angvel().toFixed(3),
+      'lineage priors: dLin='+LIN_D.toFixed(3)+' Fmax='+FMAX.toFixed(3),
+      '                dAng='+ANG_D.toFixed(3)+' Tmax='+TMAX.toFixed(3)
+    ].join('\n');
+  }
+  let last=performance.now(),acc=0;
+  function frame(now){
+    let elapsed=Math.min(.1,(now-last)/1000);last=now;
+    if(!sim.paused){acc+=elapsed;let guard=0;while(acc>=DT&&guard++<30){oneTick();acc-=DT}}
+    render();requestAnimationFrame(frame);
+  }
+  await runAuto();
+  requestAnimationFrame(frame);
+}catch(err){
+  bootEl.textContent='BOOT FAIL: '+(err?.stack||err);bootEl.className='bad';autoEl.textContent=String(err?.stack||err);document.title='E0_BOOT_FAIL';
+}
+</script>
+</body></html>
