@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReflexBrain E0 probe — boot</title>
+<style>
+html,body{margin:0;height:100%;background:#11151a;color:#d8e0e8;font:14px/1.35 system-ui,sans-serif}
+body{display:grid;grid-template-columns:minmax(0,1fr) 330px;overflow:hidden}
+main{min-width:0;display:grid;place-items:center;background:#0b0f13}
+canvas{width:100%;height:100%;display:block}
+aside{padding:16px;background:#151b22;border-left:1px solid #2a333e;overflow:auto}
+h1{font-size:16px;margin:0 0 12px} h2{font-size:13px;margin:18px 0 8px;color:#9fb3c8}
+.good{color:#8fe3a2}.bad{color:#ff8f8f}.muted{color:#8494a5}
+pre{white-space:pre-wrap;background:#0d1217;border:1px solid #2a333e;padding:10px;border-radius:6px;font-size:12px}
+button{background:#25303b;color:#e7eef5;border:1px solid #3b4957;border-radius:5px;padding:7px 9px;margin:2px;cursor:pointer}
+button:hover{background:#304050}
+kbd{background:#252c34;border:1px solid #46515d;border-radius:3px;padding:1px 4px}
+.row{display:flex;flex-wrap:wrap;gap:3px}
+#boot{font-weight:650}
+</style>
+</head>
+<body>
+<main><canvas id="c"></canvas></main>
+<aside>
+<h1>ReflexBrain E0.0 — authoritative body probe</h1>
+<div id="boot" class="muted">Loading deterministic Rapier…</div>
+<h2>Automated causal probe</h2>
+<pre id="auto">pending</pre>
+<h2>Owner control</h2>
+<div><kbd>W</kbd>/<kbd>S</kbd> drive, <kbd>A</kbd>/<kbd>D</kbd> turn. Same MotorDemand interface intended for the future brain.</div>
+<div class="row" style="margin-top:8px">
+<button id="pause">Pause</button><button id="reset">Reset</button>
+</div>
+<div class="row">
+<button data-shove="-1,0">Shove ←</button><button data-shove="1,0">Shove →</button>
+<button data-shove="0,-1">Shove ↑</button><button data-shove="0,1">Shove ↓</button>
+</div>
+<h2>Live forensic truth</h2>
+<pre id="live"></pre>
+<div class="muted">Circle collider is intentional E0 null. Visual nose is orientation only, not hidden collision geometry. No brain, fatigue, action timer, target oracle, or shared drive/turn budget.</div>
+</aside>
+<script type="module">
+const autoEl=document.querySelector('#auto'), bootEl=document.querySelector('#boot'), liveEl=document.querySelector('#live');
+const canvas=document.querySelector('#c'), ctx=canvas.getContext('2d');
+const DPR=()=>Math.max(1,devicePixelRatio||1);
+function resize(){const r=canvas.getBoundingClientRect(),d=DPR();canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0)}
+addEventListener('resize',resize);resize();
+
+try{
+  const mod=await import('https://cdn.jsdelivr.net/npm/@dimforge/rapier2d-deterministic-compat@0.20.0/dist/rapier.mjs');
+  const RAPIER=mod.default ?? mod;
+  await RAPIER.init();
+  bootEl.textContent='Rapier deterministic-compat 0.20.0 loaded';
+  bootEl.className='good';
+
+  const DT=1/120, R=1, MASS=1;
+  // Historical v1-lineage priors, not frozen product values.
+  const VMAX=5.2631578947, TAU_MOVE=0.196, OMEGA_MAX=2.0, TAU_TURN=0.143;
+  const LIN_D=(Math.exp(DT/TAU_MOVE)-1)/DT;
+  const ANG_D=(Math.exp(DT/TAU_TURN)-1)/DT;
+  const FMAX=MASS*LIN_D*VMAX;
+  const DISC_I=0.5*MASS*R*R;
+  const TMAX=DISC_I*ANG_D*OMEGA_MAX;
+
+  const bytesEqual=(a,b)=>a.length===b.length && a.every((v,i)=>v===b[i]);
+  async function sha(bytes){const d=await crypto.subtle.digest('SHA-256',bytes);return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('').slice(0,16)}
+
+  function createBody(world,x,y,mass,r=R,linearD=LIN_D,angularD=ANG_D){
+    const rb=world.createRigidBody(RAPIER.RigidBodyDesc.dynamic()
+      .setTranslation(x,y).setLinearDamping(linearD).setAngularDamping(angularD));
+    const co=world.createCollider(RAPIER.ColliderDesc.ball(r).setMass(mass).setFriction(0).setRestitution(0),rb);
+    return {rb,co};
+  }
+  function createWall(world,x,y,hx,hy){
+    const rb=world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(x,y));
+    const co=world.createCollider(RAPIER.ColliderDesc.cuboid(hx,hy).setFriction(0).setRestitution(0),rb);
+    return {rb,co,hx,hy};
+  }
+  function applyDemand(rb,drive,turn){
+    rb.resetForces(true); rb.resetTorques(true);
+    const a=rb.rotation(), c=Math.cos(a), s=Math.sin(a);
+    rb.addForce({x:c*FMAX*drive,y:s*FMAX*drive},true);
+    rb.addTorque(TMAX*turn,true);
+  }
+
+  async function runAuto(){
+    let world=new RAPIER.World({x:0,y:0}); world.timestep=DT;
+    const actor=createBody(world,0,0,1,1), heavy=createBody(world,2.5,0,3,1);
+    const wall=createWall(world,5,0,.25,3);
+    const ah=actor.rb.handle, hh=heavy.rb.handle;
+    const scripted=(w,t,perturb=false)=>{
+      const a=w.getRigidBody(ah);
+      let drive=1, turn=(t>=280&&t<330)?.35:0;
+      if(perturb && t===317) turn+=.001;
+      applyDemand(a,drive,turn);
+      w.step();
+    };
+    for(let t=0;t<240;t++) scripted(world,t,false);
+    const cp=world.takeSnapshot();
+    const a0=world.getRigidBody(ah), h0=world.getRigidBody(hh);
+    const cpState={ax:a0.translation().x,av:a0.linvel().x,hx:h0.translation().x,hv:h0.linvel().x};
+    for(let t=240;t<480;t++) scripted(world,t,false);
+    const endA=world.takeSnapshot();
+    const hashA=await sha(endA);
+
+    let twin=RAPIER.World.restoreSnapshot(cp); twin.timestep=DT;
+    for(let t=240;t<480;t++) scripted(twin,t,false);
+    const endB=twin.takeSnapshot();
+    const hashB=await sha(endB);
+
+    let changed=RAPIER.World.restoreSnapshot(cp); changed.timestep=DT;
+    for(let t=240;t<480;t++) scripted(changed,t,true);
+    const endC=changed.takeSnapshot();
+    const hashC=await sha(endC);
+
+    const exact=bytesEqual(endA,endB), divergent=!bytesEqual(endA,endC);
+    const braced=Math.abs(cpState.av)<.08 && Math.abs(cpState.hv)<.08 && cpState.hx>3.65 && cpState.hx<3.85;
+    const pass=exact&&divergent&&braced;
+    autoEl.className=pass?'good':'bad';
+    autoEl.textContent=[
+      'snapshot identical branch: '+(exact?'PASS':'FAIL'),
+      'single-tick perturbation diverges: '+(divergent?'PASS':'FAIL'),
+      'actor→heavy→wall bracing checkpoint: '+(braced?'PASS':'FAIL'),
+      '',
+      'checkpoint actor x='+cpState.ax.toFixed(6)+' vx='+cpState.av.toFixed(6),
+      'checkpoint heavy x='+cpState.hx.toFixed(6)+' vx='+cpState.hv.toFixed(6),
+      'future A hash '+hashA,
+      'future B hash '+hashB,
+      'changed  hash '+hashC
+    ].join('\n');
+    document.title=(pass?'E0_PROBE_PASS':'E0_PROBE_FAIL')+' '+hashA;
+    return pass;
+  }
+
+  let sim;
+  function buildInteractive(){
+    const world=new RAPIER.World({x:0,y:0});world.timestep=DT;
+    const actor=createBody(world,-3,0,1,1);
+    const light=createBody(world,1,-1.65,1,.7,LIN_D,ANG_D);
+    const heavy=createBody(world,1,1.65,4,.7,LIN_D,ANG_D);
+    const walls=[
+      createWall(world,-8,0,.25,5),createWall(world,8,0,.25,5),
+      createWall(world,0,-5,8,.25),createWall(world,0,5,8,.25)
+    ];
+    return {world,actor,light,heavy,walls,tick:0,paused:false,keys:{},events:[]};
+  }
+  sim=buildInteractive();
+  const controlKeys=new Set(['KeyW','KeyS','KeyA','KeyD']);
+  addEventListener('keydown',e=>{if(controlKeys.has(e.code)){sim.keys[e.code]=true;e.preventDefault()}});
+  addEventListener('keyup',e=>{if(controlKeys.has(e.code)){sim.keys[e.code]=false;e.preventDefault()}});
+  document.querySelector('#pause').onclick=()=>{sim.paused=!sim.paused;document.querySelector('#pause').textContent=sim.paused?'Run':'Pause'};
+  document.querySelector('#reset').onclick=()=>{sim.world.free();sim=buildInteractive()};
+  document.querySelectorAll('[data-shove]').forEach(b=>b.onclick=()=>{
+    const [x,y]=b.dataset.shove.split(',').map(Number);
+    sim.events.push({type:'impulse',x:x*4,y:y*4});
+  });
+
+  function oneTick(){
+    const k=sim.keys;
+    const drive=(k.KeyW?1:0)-(k.KeyS?1:0);
+    const turn=(k.KeyD?1:0)-(k.KeyA?1:0);
+    // Exogenous events are committed on a numbered simulation tick.
+    for(const ev of sim.events.splice(0)){
+      if(ev.type==='impulse') sim.actor.rb.applyImpulse({x:ev.x,y:ev.y},true);
+    }
+    applyDemand(sim.actor.rb,drive,turn);
+    sim.world.step();
+    sim.tick++;
+  }
+
+  const PX=48;
+  function worldToScreen(x,y){
+    const w=canvas.clientWidth,h=canvas.clientHeight;
+    return [w/2+x*PX,h/2+y*PX];
+  }
+  function circle(body,r,label,fill){
+    const p=body.rb.translation(),[x,y]=worldToScreen(p.x,p.y);
+    ctx.beginPath();ctx.arc(x,y,r*PX,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle='#c5d2df';ctx.lineWidth=2;ctx.stroke();
+    if(label){ctx.fillStyle='#0c1116';ctx.font='600 12px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,x,y)}
+  }
+  function render(){
+    const w=canvas.clientWidth,h=canvas.clientHeight;
+    ctx.clearRect(0,0,w,h);ctx.fillStyle='#0b0f13';ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle='#27313a';ctx.lineWidth=1;
+    for(let gx=-8;gx<=8;gx++){const [x]=worldToScreen(gx,0);ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+    for(let gy=-5;gy<=5;gy++){const [,y]=worldToScreen(0,gy);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+    // walls
+    ctx.fillStyle='#39434e';
+    for(const o of sim.walls){const p=o.rb.translation(),[x,y]=worldToScreen(p.x,p.y);ctx.fillRect(x-o.hx*PX,y-o.hy*PX,o.hx*2*PX,o.hy*2*PX)}
+    circle(sim.light,.7,'1×','#83b9db');circle(sim.heavy,.7,'4×','#c69a64');circle(sim.actor,1,'','#95d69f');
+    const p=sim.actor.rb.translation(),[ax,ay]=worldToScreen(p.x,p.y),a=sim.actor.rb.rotation();
+    ctx.strokeStyle='#102417';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(ax+Math.cos(a)*.9*PX,ay+Math.sin(a)*.9*PX);ctx.stroke();
+    const v=sim.actor.rb.linvel(),drive=(sim.keys.KeyW?1:0)-(sim.keys.KeyS?1:0),turn=(sim.keys.KeyD?1:0)-(sim.keys.KeyA?1:0);
+    liveEl.textContent=[
+      'tick '+sim.tick+(sim.paused?'  [PAUSED]':''),
+      'demand drive='+drive.toFixed(2)+' turn='+turn.toFixed(2),
+      'actor x='+p.x.toFixed(3)+' y='+p.y.toFixed(3)+' θ='+a.toFixed(3),
+      'velocity x='+v.x.toFixed(3)+' y='+v.y.toFixed(3),
+      'speed='+Math.hypot(v.x,v.y).toFixed(3)+'  ω='+sim.actor.rb.angvel().toFixed(3),
+      'lineage priors: dLin='+LIN_D.toFixed(3)+' Fmax='+FMAX.toFixed(3),
+      '                dAng='+ANG_D.toFixed(3)+' Tmax='+TMAX.toFixed(3)
+    ].join('\n');
+  }
+  let last=performance.now(),acc=0;
+  function frame(now){
+    let elapsed=Math.min(.1,(now-last)/1000);last=now;
+    if(!sim.paused){acc+=elapsed;let guard=0;while(acc>=DT&&guard++<30){oneTick();acc-=DT}}
+    render();requestAnimationFrame(frame);
+  }
+  await runAuto();
+  requestAnimationFrame(frame);
+}catch(err){
+  bootEl.textContent='BOOT FAIL: '+(err?.stack||err);bootEl.className='bad';autoEl.textContent=String(err?.stack||err);document.title='E0_BOOT_FAIL';
+}
+</script>
+</body></html>
