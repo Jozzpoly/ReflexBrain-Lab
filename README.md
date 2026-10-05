@@ -1,5 +1,9 @@
 # ReflexBrain Lab
 
+> **Current active frontier:** `experiment/organism-recovery-v0`  
+> Canonical recovery truth: **`docs/ORGANISM_RECOVERY_CURRENT_TRUTH_2026-10-06.md`**  
+> E0.0 is preserved as a qualified body/microscope donor; its organism-level promotion was rejected after Owner video review. O0 Persistent Organism Recovery is the next research question and is not yet implemented.
+
 Experimental laboratory for a **fast local semantic/reflex capability** inside embodied game actors.
 
 ## Start here
