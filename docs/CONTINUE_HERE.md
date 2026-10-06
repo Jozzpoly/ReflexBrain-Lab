@@ -16,7 +16,7 @@ Current branch HEAD at checkpoint creation:
 
 ## Current execution status
 
-**IMPLEMENTATION HAS NOT STARTED.**
+**ATOMIC IMPLEMENTATION HAS STARTED. NO RUN IS CURRENTLY ACTIVE.**
 
 The broad foundations campaign is complete enough to stop opening new domains.
 
@@ -32,11 +32,9 @@ Current frozen design authority:
 
 Important:
 
-"Frozen for implementation" means the design contract is stable enough to implement.
+"Frozen design authority" describes the campaign-level specimen contract.
 
-It does **not** mean implementation has been started or that the next agent should automatically code.
-
-Owner explicitly asked to pause before implementation and deepen/review first.
+Execution now proceeds only through isolated atomic runs. E01 has already been implemented, qualified and merged. The contract must not be interpreted as one monolithic implementation task.
 
 ## Read order after recovery
 
@@ -234,11 +232,19 @@ E01 does **not** qualify M0-Lite as a whole.
 
 No run is currently ACTIVE.
 
-The next candidate is only:
+The former **OCTRL-E02 — Material Composition / Topology** proposal was still too broad and has been split.
 
-**OCTRL-E02 — Material Composition / Topology — PROPOSED**
+Current proposed sequence:
 
-Its question is whether the E01-qualified process can compose with static geometry + loose bodies to create a persistent locally relevant topology/access change without introducing a second mechanism family.
+1. **OCTRL-E02a — Passage-State Composition Existence — PROPOSED**  
+   Does the frozen E01 process + static geometry + one loose blocker produce one persistent geometry-driven open→blocked (or blocked→open) passage change?
+
+2. **OCTRL-E02b — Composition Robustness / Anti-Fixture — PROPOSED**  
+   Only after E02a PASS: does the frozen composition survive modest held-out initial-condition variation instead of existing only as one tuned fixture?
+
+Run cards:
+- `docs/runs/OCTRL-E02A_PROPOSED.md`
+- `docs/runs/OCTRL-E02B_PROPOSED.md`
 
 Current WIP rule:
 - maximum **1 ACTIVE** run;
@@ -255,14 +261,15 @@ See:
 
 ## Current next move
 
-**Do not automatically implement.**
-
 After recovery:
 
 1. verify live branch/PR/CI truth;
 2. read this file + current state + run-based execution method;
 3. preserve the broad North Star;
-4. only if Owner deliberately authorizes execution, start **R01**, not "O-CTRL" or all of S0.
+4. if no run is ACTIVE and Owner has asked to continue, re-evaluate the first PROPOSED run before activation;
+5. never skip directly to a later subsystem or to "implement O-CTRL".
+
+At this checkpoint the first candidate is **E02a**, not E02b, B01, B1, perception or Local Brain.
 
 Do not reopen the broad foundations campaign unless new evidence changes a V0/V1 decision.
 
