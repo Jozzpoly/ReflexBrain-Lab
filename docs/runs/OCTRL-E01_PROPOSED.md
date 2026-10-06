@@ -1,6 +1,6 @@
 # OCTRL-E01 — Independent Mechanical Process Null
 
-Status: **ACTIVE · AUTHORIZED BY OWNER · IMPLEMENTATION STARTED**
+Status: **CLOSED · PASS · RESULT PERSISTED**
 
 Type: **PROBE**
 
@@ -191,10 +191,33 @@ If the session breaks, resume E01 only from its run card + exact active SHA.
 
 ## Result
 
-Run active on branch:
-`run/octrl-e01-independent-mechanical-process`
+**Outcome: PASS**
 
-**Outcome: unset**
+Result artifact:
+
+`docs/runs/OCTRL-E01_RESULT.md`
+
+Evidence summary:
+
+- deterministic repeat PASS;
+- control right-end reversal tick 232;
+- interaction right-end reversal tick 243;
+- 11-tick interaction-induced timing shift;
+- first loose-body contact tick 123;
+- 66 contact ticks;
+- persistent loose-body displacement 1.137;
+- direction reversal caused by physical end-stop contact;
+- live browser observation beyond 8936 ticks found no contradictory artifact.
+
+Claim scope:
+
+> one bounded non-agent physical process can create deterministic persistent material change through local physical coupling, and material interaction can alter the process's later timing/state.
+
+No claim about ecology, organism, semantics or life.
+
+Instrumentation note:
+
+The first browser observation failed with 404 because the nested probe was missing from Vite build inputs. The packaging fix did not change the E01 physical mechanism.
 
 ---
 
