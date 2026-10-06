@@ -755,12 +755,16 @@ Completed:
 
 The former broad E02 proposal has been split by the atomicity rule.
 
-Current PROPOSED runs:
-1. **OCTRL-E02a — Passage-State Composition Existence**
-2. **OCTRL-E02b — Composition Robustness / Anti-Fixture**, blocked on E02a PASS.
+Completed:
+- **OCTRL-E01 — PASS**
+- **OCTRL-E02a — PASS**
 
-If execution resumes, activate only E02a after re-checking its run card and exact base SHA.
+Current PROPOSED run:
+- **OCTRL-E02b — Composition Robustness / Anti-Fixture — ELIGIBLE, NOT ACTIVE**
 
-Do not use E02b variation while tuning E02a.
-After E02a:
-judge, persist, stop, re-plan.
+E02b must be explicitly ARMED before activation:
+- freeze the E02a specimen;
+- predeclare a small held-out variation set;
+- do not retune E02a after held-out qualification begins.
+
+No run is currently ACTIVE.
