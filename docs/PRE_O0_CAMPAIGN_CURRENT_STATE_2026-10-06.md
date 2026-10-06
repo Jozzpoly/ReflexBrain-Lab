@@ -880,4 +880,27 @@ Evidence:
 
 Do not alter blocker mass, B0 force or doorway geometry to restore binary impassability.
 
-**No run is ACTIVE. STOP and re-plan before any next run.**
+**No run is ACTIVE.**
+
+## Post-B01d re-planning
+
+A direct world/body integration pulse was considered and rejected before activation because the frozen B01c/B01d actor start and frozen E01 shuttle start physically overlap at tick 0:
+- actor center = (-3.20,0), radius = 1.0
+- shuttle center = (-3.60,0), radius = 0.55
+- center distance = 0.40 < combined radius 1.55
+
+Do not repair this by ad-hoc start-position edits inside an integration claim.
+
+The more direct current North-Star gap is:
+researcher-observed effectivity -> legal actor-private body experience.
+
+Current candidate:
+
+**OCTRL-P01a — Private Proprioceptive Effectivity Exposure — PROPOSED · NOT ACTIVE**
+
+P01a freezes B01d physics/protocol and adds only a P0-self proprioceptive sensor boundary. It asks whether the B01d effect appears in private body-local sensorimotor history without World coordinates, blocker identity or semantic access labels.
+
+Run card:
+`docs/runs/OCTRL-P01A_PROPOSED.md`
+
+**STOP and re-evaluate P01a before activation.**
