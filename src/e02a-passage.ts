@@ -37,7 +37,8 @@ export type E02aState = {
   firstOpenTick: number | null;
   firstBlockerContactTick: number | null;
   blockerContactTicks: number;
-  persistenceDueTick: number | null;
+  hadBlockerContact: boolean;
+  postContactNoContactTicks: number;
   persistenceOpen: boolean | null;
   blockerAtFirstOpen: { x: number; y: number } | null;
   blockerAtPersistence: { x: number; y: number } | null;
@@ -50,6 +51,7 @@ export type E02aScenarioResult = {
   firstOpenTick: number | null;
   firstBlockerContactTick: number | null;
   blockerContactTicks: number;
+  postContactNoContactTicks: number;
   persistenceOpen: boolean | null;
   blockerStart: { x: number; y: number };
   blockerAtFirstOpen: { x: number; y: number } | null;
@@ -188,7 +190,8 @@ export function createE02aScenario(processEnabled: boolean): E02aState {
     firstOpenTick: null,
     firstBlockerContactTick: null,
     blockerContactTicks: 0,
-    persistenceDueTick: null,
+    hadBlockerContact: false,
+    postContactNoContactTicks: 0,
     persistenceOpen: null,
     blockerAtFirstOpen: null,
     blockerAtPersistence: null,
@@ -208,25 +211,35 @@ export function stepE02aScenario(state: E02aState): void {
     state.base.tick += 1;
   }
 
-  if (hasContact(state.base.world, state.base.shuttle.co, state.blocker.co)) {
+  const blockerContact = hasContact(
+    state.base.world,
+    state.base.shuttle.co,
+    state.blocker.co,
+  );
+
+  if (blockerContact) {
+    state.hadBlockerContact = true;
     state.blockerContactTicks += 1;
+    state.postContactNoContactTicks = 0;
     if (state.firstBlockerContactTick === null) {
       state.firstBlockerContactTick = state.base.tick;
     }
+  } else if (state.hadBlockerContact) {
+    state.postContactNoContactTicks += 1;
   }
 
   const open = isE02aPassageOpen(state);
 
   if (!state.initialOpen && open && state.firstOpenTick === null) {
     state.firstOpenTick = state.base.tick;
-    state.persistenceDueTick = state.base.tick + PERSISTENCE_TICKS;
     const p = state.blocker.rb.translation();
     state.blockerAtFirstOpen = { x: p.x, y: p.y };
   }
 
   if (
-    state.persistenceDueTick !== null &&
-    state.base.tick >= state.persistenceDueTick &&
+    state.firstOpenTick !== null &&
+    state.hadBlockerContact &&
+    state.postContactNoContactTicks >= PERSISTENCE_TICKS &&
     state.persistenceOpen === null
   ) {
     state.persistenceOpen = open;
@@ -257,6 +270,7 @@ export function snapshotE02aScenario(state: E02aState) {
     firstOpenTick: state.firstOpenTick,
     firstBlockerContactTick: state.firstBlockerContactTick,
     blockerContactTicks: state.blockerContactTicks,
+    postContactNoContactTicks: state.postContactNoContactTicks,
     persistenceOpen: state.persistenceOpen,
   };
 }
@@ -293,6 +307,7 @@ export function runE02aScenario(
     firstOpenTick: state.firstOpenTick,
     firstBlockerContactTick: state.firstBlockerContactTick,
     blockerContactTicks: state.blockerContactTicks,
+    postContactNoContactTicks: state.postContactNoContactTicks,
     persistenceOpen: state.persistenceOpen,
     blockerStart: { ...BLOCKER_START },
     blockerAtFirstOpen: state.blockerAtFirstOpen,
@@ -317,6 +332,7 @@ function stableComparable(result: E02aScenarioResult): unknown {
     firstOpenTick: result.firstOpenTick,
     firstBlockerContactTick: result.firstBlockerContactTick,
     blockerContactTicks: result.blockerContactTicks,
+    postContactNoContactTicks: result.postContactNoContactTicks,
     persistenceOpen: result.persistenceOpen,
     blockerAtFirstOpen: result.blockerAtFirstOpen,
     blockerAtPersistence: result.blockerAtPersistence,
@@ -350,7 +366,12 @@ export function runE02aCampaign(): E02aCampaignResult {
   if (control.firstOpenTick !== null) reasons.push('disabled-process control opened passage');
   if (interaction.firstBlockerContactTick === null) reasons.push('E01 shuttle never contacted blocker');
   if (interaction.firstOpenTick === null) reasons.push('interaction never opened passage');
-  if (interaction.persistenceOpen !== true) reasons.push('passage did not remain open at persistence sample');
+  if (interaction.postContactNoContactTicks < PERSISTENCE_TICKS) {
+    reasons.push('shuttle and blocker never separated for the required post-contact persistence window');
+  }
+  if (interaction.persistenceOpen !== true) {
+    reasons.push('passage did not remain open after the required no-contact persistence window');
+  }
   if (
     blockerDisplacementAtPersistence === null ||
     blockerDisplacementAtPersistence < 0.9
