@@ -1,6 +1,6 @@
 # OCTRL-E02b — Composition Robustness / Anti-Fixture
 
-Status: **ACTIVE · QUALIFICATION ARMED · HELD-OUT SET FROZEN**
+Status: **CLOSED · PASS · RESULT PERSISTED**
 
 Type: **QUALIFICATION / COMPARISON**
 
@@ -142,7 +142,15 @@ No:
 
 ## Result
 
-Run active on branch:
-`run/octrl-e02b-composition-robustness`
+**Outcome: PASS**
 
-**Outcome: unset**
+Result artifact:
+
+`docs/runs/OCTRL-E02B_RESULT.md`
+
+Frozen baseline B0 and all five predeclared held-out cases H1-H5 passed the unchanged corrected E02a contract in CI and browser runtime.
+
+No E02a retuning occurred after held-out qualification began.
+
+Note:
+successful cases report exactly 60 post-contact no-contact ticks because the harness terminates at the first satisfied persistence threshold. This does not measure additional temporal margin.
