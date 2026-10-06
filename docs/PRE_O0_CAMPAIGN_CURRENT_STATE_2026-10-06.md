@@ -793,3 +793,70 @@ does the actual frozen B0 rigid body physically traverse the B01b OPEN configura
 No navigation, perception or Local Brain belongs in B01c.
 
 No run is ACTIVE.
+
+
+---
+
+# B01c result — 2026-10-06
+
+**OCTRL-B01c — Actual B0 Passage Effectivity Falsifier: SCIENTIFIC FAIL · EXECUTION VALID**
+
+Merged evidence:
+- PR #12
+- merge SHA: `1e324100390eb5ffb30ed895e11c655ac3cbffa6`
+- result: `docs/runs/OCTRL-B01C_RESULT.md`
+
+## Falsified claim
+
+Rejected:
+
+> researcher geometric BLOCKED implies actual B0 cannot traverse under the fixed protocol.
+
+Actual frozen B0 crossed both fixtures.
+
+OPEN:
+- crossing tick 122
+- contact ticks 53
+- blocker displacement 0.880
+
+BLOCKED:
+- crossing tick 161
+- contact ticks 228
+- blocker displacement 5.048
+
+The difference was not access/no-access.
+
+It was a materially different interaction history and traversal burden.
+
+## Replacement distinction
+
+### world-side material/geometric fact
+A movable body occupies the doorway.
+
+### actor-relative effectivity
+What this body/controller can accomplish through physical action.
+
+These are distinct.
+
+For movable material obstacles:
+
+> geometry alone must not be promoted to actor affordance truth.
+
+## Observed but not yet separately qualified
+
+The BLOCKED fixture produced:
+- +39 crossing ticks
+- +175 contact ticks
+- +4.168 blocker displacement
+
+relative to OPEN.
+
+This suggests a candidate effectivity/resistance signature.
+
+## Current next candidate
+
+**OCTRL-B01d — Actor-Relative Resistance Signature**
+
+Do not alter blocker mass, B0 force or doorway geometry to restore binary impassability.
+
+No run is ACTIVE.
