@@ -1,6 +1,6 @@
 # OCTRL-E02b — Composition Robustness / Anti-Fixture
 
-Status: **PROPOSED · BLOCKED ON E02a PASS · NOT ACTIVE**
+Status: **PROPOSED · ELIGIBLE AFTER E02a PASS · NOT ACTIVE**
 
 Type: **QUALIFICATION / COMPARISON**
 
@@ -9,6 +9,12 @@ O-CTRL host/substrate sufficiency.
 
 Required input:
 a frozen E02a PASS specimen.
+
+Satisfied by:
+- E02a result: `docs/runs/OCTRL-E02A_RESULT.md`
+- parent merge SHA: `f74926fdb18d1ee291a7302af69a8d97df390116`
+
+E02b is eligible but must be explicitly ARMED before activation.
 
 ---
 
@@ -81,6 +87,6 @@ No new mechanisms, actor systems, sensors, planner, task logic, or E02a retuning
 
 ## Result
 
-Blocked; not run.
+Eligible; not run.
 
 **Outcome: unset**
