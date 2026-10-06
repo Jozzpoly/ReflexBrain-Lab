@@ -111,10 +111,13 @@ export function wrapE0Pi(x: number): number {
   return x;
 }
 
-export function e0PairImpulse(world: any, a: any, b: any): {
+export function e0PairImpulse(world: any, handleA: any, handleB: any): {
   impulse: number;
   solverContacts: number;
 } {
+  const a = world.getCollider(handleA);
+  const b = world.getCollider(handleB);
+
   let impulse = 0;
   let solverContacts = 0;
 
