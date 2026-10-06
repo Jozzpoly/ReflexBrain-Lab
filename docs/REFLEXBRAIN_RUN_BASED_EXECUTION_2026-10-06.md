@@ -1,43 +1,46 @@
 # ReflexBrain — Run-Based Execution Architecture — 2026-10-06
 
-Status: **CURRENT EXECUTION METHODOLOGY · IMPLEMENTATION STILL PAUSED**
+Status: **CURRENT EXECUTION METHODOLOGY · v0.2 · IMPLEMENTATION STILL PAUSED**
 
-This document changes **how work is executed**, not the long-term ambition.
-
-Primary design authority remains:
+Primary design authority:
 
 `docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`
 
-The contract describes the bounded O-CTRL specimen.
+This document defines **how uncertainty is reduced**.
 
-It must **not** be treated as one implementation run.
+The frozen O-CTRL contract is a bounded specimen design.
+It is **not** one implementation task, one run, or a promise that every proposed component survives contact with evidence.
 
 ---
 
-# 1. Core correction
+# 1. Governing principle
 
-ReflexBrain has repeatedly mixed several scales of uncertainty in one experiment.
+> **Increase ambition at the program level; decrease simultaneous uncertainty at the run level.**
 
-A single specimen or campaign has often attempted to decide simultaneously:
+ReflexBrain is allowed to become more ambitious.
 
-- what the organism is;
-- what world it needs;
-- what body it has;
-- what it can perceive;
-- what it remembers;
-- why anything matters;
-- how continuation works;
-- what learning should do;
-- how success is measured.
+A run is not.
 
-This creates two failure modes:
+The project has repeatedly mixed:
+- ecology;
+- embodiment;
+- perception;
+- memory;
+- normativity;
+- continuation;
+- learning;
+- evaluation;
 
-1. **causal ambiguity** — if the result changes, we cannot tell which assumption caused it;
-2. **scope gravity** — every missing competence is repaired inside the same specimen until the experiment becomes a project/platform.
+inside one specimen.
 
-The correction is:
+That created:
+1. causal ambiguity;
+2. scope gravity;
+3. hard-to-finish sessions;
+4. recovery loss;
+5. apparatus that could grow faster than the organism.
 
-> **ambition stays global; uncertainty is resolved locally.**
+Run decomposition exists to correct those failures without shrinking the North Star.
 
 ---
 
@@ -45,548 +48,660 @@ The correction is:
 
 ## North Star
 
-Long-term ReflexBrain question:
+> Can a cheap local learned mechanism extract useful, generalizable actor-relative meaning from temporal private experience inside continuous embodied life, without becoming World authority, factual memory, the whole planner or motor controller?
 
-> Can a cheap local learned mechanism extract useful, generalizable actor-relative meaning from temporal private experience inside a genuinely ongoing embodied actor, without becoming World authority, factual memory, the whole planner or motor controller?
-
-This may become more ambitious over time.
-
-Do not shrink it merely to make the next run easy.
+This is deliberately broad.
 
 ## Campaign
 
-A campaign resolves one broad prerequisite or competence family.
+A broad prerequisite or competence family.
 
 Current campaign:
 **host/substrate sufficiency**.
 
-Current control sequence:
+Current research sequence:
 **O-CTRL -> O-DEV**.
 
-Future campaigns may include:
-- semantic-pressure discovery;
-- learned ReflexBrain shadow competence;
-- causal authority;
-- cross-ecology/generalization;
-- social/peer pressure.
-
-These are not current implementation commitments.
+Campaigns may later be invalidated or reordered by evidence.
 
 ## Run
 
-The atomic unit of substantial work.
+The atomic unit of substantial execution.
 
 A run asks **one primary causal question**.
 
-A run may contain several engineering steps only when all exist to answer that one question.
-
-A run must have:
-- one current qualified input state;
-- one main manipulated uncertainty;
-- explicit fixed assumptions;
-- one decisive falsifier / stop condition;
-- bounded artifacts;
-- a final PASS / FAIL / INCONCLUSIVE judgement;
-- exact recovery state.
+It may contain several engineering actions only when they are inseparable from answering that one question.
 
 ## Gate
 
-A gate combines evidence from several runs and decides whether a larger claim/next campaign is earned.
-
-Examples:
-- B1 body accepted or fallback to B0;
-- private sensor boundary qualified;
-- O-CTRL substrate qualified;
-- O-DEV warranted;
-- learned ReflexBrain pressure exists.
+A gate combines results from multiple runs and decides whether a larger claim or next campaign is earned.
 
 A gate is not a run.
 
 ---
 
-# 3. Run rules
+# 3. Atomicity test — split before activation
 
-## R1 — one primary unknown
+A proposed run is too large if **any** of the following is true:
 
-If a run asks two questions that can fail independently, split it.
+### A1 — independent failure
+Two parts can fail independently and would lead to different next decisions.
 
-Bad:
+Split them.
 
-> build M0, B1, P1 and autonomous control and see whether organism works.
+### A2 — multiple new authority seams
+The run simultaneously introduces more than one of:
+- new World process;
+- new body authority;
+- new sensor authority;
+- new memory authority;
+- new action authority;
+- new learned mechanism.
 
-Good:
+Default: split.
 
-> does M0-Lite create legible independent material reconfiguration before cognition exists?
+### A3 — downstream repair temptation
+A likely failure would tempt us to implement a later competence inside the same run.
 
-## R2 — preserve a control whenever cheap
+Split or explicitly forbid that repair.
 
-Prefer comparisons where only one meaningful dimension changes.
+### A4 — ambiguous attribution
+A PASS would not tell us which changed assumption produced the useful phenomenon.
 
-Examples:
-- B0 vs B1 body;
-- static ecology vs M0-Lite;
-- P0 vs P1;
-- concern present vs ablated.
+Split.
 
-Do not make every comparison a permanent product feature.
+### A5 — session-fit failure
+The run cannot reasonably reach a persistent evidence checkpoint inside one normal conversation/tool session.
 
-## R3 — no downstream repair inside current run
+Split before starting.
 
-If the current run reveals a missing later competence:
+A long calculation or build is allowed.
+An unbounded chain of conceptual/implementation decisions is not.
 
-record it.
+### A6 — recovery burden
+A fresh agent would need to reload most of the campaign to understand the unfinished run.
 
-Do not automatically implement it.
-
-Example:
-if M0-Lite reveals that later navigation will be hard, do not build navigation during the ecology run.
-
-## R4 — FAIL is completion
-
-A decisive FAIL ends the run.
-
-Do not keep polishing until it passes.
-
-The next run may:
-- replace the hypothesis;
-- isolate the failure;
-- fall back to a control;
-- widen/narrow the claim.
-
-## R5 — INCONCLUSIVE is a real result
-
-If instrumentation/ecology cannot answer the question:
-mark INCONCLUSIVE.
-
-Do not manufacture a PASS through proxy metrics.
-
-## R6 — Owner plane is scoped per run
-
-Only ask Owner questions the run can support.
-
-Examples:
-
-Body run:
-- does movement/contact have coherent rules?
-
-Not:
-- does organism feel alive?
-
-O-DEV later may support broader experiential questions.
-
-## R7 — freeze before held-out qualification
-
-Exploration/tuning occurs before policy/mechanism freeze.
-
-Held-out causal evidence comes after freeze.
-
-Do not train on the falsifier.
-
-## R8 — write checkpoint before moving on
-
-A material run result must be committed before the next run starts.
-
-The conversation is never the only copy of:
-- result;
-- decision;
-- surprise;
-- next uncertainty.
+Split or improve the run card.
 
 ---
 
-# 4. Run lifecycle
+# 4. Run budget
 
-Every run should fit this lifecycle.
+Default run budget:
 
-## A. Recover
+- **1 primary causal question**
+- **1 manipulated uncertainty**
+- **0–1 new authority seam**
+- **1 main artifact family**
+- **1 decisive result**
+- **1 next-decision boundary**
 
-Read:
-- `docs/CONTINUE_HERE.md`;
-- this run architecture;
-- current run card;
-- only the deeper evidence needed for the question.
+Controls and instrumentation are allowed only when they directly answer the question.
 
-Do not front-load the entire project corpus.
+This is a default, not bureaucracy.
+A justified exception must be written in the run card before activation.
 
-## B. Frame
+---
 
-Write a compact run card:
+# 5. Run classes
 
-### Question
-one sentence.
+Do not silently mix these roles.
 
-### Why now
-which current uncertainty it removes.
+## PROBE
 
-### Frozen inputs
-what must not change.
+Question:
+does a candidate mechanism/phenomenon exist at all?
 
-### Manipulated variable
-what is allowed to change.
+Exploration is allowed.
 
-### Evidence
-what observation can answer the question.
+Claims remain narrow.
 
-### Falsifier
-what ends the run as FAIL.
+## COMPARISON
 
-### Forbidden scope
-what must not be solved inside this run.
+Question:
+does changing one controlled dimension materially alter the phenomenon?
 
-### Output
-what artifact/result must exist at completion.
+Examples:
+B0 vs B1, static vs dynamic process.
 
-## C. Execute
+## INTEGRATION
 
-Work directly toward the evidence.
+Question:
+do already-qualified pieces remain coherent when coupled?
 
-Avoid infrastructure unless required by the run question.
+No new major competence should be invented here.
 
-For long runs:
-checkpoint after each material boundary.
+If integration needs a new competence, stop and open a separate probe.
 
-## D. Judge
+## QUALIFICATION
 
-Return exactly one:
+Candidate is frozen first.
+
+Run held-out/falsifying pressure.
+
+Do not tune on the held-out result.
+
+## OWNER CONTACT
+
+Used only when the claim genuinely requires experiential/product judgement.
+
+Machine evidence is prepared first.
+
+Owner contact is not used as a substitute for missing mechanism evidence.
+
+One run may transition from PROBE to later QUALIFICATION only through an explicit freeze boundary.
+Do not pretend exploratory tuning was already held-out evidence.
+
+---
+
+# 6. Run lifecycle
+
+## 0. PROPOSED
+
+A compact run card exists.
+
+No implementation work yet.
+
+## 1. ARMED
+
+Before activation record:
+
+- exact base SHA;
+- question;
+- why now;
+- frozen inputs;
+- manipulated variable;
+- allowed changes;
+- forbidden scope;
+- evidence;
+- falsifier;
+- expected output;
+- Owner touchpoint: none / optional / required;
+- downstream/SPC relevance as a **non-success criterion**.
+
+If this cannot fit compactly, the run is probably too broad.
+
+## 2. ACTIVE
+
+Work only toward the run evidence.
+
+### Conversation survival rule
+
+During active work:
+- give a short progress checkpoint after a material boundary or roughly every 2–3 substantial tool actions;
+- persist code/evidence at natural stable boundaries;
+- never leave a material decision only in chat;
+- before a risky/long action, make sure the latest meaningful state is recoverable.
+
+Do not create commits for meaningless microsteps.
+Do externalize any decision whose loss would change interpretation of the run.
+
+## 3. EVIDENCE-READY
+
+The candidate is stable enough to answer the question.
+
+If the run is qualification:
+freeze relevant parameters before held-out evidence.
+
+## 4. JUDGED
+
+Exactly one scientific outcome:
 
 - **PASS**
 - **FAIL**
 - **INCONCLUSIVE**
 
-Then state:
-- evidence;
-- scope of claim;
-- unexpected findings;
-- debt created;
-- whether the parent contract needs correction.
+A protocol breach or confound is **INCONCLUSIVE**, not FAIL.
 
-## E. Persist
+Record:
+- supporting evidence;
+- claim scope;
+- first important surprise;
+- known confounds;
+- debt introduced;
+- whether parent contract/current truth must change.
+
+## 5. PERSISTED
 
 Commit:
 - result;
+- artifact references;
 - exact SHA;
-- artifacts;
-- next candidate question.
+- next open uncertainty.
 
-## F. Stop
+## 6. CLOSED
 
-Do not automatically start the next run in the same momentum.
+Stop.
 
-Re-evaluate direction first.
+Do not continue into the next run through momentum.
 
----
-
-# 5. O-CTRL contract decomposition
-
-The frozen O-CTRL contract remains campaign-level design authority.
-
-Its old S0-S4 staging is now interpreted as **groups of runs**, not monolithic implementation phases.
-
-The later run map below is provisional.
-
-Only the first three runs are currently shaped tightly.
+The next run is re-selected from the updated state.
 
 ---
 
-# 6. First three implementation runs — proposed, NOT YET AUTHORIZED
+# 7. FAIL and INCONCLUSIVE discipline
 
-Implementation remains paused by Owner direction.
+## FAIL is successful completion
 
-These are the first runs **if/when** execution is deliberately authorized.
+If the falsifier fires:
+stop the run.
 
-## OCTRL-R01 — M0-Lite Ecology Null
+Do not repair until it passes.
 
-### Question
+A new run may investigate:
+- replacement mechanism;
+- narrower claim;
+- identified failure cause;
+- fallback control.
 
-Can the smallest M0-Lite world produce **legible, persistent, independent material reconfiguration** without any organism intelligence?
+## INCONCLUSIVE protects truth
 
-### Build only
+Use INCONCLUSIVE when:
+- instrumentation cannot distinguish hypotheses;
+- protocol was contaminated;
+- evidence is too weak;
+- an upstream defect invalidates interpretation.
 
-- Rapier M0-Lite geometry;
-- occlusion-relevant layout;
-- loop/chokepoint;
-- loose bodies;
-- one bounded physical shuttle;
-- simple visual surface.
-
-Use B0/E0 body only if an actor/body is needed for manual observation; autonomous Local Brain is absent.
-
-### Required evidence
-
-At least one lawful causal chain:
-
-`shuttle -> loose body / target / blocker -> persistent changed relation or chokepoint`
-
-with no Owner/focal-actor causation.
-
-### Controls
-
-Static-shuttle ablation.
-
-### FAIL if
-
-- shuttle is decorative;
-- world change reduces to timer choreography;
-- material reconfiguration is visually illegible;
-- achieving independent change requires a second mechanism family.
-
-### Forbidden
-
-- B1 redesign;
-- P0/P1;
-- memory;
-- concern;
-- Local Brain;
-- learning;
-- gate/plate subsystem.
-
-### Output
-
-One qualified physical ecology specimen or a rejection/correction of M0-Lite.
+Do not convert uncertainty into a proxy PASS.
 
 ---
 
-## OCTRL-R02 — Body Morphology A/B
+# 8. Qualified-baseline discipline
 
-Runs only if R01 leaves an ecology worth inhabiting.
+Future implementation should prefer:
 
-### Question
+- one **qualified baseline** branch/state;
+- one isolated active run branch derived from its exact SHA.
 
-Does minimal asymmetric morphology B1 add **useful orientation/body-scaled physical distinctions** under the same actuation seam without introducing dominant mechanical pathology?
+A failed or inconclusive run should not silently contaminate the qualified baseline.
 
-### Frozen
+A PASS does **not** automatically become architectural truth.
 
-- R01 ecology;
-- E0-style drive/turn actuation concept;
-- no cognition/perception changes.
+Promotion occurs only when the parent gate/current campaign state explicitly accepts the result.
 
-### Compare
+This preserves:
+- clean recovery;
+- cheap rollback;
+- scientific provenance.
 
-- B0 E0 disc;
-- B1 minimal asymmetric rounded rigid body.
-
-### Evidence cases
-
-- open locomotion;
-- passage/alignment;
-- one physical push/contact;
-- basic external shove if useful.
-
-### PASS scope
-
-B1 creates legible body-scaled relations while remaining mechanically stable enough for later organism work.
-
-### FAIL
-
-B1 mainly adds:
-- snagging;
-- instability;
-- tuning burden;
-
-without useful new distinctions.
-
-Then O-CTRL uses B0.
-Morphology moves to a separate future probe.
-
-### Forbidden
-
-- tuning separate intelligent controllers;
-- concern logic;
-- P1;
-- navigation/recovery.
+Exact branch naming can be chosen when implementation begins.
+Do not create branch machinery merely for documentation work.
 
 ---
 
-## OCTRL-R03 — Private Sensor Boundary
+# 9. Owner-attention discipline
 
-Runs only from the qualified R01 + selected R02 body state.
+Owner attention is a scarce evidence channel.
 
-### Question
+Each run card declares:
 
-Can the actor receive useful **local physical evidence and occlusion** without private state learning hidden World identity/position?
+### none
+No Owner judgement is needed.
 
-### Build only
+### optional
+Owner interaction may reveal artifacts but is not needed for the run claim.
 
-P0:
-- proprioceptive delta;
-- contact;
-- coarse egocentric geometry;
-- visible physical signatures/motion;
-- occlusion.
+### required
+The claim is experiential/product-level and cannot be promoted without Owner observation.
 
-No P1 yet unless P0 cannot be evaluated without temporary continuity.
+Do not ask Owner to:
+- validate JSON;
+- perform fixture campaigns;
+- manually manufacture pressure;
+- judge claims outside the run's evidence plane.
 
-### Evidence
-
-Paired visible/occluded World changes.
-
-Actor-facing P0 must:
-- change only when lawful sensor relation changes;
-- not expose World IDs;
-- not update hidden object position;
-- preserve the required body/self signals.
-
-### FAIL
-
-Any actor-facing path depends on:
-- hidden external-object World coordinate;
-- scene identity;
-- World entity ID;
-- hidden collision map.
-
-### Forbidden
-
-- concern;
-- long-term memory;
-- search;
-- RESTORE;
-- learning;
-- semantic object roles.
-
-### Output
-
-Qualified P0 sensor boundary or a redesign before higher cognition exists.
+When Owner contact is required, provide the smallest natural surface that answers the question.
 
 ---
 
-# 7. Later O-CTRL run map — deliberately provisional
+# 10. SPC / downstream strategic relevance
 
-Do **not** freeze these now.
+ReflexBrain may become a major donor to SPC.
 
-Their exact shape must be updated from R01-R03 evidence.
+That raises the required rigor.
+It must **not** cause SPC-specific architecture to leak into every run.
 
-Likely sequence:
+Every completed run may record:
 
-### R04 — P1 temporary continuity
-Question:
-does adjacent-tick tracklet scaffolding add needed tractability without World-ID leakage?
+### Potential donor value
+What invariant or competence might later transfer to SPC?
 
-### R05 — private concern acquisition / memory semantics
-Question:
-can T0 target/dock binding and relation support/staleness/contradiction exist from legal evidence only, without autonomous movement?
+### What this does NOT establish
+Which SPC claim remains completely open?
 
-### R06 — CHECK / monitoring
-Question:
-can evidence freshness produce a legal re-check without hidden World notification or performative wandering?
+This field is informational only.
 
-### R07 — visible RESTORE
-Question:
-can one currently visible violated relation be restored through material body/contact without semantic push authority?
+A run never PASSes because it looks strategically useful to SPC.
 
-### R08 — local REACQUIRE
-Question:
-can a checked-absent target be found within a declared local search envelope without global map/route oracle?
-
-### R09 — RECOVER
-Question:
-can temporary and persistent obstruction alter ongoing local control without thrash or sticky infinite pushing?
-
-### R10 — integrated O-CTRL
-Question:
-do individually qualified pieces remain coherent when coupled?
-
-### R11 — frozen G1-G5 qualification
-Question:
-does the integrated control organism survive the campaign-level causal gates after policy freeze?
-
-These are hypotheses about execution order, not commitments.
-
-A run may disappear if earlier evidence makes it unnecessary.
-
-A new run may be inserted only when a newly discovered uncertainty has material veto power.
+The best donor is a mechanism that survived its own honest pressure, not one designed around downstream expectations.
 
 ---
 
-# 8. O-DEV should be a new campaign sequence, not "next feature"
+# 11. Anti-fragmentation rule
 
-If O-CTRL qualifies:
+Small runs must still serve the North Star.
 
-stop.
+Before activation ask:
 
-Do not simply append learning-progress code.
-
-Open an O-DEV campaign with its own runs.
-
-Likely questions later:
-
-- what is the minimal sensorimotor representation for competence learning?
-- can learning progress beat random/fixed exploration under noisy-TV controls?
-- does developmental history change ordinary later behavior?
-- is representation doing the motivation's work?
-- does O-DEV create new actor-relative semantic pressure absent from O-CTRL?
-
-O-DEV may invalidate parts of the O-CTRL substrate.
-
-That is allowed.
-
-O-CTRL is a control, not architecture destiny.
-
----
-
-# 9. Larger program ambition
-
-Run decomposition must not shrink the program.
-
-The intended long arc is more ambitious than one O-CTRL organism:
-
-1. **honest embodied host**
-2. **self-directed developmental organism**
-3. **naturally recurring actor-relative semantic pressure**
-4. **learned ReflexBrain in shadow**
-5. **causal downstream value under bounded authority**
-6. **cross-ecology / cross-actor generalization**
-7. **eventual integration into richer SPC/Feniks-like living worlds**
-
-The sequence is not a fixed roadmap.
-
-Each level must earn the next.
-
-The ambition is:
-
-> understand how reusable actor-relative meaning can arise inside continuous embodied life strongly enough that a small learned mechanism becomes a real organ rather than a classifier, scheduler or prompt trick.
-
----
-
-# 10. Anti-fragmentation rule
-
-Smaller runs must not become disconnected micro-benchmarks.
-
-Every run must explicitly answer:
-
-> Which uncertainty in the North Star does this remove?
+> Which material uncertainty in the current campaign/North Star does this run remove?
 
 If the answer is weak:
 do not run it.
 
-The campaign/gate layer preserves the larger organism question.
+We are not building a benchmark collection.
 
 ---
 
-# 11. Anti-overplanning rule
+# 12. Anti-overplanning rule
 
-Only the next **1–3 runs** should be specified tightly.
+Specify tightly only the next **1–3 runs**.
 
-Later runs remain provisional.
+Everything later is a provisional pressure map.
 
-Reason:
+A run may:
+- remove a planned run;
+- insert a new prerequisite;
+- invalidate the parent specimen;
+- reopen a supposedly settled V1 choice.
 
-The organism should be allowed to falsify our roadmap.
+That is expected.
 
-A plan that survives every experiment unchanged is probably not learning enough from the experiments.
+> A roadmap that never changes under experimental evidence is probably not learning enough.
 
 ---
 
-# 12. Current execution state
+# 13. Revised first execution sequence — proposed, NOT AUTHORIZED
 
-No run is active.
+No implementation run is active.
 
-Implementation remains **PAUSED**.
+The previous `OCTRL-R01 — M0-Lite Ecology Null` was still too broad because it mixed independent-process qualification, material composition, topology and legibility.
 
-If/when Owner deliberately authorizes implementation, the proposed first run is:
+It is superseded by the smaller sequence below.
 
-**OCTRL-R01 — M0-Lite Ecology Null**
+---
 
-—not “implement O-CTRL”, not “start S0”, and not “build the organism”.
+## OCTRL-E01 — Independent Mechanical Process Null
 
-After R01:
-stop, judge, persist, reconsider.
+Type:
+**PROBE**
+
+### Primary question
+
+Can one bounded, locally driven physical process continue without Owner/focal-agent input and produce persistent material displacement **without reducing to global timer choreography**?
+
+### Build only
+
+- minimal Rapier physical area sufficient for the mechanism;
+- one shuttle/sweeper body;
+- physical end conditions / rail constraints;
+- one or a very small number of loose bodies;
+- minimal visual observation surface.
+
+No chokepoint.
+No loop.
+No actor cognition.
+No B1 work.
+No perception/memory.
+
+### Manipulated uncertainty
+
+The independent process itself.
+
+### Evidence
+
+Need at least one run where:
+
+`bounded local drive -> physical shuttle motion -> contact -> loose-body displacement -> persistent changed material state`
+
+and where interaction can alter actual shuttle timing/state relative to an unperturbed run.
+
+### Control
+
+Unperturbed/no-loose-body or static-process comparison as needed.
+
+### PASS scope
+
+A minimal non-agent physical process can create real persistent exogenous material change without a scenario-global phase oracle.
+
+### FAIL
+
+- motion is effectively open-loop timer choreography;
+- persistent material effect requires another mechanism family;
+- collisions are mechanically unstable/unusable;
+- independent process cannot be made legible without solving broader ecology.
+
+### Forbidden
+
+- chokepoint/topology design;
+- occlusion design;
+- B1;
+- P0/P1;
+- concern;
+- Local Brain;
+- learning;
+- plate/gate.
+
+### Owner touchpoint
+
+**none**
+
+### Potential SPC donor value
+
+Evidence that useful world pressure can originate from ordinary non-cognitive material processes rather than LLM/script events.
+
+Does **not** establish a living world, resident agency or semantic pressure.
+
+### Output
+
+E01 PASS/FAIL/INCONCLUSIVE result + qualified/rejected mechanism SHA/artifact.
+
+---
+
+## OCTRL-E02 — Material Composition / Topology
+
+Type:
+**PROBE / COMPARISON**
+
+Runs only if E01 leaves a useful independent process.
+
+### Primary question
+
+Can the qualified E01 process compose with only static geometry + loose bodies so that its ordinary physical consequences **persistently change a locally relevant passage/relation**, without introducing a second authored mechanism?
+
+### Frozen
+
+- E01 process mechanism;
+- its drive law;
+- no cognition.
+
+### Add only
+
+- minimal static geometry;
+- one chokepoint or equivalent local passage;
+- enough spatial structure to allow a blocker to matter;
+- occlusion only if required to observe the intended material distinction, not yet as a cognition pressure.
+
+### Evidence
+
+Example causal chain:
+
+`shuttle -> loose blocker -> chokepoint blocked/unblocked`
+
+with persistent state after the immediate collision.
+
+### Control
+
+Same geometry with independent process disabled or blocker absent.
+
+### PASS scope
+
+Few physical rules compose into a materially meaningful topology/access change.
+
+### FAIL
+
+- requires plate/gate or another authored mechanism;
+- topology changes are fragile/special-case;
+- shuttle remains largely ornamental;
+- result depends on hidden scripted state.
+
+### Forbidden
+
+- actor concern;
+- search;
+- perception system;
+- B1 morphology redesign;
+- semantic gate state.
+
+### Owner touchpoint
+
+**none** by default.
+
+Optional only if causal legibility remains ambiguous after agent observation.
+
+### Potential SPC donor value
+
+Shows that autonomous pressure can emerge from world composition rather than explicit cognition events.
+
+Does not establish actor-relative meaning.
+
+---
+
+## OCTRL-B01 — E0 Body Seam Transfer
+
+Type:
+**PROBE**
+
+Runs only after the ecology gate accepts enough of E01/E02 to justify inhabiting it.
+
+### Primary question
+
+Can the already-qualified E0-style B0 body/actuation seam inhabit the new physical ecology **without controller redesign**, providing a clean body baseline before morphology experimentation?
+
+### Frozen
+
+- qualified ecology state;
+- E0-style disc morphology;
+- bounded forward force + turn torque concept.
+
+### Build only
+
+The minimum transplant/integration needed for:
+- open locomotion;
+- contact with loose body;
+- passage through the qualified ecology.
+
+Manual/agent driving is enough.
+
+No autonomous Local Brain.
+
+### PASS scope
+
+The E0 body seam remains mechanically usable in the new ecology and can serve as the body control baseline.
+
+### FAIL
+
+The ecology/body integration itself requires material controller redesign.
+
+Then body transfer becomes its own deeper problem before B1 comparison.
+
+### Forbidden
+
+- B1;
+- P0/P1;
+- concern;
+- memory;
+- autonomous navigation;
+- recovery logic.
+
+### Owner touchpoint
+
+**optional**
+
+Only for narrow controller/body-rule feel if machine/agent observation cannot resolve it.
+
+### Potential SPC donor value
+
+A stable embodied action seam that can later support Local Brain / SPC resident actuation.
+
+Does not establish organism continuity or intelligence.
+
+---
+
+# 14. Near-future pressure map — deliberately NOT frozen
+
+If E01/E02/B01 qualify, plausible next questions include:
+
+- B02: B0 vs B1 morphology;
+- P01: P0 private sensor authority;
+- P02: P1 temporary continuity if P0 alone is insufficient;
+- M01: minimal private relation memory;
+- C01: concern acquisition/staleness without movement;
+- C02: monitoring CHECK;
+- C03: visible RESTORE;
+- C04: bounded REACQUIRE;
+- C05: RECOVER;
+- I01: integrated O-CTRL;
+- Q01: frozen G1–G5 qualification.
+
+This is not a queue.
+
+Do not execute it mechanically.
+
+---
+
+# 15. O-DEV is a new campaign, not a feature after O-CTRL
+
+If O-CTRL qualifies:
+stop.
+
+O-DEV begins with new run framing.
+
+Do not append learning-progress code to the integrated control organism by momentum.
+
+O-DEV may reject parts of the O-CTRL substrate.
+
+That is allowed.
+
+---
+
+# 16. Larger program ambition
+
+Run decomposition must increase, not shrink, what we can responsibly attempt.
+
+The current long arc remains:
+
+1. honest embodied host;
+2. self-directed developmental organism;
+3. naturally recurring actor-relative semantic pressure;
+4. learned ReflexBrain in shadow;
+5. real downstream consumer value;
+6. bounded causal authority;
+7. cross-ecology / cross-actor generalization;
+8. eventual donor value inside richer SPC/Feniks-like living worlds.
+
+This is a direction, not a fixed roadmap.
+
+The aim is not to ship a clever classifier.
+
+It is to understand how reusable actor-relative meaning can become a **real organ of continuous embodied life**.
+
+---
+
+# 17. Current execution state
+
+**NO RUN ACTIVE.**
+
+Implementation remains paused.
+
+If Owner later deliberately authorizes execution, the first proposed run is now:
+
+**OCTRL-E01 — Independent Mechanical Process Null**
+
+Not:
+- M0-Lite as a whole;
+- B1;
+- S0;
+- O-CTRL.
+
+After E01:
+judge, persist, stop, re-plan.
