@@ -83,6 +83,7 @@ evidence.textContent=[
   'interaction initial passage: '+(campaign.interaction.initialOpen?'OPEN':'BLOCKED'),
   'first blocker contact tick: '+campaign.interaction.firstBlockerContactTick,
   'interaction first open tick: '+campaign.interaction.firstOpenTick,
+  'post-contact no-contact ticks: '+campaign.interaction.postContactNoContactTicks,
   'persistence sample open: '+campaign.interaction.persistenceOpen,
   'blocker displacement @ persistence: '+(campaign.blockerDisplacementAtPersistence??NaN).toFixed(3),
   'clearance radius: '+E02A_CLEARANCE_RADIUS.toFixed(3),
@@ -163,6 +164,7 @@ function render(){
     'first contact='+b.firstBlockerContactTick,
     'first open='+b.firstOpenTick,
     'contact ticks='+b.blockerContactTicks,
+    'post-contact no-contact='+b.postContactNoContactTicks,
     'persistence open='+b.persistenceOpen
   ].join('\n');
 }
