@@ -655,3 +655,59 @@ No run is ACTIVE.
 **OCTRL-E02b — Composition Robustness / Anti-Fixture** is now eligible to be proposed/activated only after its held-out variation design is re-evaluated and frozen.
 
 Do not retune E02a using E02b held-out cases.
+
+
+---
+
+# E02b result — 2026-10-06
+
+**OCTRL-E02b — Composition Robustness / Anti-Fixture: PASS**
+
+Merged evidence:
+- PR #9
+- merge SHA: `88fe65b16c08443e8b7f371406c151fadb352b75`
+- result: `docs/runs/OCTRL-E02B_RESULT.md`
+
+Frozen held-out set:
+- B0 baseline: `(0.00,+0.20)`
+- H1: `(0.00,+0.10)`
+- H2: `(0.00,+0.30)`
+- H3: `(0.00,-0.20)`
+- H4: `(-0.10,+0.20)`
+- H5: `(+0.10,+0.20)`
+
+All five held-out cases passed the unchanged corrected E02a contract with deterministic repeat.
+
+Allowed claim:
+
+> The frozen E02a composition is not restricted to its single tuned blocker position. It survives the declared modest local initial-position neighborhood and one mirrored asymmetry.
+
+No broader robustness claim is promoted.
+
+The exact `60` no-contact value in successful qualification rows is a harness stop condition, not a measured temporal margin.
+
+## Ecology-side gate consequence
+
+The project now has qualified evidence for:
+1. independent non-agent material causality;
+2. one geometry-driven local access change;
+3. local anti-fixture robustness of that composition.
+
+This is enough to **stop polishing the ecology primitive**.
+
+M0-Lite as a whole is still not qualified:
+- occlusion;
+- broader layout;
+- actor interaction;
+- private epistemic pressure
+
+remain separate questions.
+
+## Current next candidate
+
+**OCTRL-B01 — E0 Body Seam Transfer / Early Integration Pulse**
+
+Goal:
+test whether the already-qualified E0/B0 body/actuation seam can inhabit the qualified ecology primitive without controller redesign.
+
+No run is ACTIVE.
