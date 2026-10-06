@@ -1,6 +1,6 @@
 # OCTRL-B01b — B0-Scale Passage Calibration
 
-Status: **PROPOSED · NOT ACTIVE**
+Status: **ACTIVE · AUTHORIZED BY OWNER · BODY-SCALE CALIBRATION STARTED**
 
 Type: **PROBE / CALIBRATION**
 
@@ -163,6 +163,10 @@ Do not promote the research clearance audit itself into actor affordance truth.
 
 ## Result
 
-Not run.
+Run active on branch:
+`run/octrl-b01b-b0-scale-passage`
+
+Base SHA:
+`0693203d5d245c0c219c3cd7d6e501995f0b5f90`
 
 **Outcome: unset**
