@@ -1,6 +1,6 @@
 # OCTRL-P01a — Private Proprioceptive Effectivity Exposure
 
-Status: **ACTIVE · ARMED**
+Status: **CLOSED · SCIENTIFIC FAIL · EXECUTION VALID · RESULT PERSISTED**
 
 Type: **PROBE / AUTHORITY-BOUNDARY**
 
@@ -192,6 +192,15 @@ No sensor broadening, World-coordinate exposure, object identity or threshold tu
 
 ## Result
 
-Run active.
+**Outcome: FAIL**
 
-**Outcome: unset**
+Result artifact:
+
+`docs/runs/OCTRL-P01A_RESULT.md`
+
+Execution validity passed, but H2 falsified the frozen immediate-timing criterion:
+- first actor↔blocker contact tick = 58
+- required private divergence <= 59
+- observed first private divergence tick = 60
+
+No threshold or sensor scope was changed after evidence.
