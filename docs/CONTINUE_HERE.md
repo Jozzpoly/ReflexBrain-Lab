@@ -218,6 +218,7 @@ Completed and promoted:
 4. **OCTRL-B01a — PASS** — frozen E0/B0 body-actuation seam extracted without mechanical drift.
 5. **OCTRL-B01b — PASS** — one static geometry calibration makes the topology effect meaningful for B0-sized research clearance radius 1.0.
 6. **OCTRL-B01c — SCIENTIFIC FAIL / EXECUTION VALID** — researcher geometric BLOCKED did not predict actual B0 passage impossibility.
+7. **OCTRL-B01d — PASS** — under the frozen B0 fixed-motor protocol, all five predeclared doorway-blocker placements caused later crossing and more physical contact than the qualified OPEN reference.
 
 B01c evidence:
 - `docs/runs/OCTRL-B01C_RESULT.md`
@@ -244,22 +245,28 @@ The actor materially changed the obstacle and crossed.
 
 No run is currently ACTIVE.
 
-Current candidate:
+B01d evidence:
+- OPEN: crossing tick 122, contact ticks 53
+- H1-H5 crossing: 157–163
+- H1-H5 contact: 166–255
+- all deterministic
+- all preserve both predeclared resistance orderings
 
-**OCTRL-B01d — Actor-Relative Resistance Signature — PROPOSED**
+Current truth:
 
-Purpose:
-test whether the movable-obstacle state creates a stable actor-relative difference in progress/interaction burden under the same frozen B0 protocol, rather than trying to force a binary impassability distinction.
+> static geometric accessibility, actor-relative effectivity and semantic meaning are distinct layers.
+
+B01d qualifies only a narrow material effectivity signature for one body and one fixed action protocol.
 
 ## Current next move
 
 After recovery:
 
 1. verify live branch/PR/CI truth;
-2. preserve B01c FAIL as canonical evidence, not a defect to repair;
-3. do **not** restore world-side binary OPEN/BLOCKED as actor affordance truth;
-4. re-evaluate **OCTRL-B01d — Actor-Relative Resistance Signature** before activation;
-5. keep blocker/body/world physics frozen while testing whether the observed difference generalizes across modest obstacle placements.
+2. preserve B01c FAIL and B01d PASS together;
+3. do not restore world-side binary OPEN/BLOCKED as actor affordance truth;
+4. do not promote latency/contact into a semantic scalar yet;
+5. **re-plan before proposing or activating another atomic run.**
 
 Do not make the blocker heavier/static merely to recover the old binary claim.
 

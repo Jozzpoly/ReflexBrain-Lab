@@ -855,8 +855,29 @@ This suggests a candidate effectivity/resistance signature.
 
 ## Current next candidate
 
-**OCTRL-B01d — Actor-Relative Resistance Signature**
+**OCTRL-B01d — Actor-Relative Resistance Signature: PASS · CLOSED · PERSISTED**
+
+B01d qualified one narrow actor-relative resistance/effectivity signature under the frozen B0 fixed-motor protocol.
+
+OPEN regression:
+- crossing tick 122
+- contact ticks 53
+
+Held-out H1-H5:
+- crossing ticks 157–163
+- contact ticks 166–255
+- every case deterministic
+- every case later than OPEN
+- every case more contact than OPEN
+
+Qualified scope:
+the same movable doorway blocker changes the consequences of the same B0 action across the declared local placement neighborhood.
+
+Do not promote this to effort, reward, generic difficulty, semantic affordance or learned meaning.
+
+Evidence:
+`docs/runs/OCTRL-B01D_RESULT.md`
 
 Do not alter blocker mass, B0 force or doorway geometry to restore binary impassability.
 
-No run is ACTIVE.
+**No run is ACTIVE. STOP and re-plan before any next run.**

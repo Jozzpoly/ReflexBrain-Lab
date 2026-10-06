@@ -1,6 +1,6 @@
 # OCTRL-B01d — Actor-Relative Resistance Signature
 
-Status: **PROPOSED · NOT ACTIVE**
+Status: **CLOSED · PASS · RESULT PERSISTED**
 
 Type: **QUALIFICATION / COMPARISON**
 
@@ -186,8 +186,32 @@ A stable resistance signature would be a candidate future input pressure for Ref
 
 ---
 
+## Activation
+
+Base SHA:
+`6a0aeca5bb18ece6292e0bdfc7b8f76837c97b18`
+
+Run branch:
+`run/octrl-b01d-actor-relative-resistance`
+
+Held-out set H1-H5 and PASS rule were frozen on the parent branch before activation.
+
+No case replacement, threshold relaxation, body/blocker/world retuning or protocol change is permitted after this point.
+
+---
+
 ## Result
 
-Not run.
+**Outcome: PASS**
 
-**Outcome: unset**
+Result artifact:
+
+`docs/runs/OCTRL-B01D_RESULT.md`
+
+OPEN regression reproduced exactly at crossing tick 122 / 53 contact ticks.
+
+All five predeclared H1-H5 cases replayed deterministically and preserved both required orderings:
+- later crossing than OPEN;
+- more actor/blocker contact than OPEN.
+
+No body, blocker, geometry, force, timestep or protocol retuning occurred.
