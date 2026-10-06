@@ -1,6 +1,6 @@
 # OCTRL-E01 — Independent Mechanical Process Null
 
-Status: **PROPOSED · NOT AUTHORIZED · NO IMPLEMENTATION STARTED**
+Status: **ACTIVE · AUTHORIZED BY OWNER · IMPLEMENTATION STARTED**
 
 Type: **PROBE**
 
@@ -14,7 +14,7 @@ Execution protocol:
 `docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md`
 
 Base SHA:
-**unset until activation**
+**e5404792021962ea1cc01124a94106a8f26ae1da**
 
 ---
 
@@ -191,7 +191,8 @@ If the session breaks, resume E01 only from its run card + exact active SHA.
 
 ## Result
 
-Not yet run.
+Run active on branch:
+`run/octrl-e01-independent-mechanical-process`
 
 **Outcome: unset**
 
