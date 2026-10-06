@@ -1,6 +1,6 @@
 # OCTRL-E02a — Passage-State Composition Existence
 
-Status: **PROPOSED · NOT ACTIVE**
+Status: **ACTIVE · AUTHORIZED BY OWNER · IMPLEMENTATION STARTED**
 
 Type: **PROBE**
 
@@ -10,8 +10,8 @@ O-CTRL host/substrate sufficiency.
 Qualified input:
 **OCTRL-E01 PASS**
 
-Baseline at proposal time:
-`6c3b5db43a396cbebff2d8862da104738c084b2c`
+Base SHA at activation:
+`5592f78d7b135b63b20d595b56fee6ebdfbf56f4`
 
 Execution protocol:
 `docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md`
@@ -185,7 +185,8 @@ This does not establish that any resident can perceive, understand or exploit th
 
 ## Result
 
-Not run.
+Run active on branch:
+`run/octrl-e02a-passage-composition`
 
 **Outcome: unset**
 
