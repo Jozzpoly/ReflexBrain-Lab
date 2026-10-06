@@ -1,6 +1,8 @@
 # O-CTRL M0-Lite — Implementation Contract — 2026-10-06
 
-Status: **FROZEN DESIGN AUTHORITY FOR FIRST O-CTRL IMPLEMENTATION · IMPLEMENTATION STILL PAUSED**
+> **Execution note — 2026-10-06:** atomic implementation has begun under `REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md`. OCTRL-E01 has already PASSed and merged. This document remains campaign-level design authority; it is not an instruction to implement all sections at once.
+
+Status: **FROZEN DESIGN AUTHORITY FOR FIRST O-CTRL IMPLEMENTATION**
 
 This contract is the current bounded design authority for the first O-CTRL specimen.
 
@@ -697,6 +699,6 @@ Therefore it is now:
 
 This does **not** mean implementation has started.
 
-Current execution status remains:
+Current execution status is governed by the run-based execution document and live recovery state.
 
-**PAUSED BEFORE IMPLEMENTATION.**
+Do not infer current run status from this frozen contract.
