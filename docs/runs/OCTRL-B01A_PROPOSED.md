@@ -1,6 +1,6 @@
 # OCTRL-B01a — E0 Body Seam Extraction / Parity
 
-Status: **PROPOSED · NOT ACTIVE**
+Status: **ACTIVE · AUTHORIZED BY OWNER · EXTRACTION/PARITY STARTED**
 
 Type: **PROBE / EXTRACTION**
 
@@ -173,6 +173,10 @@ none
 
 ## Result
 
-Not run.
+Run active on branch:
+`run/octrl-b01a-e0-body-seam-parity`
+
+Base SHA:
+`43b7a167e589055935643f8315a590f1b418d6c7`
 
 **Outcome: unset**
