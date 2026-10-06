@@ -1,6 +1,6 @@
 # OCTRL-B01a — E0 Body Seam Extraction / Parity
 
-Status: **ACTIVE · AUTHORIZED BY OWNER · EXTRACTION/PARITY STARTED**
+Status: **CLOSED · PASS · RESULT PERSISTED**
 
 Type: **PROBE / EXTRACTION**
 
@@ -173,10 +173,13 @@ none
 
 ## Result
 
-Run active on branch:
-`run/octrl-b01a-e0-body-seam-parity`
+**Outcome: PASS**
 
-Base SHA:
-`43b7a167e589055935643f8315a590f1b418d6c7`
+Result artifact:
 
-**Outcome: unset**
+`docs/runs/OCTRL-B01A_RESULT.md`
+
+Reusable `src/e0-body-seam.ts` reproduces the frozen E0 mechanical signature under the parity campaign.
+
+Important:
+the first attempt failed because the extracted contact-instrumentation helper changed its API contract from collider handles to collider objects. That harness/extraction bug was corrected without changing physical parameters or tolerances.
