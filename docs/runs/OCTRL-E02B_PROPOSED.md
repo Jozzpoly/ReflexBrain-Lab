@@ -1,6 +1,6 @@
 # OCTRL-E02b — Composition Robustness / Anti-Fixture
 
-Status: **PROPOSED · ELIGIBLE AFTER E02a PASS · NOT ACTIVE**
+Status: **CLOSED · PASS · RESULT PERSISTED**
 
 Type: **QUALIFICATION / COMPARISON**
 
@@ -14,7 +14,14 @@ Satisfied by:
 - E02a result: `docs/runs/OCTRL-E02A_RESULT.md`
 - parent merge SHA: `f74926fdb18d1ee291a7302af69a8d97df390116`
 
-E02b is eligible but must be explicitly ARMED before activation.
+E02b is ACTIVE.
+
+Base SHA:
+`38eab07948a272ff865e6bc67fe151400bed3c0a`
+
+Held-out set H1-H5 and all PASS thresholds were frozen on the parent branch **before this run branch was created**.
+
+No case replacement, threshold relaxation or E02a retuning is permitted from this point onward.
 
 ---
 
@@ -135,6 +142,15 @@ No:
 
 ## Result
 
-Eligible; not run.
+**Outcome: PASS**
 
-**Outcome: unset**
+Result artifact:
+
+`docs/runs/OCTRL-E02B_RESULT.md`
+
+Frozen baseline B0 and all five predeclared held-out cases H1-H5 passed the unchanged corrected E02a contract in CI and browser runtime.
+
+No E02a retuning occurred after held-out qualification began.
+
+Note:
+successful cases report exactly 60 post-contact no-contact ticks because the harness terminates at the first satisfied persistence threshold. This does not measure additional temporal margin.
