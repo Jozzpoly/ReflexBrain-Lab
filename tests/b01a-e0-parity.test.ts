@@ -187,8 +187,8 @@ function runLongBracing() {
     }
 
     if (t === 1439) {
-      lastAH = e0PairImpulse(w, a.co, h.co).impulse;
-      lastHW = e0PairImpulse(w, h.co, wall.co).impulse;
+      lastAH = e0PairImpulse(w, a.co.handle, h.co.handle).impulse;
+      lastHW = e0PairImpulse(w, h.co.handle, wall.co.handle).impulse;
     }
   }
 
