@@ -42,10 +42,11 @@ Owner explicitly asked to pause before implementation and deepen/review first.
 
 1. **this file**
 2. `docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md`
-3. `docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`
-4. `docs/OCTRL_M0_LITE_CONTRACT_RED_TEAM_2026-10-06.md`
-5. `docs/PRE_O0_N12_CAMPAIGN_META_RED_TEAM_2026-10-06.md`
-6. `docs/REFLEXBRAIN_SALVAGE_MAP_2026-10-06.md` only when historical donor detail is needed.
+3. `docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md` — current execution method; the contract is not one run.
+4. `docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`
+5. `docs/OCTRL_M0_LITE_CONTRACT_RED_TEAM_2026-10-06.md`
+6. `docs/PRE_O0_N12_CAMPAIGN_META_RED_TEAM_2026-10-06.md`
+7. `docs/REFLEXBRAIN_SALVAGE_MAP_2026-10-06.md` only when historical donor detail is needed.
 
 Do not front-load every `PRE_O0_*` document.
 
@@ -207,17 +208,38 @@ S4 — freeze policy, then G1–G5.
 
 Do not build a framework/plugin system between stages.
 
+## Current execution model
+
+The frozen O-CTRL contract is a **campaign-level design authority**, not a single implementation task.
+
+Current work is decomposed into question-driven runs.
+
+No run is active.
+
+If implementation is later deliberately authorized, the proposed first run is:
+
+**OCTRL-R01 — M0-Lite Ecology Null**
+
+Its only primary question is whether the minimal dynamic physical world can create legible, persistent, independent material reconfiguration before cognition exists.
+
+Do not start B1/perception/memory/concern/Local Brain in R01.
+
+After every run:
+**STOP -> PASS/FAIL/INCONCLUSIVE -> persist evidence -> reconsider next run.**
+
+See:
+`docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md`
+
 ## Current next move
 
 **Do not automatically implement.**
 
-The current best next move after session recovery is:
+After recovery:
 
-1. verify branch/PR/CI live truth;
-2. read the frozen contract and this checkpoint;
-3. decide deliberately whether the Owner wants:
-   - one more critical review from a fresh perspective; or
-   - implementation to begin from S0.
+1. verify live branch/PR/CI truth;
+2. read this file + current state + run-based execution method;
+3. preserve the broad North Star;
+4. only if Owner deliberately authorizes execution, start **R01**, not "O-CTRL" or all of S0.
 
 Do not reopen the broad foundations campaign unless new evidence changes a V0/V1 decision.
 
