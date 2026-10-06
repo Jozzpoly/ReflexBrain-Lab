@@ -214,35 +214,31 @@ Execution proceeds through atomic question-driven runs.
 
 Completed and promoted:
 
-1. **OCTRL-E01 — Independent Mechanical Process Null: PASS**
-2. **OCTRL-E02a — Passage-State Composition Existence: PASS**
-3. **OCTRL-E02b — Composition Robustness / Anti-Fixture: PASS**
+1. **OCTRL-E01 — PASS** — independent non-agent material process.
+2. **OCTRL-E02a — PASS** — one geometry-driven passage-state composition exists.
+3. **OCTRL-E02b — PASS** — that composition survives the declared modest held-out blocker-position neighborhood.
+4. **OCTRL-B01a — PASS** — frozen E0/B0 body-actuation seam extracted into reusable TypeScript without material mechanical drift.
 
-E02b evidence:
-- `docs/runs/OCTRL-E02B_RESULT.md`
-- merged PR #9
-- merge SHA `88fe65b16c08443e8b7f371406c151fadb352b75`
+B01a evidence:
+- `docs/runs/OCTRL-B01A_RESULT.md`
+- merged PR #10
+- merge SHA `ccc40ea0a4720b864a6a4ec8f2ac5949eed6c290`
 
-Qualified ecology-side claim remains deliberately narrow:
+Important integration fact:
 
-> one bounded non-agent physical process can compose with static geometry + loose material into a persistent local access change, and that composition survives the declared modest held-out blocker-position neighborhood.
+- E02 passage clearance was qualified at research radius **0.35**.
+- Frozen E0 B0 physical radius is **1.0**.
 
-This does **not** qualify M0-Lite as a whole.
-
-Important evidence-plane lesson retained:
-
-- E02a's first machine PASS was false for its stated persistence claim;
-- live observation exposed continuous contact;
-- the evidence contract was corrected before final promotion.
+Therefore E02's qualified OPEN state is **not** evidence that B0 can traverse that doorway.
 
 No run is currently ACTIVE.
 
 Current candidate:
 
-**OCTRL-B01 — E0 Body Seam Transfer / Early Integration Pulse — PROPOSED**
+**OCTRL-B01b — B0-Scale Passage Calibration — PROPOSED**
 
 Purpose:
-test whether the already-qualified E0/B0 body-actuation seam can inhabit the qualified ecology primitive without controller redesign, before any B1 morphology or cognition work.
+rescale/calibrate only the static passage/blocker geometry so the already-qualified material topology effect is meaningful at frozen B0 body scale, without yet inserting an actor or changing E0 mechanics.
 
 Current WIP rule:
 - maximum **1 ACTIVE** run;
@@ -255,12 +251,11 @@ After recovery:
 
 1. verify live branch/PR/CI truth;
 2. read this file + current state + run-based execution method;
-3. preserve the narrow scope of E01/E02a/E02b claims;
-4. re-evaluate **OCTRL-B01** before activation;
-5. do not jump to B1, perception, memory or Local Brain before the body/ecology integration seam is qualified.
+3. preserve the narrow scope of E01/E02/B01a claims;
+4. re-evaluate **OCTRL-B01b — B0-Scale Passage Calibration** before activation;
+5. do not insert B0 into the ecology or start B1 until the world geometry has a body-scale interpretation.
 
-If B01 is activated, it must remain an early integration pulse:
-**qualified ecology + existing E0/B0 body seam**, with no new autonomous cognition.
+The immediate unresolved mismatch is physical scale, not cognition.
 
 ## Anti-loss rule
 
