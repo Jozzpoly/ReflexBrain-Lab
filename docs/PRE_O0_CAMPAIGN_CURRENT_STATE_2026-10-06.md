@@ -1,6 +1,6 @@
 # Pre-O0 Foundations Campaign — Current State — 2026-10-06
 
-Status: **FOUNDATIONAL CAMPAIGN CONVERGED · O-CTRL CONTRACT FROZEN · IMPLEMENTATION STILL PAUSED**
+Status: **FOUNDATIONAL CAMPAIGN CONVERGED · O-CTRL CONTRACT FROZEN · RUN-BASED EXECUTION DEFINED · IMPLEMENTATION STILL PAUSED**
 
 Active branch:
 
@@ -452,3 +452,42 @@ A durable recovery entrypoint now exists:
 After any session loss, recover from that file first.
 
 Do not resurrect the broader 2026-10-05 O0 scope or draft PR #5 by inertia.
+
+
+---
+
+# Execution-method correction — 2026-10-06
+
+The project no longer treats the frozen O-CTRL contract or its S0-S4 staging as one continuous implementation task.
+
+Current execution authority:
+
+**`docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md`**
+
+Core rule:
+
+> **North Star remains broad; each run asks one primary causal question.**
+
+A run ends in **PASS / FAIL / INCONCLUSIVE** and is persisted before another run begins.
+
+FAIL is a completed scientific result, not a reason to keep polishing the same specimen.
+
+Only the next 1-3 runs may be tightly specified; later run structure remains provisional and must change when evidence demands it.
+
+No implementation run is active.
+
+If execution is later authorized, the proposed first run is:
+
+**OCTRL-R01 — M0-Lite Ecology Null**
+
+R01 deliberately excludes:
+- B1 morphology work;
+- perception;
+- memory;
+- T0 concern;
+- Local Brain;
+- learning.
+
+Its only primary question is whether M0-Lite itself creates useful independent material causality and causal legibility.
+
+This decomposition preserves/increases the long-term ambition while reducing causal ambiguity and session/recovery risk.
