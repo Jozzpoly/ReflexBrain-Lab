@@ -528,3 +528,41 @@ New process constraints:
 - iteration inside a run may tune the same mechanism, but introducing a new mechanism family or authority seam ends that run.
 
 This refinement is intended to preserve the project's large ambition while making every experimental commitment actually finishable and causally interpretable.
+
+
+---
+
+# E01 result — 2026-10-06
+
+**OCTRL-E01 — Independent Mechanical Process Null: PASS**
+
+Merged evidence:
+- PR #7
+- merge SHA: `03d19a3d34cac99738bd390b35244d12ed842702`
+- result: `docs/runs/OCTRL-E01_RESULT.md`
+
+Qualified narrow claim:
+
+> A minimal bounded non-agent physical process can create deterministic, persistent exogenous material change through ordinary local physical coupling, and interaction with loose material can causally alter the process's later timing/state.
+
+Observed evidence included:
+- deterministic repeat PASS;
+- control right-end reversal tick 232;
+- interaction right-end reversal tick 243;
+- 11-tick interaction-induced timing shift;
+- first loose-body contact tick 123;
+- 66 contact ticks;
+- persistent loose-body displacement 1.137;
+- live browser observation beyond 8936 ticks with no contradictory artifact.
+
+This does **not** qualify M0-Lite ecology as a whole.
+
+No run is currently ACTIVE.
+
+The next proposed question is:
+
+**OCTRL-E02 — Material Composition / Topology**
+
+E02 is only PROPOSED and must not start automatically.
+
+Its purpose is to ask whether the qualified E01 process can compose with static geometry + loose bodies so that ordinary physical consequences persistently change a locally relevant passage/relation **without adding a second authored mechanism family**.
