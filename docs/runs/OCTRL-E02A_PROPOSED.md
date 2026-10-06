@@ -1,6 +1,6 @@
 # OCTRL-E02a — Passage-State Composition Existence
 
-Status: **PROPOSED · NOT ACTIVE**
+Status: **CLOSED · PASS · RESULT PERSISTED**
 
 Type: **PROBE**
 
@@ -10,8 +10,8 @@ O-CTRL host/substrate sufficiency.
 Qualified input:
 **OCTRL-E01 PASS**
 
-Baseline at proposal time:
-`6c3b5db43a396cbebff2d8862da104738c084b2c`
+Base SHA at activation:
+`5592f78d7b135b63b20d595b56fee6ebdfbf56f4`
 
 Execution protocol:
 `docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md`
@@ -185,9 +185,24 @@ This does not establish that any resident can perceive, understand or exploit th
 
 ## Result
 
-Not run.
+**Outcome: PASS**
 
-**Outcome: unset**
+Result artifact:
+
+`docs/runs/OCTRL-E02A_RESULT.md`
+
+Final evidence includes:
+- deterministic repeat PASS;
+- control remained BLOCKED;
+- first physical blocker contact tick 121;
+- interaction first OPEN tick 191;
+- 60 continuous post-contact no-contact ticks achieved;
+- persistence sample remained OPEN;
+- blocker displacement at persistence 3.847;
+- live observation later showed 161 continuous no-contact ticks with shuttle and blocker visibly separated.
+
+Important:
+the first centered-blocker configuration produced a false-positive machine PASS because persistence was sampled while contact continued. The instrumentation was corrected before final qualification.
 
 ---
 
