@@ -1,7 +1,7 @@
 # ReflexBrain Lab
 
 > **Current active frontier:** `research/pre-o0-foundations-campaign`  
-> **Implementation is paused.**  
+> **Atomic implementation has started; no run is currently active.**  
 > Canonical live state: **`docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md`**
 
 ReflexBrain Lab studies whether a cheap local learned mechanism can extract **actor-relative meaning from temporal private experience** inside an already-living embodied actor, without becoming World authority, factual memory, the whole planner, or the motor controller.
@@ -28,7 +28,7 @@ E0.0 remains a qualified **body/microscope donor**, not an organism milestone.
 
 The old 2026-10-05 `O0_PERSISTENT_MICRO_ECOLOGY_CONTRACT` is preserved as a historical candidate under audit. Draft PR #5 is **not** the active implementation mandate.
 
-The foundations campaign has converged and the reduced O-CTRL contract has been frozen as design authority. **No new organism code has been started; implementation remains paused.**
+The foundations campaign has converged and the reduced O-CTRL contract is frozen as design authority. Atomic execution has begun: **OCTRL-E01 passed and was merged as a narrow qualified primitive. No run is currently active.**
 
 ### First control occupant — O-CTRL
 
@@ -91,8 +91,8 @@ The new bounded O-CTRL contract already exists, has passed dedicated red-team wi
 
 **`docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`**
 
-Current execution remains paused by Owner direction.
+Execution proceeds only through atomic runs. E01 is complete; the next candidate is E02a, with E02b held separately for robustness qualification.
 
-After any session loss, begin with **`docs/CONTINUE_HERE.md`**, verify live branch/PR/CI truth, and only then decide whether to perform one more fresh critical review or deliberately begin implementation from S0.
+After any session loss, begin with **`docs/CONTINUE_HERE.md`**, verify live branch/PR/CI truth, recover the current run state, and never jump directly to monolithic S0/O-CTRL implementation.
 
 Do not resurrect the superseded 2026-10-05 O0 contract or draft PR #5 by inertia.
