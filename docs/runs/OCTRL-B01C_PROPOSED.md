@@ -1,6 +1,6 @@
 # OCTRL-B01c — Actual B0 Passage Effectivity Falsifier
 
-Status: **ACTIVE · AUTHORIZED BY OWNER · FALSIFIER RUNNING**
+Status: **CLOSED · SCIENTIFIC FAIL · EXECUTION VALID · RESULT PERSISTED**
 
 Type: **COMPARISON / FALSIFIER**
 
@@ -185,10 +185,16 @@ That distinction is potentially central to ReflexBrain/SPC semantics.
 
 ## Result
 
-Run active on branch:
-`run/octrl-b01c-actual-b0-effectivity`
+**Outcome: FAIL**
 
-Base SHA:
-`c1a68af56c91c3692c083132ff6ac33e2f6dd4af`
+Execution was deterministic and valid.
 
-**Outcome: unset**
+Result artifact:
+
+`docs/runs/OCTRL-B01C_RESULT.md`
+
+OPEN crossed at tick 122.
+
+Researcher-labelled BLOCKED also crossed at tick 161 because actual B0 physically pushed the loose blocker.
+
+Therefore static geometric BLOCKED did not predict actual actor effectivity.
