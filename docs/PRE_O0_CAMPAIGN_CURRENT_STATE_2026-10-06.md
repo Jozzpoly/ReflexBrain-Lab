@@ -1,6 +1,6 @@
 # Pre-O0 Foundations Campaign — Current State — 2026-10-06
 
-Status: **FOUNDATIONAL CAMPAIGN CONVERGED ENOUGH FOR CONTRACT DESIGN · IMPLEMENTATION STILL PAUSED**
+Status: **FOUNDATIONAL CAMPAIGN CONVERGED · O-CTRL CONTRACT FROZEN · IMPLEMENTATION STILL PAUSED**
 
 Active branch:
 
@@ -437,16 +437,18 @@ The broad foundations phase is now complete enough.
 
 Do not open new domains unless they can change a V0/V1 decision above.
 
-The broad campaign-level red-team is complete and passed **after reduction**.
+The broad campaign-level red-team passed **after reduction**.
 
-The next legitimate step is still **not implementation**.
+A short new **O-CTRL M0-Lite implementation contract** was drafted, independently red-teamed, amended and promoted to current design authority:
 
-It is:
+**`docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`**
 
-> draft a short new **O-CTRL M0-Lite implementation contract** from this reduced state, red-team that contract once, and only then decide whether code is warranted.
+The contract is frozen for the first implementation design, but **implementation remains paused by current Owner direction**.
 
-The new contract must not resurrect the broader 2026-10-05 O0 scope.
+A durable recovery entrypoint now exists:
 
-Yesterday's O0 implementation contract must not be resurrected.
+**`docs/CONTINUE_HERE.md`**
 
-Implementation remains paused.
+After any session loss, recover from that file first.
+
+Do not resurrect the broader 2026-10-05 O0 scope or draft PR #5 by inertia.
