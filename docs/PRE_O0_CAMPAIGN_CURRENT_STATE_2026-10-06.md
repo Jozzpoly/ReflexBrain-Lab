@@ -711,3 +711,48 @@ Goal:
 test whether the already-qualified E0/B0 body/actuation seam can inhabit the qualified ecology primitive without controller redesign.
 
 No run is ACTIVE.
+
+
+---
+
+# B01a result — 2026-10-06
+
+**OCTRL-B01a — E0 Body Seam Extraction / Parity: PASS**
+
+Merged evidence:
+- PR #10
+- merge SHA: `ccc40ea0a4720b864a6a4ec8f2ac5949eed6c290`
+- result: `docs/runs/OCTRL-B01A_RESULT.md`
+
+Qualified claim:
+
+> The qualified E0/B0 mechanical body-actuation seam can be represented as a reusable TypeScript module without material drift from the frozen E0 mechanical campaign.
+
+Reusable seam:
+`src/e0-body-seam.ts`
+
+The first parity attempt failed because contact instrumentation changed its helper API contract from collider handles to collider objects. That extraction bug was corrected without changing physics or tolerances; full parity then passed.
+
+## Body/ecology scale mismatch now explicit
+
+Frozen B0 radius:
+**1.0**
+
+E02 researcher clearance radius:
+**0.35**
+
+Therefore E02's OPEN passage claim is not a B0 traversability claim.
+
+This mismatch must be resolved before body/ecology integration.
+
+## Current next candidate
+
+**OCTRL-B01b — B0-Scale Passage Calibration**
+
+Goal:
+calibrate only the static E02 passage/blocker geometry for a declared B0-sized research clearance while keeping:
+- E01 process law frozen;
+- E0 body mechanics frozen;
+- no actual actor/control loop yet.
+
+No run is ACTIVE.
