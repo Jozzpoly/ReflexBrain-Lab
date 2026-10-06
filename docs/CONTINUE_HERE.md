@@ -208,7 +208,15 @@ Do not build a framework/plugin system between stages.
 
 ## Current execution model
 
-Execution proceeds through atomic question-driven runs.
+Execution proceeds through atomic question-driven research runs.
+
+Operational correction:
+- a scientific research run may span multiple assistant responses;
+- one assistant delivery turn is a separate execution-risk unit;
+- use long useful turns, but externalize/persist material state before risky branches and preserve margin for actual delivery;
+- intermediate progress checkpoints do not require Owner acknowledgement.
+
+See the dedicated **research run vs delivery turn** section in `docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md`.
 
 Completed and promoted:
 
