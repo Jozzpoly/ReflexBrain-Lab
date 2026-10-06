@@ -208,54 +208,48 @@ Do not build a framework/plugin system between stages.
 
 ## Current execution model
 
-The frozen O-CTRL contract is a **campaign-level design authority**, not a single implementation task.
-
 Execution proceeds through atomic question-driven runs.
 
 Completed and promoted:
 
 1. **OCTRL-E01 — PASS** — independent non-agent material process.
 2. **OCTRL-E02a — PASS** — one geometry-driven passage-state composition exists.
-3. **OCTRL-E02b — PASS** — that composition survives the declared modest held-out blocker-position neighborhood.
-4. **OCTRL-B01a — PASS** — frozen E0/B0 body-actuation seam extracted into reusable TypeScript without material mechanical drift.
+3. **OCTRL-E02b — PASS** — local anti-fixture evidence for that composition.
+4. **OCTRL-B01a — PASS** — frozen E0/B0 body-actuation seam extracted without mechanical drift.
+5. **OCTRL-B01b — PASS** — one static geometry calibration makes the topology effect meaningful for B0-sized research clearance radius 1.0.
 
-B01a evidence:
-- `docs/runs/OCTRL-B01A_RESULT.md`
-- merged PR #10
-- merge SHA `ccc40ea0a4720b864a6a4ec8f2ac5949eed6c290`
-
-Important integration fact:
-
-- E02 passage clearance was qualified at research radius **0.35**.
-- Frozen E0 B0 physical radius is **1.0**.
-
-Therefore E02's qualified OPEN state is **not** evidence that B0 can traverse that doorway.
+B01b evidence:
+- `docs/runs/OCTRL-B01B_RESULT.md`
+- merged PR #11
+- merge SHA `35e00030b833430cc7e4a4f3fd838971b53b4980`
 
 No run is currently ACTIVE.
 
 Current candidate:
 
-**OCTRL-B01b — B0-Scale Passage Calibration — PROPOSED**
+**OCTRL-B01c — Actual B0 Passage Traversal — PROPOSED**
 
 Purpose:
-rescale/calibrate only the static passage/blocker geometry so the already-qualified material topology effect is meaningful at frozen B0 body scale, without yet inserting an actor or changing E0 mechanics.
-
-Current WIP rule:
-- maximum **1 ACTIVE** run;
-- up to **2 PROPOSED** next runs;
-- everything further remains a pressure map.
+replace the researcher-only clearance disc with the actual frozen B0 rigid body and test whether:
+- OPEN is physically traversable,
+- BLOCKED is physically non-traversable,
+under the same minimal fixed motor protocol and without hidden navigation/geometry queries.
 
 ## Current next move
 
 After recovery:
 
 1. verify live branch/PR/CI truth;
-2. read this file + current state + run-based execution method;
-3. preserve the narrow scope of E01/E02/B01a claims;
-4. re-evaluate **OCTRL-B01b — B0-Scale Passage Calibration** before activation;
-5. do not insert B0 into the ecology or start B1 until the world geometry has a body-scale interpretation.
+2. preserve E01/E02/B01a/B01b claim boundaries;
+3. re-evaluate **OCTRL-B01c — Actual B0 Passage Traversal** before activation;
+4. do not start B1, P0/P1, memory or Local Brain until the researcher clearance model has been falsified against the real B0 body.
 
-The immediate unresolved mismatch is physical scale, not cognition.
+B01c should use:
+- frozen E0/B0 mechanics;
+- frozen B01b static geometry;
+- actual rigid-body contact;
+- one minimal fixed motor protocol;
+- no planner/navigation.
 
 ## Anti-loss rule
 
