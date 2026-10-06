@@ -408,9 +408,64 @@ That is expected.
 
 > A roadmap that never changes under experimental evidence is probably not learning enough.
 
+## WIP limit
+
+At any moment:
+
+- **1 ACTIVE run maximum**
+- **up to 2 PROPOSED next runs**
+- everything else stays an uncommitted pressure map
+
+Do not maintain parallel active research threads inside the same campaign unless Owner explicitly opens a separate independent campaign.
+
+A newly discovered problem becomes:
+- a note in the current result;
+- or a future proposed run;
+
+not an automatic second ACTIVE thread.
+
+This is an attention/continuity safeguard, not a productivity metric.
+
 ---
 
-# 13. Revised first execution sequence — proposed, NOT AUTHORIZED
+# 13. Integration-pulse rule
+
+Atomic runs can create integration debt.
+
+Therefore the campaign must periodically ask whether already-qualified pieces still compose.
+
+An **integration pulse** is a small INTEGRATION run with one question:
+
+> Do the currently qualified pieces still preserve their claimed behavior when coupled, without inventing a new competence?
+
+Rules:
+
+- integrate only already-qualified pieces;
+- add no new major authority seam;
+- no polishing;
+- no new problem-solving subsystem;
+- if coupling reveals a missing competence, stop and open a separate future probe;
+- integration FAIL does not erase the local PASSes; it proves the composition is unqualified.
+
+Default cadence:
+
+> after roughly 2–4 meaningful component runs, or earlier when a new interface could materially invalidate upstream evidence.
+
+This is not a hard count.
+The trigger is **new coupling risk**.
+
+Examples:
+
+- ecology + E0 body can be an early pulse;
+- body + P0 sensorium can be another;
+- concern + memory + CHECK requires another;
+- full O-CTRL remains a later integration gate, not the first time components ever meet.
+
+The purpose is to keep the organism visible throughout the campaign without turning every component run back into a full-stack experiment.
+
+---
+
+# 14. Revised first execution sequence — proposed, NOT AUTHORIZED
 
 No implementation run is active.
 
@@ -627,7 +682,7 @@ Does not establish organism continuity or intelligence.
 
 ---
 
-# 14. Near-future pressure map — deliberately NOT frozen
+# 15. Near-future pressure map — deliberately NOT frozen
 
 If E01/E02/B01 qualify, plausible next questions include:
 
@@ -649,7 +704,7 @@ Do not execute it mechanically.
 
 ---
 
-# 15. O-DEV is a new campaign, not a feature after O-CTRL
+# 16. O-DEV is a new campaign, not a feature after O-CTRL
 
 If O-CTRL qualifies:
 stop.
@@ -664,7 +719,7 @@ That is allowed.
 
 ---
 
-# 16. Larger program ambition
+# 17. Larger program ambition
 
 Run decomposition must increase, not shrink, what we can responsibly attempt.
 
@@ -687,7 +742,7 @@ It is to understand how reusable actor-relative meaning can become a **real orga
 
 ---
 
-# 17. Current execution state
+# 18. Current execution state
 
 **NO RUN ACTIVE.**
 
