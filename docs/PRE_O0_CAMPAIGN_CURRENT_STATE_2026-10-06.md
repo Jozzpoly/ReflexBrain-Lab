@@ -95,25 +95,26 @@ This is a causal boundary, not a software module doctrine.
 
 These are now selected as first **research candidates**, not long-term architecture.
 
-## Ecology — M0 Dynamic Mechanical Yard
+## Ecology — M0-Lite Dynamic Mechanical Yard
 
-Selected mechanism family:
+Selected reduced mechanism family after campaign-level red-team:
 
 - small physical world;
 - persistent material state;
 - occlusion;
-- multiple local routes/chokepoints;
+- loop / alternate local route;
+- one chokepoint;
 - loose physical bodies;
 - one bounded mechanical shuttle/sweeper driven by local force and physical end conditions;
-- one local material topology relation such as plate/lever ↔ gate/barrier;
-- mechanisms compose through physics;
+- dynamic topology emerges directly when loose bodies physically block/unblock the chokepoint;
+- no separate plate/gate mechanism in the first specimen;
 - no scene-global timing phase exposed to actor.
 
 Reason:
-creates independent lawful causality without importing second-agent complexity.
+creates independent lawful causality with fewer authored mechanisms and keeps topology/material change grounded in the same physical rules.
 
 Rejected:
-"just make map larger".
+"just make map larger" and a separate first-specimen gate/plate subsystem.
 
 ## First occupant — O-CTRL / T0-D control concern
 
@@ -213,12 +214,13 @@ No World identity/semantic role.
 
 ## P1 temporary tracklet scaffold
 
-Selected first abstraction:
+Selected first abstraction, deliberately reduced:
 
 - actor-private temporary token;
-- survives only evidence-supported visible continuity;
+- only adjacent-tick / continuously visible perceptual continuity;
 - full occlusion/loss expires current track;
-- reappearance creates new current track;
+- reappearance creates a new current track;
+- no sophisticated re-identification/tracking system in O-CTRL;
 - long-term "same thing" belongs to private memory/hypothesis;
 - no World ID, kind, mass, usefulness, hidden position.
 
@@ -258,7 +260,7 @@ First diagnostic baseline:
 
 Selected local processes:
 - CHECK / OBSERVE;
-- REACQUIRE;
+- bounded local REACQUIRE;
 - RESTORE RELATION;
 - RECOVER.
 
@@ -307,6 +309,16 @@ For O-CTRL, self/world predictor may remain shadow/research-only.
 ---
 
 # O-CTRL decisive qualification
+
+The full falsifier inventory remains documented in `PRE_O0_N9_OCTRL_FALSIFIERS_EXIT_2026-10-06.md`, but the first contract must center on five causal gates rather than a benchmark zoo:
+
+1. **G1 epistemic integrity** — hidden change does not leak; legal checking creates divergence; irrelevant disturbance does not rewrite concern.
+2. **G2 material continuation/recovery** — restoration occurs through body/contact; temporary obstruction does not thrash; persistent obstruction does not invoke hidden route.
+3. **G3 private-history causality** — matched current evidence may diverge because relevant private history differs, with first divergence in private state.
+4. **G4 anti-fixture transfer** — same controller logic survives bounded material rearrangement and one Owner-created held-out arrangement.
+5. **G5 independent ecology value** — M0-Lite creates pressure/private-history phenomena absent from a static-world ablation.
+
+Supporting boundary/unit checks include P1 World-ID noninterference, replay/provenance, concern ablation and B0/B1 comparison.
 
 Hard boundaries include:
 
@@ -425,13 +437,15 @@ The broad foundations phase is now complete enough.
 
 Do not open new domains unless they can change a V0/V1 decision above.
 
-The next legitimate step is **not implementation**.
+The broad campaign-level red-team is complete and passed **after reduction**.
 
-Before contract drafting, one final **campaign-level red-team** should check whether the converged substrate/qualification design is still too broad, benchmark-shaped or apparatus-heavy after the N11 maintain-and-monitor correction.
+The next legitimate step is still **not implementation**.
 
-If that audit passes:
+It is:
 
-> draft a new bounded O-CTRL implementation contract from this converged state, red-team that contract once, and only then decide whether code is warranted.
+> draft a short new **O-CTRL M0-Lite implementation contract** from this reduced state, red-team that contract once, and only then decide whether code is warranted.
+
+The new contract must not resurrect the broader 2026-10-05 O0 scope.
 
 Yesterday's O0 implementation contract must not be resurrected.
 
