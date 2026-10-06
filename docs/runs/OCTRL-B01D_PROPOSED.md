@@ -1,6 +1,6 @@
 # OCTRL-B01d — Actor-Relative Resistance Signature
 
-Status: **PROPOSED · NOT ACTIVE**
+Status: **ACTIVE · ARMED**
 
 Type: **QUALIFICATION / COMPARISON**
 
@@ -186,8 +186,22 @@ A stable resistance signature would be a candidate future input pressure for Ref
 
 ---
 
+## Activation
+
+Base SHA:
+`6a0aeca5bb18ece6292e0bdfc7b8f76837c97b18`
+
+Run branch:
+`run/octrl-b01d-actor-relative-resistance`
+
+Held-out set H1-H5 and PASS rule were frozen on the parent branch before activation.
+
+No case replacement, threshold relaxation, body/blocker/world retuning or protocol change is permitted after this point.
+
+---
+
 ## Result
 
-Not run.
+Run active.
 
 **Outcome: unset**
