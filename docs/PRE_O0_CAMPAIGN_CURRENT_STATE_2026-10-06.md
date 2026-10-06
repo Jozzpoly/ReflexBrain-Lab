@@ -903,4 +903,24 @@ P01a freezes B01d physics/protocol and adds only a P0-self proprioceptive sensor
 Run card:
 `docs/runs/OCTRL-P01A_PROPOSED.md`
 
-**STOP and re-evaluate P01a before activation.**
+**OCTRL-P01a — SCIENTIFIC FAIL · EXECUTION VALID · CLOSED**
+
+Evidence:
+`docs/runs/OCTRL-P01A_RESULT.md`
+
+The B01d physical effect reproduced exactly and all H1-H5 produced deterministic legal private proprioceptive divergence with lower private forward progress than OPEN at frozen tick 122.
+
+However the frozen immediate-timing rule failed for H2:
+- microscope actor↔blocker contact tick 58
+- first private proprioceptive divergence tick 60
+- contract required divergence by contact+1 (<=59)
+
+Canonical correction:
+
+> researcher-observed physical contact time is not actor-experienced consequence time.
+
+Do not repair P01a by relaxing its threshold.
+
+Surviving evidence suggests the B01d effect does reach legal actor-private proprioception, but that narrower claim is not yet separately qualified.
+
+**No run is ACTIVE. Re-plan before any next run.**

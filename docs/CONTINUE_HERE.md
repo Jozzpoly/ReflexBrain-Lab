@@ -260,6 +260,17 @@ B01d evidence:
 - all deterministic
 - all preserve both predeclared resistance orderings
 
+P01a result:
+- **SCIENTIFIC FAIL / EXECUTION VALID**
+- legal P0-self proprioceptive stream remained clean and deterministic;
+- all H1-H5 had lower private forward odometry than OPEN at tick 122;
+- H2 first contact tick 58 but first private divergence tick 60;
+- frozen contact+1 timing criterion therefore failed.
+
+New canonical distinction:
+
+> microscope contact time != actor-private experiential consequence time.
+
 Current truth:
 
 > static geometric accessibility, actor-relative effectivity and semantic meaning are distinct layers.
