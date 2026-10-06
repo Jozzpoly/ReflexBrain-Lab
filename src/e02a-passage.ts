@@ -22,7 +22,7 @@ const CORRIDOR_INNER_HALF_HEIGHT = 1.08;
 const BLOCKER_RADIUS = 0.50;
 const BLOCKER_MASS = 1.0;
 const BLOCKER_DAMPING = 3.0;
-const BLOCKER_START = { x: 0, y: 0 };
+const BLOCKER_START = { x: 0, y: 0.20 };
 
 const PERSISTENCE_TICKS = 60;
 
