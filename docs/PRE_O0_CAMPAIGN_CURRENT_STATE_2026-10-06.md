@@ -491,3 +491,40 @@ R01 deliberately excludes:
 Its only primary question is whether M0-Lite itself creates useful independent material causality and causal legibility.
 
 This decomposition preserves/increases the long-term ambition while reducing causal ambiguity and session/recovery risk.
+
+
+---
+
+# Run-atomicity refinement — 2026-10-06
+
+The execution method has been tightened again after applying its own atomicity test.
+
+The former first run `OCTRL-R01 — M0-Lite Ecology Null` mixed too many independently falsifiable questions.
+
+It is superseded by:
+
+1. **OCTRL-E01 — Independent Mechanical Process Null**  
+   Only the bounded physical shuttle/process and persistent material displacement.
+
+2. **OCTRL-E02 — Material Composition / Topology**  
+   Only if E01 qualifies: compose the same process with static geometry/loose bodies so material topology can change without a second mechanism family.
+
+3. **OCTRL-B01 — E0 Body Seam Transfer**  
+   Only after the ecology is worth inhabiting: transplant the existing E0 disc/actuation seam before any B1 morphology research.
+
+Only E01 currently has a concrete run card:
+
+**`docs/runs/OCTRL-E01_PROPOSED.md`**
+
+No run is active.
+
+New process constraints:
+
+- exactly one ACTIVE run maximum;
+- up to two PROPOSED next runs;
+- new problems become future-run notes, not parallel work;
+- component runs are periodically followed by **integration pulses** so local PASSes do not accumulate into an untested whole;
+- a run must fit a normal conversation/recovery envelope; otherwise split it before activation;
+- iteration inside a run may tune the same mechanism, but introducing a new mechanism family or authority seam ends that run.
+
+This refinement is intended to preserve the project's large ambition while making every experimental commitment actually finishable and causally interpretable.
