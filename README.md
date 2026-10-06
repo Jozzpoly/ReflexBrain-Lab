@@ -91,7 +91,7 @@ The new bounded O-CTRL contract already exists, has passed dedicated red-team wi
 
 **`docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`**
 
-Execution proceeds only through atomic runs. E01 and E02a are complete. The next candidate is E02b robustness/anti-fixture qualification, but no run is currently active.
+Execution proceeds only through atomic runs. E01, E02a and E02b are complete. The ecology primitive is sufficiently qualified for its current role; the next candidate is B01 body/ecology seam transfer, but no run is currently active.
 
 After any session loss, begin with **`docs/CONTINUE_HERE.md`**, verify live branch/PR/CI truth, recover the current run state, and never jump directly to monolithic S0/O-CTRL implementation.
 
