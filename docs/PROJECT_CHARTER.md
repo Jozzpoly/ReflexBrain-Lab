@@ -2,7 +2,7 @@
 
 Status: **CURRENT RESEARCH CHARTER · ARCHITECTURE NOT FROZEN**
 
-> **2026-10-06 frontier note:** the charter's principles and decomposition remain current, but its later `Current frontier` section records the historical R3 semantic frontier. The active execution frontier on `experiment/organism-recovery-v0` is defined by `docs/ORGANISM_RECOVERY_CURRENT_TRUTH_2026-10-06.md`. Do not resume R3 learned-model work from this charter alone.
+> **2026-10-06 frontier note:** the charter's principles and decomposition remain current, but its later `Current frontier` section records the historical R3 semantic frontier. The active project/recovery frontier is now the pre-O0 host/substrate campaign on `research/pre-o0-foundations-campaign`. Recover first from `docs/CONTINUE_HERE.md`, then `docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md` and `docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md`. Do not resume R3 learned-model work from this charter alone.
 
 
 ## Why this lab exists
