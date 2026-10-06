@@ -5,7 +5,6 @@ on:
     branches:
       - experiment/organism-recovery-v0
       - research/pre-o0-foundations-campaign
-      - run/octrl-b01b-b0-scale-passage
   workflow_dispatch:
 
 permissions:
