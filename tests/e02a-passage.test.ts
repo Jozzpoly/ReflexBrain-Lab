@@ -17,6 +17,7 @@ describe('OCTRL-E02a passage-state composition', () => {
     expect(result.interaction.initialOpen).toBe(false);
     expect(result.interaction.firstBlockerContactTick).not.toBeNull();
     expect(result.interaction.firstOpenTick).not.toBeNull();
+    expect(result.interaction.postContactNoContactTicks).toBeGreaterThanOrEqual(60);
     expect(result.interaction.persistenceOpen).toBe(true);
     expect(result.blockerDisplacementAtPersistence ?? 0).toBeGreaterThanOrEqual(0.9);
 
