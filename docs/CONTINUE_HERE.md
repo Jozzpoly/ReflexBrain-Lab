@@ -216,13 +216,23 @@ Current work is decomposed into question-driven runs.
 
 No run is active.
 
-If implementation is later deliberately authorized, the proposed first run is:
+The previous proposed `OCTRL-R01 — M0-Lite Ecology Null` was itself still too broad and has been decomposed.
 
-**OCTRL-R01 — M0-Lite Ecology Null**
+If implementation is later deliberately authorized, the proposed first run is now:
 
-Its only primary question is whether the minimal dynamic physical world can create legible, persistent, independent material reconfiguration before cognition exists.
+**OCTRL-E01 — Independent Mechanical Process Null**
 
-Do not start B1/perception/memory/concern/Local Brain in R01.
+Read:
+`docs/runs/OCTRL-E01_PROPOSED.md`
+
+Its only primary question is whether one bounded locally driven physical process can continue independently and create persistent material displacement without reducing to global timer choreography.
+
+Do **not** add chokepoint ecology, B1, perception, memory, concern or Local Brain in E01.
+
+Current WIP rule:
+- maximum **1 ACTIVE** run;
+- up to **2 PROPOSED** next runs;
+- everything further remains a pressure map.
 
 After every run:
 **STOP -> PASS/FAIL/INCONCLUSIVE -> persist evidence -> reconsider next run.**
