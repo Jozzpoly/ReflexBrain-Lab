@@ -218,21 +218,34 @@ No run is active.
 
 The previous proposed `OCTRL-R01 — M0-Lite Ecology Null` was itself still too broad and has been decomposed.
 
-If implementation is later deliberately authorized, the proposed first run is now:
+First atomic execution run is complete:
 
-**OCTRL-E01 — Independent Mechanical Process Null**
+**OCTRL-E01 — Independent Mechanical Process Null: PASS**
 
-Read:
-`docs/runs/OCTRL-E01_PROPOSED.md`
+Evidence:
+- `docs/runs/OCTRL-E01_RESULT.md`
+- merged PR #7
+- baseline merge SHA `03d19a3d34cac99738bd390b35244d12ed842702`
 
-Its only primary question is whether one bounded locally driven physical process can continue independently and create persistent material displacement without reducing to global timer choreography.
+Qualified claim is narrow:
+one bounded non-agent physical process can create persistent exogenous material change through ordinary local coupling, and material interaction can alter its later timing/state.
 
-Do **not** add chokepoint ecology, B1, perception, memory, concern or Local Brain in E01.
+E01 does **not** qualify M0-Lite as a whole.
+
+No run is currently ACTIVE.
+
+The next candidate is only:
+
+**OCTRL-E02 — Material Composition / Topology — PROPOSED**
+
+Its question is whether the E01-qualified process can compose with static geometry + loose bodies to create a persistent locally relevant topology/access change without introducing a second mechanism family.
 
 Current WIP rule:
 - maximum **1 ACTIVE** run;
 - up to **2 PROPOSED** next runs;
 - everything further remains a pressure map.
+
+Do not auto-start E02 through momentum.
 
 After every run:
 **STOP -> PASS/FAIL/INCONCLUSIVE -> persist evidence -> reconsider next run.**
