@@ -1,6 +1,6 @@
 # OCTRL-P01a — Private Proprioceptive Effectivity Exposure
 
-Status: **PROPOSED · NOT ACTIVE**
+Status: **ACTIVE · ARMED**
 
 Type: **PROBE / AUTHORITY-BOUNDARY**
 
@@ -176,8 +176,22 @@ If it fails, external perception or a different body signal may be necessary bef
 
 ---
 
+## Activation
+
+Base SHA:
+`9a67b1178861fe93e65b681227823254aa007ed5`
+
+Run branch:
+`run/octrl-p01a-private-proprioceptive-effectivity`
+
+The B01d physical cases, P0-self schema and qualification criteria above were frozen before implementation evidence.
+
+No sensor broadening, World-coordinate exposure, object identity or threshold tuning is permitted after this point.
+
+---
+
 ## Result
 
-Not run.
+Run active.
 
 **Outcome: unset**
