@@ -46,36 +46,84 @@ Exact frozen SHA must be recorded on activation.
 
 ---
 
-## Held-out variation candidates
+## Predeclared held-out variation set
 
-Choose a small predeclared set only after E02a closes, for example:
-- modest blocker initial-position offsets;
-- modest shuttle initial phase/position offsets;
-- modest blocker mass variation if it does not redefine the mechanism.
+E02b tests **only initial blocker position**.
 
-Do not expand into a parameter sweep benchmark.
+Frozen E02a baseline:
+- `B0: x=0.00, y=+0.20`
+
+B0 is a regression sanity check only and does **not** count as held-out evidence.
+
+Held-out cases:
+
+- `H1: x=0.00, y=+0.10`
+- `H2: x=0.00, y=+0.30`
+- `H3: x=0.00, y=-0.20` — unseen mirror of the tuned asymmetry
+- `H4: x=-0.10, y=+0.20`
+- `H5: x=+0.10, y=+0.20`
+
+These cases are predeclared before any E02b result is observed.
+
+Do not add, remove or replace held-out cases after activation.
+
+No mass, friction, doorway-geometry or shuttle-phase variation belongs to E02b.
 
 ---
 
+## PASS rule
+
+First, frozen baseline B0 must still pass unchanged.
+
+Then **all five held-out cases H1-H5 must pass the exact E02a corrected qualification contract**:
+
+- initial passage BLOCKED;
+- real shuttle/blocker contact occurs;
+- passage becomes OPEN;
+- at least 60 continuous post-contact no-contact ticks are achieved;
+- passage remains OPEN at that persistence sample;
+- blocker displacement at persistence remains >= 0.9;
+- deterministic repeat passes.
+
+Any held-out case failing any of these conditions makes **E02b FAIL**.
+
+Do not weaken the threshold after seeing results.
+
 ## PASS scope
 
-The same frozen mechanism continues to produce the intended geometry-driven accessibility change across the predeclared modest variations at a level sufficient to reject the strongest "single fixture coincidence" explanation.
+If B0 + H1-H5 all pass:
 
-This is still not general ecology robustness.
+> the frozen E02a composition is not restricted to its single tuned blocker position; it survives the declared modest local initial-position neighborhood and one mirrored asymmetry.
+
+This remains narrow local anti-fixture evidence, not general ecology robustness.
 
 ---
 
 ## FAIL
 
-The qualified E02a effect disappears under small plausible variations and requires case-specific retuning.
+If any H1-H5 case fails the frozen contract:
 
-That would reclassify the composition as fixture-fragile.
+> the E02a composition is **fixture-fragile within the declared held-out initial-position set**.
+
+No retuning is allowed inside E02b.
+
+A later run may investigate the failure if strategically justified.
 
 ---
 
 ## Forbidden scope
 
-No new mechanisms, actor systems, sensors, planner, task logic, or E02a retuning after held-out evidence begins.
+No:
+- E02a retuning after held-out evidence begins;
+- new mechanisms;
+- actor systems;
+- sensors;
+- planner/task logic;
+- mass/friction variation;
+- doorway redesign;
+- shuttle start/phase variation;
+- threshold changes;
+- adding replacement held-out cases after observing failures.
 
 ---
 
