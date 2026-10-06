@@ -10,11 +10,13 @@ ReflexBrain Lab studies whether a cheap local learned mechanism can extract **ac
 
 Read in this order:
 
-1. **`docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md`** — current live truth and converged pre-O0 decisions.
-2. **`docs/PRE_O0_FOUNDATIONS_CAMPAIGN_2026-10-06.md`** — why implementation was paused and which foundations were re-opened.
-3. **`docs/PRE_O0_ASSUMPTION_DEMOLITION_2026-10-06.md`** — line-by-line audit of the 2026-10-05 O0 assumptions.
-4. **`docs/REFLEXBRAIN_SALVAGE_MAP_2026-10-06.md`** — what R0/R1/R2/R3/E0 contribute as future donors.
-5. **`docs/PROJECT_CHARTER.md`** — durable project purpose and evidence boundaries.
+1. **`docs/CONTINUE_HERE.md`** — durable recovery entrypoint after any session/context loss.
+2. **`docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md`** — current live truth and converged pre-O0 decisions.
+3. **`docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`** — frozen first O-CTRL design authority; implementation is still paused.
+4. **`docs/OCTRL_M0_LITE_CONTRACT_RED_TEAM_2026-10-06.md`** — required amendments and scope protections.
+5. **`docs/REFLEXBRAIN_SALVAGE_MAP_2026-10-06.md`** — historical donors and exact recovery refs.
+
+Supporting `PRE_O0_*` documents are evidence and rationale; do not front-load all of them on recovery.
 
 Supporting deep dives and paper comparisons live under `docs/PRE_O0_*`.
 
@@ -26,7 +28,7 @@ E0.0 remains a qualified **body/microscope donor**, not an organism milestone.
 
 The old 2026-10-05 `O0_PERSISTENT_MICRO_ECOLOGY_CONTRACT` is preserved as a historical candidate under audit. Draft PR #5 is **not** the active implementation mandate.
 
-The foundations campaign has converged on a first research sequence, but no new organism code has been started.
+The foundations campaign has converged and the reduced O-CTRL contract has been frozen as design authority. **No new organism code has been started; implementation remains paused.**
 
 ### First control occupant — O-CTRL
 
@@ -83,10 +85,14 @@ Policy:
 
 ## Current next move
 
-Do **not** implement yet.
+Do **not** automatically implement.
 
-The next legitimate artifact is a **new bounded O-CTRL implementation contract** derived from the converged pre-O0 campaign, followed by one dedicated red-team pass.
+The new bounded O-CTRL contract already exists, has passed dedicated red-team with amendments, and is frozen as design authority:
 
-Only after that should the project decide whether implementation is warranted.
+**`docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`**
 
-Do not resurrect the superseded 2026-10-05 O0 contract by inertia.
+Current execution remains paused by Owner direction.
+
+After any session loss, begin with **`docs/CONTINUE_HERE.md`**, verify live branch/PR/CI truth, and only then decide whether to perform one more fresh critical review or deliberately begin implementation from S0.
+
+Do not resurrect the superseded 2026-10-05 O0 contract or draft PR #5 by inertia.
