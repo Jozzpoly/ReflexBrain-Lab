@@ -754,21 +754,15 @@ Completed:
 - **OCTRL-E01 — PASS**
 - **OCTRL-E02a — PASS**
 - **OCTRL-E02b — PASS**
+- **OCTRL-B01a — PASS**
 
-Ecology-side primitive has enough evidence to stop local polishing.
+Current unresolved integration issue:
+
+> E02 passage geometry was qualified for clearance radius 0.35, while frozen E0/B0 radius is 1.0.
 
 Current next candidate:
-- **OCTRL-B01 — E0 Body Seam Transfer / Early Integration Pulse — PROPOSED**
+- **OCTRL-B01b — B0-Scale Passage Calibration — PROPOSED**
 
-B01 should test one integration question:
+B01b should manipulate only static passage/blocker scale under the frozen E01 process and B0-sized researcher clearance.
 
-> Can the existing qualified E0/B0 body/actuation seam inhabit the qualified ecology primitive without controller redesign?
-
-B01 must not add:
-- B1 morphology;
-- autonomous Local Brain;
-- perception/memory;
-- navigation/recovery system;
-- new ecology mechanisms.
-
-If B01 requires broad body-controller redesign, it FAILs and body/ecology integration becomes a separate problem.
+No actual actor, B1, perception, memory or Local Brain belongs in B01b.
