@@ -1,6 +1,6 @@
 # OCTRL-B01b — B0-Scale Passage Calibration
 
-Status: **ACTIVE · AUTHORIZED BY OWNER · BODY-SCALE CALIBRATION STARTED**
+Status: **CLOSED · PASS · RESULT PERSISTED**
 
 Type: **PROBE / CALIBRATION**
 
@@ -163,10 +163,12 @@ Do not promote the research clearance audit itself into actor affordance truth.
 
 ## Result
 
-Run active on branch:
-`run/octrl-b01b-b0-scale-passage`
+**Outcome: PASS**
 
-Base SHA:
-`0693203d5d245c0c219c3cd7d6e501995f0b5f90`
+Result artifact:
 
-**Outcome: unset**
+`docs/runs/OCTRL-B01B_RESULT.md`
+
+One static geometry calibration preserves the qualified material topology effect at researcher clearance radius 1.0 while keeping E01 process law, E02 blocker physics and E0 body mechanics frozen.
+
+Actual B0 traversal remains untested and belongs to B01c.
