@@ -1,6 +1,6 @@
 # Pre-O0 Foundations Campaign — Current State — 2026-10-06
 
-Status: **FOUNDATIONAL CAMPAIGN CONVERGED · O-CTRL CONTRACT FROZEN · RUN-BASED EXECUTION DEFINED · IMPLEMENTATION STILL PAUSED**
+Status: **FOUNDATIONAL CAMPAIGN CONVERGED · O-CTRL CONTRACT FROZEN · ATOMIC EXECUTION IN PROGRESS · NO RUN CURRENTLY ACTIVE**
 
 Active branch:
 
@@ -566,3 +566,39 @@ The next proposed question is:
 E02 is only PROPOSED and must not start automatically.
 
 Its purpose is to ask whether the qualified E01 process can compose with static geometry + loose bodies so that ordinary physical consequences persistently change a locally relevant passage/relation **without adding a second authored mechanism family**.
+
+
+---
+
+# E02 atomicity correction — 2026-10-06
+
+The former proposed **OCTRL-E02 — Material Composition / Topology** mixed two independently falsifiable questions:
+
+1. existence of one geometry-driven passage-state change;
+2. robustness / anti-fixture survival under modest variation.
+
+It is superseded and split.
+
+## OCTRL-E02a — Passage-State Composition Existence
+
+PROPOSED.
+
+Question:
+
+> Can the frozen E01 process compose with static geometry + one loose blocker so that ordinary physical interaction causes one persistent change in passage accessibility, without a second authored mechanism or semantic gate state?
+
+A researcher-only clearance audit may measure passage accessibility. It is measurement, not World logic and must not influence dynamics.
+
+No robustness claim is allowed from E02a.
+
+## OCTRL-E02b — Composition Robustness / Anti-Fixture
+
+PROPOSED but blocked on E02a PASS.
+
+Question:
+
+> With the E02a mechanism/configuration frozen, does the composition survive modest held-out initial-condition variation rather than existing only as one tuned fixture?
+
+E02b must not be used while tuning E02a.
+
+No run is ACTIVE at this exact checkpoint.
