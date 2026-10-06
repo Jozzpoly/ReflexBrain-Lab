@@ -10,9 +10,9 @@ Draft research PR:
 
 **PR #6 — Pre-O0 foundations campaign**
 
-Current branch HEAD at checkpoint creation:
+Current branch HEAD:
 
-`0c7a75e2cc530ec2874f23647d5419ac765402f6`
+**verify live before work; do not trust a stale embedded SHA.**
 
 ## Current execution status
 
@@ -215,38 +215,39 @@ Execution proceeds through atomic question-driven runs.
 Completed and promoted:
 
 1. **OCTRL-E01 — Independent Mechanical Process Null: PASS**
-   - evidence: `docs/runs/OCTRL-E01_RESULT.md`
-   - merged PR #7
-   - qualified only the independent non-agent material-process primitive.
-
 2. **OCTRL-E02a — Passage-State Composition Existence: PASS**
-   - evidence: `docs/runs/OCTRL-E02A_RESULT.md`
-   - merged PR #8
-   - merge SHA `f74926fdb18d1ee291a7302af69a8d97df390116`
-   - qualified only existence of a geometry-driven passage-state change from the frozen E01 process + static geometry + one loose blocker.
+3. **OCTRL-E02b — Composition Robustness / Anti-Fixture: PASS**
 
-Important E02a finding:
+E02b evidence:
+- `docs/runs/OCTRL-E02B_RESULT.md`
+- merged PR #9
+- merge SHA `88fe65b16c08443e8b7f371406c151fadb352b75`
 
-The first centered-blocker version produced a false-positive machine PASS because shuttle/blocker contact never ended. Live observation caught the confound. The evidence contract was tightened to require a real post-contact no-contact persistence window before final PASS.
+Qualified ecology-side claim remains deliberately narrow:
+
+> one bounded non-agent physical process can compose with static geometry + loose material into a persistent local access change, and that composition survives the declared modest held-out blocker-position neighborhood.
+
+This does **not** qualify M0-Lite as a whole.
+
+Important evidence-plane lesson retained:
+
+- E02a's first machine PASS was false for its stated persistence claim;
+- live observation exposed continuous contact;
+- the evidence contract was corrected before final promotion.
 
 No run is currently ACTIVE.
 
 Current candidate:
 
-**OCTRL-E02b — Composition Robustness / Anti-Fixture — ELIGIBLE, NOT ACTIVE**
+**OCTRL-B01 — E0 Body Seam Transfer / Early Integration Pulse — PROPOSED**
 
-Its purpose is to test the frozen E02a composition against a small **predeclared held-out initial-position set** without retuning.
+Purpose:
+test whether the already-qualified E0/B0 body-actuation seam can inhabit the qualified ecology primitive without controller redesign, before any B1 morphology or cognition work.
 
 Current WIP rule:
 - maximum **1 ACTIVE** run;
 - up to **2 PROPOSED** next runs;
 - everything further remains a pressure map.
-
-After every run:
-**STOP -> PASS/FAIL/INCONCLUSIVE -> persist evidence -> reconsider next run.**
-
-See:
-`docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md`
 
 ## Current next move
 
@@ -254,14 +255,12 @@ After recovery:
 
 1. verify live branch/PR/CI truth;
 2. read this file + current state + run-based execution method;
-3. preserve the broad North Star and the narrow scope of already qualified claims;
-4. if Owner has asked to continue and no run is ACTIVE, re-evaluate **E02b** before activation;
-5. if E02b is armed, freeze E02a first and predeclare held-out cases before observing any result;
-6. never jump directly to B01/B1/perception/Local Brain or monolithic O-CTRL implementation.
+3. preserve the narrow scope of E01/E02a/E02b claims;
+4. re-evaluate **OCTRL-B01** before activation;
+5. do not jump to B1, perception, memory or Local Brain before the body/ecology integration seam is qualified.
 
-Do not reopen the broad foundations campaign unless new evidence changes a V0/V1 decision.
-
-Do not silently continue the superseded O0/PR #5 line.
+If B01 is activated, it must remain an early integration pulse:
+**qualified ecology + existing E0/B0 body seam**, with no new autonomous cognition.
 
 ## Anti-loss rule
 
