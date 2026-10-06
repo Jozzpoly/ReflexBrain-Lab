@@ -121,7 +121,9 @@ The first occupant is deliberately **not** presented as endogenous normativity.
 
 Authored control concern:
 
-> maintain one perceptually distinctive movable body in a preferred physical relation with one distinctive physical dock/landmark.
+> maintain one perceptually distinctive movable body in a preferred physical relation with one distinctive physical dock/landmark, **and maintain sufficiently recent actor-private evidence about that relation**.
+
+The second clause is deliberately an authored monitoring obligation. It gives O-CTRL a legal reason to re-check stale satisfaction without hidden World notification; it is not promoted as general memory decay or endogenous curiosity.
 
 No:
 - source/sink economy;
@@ -131,7 +133,7 @@ No:
 - hidden route.
 
 Purpose:
-stress body, perception, stale private knowledge, reacquisition, material restoration and dynamic ecology.
+stress body, perception, stale private knowledge, concern-driven checking, reacquisition, material restoration and dynamic ecology.
 
 Allowed claim:
 substrate supports one authored privately evidenced physical concern.
@@ -425,7 +427,9 @@ Do not open new domains unless they can change a V0/V1 decision above.
 
 The next legitimate step is **not implementation**.
 
-It is:
+Before contract drafting, one final **campaign-level red-team** should check whether the converged substrate/qualification design is still too broad, benchmark-shaped or apparatus-heavy after the N11 maintain-and-monitor correction.
+
+If that audit passes:
 
 > draft a new bounded O-CTRL implementation contract from this converged state, red-team that contract once, and only then decide whether code is warranted.
 
