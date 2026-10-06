@@ -1,6 +1,6 @@
 # OCTRL-B01c — Actual B0 Passage Effectivity Falsifier
 
-Status: **PROPOSED · NOT ACTIVE**
+Status: **ACTIVE · AUTHORIZED BY OWNER · FALSIFIER RUNNING**
 
 Type: **COMPARISON / FALSIFIER**
 
@@ -185,6 +185,10 @@ That distinction is potentially central to ReflexBrain/SPC semantics.
 
 ## Result
 
-Not run.
+Run active on branch:
+`run/octrl-b01c-actual-b0-effectivity`
+
+Base SHA:
+`c1a68af56c91c3692c083132ff6ac33e2f6dd4af`
 
 **Outcome: unset**
