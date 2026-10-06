@@ -80,6 +80,126 @@ A gate is not a run.
 
 ---
 
+# 2A. Two execution scales: research run vs delivery turn
+
+The project now distinguishes two different atomicities.
+
+## Research run
+
+The scientific unit already defined by this document.
+
+Examples:
+- OCTRL-E02b;
+- OCTRL-B01d.
+
+A research run asks one primary causal question and may legitimately span more than one assistant response.
+
+## Delivery turn
+
+One assistant execution instance:
+
+> Owner message -> autonomous work -> delivered assistant response.
+
+In Owner terminology this is the practical "run" whose failure is catastrophic when the final response is lost.
+
+A delivery turn is **not required to finish an entire research run**.
+
+This distinction is mandatory.
+
+### Governing rule
+
+> Use the longest useful delivery turn that can still be brought to a recoverable, delivered boundary with reasonable margin. Do not shorten work merely to create more turns, but do not make completion depend on surviving several unknown branches.
+
+The purpose is to maximize useful autonomous work per Owner prompt while minimizing catastrophic loss if the response channel dies.
+
+### Planning before the first substantial action
+
+Before starting, estimate the intended delivery turn from:
+
+- known read/write/tool steps;
+- expected CI/build waits;
+- debugging uncertainty;
+- external-service / browser risk;
+- number of result-dependent branches;
+- persistence work still required;
+- time/complexity reserve needed for an actual delivered response.
+
+The Owner's observed browser behavior suggests a usual upper lifetime around the mid-20-minute range, with rare ~28-minute outliers, but failures can also happen much earlier.
+
+Therefore:
+- do **not** plan to consume the apparent lifetime ceiling;
+- do **not** solve reliability by collapsing into five-minute micro-turns;
+- size by predictability and branching risk, not a fixed stopwatch target;
+- preserve margin for persistence and delivery.
+
+### Early externalization
+
+A long delivery turn must not keep all valuable reasoning in the eventual final response.
+
+As soon as the first material state is stable enough to matter, externalize it through a **short progress checkpoint**.
+
+Checkpoint properties:
+- 1–3 compact sentences by default;
+- no Owner response required;
+- state what is now true, what phase comes next, and any scope change;
+- avoid duplicating the eventual final report.
+
+Checkpointing is event-driven, not prose-driven and not a rigid timer.
+
+Especially checkpoint:
+- after live truth/recovery is established;
+- after a material design/falsifier decision;
+- before entering debugging, browser/external services, or another risky branch;
+- when the original plan materially changes.
+
+### Persistence boundary
+
+If losing a new finding would alter interpretation of the project or force the Owner to reconstruct work, persist it **before** entering the next risky phase.
+
+Do not defer all canonical truth updates to the end of a long delivery turn.
+
+### Branch explosion rule
+
+If a result opens a new substantial decision branch, do not automatically consume it inside the same delivery turn.
+
+Choose among:
+- finish the current bounded phase and deliver;
+- persist the discovery as a future research-run question;
+- continue only when the branch was already anticipated and still fits the reserved delivery margin.
+
+### Delivery is part of completion
+
+A delivery turn is not complete merely because:
+- code exists;
+- CI passed;
+- a commit/PR exists;
+- an internal conclusion was reached.
+
+Completion also requires a delivered state summary that makes clear:
+- what became true;
+- what remains unexecuted;
+- what was persisted;
+- whether the research run itself is still ACTIVE or CLOSED.
+
+A lost final response cannot be recovered by a later `kontynuuj`.
+A later turn may continue from persisted state, but the lost wording, observations and reasoning are gone.
+
+### Attention-cost constraint
+
+Reliability must not be bought by multiplying Owner interactions.
+
+Intermediate checkpoints do not request acknowledgement.
+The assistant continues autonomously unless:
+- Owner judgement is genuinely required by the evidence plane;
+- authorization is required;
+- a hard ambiguity cannot be resolved safely.
+
+The optimization target is:
+
+> maximum useful autonomous work per Owner prompt, subject to recoverability and delivery risk.
+
+---
+
 # 3. Atomicity test — split before activation
 
 A proposed run is too large if **any** of the following is true:
