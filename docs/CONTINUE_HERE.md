@@ -217,39 +217,51 @@ Completed and promoted:
 3. **OCTRL-E02b — PASS** — local anti-fixture evidence for that composition.
 4. **OCTRL-B01a — PASS** — frozen E0/B0 body-actuation seam extracted without mechanical drift.
 5. **OCTRL-B01b — PASS** — one static geometry calibration makes the topology effect meaningful for B0-sized research clearance radius 1.0.
+6. **OCTRL-B01c — SCIENTIFIC FAIL / EXECUTION VALID** — researcher geometric BLOCKED did not predict actual B0 passage impossibility.
 
-B01b evidence:
-- `docs/runs/OCTRL-B01B_RESULT.md`
-- merged PR #11
-- merge SHA `35e00030b833430cc7e4a4f3fd838971b53b4980`
+B01c evidence:
+- `docs/runs/OCTRL-B01C_RESULT.md`
+- merged PR #12
+- merge SHA `1e324100390eb5ffb30ed895e11c655ac3cbffa6`
+
+Critical current truth:
+
+> static geometric accessibility and actor-relative effectivity are distinct.
+
+In B01c the same frozen B0 fixed motor protocol crossed both researcher-labelled fixtures.
+
+OPEN:
+- crossing tick 122
+- contact ticks 53
+- blocker displacement 0.880
+
+BLOCKED:
+- crossing tick 161
+- contact ticks 228
+- blocker displacement 5.048
+
+The actor materially changed the obstacle and crossed.
 
 No run is currently ACTIVE.
 
 Current candidate:
 
-**OCTRL-B01c — Actual B0 Passage Traversal — PROPOSED**
+**OCTRL-B01d — Actor-Relative Resistance Signature — PROPOSED**
 
 Purpose:
-replace the researcher-only clearance disc with the actual frozen B0 rigid body and test whether:
-- OPEN is physically traversable,
-- BLOCKED is physically non-traversable,
-under the same minimal fixed motor protocol and without hidden navigation/geometry queries.
+test whether the movable-obstacle state creates a stable actor-relative difference in progress/interaction burden under the same frozen B0 protocol, rather than trying to force a binary impassability distinction.
 
 ## Current next move
 
 After recovery:
 
 1. verify live branch/PR/CI truth;
-2. preserve E01/E02/B01a/B01b claim boundaries;
-3. re-evaluate **OCTRL-B01c — Actual B0 Passage Traversal** before activation;
-4. do not start B1, P0/P1, memory or Local Brain until the researcher clearance model has been falsified against the real B0 body.
+2. preserve B01c FAIL as canonical evidence, not a defect to repair;
+3. do **not** restore world-side binary OPEN/BLOCKED as actor affordance truth;
+4. re-evaluate **OCTRL-B01d — Actor-Relative Resistance Signature** before activation;
+5. keep blocker/body/world physics frozen while testing whether the observed difference generalizes across modest obstacle placements.
 
-B01c should use:
-- frozen E0/B0 mechanics;
-- frozen B01b static geometry;
-- actual rigid-body contact;
-- one minimal fixed motor protocol;
-- no planner/navigation.
+Do not make the blocker heavier/static merely to recover the old binary claim.
 
 ## Anti-loss rule
 
