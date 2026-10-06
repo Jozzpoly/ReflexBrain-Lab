@@ -1,6 +1,6 @@
 # OCTRL-E02b — Composition Robustness / Anti-Fixture
 
-Status: **PROPOSED · ELIGIBLE AFTER E02a PASS · NOT ACTIVE**
+Status: **ACTIVE · QUALIFICATION ARMED · HELD-OUT SET FROZEN**
 
 Type: **QUALIFICATION / COMPARISON**
 
@@ -14,7 +14,14 @@ Satisfied by:
 - E02a result: `docs/runs/OCTRL-E02A_RESULT.md`
 - parent merge SHA: `f74926fdb18d1ee291a7302af69a8d97df390116`
 
-E02b is eligible but must be explicitly ARMED before activation.
+E02b is ACTIVE.
+
+Base SHA:
+`38eab07948a272ff865e6bc67fe151400bed3c0a`
+
+Held-out set H1-H5 and all PASS thresholds were frozen on the parent branch **before this run branch was created**.
+
+No case replacement, threshold relaxation or E02a retuning is permitted from this point onward.
 
 ---
 
@@ -135,6 +142,7 @@ No:
 
 ## Result
 
-Eligible; not run.
+Run active on branch:
+`run/octrl-e02b-composition-robustness`
 
 **Outcome: unset**
