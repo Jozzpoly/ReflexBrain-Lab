@@ -756,3 +756,40 @@ calibrate only the static E02 passage/blocker geometry for a declared B0-sized r
 - no actual actor/control loop yet.
 
 No run is ACTIVE.
+
+
+---
+
+# B01b result — 2026-10-06
+
+**OCTRL-B01b — B0-Scale Passage Calibration: PASS**
+
+Merged evidence:
+- PR #11
+- merge SHA: `35e00030b833430cc7e4a4f3fd838971b53b4980`
+- result: `docs/runs/OCTRL-B01B_RESULT.md`
+
+Qualified static geometry:
+- B0 research clearance radius = 1.0
+- corridor inner half-height = 1.60
+- doorway gap half-height = 1.20
+- fixed wall half-thickness = 0.12
+
+Frozen E01 process and E02 blocker dynamics were unchanged.
+
+Allowed claim:
+
+> one static geometry exists in which the qualified world-side topology mechanism has a coherent OPEN/BLOCKED interpretation for a circular clearance equal to frozen B0 radius 1.0.
+
+This remains researcher-side geometry evidence.
+
+## Current next candidate
+
+**OCTRL-B01c — Actual B0 Passage Traversal**
+
+Question:
+does the actual frozen B0 rigid body physically traverse the B01b OPEN configuration and fail to traverse the BLOCKED configuration under a minimal fixed motor protocol?
+
+No navigation, perception or Local Brain belongs in B01c.
+
+No run is ACTIVE.
