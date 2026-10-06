@@ -1,6 +1,6 @@
 # OCTRL-B01d — Actor-Relative Resistance Signature
 
-Status: **ACTIVE · ARMED**
+Status: **CLOSED · PASS · RESULT PERSISTED**
 
 Type: **QUALIFICATION / COMPARISON**
 
@@ -202,6 +202,16 @@ No case replacement, threshold relaxation, body/blocker/world retuning or protoc
 
 ## Result
 
-Run active.
+**Outcome: PASS**
 
-**Outcome: unset**
+Result artifact:
+
+`docs/runs/OCTRL-B01D_RESULT.md`
+
+OPEN regression reproduced exactly at crossing tick 122 / 53 contact ticks.
+
+All five predeclared H1-H5 cases replayed deterministically and preserved both required orderings:
+- later crossing than OPEN;
+- more actor/blocker contact than OPEN.
+
+No body, blocker, geometry, force, timestep or protocol retuning occurred.
