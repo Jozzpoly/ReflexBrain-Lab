@@ -602,3 +602,56 @@ Question:
 E02b must not be used while tuning E02a.
 
 No run is ACTIVE at this exact checkpoint.
+
+
+---
+
+# E02a result — 2026-10-06
+
+**OCTRL-E02a — Passage-State Composition Existence: PASS**
+
+Merged evidence:
+- PR #8
+- merge SHA: `f74926fdb18d1ee291a7302af69a8d97df390116`
+- result: `docs/runs/OCTRL-E02A_RESULT.md`
+
+Qualified narrow claim:
+
+> The E01-qualified non-agent process can compose with ordinary static geometry and one loose body to produce a deterministic, persistent change in local physical accessibility, without a second authored mechanism or semantic open/closed state.
+
+Final evidence:
+- deterministic repeat PASS;
+- control remained BLOCKED;
+- first physical blocker contact tick 121;
+- interaction first-open tick 191;
+- 60 continuous post-contact no-contact ticks achieved;
+- persistence sample remained OPEN;
+- blocker displacement at persistence 3.847;
+- later live observation showed 161 continuous no-contact ticks with shuttle and blocker visibly separated.
+
+## Important evidence-plane correction
+
+The first centered-blocker configuration initially produced a machine PASS.
+
+Live observation showed that shuttle and blocker remained in contact essentially continuously, so the old persistence check did **not** support the claim it was supposed to support.
+
+The evidence contract was corrected to require 60 continuous no-contact ticks after a real contact episode.
+
+Under that corrected criterion the centered configuration failed.
+
+A single allowed E02a tuning change:
+`blocker y = 0.00 -> 0.20`
+
+produced asymmetric physical contact, later separation, and persistent OPEN passage state.
+
+This is not robustness evidence.
+
+It is exactly why E02b exists.
+
+## Current run state
+
+No run is ACTIVE.
+
+**OCTRL-E02b — Composition Robustness / Anti-Fixture** is now eligible to be proposed/activated only after its held-out variation design is re-evaluated and frozen.
+
+Do not retune E02a using E02b held-out cases.
