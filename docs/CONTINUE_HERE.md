@@ -210,48 +210,37 @@ Do not build a framework/plugin system between stages.
 
 The frozen O-CTRL contract is a **campaign-level design authority**, not a single implementation task.
 
-Current work is decomposed into question-driven runs.
+Execution proceeds through atomic question-driven runs.
 
-No run is active.
+Completed and promoted:
 
-The previous proposed `OCTRL-R01 — M0-Lite Ecology Null` was itself still too broad and has been decomposed.
+1. **OCTRL-E01 — Independent Mechanical Process Null: PASS**
+   - evidence: `docs/runs/OCTRL-E01_RESULT.md`
+   - merged PR #7
+   - qualified only the independent non-agent material-process primitive.
 
-First atomic execution run is complete:
+2. **OCTRL-E02a — Passage-State Composition Existence: PASS**
+   - evidence: `docs/runs/OCTRL-E02A_RESULT.md`
+   - merged PR #8
+   - merge SHA `f74926fdb18d1ee291a7302af69a8d97df390116`
+   - qualified only existence of a geometry-driven passage-state change from the frozen E01 process + static geometry + one loose blocker.
 
-**OCTRL-E01 — Independent Mechanical Process Null: PASS**
+Important E02a finding:
 
-Evidence:
-- `docs/runs/OCTRL-E01_RESULT.md`
-- merged PR #7
-- baseline merge SHA `03d19a3d34cac99738bd390b35244d12ed842702`
-
-Qualified claim is narrow:
-one bounded non-agent physical process can create persistent exogenous material change through ordinary local coupling, and material interaction can alter its later timing/state.
-
-E01 does **not** qualify M0-Lite as a whole.
+The first centered-blocker version produced a false-positive machine PASS because shuttle/blocker contact never ended. Live observation caught the confound. The evidence contract was tightened to require a real post-contact no-contact persistence window before final PASS.
 
 No run is currently ACTIVE.
 
-The former **OCTRL-E02 — Material Composition / Topology** proposal was still too broad and has been split.
+Current candidate:
 
-Current proposed sequence:
+**OCTRL-E02b — Composition Robustness / Anti-Fixture — ELIGIBLE, NOT ACTIVE**
 
-1. **OCTRL-E02a — Passage-State Composition Existence — PROPOSED**  
-   Does the frozen E01 process + static geometry + one loose blocker produce one persistent geometry-driven open→blocked (or blocked→open) passage change?
-
-2. **OCTRL-E02b — Composition Robustness / Anti-Fixture — PROPOSED**  
-   Only after E02a PASS: does the frozen composition survive modest held-out initial-condition variation instead of existing only as one tuned fixture?
-
-Run cards:
-- `docs/runs/OCTRL-E02A_PROPOSED.md`
-- `docs/runs/OCTRL-E02B_PROPOSED.md`
+Its purpose is to test the frozen E02a composition against a small **predeclared held-out initial-position set** without retuning.
 
 Current WIP rule:
 - maximum **1 ACTIVE** run;
 - up to **2 PROPOSED** next runs;
 - everything further remains a pressure map.
-
-Do not auto-start E02 through momentum.
 
 After every run:
 **STOP -> PASS/FAIL/INCONCLUSIVE -> persist evidence -> reconsider next run.**
@@ -265,11 +254,10 @@ After recovery:
 
 1. verify live branch/PR/CI truth;
 2. read this file + current state + run-based execution method;
-3. preserve the broad North Star;
-4. if no run is ACTIVE and Owner has asked to continue, re-evaluate the first PROPOSED run before activation;
-5. never skip directly to a later subsystem or to "implement O-CTRL".
-
-At this checkpoint the first candidate is **E02a**, not E02b, B01, B1, perception or Local Brain.
+3. preserve the broad North Star and the narrow scope of already qualified claims;
+4. if Owner has asked to continue and no run is ACTIVE, re-evaluate **E02b** before activation;
+5. if E02b is armed, freeze E02a first and predeclare held-out cases before observing any result;
+6. never jump directly to B01/B1/perception/Local Brain or monolithic O-CTRL implementation.
 
 Do not reopen the broad foundations campaign unless new evidence changes a V0/V1 decision.
 
