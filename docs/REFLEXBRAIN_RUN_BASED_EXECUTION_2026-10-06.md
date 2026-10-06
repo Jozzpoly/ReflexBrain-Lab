@@ -751,20 +751,24 @@ It is to understand how reusable actor-relative meaning can become a **real orga
 **NO RUN ACTIVE.**
 
 Completed:
-- **OCTRL-E01 — PASS** and merged into the qualified parent baseline.
-
-The former broad E02 proposal has been split by the atomicity rule.
-
-Completed:
 - **OCTRL-E01 — PASS**
 - **OCTRL-E02a — PASS**
+- **OCTRL-E02b — PASS**
 
-Current PROPOSED run:
-- **OCTRL-E02b — Composition Robustness / Anti-Fixture — ELIGIBLE, NOT ACTIVE**
+Ecology-side primitive has enough evidence to stop local polishing.
 
-E02b must be explicitly ARMED before activation:
-- freeze the E02a specimen;
-- predeclare a small held-out variation set;
-- do not retune E02a after held-out qualification begins.
+Current next candidate:
+- **OCTRL-B01 — E0 Body Seam Transfer / Early Integration Pulse — PROPOSED**
 
-No run is currently ACTIVE.
+B01 should test one integration question:
+
+> Can the existing qualified E0/B0 body/actuation seam inhabit the qualified ecology primitive without controller redesign?
+
+B01 must not add:
+- B1 morphology;
+- autonomous Local Brain;
+- perception/memory;
+- navigation/recovery system;
+- new ecology mechanisms.
+
+If B01 requires broad body-controller redesign, it FAILs and body/ecology integration becomes a separate problem.
