@@ -7,6 +7,7 @@ export default defineConfig({
       input: {
         main: "index.html",
         e0AuthoritativeBody: "probes/e0-authoritative-body.html",
+        e01IndependentMechanicalProcess: "probes/e01-independent-mechanical-process.html",
       },
     },
   },
