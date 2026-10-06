@@ -91,7 +91,7 @@ The new bounded O-CTRL contract already exists, has passed dedicated red-team wi
 
 **`docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`**
 
-Execution proceeds only through atomic runs. E01, E02a, E02b, B01a and B01b are complete. The world-side passage is now calibrated to B0-sized research clearance, but actual rigid-body traversal remains unproven. The next candidate is B01c actual B0 passage traversal; no run is currently active.
+Execution proceeds only through atomic runs. E01, E02a, E02b, B01a and B01b qualified their narrow claims. B01c then scientifically FAILed: actual B0 crossed both researcher-labelled OPEN and BLOCKED fixtures by physically pushing the movable blocker. Static geometry is therefore not actor-effectivity truth. The next candidate is B01d resistance/effectivity characterization; no run is currently active.
 
 After any session loss, begin with **`docs/CONTINUE_HERE.md`**, verify live branch/PR/CI truth, recover the current run state, and never jump directly to monolithic S0/O-CTRL implementation.
 
