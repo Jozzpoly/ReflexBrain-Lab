@@ -5,6 +5,7 @@ on:
     branches:
       - experiment/organism-recovery-v0
       - research/pre-o0-foundations-campaign
+      - run/octrl-e01-independent-mechanical-process
   workflow_dispatch:
 
 permissions:
