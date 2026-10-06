@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReflexBrain OCTRL-E02a — Passage-State Composition</title>
+<style>
+html,body{margin:0;height:100%;background:#0d1117;color:#d8e0e8;font:14px/1.4 system-ui,sans-serif}
+body{display:grid;grid-template-columns:minmax(0,1fr) 380px;overflow:hidden}
+main{min-width:0;display:grid;place-items:center;background:#090d12}
+canvas{width:100%;height:100%;display:block}
+aside{padding:16px;background:#141a21;border-left:1px solid #2a333e;overflow:auto}
+h1{font-size:16px;margin:0 0 10px} h2{font-size:13px;margin:18px 0 8px;color:#a9bbcc}
+.good{color:#89e39f}.bad{color:#ff8f8f}.muted{color:#8494a5}
+pre{white-space:pre-wrap;background:#0b1015;border:1px solid #28323c;padding:10px;border-radius:6px;font-size:12px}
+button{background:#26313c;color:#e5edf4;border:1px solid #40505f;border-radius:5px;padding:7px 10px;margin-right:5px;cursor:pointer}
+.legend{display:grid;grid-template-columns:14px 1fr;gap:6px 8px;align-items:center;color:#aebbc8}
+.sw{width:12px;height:12px;border-radius:3px}
+</style>
+</head>
+<body>
+<main><canvas id="c"></canvas></main>
+<aside>
+<h1>OCTRL-E02a — Passage-State Composition Existence</h1>
+<div id="boot" class="muted">Loading deterministic Rapier…</div>
+<p class="muted">Frozen E01 process + static doorway + one loose blocker. No actor, sensor, memory, task or semantic gate state.</p>
+<h2>Automated evidence</h2>
+<pre id="evidence">pending</pre>
+<div>
+<button id="pause">Pause</button>
+<button id="reset">Reset pair</button>
+</div>
+<h2>Live comparison</h2>
+<pre id="live"></pre>
+<h2>Research clearance</h2>
+<p class="muted">OPEN/BLOCKED is a researcher-only geometric audit for one fixed clearance radius. It does not influence physics.</p>
+<h2>Legend</h2>
+<div class="legend">
+<div class="sw" style="background:#95a7b8"></div><div>E01 shuttle</div>
+<div class="sw" style="background:#d8b86d"></div><div>loose blocker</div>
+<div class="sw" style="background:#56616c"></div><div>static corridor / doorway</div>
+<div class="sw" style="background:#4d9460"></div><div>research clearance aperture</div>
+</div>
+</aside>
+<script type="module">
+import {
+  E02A_CLEARANCE_RADIUS,
+  initE02aRapier,
+  createE02aScenario,
+  stepE02aScenario,
+  destroyE02aScenario,
+  snapshotE02aScenario,
+  runE02aCampaign
+} from '../src/e02a-passage.ts';
+import { E01_DT } from '../src/e01-mechanical.ts';
+
+const canvas=document.querySelector('#c');
+const ctx=canvas.getContext('2d');
+const boot=document.querySelector('#boot');
+const evidence=document.querySelector('#evidence');
+const live=document.querySelector('#live');
+const pause=document.querySelector('#pause');
+const reset=document.querySelector('#reset');
+
+function resize(){
+  const r=canvas.getBoundingClientRect(),d=Math.max(1,devicePixelRatio||1);
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);
+  ctx.setTransform(d,0,0,d,0,0);
+}
+addEventListener('resize',resize);resize();
+
+await initE02aRapier();
+boot.textContent='Rapier deterministic-compat 0.20.0 loaded';
+boot.className='good';
+
+const campaign=runE02aCampaign();
+evidence.className=campaign.pass?'good':'bad';
+evidence.textContent=[
+  'E02a '+(campaign.pass?'PASS':'FAIL'),
+  'deterministic repeat: '+(campaign.deterministic?'PASS':'FAIL'),
+  'control initial passage: '+(campaign.control.initialOpen?'OPEN':'BLOCKED'),
+  'control first open tick: '+campaign.control.firstOpenTick,
+  'interaction initial passage: '+(campaign.interaction.initialOpen?'OPEN':'BLOCKED'),
+  'first blocker contact tick: '+campaign.interaction.firstBlockerContactTick,
+  'interaction first open tick: '+campaign.interaction.firstOpenTick,
+  'persistence sample open: '+campaign.interaction.persistenceOpen,
+  'blocker displacement @ persistence: '+(campaign.blockerDisplacementAtPersistence??NaN).toFixed(3),
+  'clearance radius: '+E02A_CLEARANCE_RADIUS.toFixed(3),
+  campaign.reasons.length?'\nFAIL reasons:\n- '+campaign.reasons.join('\n- '):''
+].join('\n');
+
+let control,interaction,paused=false,acc=0,last=performance.now();
+function rebuild(){
+  if(control) destroyE02aScenario(control);
+  if(interaction) destroyE02aScenario(interaction);
+  control=createE02aScenario(false);
+  interaction=createE02aScenario(true);
+  acc=0;last=performance.now();
+}
+rebuild();
+
+pause.onclick=()=>{paused=!paused;pause.textContent=paused?'Run':'Pause'};
+reset.onclick=()=>rebuild();
+
+const PX=58;
+const DOOR_X=0, GAP_HALF=.75, WALL_Y=1.2;
+function map(x,y,cx,cy){return [cx+x*PX,cy+y*PX]}
+
+function drawScenario(state,cx,cy,title){
+  const w=10.7*PX,h=3.1*PX;
+  ctx.save();
+  ctx.translate(cx-w/2,cy-h/2);
+  ctx.fillStyle='#0c1218';ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle='#27313a';ctx.strokeRect(0,0,w,h);
+  ctx.restore();
+
+  const snap=snapshotE02aScenario(state);
+  ctx.fillStyle='#b9c6d2';ctx.font='600 13px system-ui';ctx.textAlign='left';
+  ctx.fillText(title+' — '+(snap.passageOpen?'OPEN':'BLOCKED'),cx-w/2,cy-h/2-9);
+
+  const ox=cx,oy=cy;
+
+  ctx.fillStyle='#56616c';
+  for(const y of [-WALL_Y,WALL_Y]){
+    const [sx,sy]=map(0,y,ox,oy);
+    ctx.fillRect(sx-5.4*PX,sy-.12*PX,10.8*PX,.24*PX);
+  }
+
+  const segHalf=(1.08-GAP_HALF)/2, segCy=GAP_HALF+segHalf;
+  for(const y of [-segCy,segCy]){
+    const [sx,sy]=map(DOOR_X,y,ox,oy);
+    ctx.fillRect(sx-.12*PX,sy-segHalf*PX,.24*PX,segHalf*2*PX);
+  }
+
+  const [dx,dy]=map(DOOR_X,0,ox,oy);
+  ctx.strokeStyle=snap.passageOpen?'#4d9460':'#8a4d4d';
+  ctx.lineWidth=3;
+  ctx.strokeRect(dx-.18*PX,dy-GAP_HALF*PX,.36*PX,GAP_HALF*2*PX);
+
+  const [sx,sy]=map(snap.shuttle.x,snap.shuttle.y,ox,oy);
+  ctx.fillStyle='#95a7b8';ctx.beginPath();ctx.arc(sx,sy,.55*PX,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#d9e2ea';ctx.lineWidth=2;ctx.stroke();
+
+  const [bx,by]=map(snap.blocker.x,snap.blocker.y,ox,oy);
+  ctx.fillStyle='#d8b86d';ctx.beginPath();ctx.arc(bx,by,.50*PX,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#f2dfaa';ctx.stroke();
+}
+
+function render(){
+  const w=canvas.clientWidth,h=canvas.clientHeight;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle='#090d12';ctx.fillRect(0,0,w,h);
+  drawScenario(control,w/2,h*.31,'CONTROL — E01 process disabled');
+  drawScenario(interaction,w/2,h*.70,'INTERACTION — frozen E01 process');
+
+  const a=snapshotE02aScenario(control),b=snapshotE02aScenario(interaction);
+  live.textContent=[
+    'tick '+a.tick+(paused?' [PAUSED]':''),
+    'control passage='+(a.passageOpen?'OPEN':'BLOCKED')+
+      ' blocker x='+a.blocker.x.toFixed(3),
+    'interaction passage='+(b.passageOpen?'OPEN':'BLOCKED')+
+      ' blocker x='+b.blocker.x.toFixed(3),
+    'interaction shuttle x='+b.shuttle.x.toFixed(3)+' dir='+b.direction,
+    'first contact='+b.firstBlockerContactTick,
+    'first open='+b.firstOpenTick,
+    'contact ticks='+b.blockerContactTicks,
+    'persistence open='+b.persistenceOpen
+  ].join('\n');
+}
+
+function frame(now){
+  const elapsed=Math.min(.08,(now-last)/1000);last=now;
+  if(!paused){
+    acc+=elapsed;let guard=0;
+    while(acc>=E01_DT&&guard++<20){
+      stepE02aScenario(control);
+      stepE02aScenario(interaction);
+      acc-=E01_DT;
+    }
+  }
+  render();requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
