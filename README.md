@@ -91,7 +91,7 @@ The new bounded O-CTRL contract already exists, has passed dedicated red-team wi
 
 **`docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`**
 
-Execution proceeds only through atomic runs. E01, E02a, E02b and B01a are complete. The reusable E0/B0 body seam is qualified, but the ecology passage is not yet body-scaled: E02 used clearance 0.35 while B0 radius is 1.0. The next candidate is B01b passage-scale calibration; no run is currently active.
+Execution proceeds only through atomic runs. E01, E02a, E02b, B01a and B01b are complete. The world-side passage is now calibrated to B0-sized research clearance, but actual rigid-body traversal remains unproven. The next candidate is B01c actual B0 passage traversal; no run is currently active.
 
 After any session loss, begin with **`docs/CONTINUE_HERE.md`**, verify live branch/PR/CI truth, recover the current run state, and never jump directly to monolithic S0/O-CTRL implementation.
 
