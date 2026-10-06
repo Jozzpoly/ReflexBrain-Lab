@@ -1,6 +1,6 @@
 # ReflexBrain — Run-Based Execution Architecture — 2026-10-06
 
-Status: **CURRENT EXECUTION METHODOLOGY · v0.2 · IMPLEMENTATION STILL PAUSED**
+Status: **CURRENT EXECUTION METHODOLOGY · v0.3 · ATOMIC IMPLEMENTATION UNDERWAY**
 
 Primary design authority:
 
@@ -552,12 +552,16 @@ E01 PASS/FAIL/INCONCLUSIVE result + qualified/rejected mechanism SHA/artifact.
 
 ---
 
-## OCTRL-E02 — Material Composition / Topology
+## OCTRL-E02 — SUPERSEDED BY E02a + E02b
+
+The original E02 proposal was too broad because existence and robustness can fail independently.
+
+See the concrete run cards under `docs/runs/`.
+
+Historical text below is retained only as rationale, not activation authority.
 
 Type:
-**PROBE / COMPARISON**
-
-Runs only if E01 leaves a useful independent process.
+**SUPERSEDED**
 
 ### Primary question
 
@@ -746,17 +750,17 @@ It is to understand how reusable actor-relative meaning can become a **real orga
 
 **NO RUN ACTIVE.**
 
-Implementation remains paused.
+Completed:
+- **OCTRL-E01 — PASS** and merged into the qualified parent baseline.
 
-If Owner later deliberately authorizes execution, the first proposed run is now:
+The former broad E02 proposal has been split by the atomicity rule.
 
-**OCTRL-E01 — Independent Mechanical Process Null**
+Current PROPOSED runs:
+1. **OCTRL-E02a — Passage-State Composition Existence**
+2. **OCTRL-E02b — Composition Robustness / Anti-Fixture**, blocked on E02a PASS.
 
-Not:
-- M0-Lite as a whole;
-- B1;
-- S0;
-- O-CTRL.
+If execution resumes, activate only E02a after re-checking its run card and exact base SHA.
 
-After E01:
+Do not use E02b variation while tuning E02a.
+After E02a:
 judge, persist, stop, re-plan.
