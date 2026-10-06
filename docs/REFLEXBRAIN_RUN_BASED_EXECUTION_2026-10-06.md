@@ -751,18 +751,23 @@ It is to understand how reusable actor-relative meaning can become a **real orga
 **NO RUN ACTIVE.**
 
 Completed:
-- **OCTRL-E01 — PASS**
-- **OCTRL-E02a — PASS**
-- **OCTRL-E02b — PASS**
-- **OCTRL-B01a — PASS**
-
-Current unresolved integration issue:
-
-> E02 passage geometry was qualified for clearance radius 0.35, while frozen E0/B0 radius is 1.0.
+- OCTRL-E01 — PASS
+- OCTRL-E02a — PASS
+- OCTRL-E02b — PASS
+- OCTRL-B01a — PASS
+- OCTRL-B01b — PASS
 
 Current next candidate:
-- **OCTRL-B01b — B0-Scale Passage Calibration — PROPOSED**
+- **OCTRL-B01c — Actual B0 Passage Traversal — PROPOSED**
 
-B01b should manipulate only static passage/blocker scale under the frozen E01 process and B0-sized researcher clearance.
+B01c is the first direct falsifier of the researcher-only B0 clearance audit using the real frozen B0 body.
 
-No actual actor, B1, perception, memory or Local Brain belongs in B01b.
+It must not introduce:
+- B1 morphology;
+- steering planner;
+- pathfinding;
+- perception/memory;
+- Local Brain;
+- geometry queries inside control.
+
+A fixed motor protocol is sufficient.
