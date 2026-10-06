@@ -756,18 +756,15 @@ Completed:
 - OCTRL-E02b — PASS
 - OCTRL-B01a — PASS
 - OCTRL-B01b — PASS
+- OCTRL-B01c — SCIENTIFIC FAIL / EXECUTION VALID
+
+Canonical correction from B01c:
+
+> researcher geometric OPEN/BLOCKED is not actor-relative effectivity truth for a movable obstacle.
 
 Current next candidate:
-- **OCTRL-B01c — Actual B0 Passage Traversal — PROPOSED**
+- **OCTRL-B01d — Actor-Relative Resistance Signature — PROPOSED**
 
-B01c is the first direct falsifier of the researcher-only B0 clearance audit using the real frozen B0 body.
+B01d should keep world/body/controller frozen and ask whether the material obstacle produces a stable difference in actual B0 progress/contact burden across a predeclared modest obstacle-position set.
 
-It must not introduce:
-- B1 morphology;
-- steering planner;
-- pathfinding;
-- perception/memory;
-- Local Brain;
-- geometry queries inside control.
-
-A fixed motor protocol is sufficient.
+Do not repair B01c by modifying physics.
