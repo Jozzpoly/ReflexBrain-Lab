@@ -12,9 +12,10 @@ Read in this order:
 
 1. **`docs/CONTINUE_HERE.md`** — durable recovery entrypoint after any session/context loss.
 2. **`docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md`** — current live truth and converged pre-O0 decisions.
-3. **`docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`** — frozen first O-CTRL design authority; implementation is still paused.
-4. **`docs/OCTRL_M0_LITE_CONTRACT_RED_TEAM_2026-10-06.md`** — required amendments and scope protections.
-5. **`docs/REFLEXBRAIN_SALVAGE_MAP_2026-10-06.md`** — historical donors and exact recovery refs.
+3. **`docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md`** — current execution method; recover status from `CONTINUE_HERE` / current-state, not from historical candidate sections inside this methodology document.
+4. **`docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`** — frozen first O-CTRL specimen design authority; atomic execution has already begun and has since falsified/refined several assumptions.
+5. **`docs/OCTRL_M0_LITE_CONTRACT_RED_TEAM_2026-10-06.md`** — required amendments and scope protections.
+6. **`docs/REFLEXBRAIN_SALVAGE_MAP_2026-10-06.md`** — historical donors and exact recovery refs.
 
 Supporting `PRE_O0_*` documents are evidence and rationale; do not front-load all of them on recovery.
 
@@ -28,7 +29,7 @@ E0.0 remains a qualified **body/microscope donor**, not an organism milestone.
 
 The old 2026-10-05 `O0_PERSISTENT_MICRO_ECOLOGY_CONTRACT` is preserved as a historical candidate under audit. Draft PR #5 is **not** the active implementation mandate.
 
-The foundations campaign has converged and the reduced O-CTRL contract is frozen as design authority. Atomic execution has begun: **OCTRL-E01 passed and was merged as a narrow qualified primitive. No run is currently active.**
+The foundations campaign has converged and the reduced O-CTRL contract remains bounded design authority, not a script to execute mechanically. Atomic execution has progressed through E01/E02/B01 and the first private-proprioception probe. **No run is currently active.** The latest scientific result is **OCTRL-P01a — SCIENTIFIC FAIL / EXECUTION VALID**: the B01d effect reached legal actor-private proprioception, but the frozen researcher-side `contact+1` timing criterion was falsified.
 
 ### First control occupant — O-CTRL
 
@@ -91,7 +92,18 @@ The new bounded O-CTRL contract already exists, has passed dedicated red-team wi
 
 **`docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`**
 
-Execution proceeds only through atomic runs. E01, E02a, E02b, B01a and B01b qualified their narrow claims. B01c then scientifically FAILed: actual B0 crossed both researcher-labelled OPEN and BLOCKED fixtures by physically pushing the movable blocker. Static geometry is therefore not actor-effectivity truth. The next candidate is B01d resistance/effectivity characterization; no run is currently active.
+Execution proceeds only through atomic runs. Current promoted sequence:
+
+- E01 — PASS: independent non-agent material process;
+- E02a — PASS: one material passage-state composition exists;
+- E02b — PASS: declared local anti-fixture pressure survives;
+- B01a — PASS: E0/B0 body seam extracted with parity;
+- B01b — PASS: B0-scale static geometry calibrated;
+- B01c — SCIENTIFIC FAIL / EXECUTION VALID: researcher geometric OPEN/BLOCKED is not actor effectivity truth for a movable obstacle;
+- B01d — PASS: the same B0 action experiences a stable material resistance/effectivity difference across the declared blocker-placement neighborhood;
+- P01a — SCIENTIFIC FAIL / EXECUTION VALID: legal private proprioception does diverge under the resistant cases, but microscope contact time is not the same thing as actor-private experiential consequence time.
+
+**No run is active. There is deliberately no frozen next run. Re-plan from the North Star before proposing one.** Do not rescue P01a by relaxing its timing threshold, do not turn B01d latency/contact into a semantic scalar, and do not restore world-side OPEN/BLOCKED as actor truth.
 
 After any session loss, begin with **`docs/CONTINUE_HERE.md`**, verify live branch/PR/CI truth, recover the current run state, and never jump directly to monolithic S0/O-CTRL implementation.
 
