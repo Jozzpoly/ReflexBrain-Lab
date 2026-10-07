@@ -385,3 +385,24 @@ Reason:
 MEDIUM-C is viable.
 
 It is not ready for productization.
+
+
+---
+
+# R2c correction — 2026-10-07
+
+The earlier R1 wording that stable Rapier handles are sufficient as a binding key needs a narrower interpretation.
+
+MEDIUM-C/R2c showed:
+- **current live handles** rebind exactly across same-version snapshot restore;
+- **stale removed handles may alias a newly-created live object** after allocator churn in the tested JS path.
+
+Therefore future binding metadata must use:
+
+`HostBindingId -> current Rapier handle(s)`
+
+with explicit retirement.
+
+Raw handle must not be used as durable event/provenance identity.
+
+HostBindingId is not actor-private object identity and must not enter P0/P1.
