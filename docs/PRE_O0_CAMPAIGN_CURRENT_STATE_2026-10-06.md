@@ -1262,3 +1262,40 @@ Canonical runtime/provenance rule:
 HostBindingId remains microscope/runtime plumbing only and must never become P0/P1/private actor identity.
 
 MEDIUM-C now has enough evidence to design a developer-only versioned **ExperimentMoment envelope**, but NOT enough to expose Owner save/fork UI. The next continuity work must include provenance ancestry, build/schema identity and a legitimate occupant-private sidecar rather than serializing current flawed Field v0 wholesale.
+
+
+---
+
+# MEDIUM-C/R4 ExperimentMoment exact fork — 2026-10-07
+
+**PASS · ARCHITECTURE PROBE CLOSED**
+
+Evidence:
+- PR #31
+- CI `37675768385`
+- `docs/medium-runs/MEDIUM-C-R4_ARMED.md`
+- `docs/medium-runs/MEDIUM-C-R4_RESULT.md`
+
+Defended result:
+- one versioned E01 causal moment at tick 300 restored exactly;
+- source/restored continuation remained identical for 240 ticks;
+- two child Worlds restored from the same root remained identical for 120 ticks before intervention;
+- branch B then received one HostBindingId-addressed material impulse at causal tick 420;
+- first A/B divergence occurred only after that intervention;
+- root provenance remained immutable and the intervention existed only in B history;
+- diverged A1/B1 child moments each restored immediately and continued exactly for 300 further ticks;
+- wrong schema, wrong build identity, missing process sidecar and a retired required binding all failed closed.
+
+Canonical MEDIUM-C result:
+
+> **ExperimentMoment can now be treated as a causal checkpoint in the deterministic E01 donor, not merely a screenshot/state dump.**
+
+Important role boundary:
+- HostBindingId is durable host/runtime identity;
+- process-local role wiring (shuttle / loose / end-stops / walls) remains in E01 process sidecar;
+- neither becomes actor-private object identity.
+
+Next MEDIUM-C pressure:
+- include a legitimate **actor-private occupant sidecar** without reconstructing memory from World truth and without serializing current known-bad Field v0 wholesale.
+
+No Owner-facing save/fork UI is authorized yet.
