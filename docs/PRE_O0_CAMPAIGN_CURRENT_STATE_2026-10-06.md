@@ -954,3 +954,35 @@ The first execution was **INCONCLUSIVE**, not FAIL, because fresh Rapier collide
 Do not promote P02a to generic scene discovery, object identity, P1, memory/stale knowledge, G1, history causality, semantic meaning or organism continuity.
 
 **No run is ACTIVE. Re-plan from the North Star before any next run.**
+
+
+---
+
+# P02b result — 2026-10-07
+
+**OCTRL-P02b — Embodied Occlusion Transition Integration: PASS · CLOSED · MERGED**
+
+Evidence:
+- PR #16
+- merge SHA `d8547c4085` (full SHA is in the merged PR; verify live before relying on this shortened identifier);
+- `docs/runs/OCTRL-P02B_RESULT.md`
+
+Qualified narrow claim:
+
+> Frozen E0/B0 actuation and unchanged P02a P0 sensing compose into one uninterrupted physical actor trajectory: first the target is visible, then the actor's own motion removes it from private external evidence, then a material target displacement stays outside private P0 while occluded.
+
+Measured:
+- first visible-to-occluded transition at tick 51;
+- 3.242 actor self-displacement;
+- later hidden target displacement 0.472;
+- zero hidden P0 target leaks;
+- zero actor contact with target/occluder;
+- deterministic replay and final CI PASS.
+
+The initial run was INCONCLUSIVE owing to a setup-only exact-angle tolerance narrower than Rapier's float32 representation. The setup validation tolerance was corrected, not the frozen physics, sensor, motor sequence or scientific thresholds.
+
+**Evidence boundary:** this remains a researcher-authored fixed motor protocol and a synthetic P0 channel with a host-supplied candidate list. The actor does not yet consume P0 to organize movement. No memory, identity, stale hypothesis, history-dependent action, ordinary autonomous continuation, organism-level experience or learned meaning has been demonstrated. Avoid calling the physically continuous episode a living organism.
+
+**Current causal gap:** actor-private history must become a persistent state that changes *later material behaviour*, rather than merely storing a past blob or being narrated by a microscope. A candidate experiment must first identify an independent control/ablation, a legal downstream consumer and an honest maximum claim. Do not auto-execute a P02c/P03 merely because it is next in a sequence.
+
+**NO RUN ACTIVE at this checkpoint.** Verify live branch before activation.
