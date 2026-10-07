@@ -924,3 +924,33 @@ Do not repair P01a by relaxing its threshold.
 Surviving evidence suggests the B01d effect does reach legal actor-private proprioception, but that narrower claim is not yet separately qualified.
 
 **No run is ACTIVE. Re-plan before any next run.**
+
+
+---
+
+# P02a result — 2026-10-07
+
+**OCTRL-P02a — Private Dynamic-Blob Occlusion Null: PASS · CLOSED · MERGED**
+
+Merged evidence:
+- PR #15
+- merge SHA: `c23e68f395d9153228fd4ab3e0a6b2b0344913c6`
+- result: `docs/runs/OCTRL-P02A_RESULT.md`
+
+Qualified narrow claim:
+
+> One narrow synthetic P0 physical-evidence channel can preserve a real actor-private visibility boundary under hidden material change.
+
+Evidence boundary:
+- visible control yields one body-relative physical blob;
+- hidden target remains absent from P0 while undergoing real physical displacement;
+- hidden target stays inside declared sensor range;
+- private P0 evidence remains unchanged across the hidden displacement;
+- deterministic repeat;
+- no World coordinates, IDs, handles or semantic kinds in private output.
+
+The first execution was **INCONCLUSIVE**, not FAIL, because fresh Rapier colliders were not yet present in scene queries. A dedicated pre/post-step diagnostic proved the apparatus defect without moving actor or target. Only neutral query-readiness synchronization was corrected; geometry, sensor law and scientific criteria remained frozen.
+
+Do not promote P02a to generic scene discovery, object identity, P1, memory/stale knowledge, G1, history causality, semantic meaning or organism continuity.
+
+**No run is ACTIVE. Re-plan from the North Star before any next run.**
