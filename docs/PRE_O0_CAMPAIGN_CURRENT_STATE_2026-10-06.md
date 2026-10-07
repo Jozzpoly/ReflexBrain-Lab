@@ -1227,3 +1227,38 @@ Future Chronicle/Fork needs a host-owned binding identity with explicit retireme
 
 This FAIL does not revoke MEDIUM-C/R0 exact restore for current live handles.
 No Owner-facing save/fork feature is authorized.
+
+
+---
+
+# MEDIUM-C/R3 HostBindingId lifecycle — 2026-10-07
+
+**PASS · ARCHITECTURE PROBE CLOSED**
+
+Evidence:
+- PR #30
+- scientific/engineering CI `37674917231`
+- `docs/medium-runs/MEDIUM-C-R3_ARMED.md`
+- `docs/medium-runs/MEDIUM-C-R3_RESULT.md`
+
+Parent R2c stale-handle hazard reproduced:
+- retired B raw handle `5e-324` later resolved through Rapier's low-level lookup to a newly live body with a different current handle;
+- therefore raw physics handle remains disqualified as durable experiment identity.
+
+R3 surviving result:
+- root HostBindingIds were monotonic and never reused;
+- retired B remained non-resolvable in source and both restored forks;
+- exact physics snapshot restore preserved current live A/C/D bindings;
+- sibling forks stayed physically identical for 60 ticks before branch-local intervention;
+- post-fork births received distinct lineage IDs (`hb:root/A:0`, `hb:root/B:0`) even when their raw physics handles were equal across independent Worlds;
+- retiring inherited D in branch A did not retire D in branch B;
+- later branch-A birth received a fresh lineage ordinal;
+- HostBindingId-addressed impulses reached the intended branch-local bodies.
+
+Canonical runtime/provenance rule:
+
+> **HostBindingId -> current live Rapier binding(s), with explicit retirement. Raw Rapier handle is not durable identity.**
+
+HostBindingId remains microscope/runtime plumbing only and must never become P0/P1/private actor identity.
+
+MEDIUM-C now has enough evidence to design a developer-only versioned **ExperimentMoment envelope**, but NOT enough to expose Owner save/fork UI. The next continuity work must include provenance ancestry, build/schema identity and a legitimate occupant-private sidecar rather than serializing current flawed Field v0 wholesale.
