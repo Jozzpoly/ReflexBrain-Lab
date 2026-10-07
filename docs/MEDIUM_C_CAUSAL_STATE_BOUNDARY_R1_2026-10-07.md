@@ -465,3 +465,43 @@ New distinction:
 > **host identity tells us which material binding is which across research history; process sidecar tells the host how that process is wired; actor-private identity remains a separate scientific problem.**
 
 Do not turn ExperimentMoment into a final product schema yet. The next causal boundary must include a legitimate occupant-private sidecar.
+
+
+---
+
+## R5 update — actor-private sidecar — 2026-10-08
+
+MEDIUM-C/R5 closes one major uncertainty in this inventory.
+
+Using a C01-lineage occupant rather than known-bad Field v0, the exact moment boundary successfully included a versioned private sidecar containing only:
+- private tick;
+- body odometry;
+- legal last-seen P0 blob + acquisition tick;
+- authored control mode/check duration;
+- one-step private self-motion cache.
+
+It explicitly excluded:
+- World coordinates;
+- HostBindingId;
+- Rapier handles;
+- hidden-event schedule;
+- researcher identity.
+
+At tick 200 current P0 was empty, so the remembered tick-51 last-seen could not be reconstructed from current legal evidence. Preserving it as actor-private state was causally necessary: deleting only that private record in one exact fork delayed/prevented later CHECK and produced first material branch divergence only when the private difference reached motor output at tick 231.
+
+Therefore the continuity inventory now distinguishes three categories more sharply:
+
+1. **reconstructible derived current evidence**
+   - current P02a frame under the tested sensor version;
+
+2. **non-reconstructible actor-private causal history**
+   - remembered past legal evidence and control-private temporal state;
+
+3. **host/runtime/provenance identity**
+   - HostBindingId, role bindings, fork ancestry — never actor-private identity.
+
+This strengthens the rule:
+
+> save/fork must preserve causal ownership boundaries, not merely enough bytes to redraw a scene.
+
+It still does not justify serializing current Field v0 wholesale or defining a universal private-memory schema.
