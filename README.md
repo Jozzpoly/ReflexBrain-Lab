@@ -84,29 +84,15 @@ Policy:
 
 > **keep the project clean forward and rich backward.**
 
-## Current next move
+## Current execution truth
 
-Do **not** automatically implement.
+**One source of live state:**
+[`docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md`](docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md).
 
-The new bounded O-CTRL contract already exists, has passed dedicated red-team with amendments, and is frozen as design authority:
+Start from [`docs/CONTINUE_HERE.md`](docs/CONTINUE_HERE.md) and verify PR #6 head, current checks and the latest judged run. Do not use a dated README/PR/probe page as the latest-status authority.
 
-**`docs/OCTRL_M0_LITE_IMPLEMENTATION_CONTRACT_2026-10-06.md`**
+The 2026-10-07 H01 probe qualified only that legally acquired private historical P0 evidence can influence a later authored physical CHECK in an exact matched-current-state memory ablation. It did **not** prove actor-self-timed initiation, natural object permanence, autonomous organism life or learned ReflexBrain.
 
-Execution proceeds only through atomic runs. Current promoted sequence:
+**Primary pending bottleneck:** a continuing actor-private concern/history process must cause ordinary checking and recovery without researcher-scheduled action release or hidden World notifications. Scientific step selection must remain open to falsification; do not increment component-run suffixes mechanically.
 
-- E01 — PASS: independent non-agent material process;
-- E02a — PASS: one material passage-state composition exists;
-- E02b — PASS: declared local anti-fixture pressure survives;
-- B01a — PASS: E0/B0 body seam extracted with parity;
-- B01b — PASS: B0-scale static geometry calibrated;
-- B01c — SCIENTIFIC FAIL / EXECUTION VALID: researcher geometric OPEN/BLOCKED is not actor effectivity truth for a movable obstacle;
-- B01d — PASS: the same B0 action experiences a stable material resistance/effectivity difference across the declared blocker-placement neighborhood;
-- P01a — SCIENTIFIC FAIL / EXECUTION VALID: legal private proprioception does diverge under the resistant cases, but microscope contact time is not the same thing as actor-private experiential consequence time;
-- P02a — PASS: one narrow synthetic P0 blob/occlusion boundary preserves private noninterference during hidden material displacement; this does not establish generic perception, identity, memory or G1;
-- P02b — PASS: B0 self-motion produces a continuous visible-to-occluded transition under the unchanged P02a sensor, and later hidden target displacement still does not leak into P0.
-
-**No run is active. There is deliberately no frozen next run. Re-plan from the North Star before proposing one.** Do not rescue P01a by relaxing its timing threshold, do not turn B01d latency/contact into a semantic scalar, and do not restore world-side OPEN/BLOCKED as actor truth.
-
-After any session loss, begin with **`docs/CONTINUE_HERE.md`**, verify live branch/PR/CI truth, recover the current run state, and never jump directly to monolithic S0/O-CTRL implementation.
-
-Do not resurrect the superseded 2026-10-05 O0 contract or draft PR #5 by inertia.
+Historical O0/PR #5 is superseded as implementation authority. Historic evidence remains discoverable in the salvage map.
