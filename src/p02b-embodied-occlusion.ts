@@ -35,7 +35,7 @@ const OCCLUDER = {
 };
 
 const TARGET_PREMOVE_EPS = 1e-6;
-const HEADING_EPS = 1e-9;
+const HEADING_EPS = 1e-6;
 
 type Candidate = {
   rb: any;
