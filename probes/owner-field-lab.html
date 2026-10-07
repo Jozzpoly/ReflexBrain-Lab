@@ -67,8 +67,8 @@ footer{padding-top:18px;padding-bottom:30px;color:var(--muted);font-size:11px}
 <header>
 <div class="top"><div class="brand">◈ ReflexBrain / Owner Field Lab</div><div class="toplinks"><a href="../index.html">Project home</a><a href="./c01-continuous-monitor.html">C01 evidence replay</a><a href="https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6">Research PR ↗</a></div></div>
 <h1>Nie oglądaj eksperymentu. Zrób coś światu.</h1>
-<p class="lead">To jest otwarty, ciągły specimen do Owner-play. Świat i prosty authored actor działają bez Twojego heartbeat. Przesuwaj obiekt, wrzucaj materię pod niezależny sweeper, odcinaj pamięć albo zmysł i patrz, co naprawdę zmienia późniejszą trajektorię.</p>
-<div class="badges"><span class="badge live">● LIVE FIELD</span><span class="badge warn">UNQUALIFIED · Owner exploration</span><span class="badge">E0 body + P02a-style P0</span><span class="badge">independent physical sweeper</span></div>
+<p class="lead">To jest otwarty, ciągły specimen do Owner-play. Świat i prosty authored actor działają bez Twojego heartbeat. Przesuwaj obiekt, wrzucaj materię pod eksperymentalny sweeper, odcinaj pamięć albo zmysł i patrz, co naprawdę zmienia późniejszą trajektorię.</p>
+<div class="badges"><span class="badge live">● LIVE FIELD</span><span class="badge warn">UNQUALIFIED · Owner exploration</span><span class="badge">E0 body + P02a-style P0</span><span class="badge warn">sweeper donor · long-run FAIL known</span></div>
 </header>
 <main>
 <div id="bootError"></div>
@@ -155,7 +155,7 @@ footer{padding-top:18px;padding-bottom:30px;color:var(--muted);font-size:11px}
 
 <p class="notice"><strong>Granica:</strong> ten Field Lab jest celowo niekwalifikowany. Łączy wcześniejsze donory w otwarty playground, więc jego zachowanie jest materiałem do Owner-observation, nowych pytań i FAIL-ów — nie dowodem G1–G5, życia ani learned ReflexBrain.</p>
 </main>
-<footer>Owner Field Lab v0 · live experimental medium. The C01 page remains the frozen explanatory replay; this page is the place to break assumptions.</footer>
+<footer>Owner Field Lab v0 · live experimental medium · known long-run sweeper FAIL. The C01 page remains the frozen explanatory replay; this page is the place to break assumptions.</footer>
 
 <script type="module">
 import { initE0Rapier } from '../src/e0-body-seam.ts';
@@ -206,7 +206,7 @@ function draw(){
  // lower independent-process lane
  ctx.strokeStyle='rgba(183,166,239,.28)';ctx.setLineDash([7,6]);ctx.lineWidth=1.5;
  ctx.beginPath();ctx.moveTo(X(-5.7),Y(-2.65));ctx.lineTo(X(5.7),Y(-2.65));ctx.stroke();ctx.setLineDash([]);
- ctx.fillStyle='#8a77c1';ctx.font='10px system-ui';ctx.fillText('independent material lane',X(-5.5),Y(-2.65)-10);
+ ctx.fillStyle='#8a77c1';ctx.font='10px system-ui';ctx.fillText('experimental process lane',X(-5.5),Y(-2.65)-10);
 
  if(snap.flags.occluderEnabled){
    ctx.fillStyle='#334a62';ctx.fillRect(X(-.18),Y(2.15),.36*s,4.3*s);
