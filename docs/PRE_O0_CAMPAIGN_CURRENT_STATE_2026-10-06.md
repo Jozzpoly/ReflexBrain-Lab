@@ -1299,3 +1299,52 @@ Next MEDIUM-C pressure:
 - include a legitimate **actor-private occupant sidecar** without reconstructing memory from World truth and without serializing current known-bad Field v0 wholesale.
 
 No Owner-facing save/fork UI is authorized yet.
+
+
+---
+
+# MEDIUM-C/R5 actor-private causal moment — 2026-10-08
+
+**PASS · ARCHITECTURE PROBE CLOSED**
+
+Evidence:
+- PR #32
+- CI `37700673615`
+- `docs/medium-runs/MEDIUM-C-R5_ARMED.md`
+- `docs/medium-runs/MEDIUM-C-R5_RESULT.md`
+
+At causal tick 200 the C01-lineage occupant had:
+- empty current P0;
+- private last-seen from tick 51;
+- hidden material change already applied;
+- no CHECK yet.
+
+A versioned ExperimentMoment v1 captured exact physics, host bindings, World/process state, provenance and a separate versioned actor-private sidecar.
+
+Exact restore:
+- reproduced current empty P0 without stepping;
+- preserved private remembered evidence without reconstructing it from World;
+- remained exact for 220 ticks;
+- reproduced CHECK tick 231 and re-observation tick 318.
+
+Private-history fork:
+- A/B physically identical at fork;
+- B alone received a declared private-memory ablation at tick 200;
+- first motor divergence: tick 231;
+- first physical divergence: tick 231, only after divergent motor demand;
+- A CHECKed; B never CHECKed in frozen horizon.
+
+Canonical continuity consequence:
+
+> exact experiment history can require actor-private causal state that is neither physics state nor reconstructible current perception.
+
+Current developer-level causal moment stack is now defended across:
+- physics;
+- World/process sidecars;
+- fork-safe host bindings;
+- actor-private sidecar;
+- provenance.
+
+**No Owner save/fork feature is authorized.** Current private schema is occupant-specific and build-versioned; do not invent a universal ReflexBrain memory format.
+
+Campaign-level replan required before MEDIUM-C/R6 or any MEDIUM-D implementation.
