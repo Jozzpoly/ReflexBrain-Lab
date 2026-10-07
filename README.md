@@ -29,7 +29,7 @@ E0.0 remains a qualified **body/microscope donor**, not an organism milestone.
 
 The old 2026-10-05 `O0_PERSISTENT_MICRO_ECOLOGY_CONTRACT` is preserved as a historical candidate under audit. Draft PR #5 is **not** the active implementation mandate.
 
-The foundations campaign has converged and the reduced O-CTRL contract remains bounded design authority, not a script to execute mechanically. Atomic execution has progressed through E01/E02/B01, private proprioception, and the first narrow external P0 visibility boundary. **No run is currently active.** The latest scientific result is **OCTRL-P02a — PASS**: a body-relative physical blob is visible when line of sight exists, while a real hidden material displacement remains absent from the private P0 stream.
+The foundations campaign has converged and the reduced O-CTRL contract remains bounded design authority, not a script to execute mechanically. Atomic execution has progressed through E01/E02/B01, private proprioception, and the first narrow external P0 visibility boundary. **No run is currently active.** The latest scientific result is **OCTRL-P02b — PASS**: the qualified B0 body seam and unchanged P02a sensor compose into one continuous visible-to-occluded trajectory driven by the actor's own physical motion, after which hidden target motion remains absent from private P0 evidence.
 
 ### First control occupant — O-CTRL
 
@@ -102,7 +102,8 @@ Execution proceeds only through atomic runs. Current promoted sequence:
 - B01c — SCIENTIFIC FAIL / EXECUTION VALID: researcher geometric OPEN/BLOCKED is not actor effectivity truth for a movable obstacle;
 - B01d — PASS: the same B0 action experiences a stable material resistance/effectivity difference across the declared blocker-placement neighborhood;
 - P01a — SCIENTIFIC FAIL / EXECUTION VALID: legal private proprioception does diverge under the resistant cases, but microscope contact time is not the same thing as actor-private experiential consequence time;
-- P02a — PASS: one narrow synthetic P0 blob/occlusion boundary preserves private noninterference during hidden material displacement; this does not establish generic perception, identity, memory or G1.
+- P02a — PASS: one narrow synthetic P0 blob/occlusion boundary preserves private noninterference during hidden material displacement; this does not establish generic perception, identity, memory or G1;
+- P02b — PASS: B0 self-motion produces a continuous visible-to-occluded transition under the unchanged P02a sensor, and later hidden target displacement still does not leak into P0.
 
 **No run is active. There is deliberately no frozen next run. Re-plan from the North Star before proposing one.** Do not rescue P01a by relaxing its timing threshold, do not turn B01d latency/contact into a semantic scalar, and do not restore world-side OPEN/BLOCKED as actor truth.
 
