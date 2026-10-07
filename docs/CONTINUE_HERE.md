@@ -305,22 +305,19 @@ The project should remain:
 
 ---
 
-## Recovery amendment — P02a — 2026-10-07
+## Latest scientific frontier — 2026-10-07
 
-Latest judged run:
-**OCTRL-P02a — PASS · CLOSED · MERGED**
+This is a **routing checkpoint**, not an additional execution contract. The only mutable chronological execution record is `docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md`; individual immutable results live under `docs/runs/`. Always check live GitHub head and CI before acting.
 
-Evidence:
-- PR #15
-- merge SHA `c23e68f395d9153228fd4ab3e0a6b2b0344913c6`
-- `docs/runs/OCTRL-P02A_RESULT.md`
+Last qualified:
+- **P02a PASS**, PR #15: one legal body-relative P0 visibility/occlusion boundary, without target identity or World leakage.
+- **P02b PASS**, PR #16: the unchanged B0/P02a pair remains coherent across a physical actor-motion-driven visibility loss and later hidden displacement.
 
-Qualified narrow fact:
+Important limits:
+- P02a's first run was INCONCLUSIVE from query readiness, then corrected without retuning the scientific criterion.
+- P02b's first run was INCONCLUSIVE from overly strict initial heading representation check, then corrected without retuning the scientific criterion.
+- These are frozen fixed-motor researcher probes. They do not establish private memory, history-dependent action or organism continuity.
 
-> a real hidden material displacement can remain absent from one legal body-relative P0 blob stream while the object is occluded, while the same sensor law exposes the object when line of sight exists.
+**Next scientific gap:** first actor-private historical evidence with a legally isolated downstream behavioural consequence. Reject PASSes for merely copying a blob into a field; preserve matched-current sensory evidence and history-ablation controls. The first organism-level claim remains unearned.
 
-The first P02a readout was INCONCLUSIVE because fresh Rapier colliders were not query-visible before the first broad-phase update. A dedicated diagnostic proved the apparatus defect; only neutral initial query readiness was corrected.
-
-Do not infer generic perception, identity, P1, memory, G1, semantic meaning or organism continuity.
-
-**No run is ACTIVE and no next run is frozen.**
+**No run was ACTIVE at this recovery checkpoint.** Do not infer current status from this dated note; verify live PR/run state and current-state.
