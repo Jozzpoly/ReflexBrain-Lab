@@ -305,19 +305,20 @@ The project should remain:
 
 ---
 
-## Latest scientific frontier — 2026-10-07
+## Live recovery routing — 2026-10-07
 
-This is a **routing checkpoint**, not an additional execution contract. The only mutable chronological execution record is `docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md`; individual immutable results live under `docs/runs/`. Always check live GitHub head and CI before acting.
+Read this for **identity, scope and boundaries**. Do **not** treat this dated file as a duplicate run-status ledger.
 
-Last qualified:
-- **P02a PASS**, PR #15: one legal body-relative P0 visibility/occlusion boundary, without target identity or World leakage.
-- **P02b PASS**, PR #16: the unchanged B0/P02a pair remains coherent across a physical actor-motion-driven visibility loss and later hidden displacement.
+The only mutable chronological execution truth is:
+`docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md`.
 
-Important limits:
-- P02a's first run was INCONCLUSIVE from query readiness, then corrected without retuning the scientific criterion.
-- P02b's first run was INCONCLUSIVE from overly strict initial heading representation check, then corrected without retuning the scientific criterion.
-- These are frozen fixed-motor researcher probes. They do not establish private memory, history-dependent action or organism continuity.
+Immutable run evidence lives in `docs/runs/*_RESULT.md`, with predeclared arm cards alongside.
 
-**Next scientific gap:** first actor-private historical evidence with a legally isolated downstream behavioural consequence. Reject PASSes for merely copying a blob into a field; preserve matched-current sensory evidence and history-ablation controls. The first organism-level claim remains unearned.
+Latest recovered scientific layers at this checkpoint:
+- **P02a PASS:** narrow synthetic external P0 visibility/occlusion boundary, with no general object discovery or World identity;
+- **P02b PASS:** frozen B0+P02a supports real body-motion-driven visibility loss and hidden material change with no P0 leak;
+- **H01 PASS (narrow):** prior private evidence changes a later authored motor CHECK and causes a new legal blob under controlled memory ablation.
 
-**No run was ACTIVE at this recovery checkpoint.** Do not infer current status from this dated note; verify live PR/run state and current-state.
+H01's decisive remaining flaw: the CHECK opportunity was supplied on a researcher-controlled timeline. This is not self-generated continuation or an organism claim. The next material question concerns ordinary actor-private concern/history initiating action in a world that continues without the researcher as heartbeat.
+
+For **current** ACTIVE status and next hypothesis, consult the mutable current-state document and verify live PR/CI before acting. Preserve scientific FAIL vs execution PASS and do not promote machine PASS to Owner experiential truth.
