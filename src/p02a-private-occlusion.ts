@@ -124,6 +124,12 @@ function createWorld(targetPosition: { x: number; y: number }): P02aWorld {
   const occluder = createFixedOccluder(world);
   const target = createTarget(world, targetPosition);
 
+  // Rapier scene queries read the broad-phase state from the last simulation
+  // step. A neutral first step makes freshly inserted colliders query-visible.
+  // In this zero-gravity setup there are no applied forces or initial overlaps,
+  // so this does not alter the declared arrangement.
+  world.step();
+
   return { world, actor, target, occluder };
 }
 
