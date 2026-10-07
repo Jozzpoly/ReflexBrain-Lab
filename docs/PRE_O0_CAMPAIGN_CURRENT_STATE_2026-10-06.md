@@ -1090,3 +1090,31 @@ Therefore the interactive-medium direction changes:
 The next Pages surface should be an explicitly **unqualified Owner Field Lab** with a continuously running physical actor/world, direct material interventions, actor-private vs researcher lenses, event history and fast reset. It may reuse qualified body/sensor primitives, but must clearly separate exploratory Owner play from scientific qualification.
 
 Do not mark Owner-medium PASS until Owner has directly used that field surface and says it has real experimental value.
+
+
+---
+
+# Interactive medium program — Owner direction — 2026-10-07
+
+Owner strongly approves and reinforces development of the **project-wide interactive medium**.
+
+At the same time Owner explicitly asks not to rush the Field Lab itself: analysis, planning and implementation should unfold over many runs / several campaigns, with no shortcut-driven feature sprint.
+
+This creates a new project distinction:
+
+- **ReflexBrain medium** — broad durable interface between Owner, specimen, private experience, evidence and project history;
+- **Owner Field Lab** — one unqualified Habitat/Field surface inside that medium;
+- **Evidence replays / microscope** — separate controlled surfaces;
+- **organism research** — the actual scientific subject; must not be replaced by medium polish.
+
+Current program:
+- `docs/REFLEXBRAIN_INTERACTIVE_MEDIUM_CAMPAIGNS_2026-10-07.md`
+- `docs/MEDIUM_A_INTERACTION_ARCHAEOLOGY_2026-10-07.md`
+
+Current MEDIUM-A evidence recovers two simultaneous truths:
+1. Persistent Playground v1 provided real Owner-value donors: persistent world/body/history; Owner drag/takeover followed by release; autonomy continuing after Owner stops; separate World-vs-brain reset; observable ordinary trajectory.
+2. the same lineage contained major false-life artifacts (wall-clinging, coarse representation, random motor punctuation, wall traps, anthropomorphic UI), while R2's click-driven toy failed categorically.
+
+Therefore the medium should preserve **open perturbation and autonomous aftermath**, while making causal falsification easier—not merely recreate the old playground.
+
+**Field Lab v0 remains public and UNQUALIFIED. No v0.2 feature implementation is authorized by this note.** The existing `medium/owner-field-v0.2` branch is currently a MEDIUM-A/B staging branch for research and planning.
