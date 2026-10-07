@@ -1018,3 +1018,46 @@ This is an *integration prerequisite*, not an organism milestone. Do not open H0
 **Current North-Star bottleneck:** construct one continuing host process whose CHECK/actuation is initiated by actor-private concern, history and legal perception, not by the researcher's scenario phase or Owner heartbeat. It must experience independent material change without hidden World notifications. Before calling such a loop an organism, it must earn Owner-observed continuation and causality, not only a machine PASS.
 
 **NO RUN ACTIVE at this checkpoint. Re-plan independently before any new ACTIVE run.**
+
+
+---
+
+# C01 result — 2026-10-07
+
+**OCTRL-C01 — Continuous Private-Evidence Monitoring Null: SCIENTIFIC PASS · CLOSED · MERGED**
+
+Evidence:
+- PR #18
+- merge SHA: `91f570aaa3832a2b440e4fcc6a47e9761306190d`
+- frozen arm: `docs/runs/OCTRL-C01_ARMED.md`
+- frozen result: `docs/runs/OCTRL-C01_RESULT.md`
+- CI scientific gate `37563305143`: PASS, 13/13 Vitest, type check, build
+- parent merge CI `37563988369`: PASS
+- research-preview/Pages deployment `37563985203`: PASS
+- observation replay: `probes/c01-continuous-monitor.html`
+
+## Defended narrow result
+
+For one uninterrupted B0 body / synthetic P02a sensing loop, a fixed authored private monitoring concern begins CHECK when its own last legal P0 observation is **180 actor-local ticks old**. Unlike H01 there is **no researcher-gated CHECK phase** or event notification to the controller.
+
+Matched research variants:
+- actual P0 loss from body movement at tick **51**;
+- World hidden impulse at tick **95**, **155**, or none;
+- all three history-enabled runs initiate CHECK at tick **231** independent of hidden event timing;
+- new legal blob after physical reverse inspection at tick **318**, **318**, or **313**;
+- same current P0 and same physical body state in a matched memory-ablated run -> no CHECK, no reobservation;
+- all variants deterministic; no private World IDs, hidden-event notifications or semantic object identity.
+
+## Do not overclaim
+
+The controller's monitoring duty, patrol odometry bound (3.0), private evidence-age rule (180), reverse CHECK and 110-tick check limit are **authored**. Early/late hidden impulses are researcher-authored World interventions, not an E01-class recurring independent ecology. P02a still enumerates physical candidates internally, and the new blob is NOT actor-private same-object recognition.
+
+Thus C01 qualifies *actor-local temporal initiation of a narrow authored action from legal history* in one frozen null. It does **not** qualify natural motivation, ongoing self-directed organism life, learned semantic understanding, P1 identity, full O-CTRL G1–G5, or experiential Owner PASS.
+
+A visible 4-world synchronized replay is an observation surface, **not independent scientific validation**. Browser-runtime smoke test is separate from successful CI and Pages deploy.
+
+## Current direction
+
+Next substantive pressure should couple a continuing local concern to an **independent recurring material world process**, while allowing real varying consequences, bounded failure, and richer ordinary continuation. Do not build a 'more polished C01' and call it organism. Independent ecology + truthful actor-private evidence + observable concern must be compared against static ablation, then challenged beyond this frozen lane.
+
+**NO RESEARCH RUN ACTIVE at this checkpoint.** Re-plan the smallest causal question after verifying live head; avoid unbounded O-CTRL implementation by inertia.
