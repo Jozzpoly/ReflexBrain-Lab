@@ -1118,3 +1118,42 @@ Current MEDIUM-A evidence recovers two simultaneous truths:
 Therefore the medium should preserve **open perturbation and autonomous aftermath**, while making causal falsification easier—not merely recreate the old playground.
 
 **Field Lab v0 remains public and UNQUALIFIED. No v0.2 feature implementation is authorized by this note.** The existing `medium/owner-field-v0.2` branch is currently a MEDIUM-A/B staging branch for research and planning.
+
+
+---
+
+# MEDIUM-B/R1 engineering result — 2026-10-07
+
+**FIELD LAB v0 LONG-RUN INTEGRITY: FAIL · EXECUTION VALID**
+
+Isolated evidence:
+- draft PR #21
+- branch `medium/field-integrity-soak-r1`
+- CI `37658809848`
+- result: `docs/medium-runs/MEDIUM-B-R1_RESULT.md` on the isolated run branch
+
+50k-tick unattended soak:
+- numerically finite;
+- no catastrophic coordinate escape;
+- deterministic;
+- **independent sweeper reversals: 0**;
+- sweeper left intended y=-2.65 lane and ended at approximately `(6.68, -3.67)`;
+- actor remained `ROAM` for all 50,000 ticks;
+- P0 target visible for all 50,000 ticks;
+- actor/target settled into an actor -> target -> central-occluder physical jam.
+
+Root-cause findings from source comparison:
+
+1. Field v0 copied E01 shuttle force/end-stop ideas but omitted E01's pair of physical lane walls. The qualified E01 donor had repeated end-stop reversals, including live observation past 8936 ticks. Field v0 is therefore an incomplete integration, not evidence against E01.
+
+2. Field v0's custom `actorContact()` is not a qualified generic private-contact sensor. It selects researcher-known colliders (occluder/walls/loose) and excludes target/sweeper. The actor can therefore be materially blocked by target contact while its authored controller receives no contact flag.
+
+Do not "repair" this by UI labels or random movement.
+
+Immediate truth:
+- Field Lab v0 remains a public **UNQUALIFIED baseline/failure donor**;
+- its World physics continues stepping, but the v0 sweeper must not be advertised as a healthy persistent independent process;
+- no Field v0.2 feature sprint;
+- next mechanism work must separately address process integrity and lawful body/private contact evidence.
+
+The isolated failing test branch is intentionally not merged into the active green baseline.
