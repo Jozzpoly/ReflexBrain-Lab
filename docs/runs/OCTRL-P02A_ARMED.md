@@ -128,3 +128,41 @@ Not:
 If this fails, actor-private history pressure cannot yet be grounded in a trustworthy material visibility boundary.
 
 If it passes, a later run may ask whether legally acquired evidence can become stale and causally matter. That later question is not authorized here.
+
+
+---
+
+## Protocol incident — first execution
+
+The first candidate execution at `afe5ea31308fa7098faaa380acc0aef037358018` was execution-valid but its scientific readout was not interpretable.
+
+Observed preliminary readout:
+- visible control: no blob;
+- hidden target: no blob before/after;
+- hidden target displacement: 0.472197;
+- no hidden leak;
+- deterministic.
+
+A dedicated query-readiness diagnostic then showed:
+- identical visible geometry before first `world.step()`: no ray hit;
+- after one neutral `world.step()`: ray hit the intended target;
+- actor and target positions were unchanged across that step.
+
+Rapier scene queries use broad-phase/BVH state updated by the simulation step. Therefore the initial no-blob visible control was an apparatus/query-readiness defect, not evidence against the sensor law.
+
+Classification of the first readout:
+**INCONCLUSIVE — PROTOCOL DEFECT**
+
+Allowed repair:
+one neutral initial `world.step()` after world construction, before any P0 readout.
+
+Frozen:
+- geometry;
+- sensor fields;
+- ray law;
+- range;
+- occluder;
+- target impulse;
+- PASS/FAIL criteria.
+
+No scientific threshold or target arrangement is changed.
