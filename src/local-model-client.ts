@@ -1,0 +1,171 @@
+import type { ActorPrivateState } from "./contracts";
+import type {
+  AppraisalId,
+  AppraisalPolarity,
+  BipolarAppraisalOrder,
+  ChoiceOrder,
+  LocalAppraisalResult,
+  LocalBipolarAppraisalResult,
+  LocalChoiceOnlyResult,
+  LocalModelBackendId,
+  LocalChoiceProbeResult,
+  LocalSemanticChoiceResult,
+} from "./local-choice-probe";
+import type {
+  LocalModelRequest,
+  LocalModelRequestBody,
+  LocalModelResponse,
+} from "./local-model-protocol";
+
+export interface LocalModelProgress {
+  status: string;
+  file: string | null;
+  progress: number | null;
+}
+
+export class LocalModelClient {
+  constructor(private readonly backendId: LocalModelBackendId) {
+    this.worker.onmessage = (event: MessageEvent<LocalModelResponse>) => {
+      const message = event.data;
+      const pending = this.pending.get(message.id);
+      if (!pending) return;
+
+      if (message.type === "progress") {
+        pending.progress?.(message);
+        return;
+      }
+
+      this.pending.delete(message.id);
+      if (message.type === "error") {
+        pending.reject(new Error(message.message));
+      } else if (message.type === "ready") {
+        pending.resolve(undefined);
+      } else {
+        pending.resolve(message.result);
+      }
+    };
+
+    this.worker.onerror = (event) => {
+      const error = new Error(event.message || "local model worker failed");
+      for (const pending of this.pending.values()) pending.reject(error);
+      this.pending.clear();
+    };
+  }
+
+  private readonly worker = new Worker(
+    new URL("./local-model-worker.ts", import.meta.url),
+    { type: "module" },
+  );
+  private sequence = 0;
+  private readonly pending = new Map<
+    number,
+    {
+      resolve: (value: unknown) => void;
+      reject: (reason: unknown) => void;
+      progress?: (value: LocalModelProgress) => void;
+    }
+  >();
+
+  load(progress?: (value: LocalModelProgress) => void): Promise<void> {
+    return this.request<void>({ type: "load", backendId: this.backendId }, progress);
+  }
+
+  probe(
+    state: ActorPrivateState,
+    choiceOrder: ChoiceOrder = "canonical",
+    progress?: (value: LocalModelProgress) => void,
+  ): Promise<LocalChoiceProbeResult> {
+    return this.request<LocalChoiceProbeResult>(
+      {
+        type: "probe",
+        backendId: this.backendId,
+        state: structuredClone(state),
+        choiceOrder,
+      },
+      progress,
+    );
+  }
+
+  choose(
+    state: ActorPrivateState,
+    choiceOrder: ChoiceOrder = "canonical",
+    progress?: (value: LocalModelProgress) => void,
+  ): Promise<LocalChoiceOnlyResult> {
+    return this.request<LocalChoiceOnlyResult>(
+      {
+        type: "choice",
+        backendId: this.backendId,
+        state: structuredClone(state),
+        choiceOrder,
+      },
+      progress,
+    );
+  }
+
+  chooseSemantic(
+    state: ActorPrivateState,
+    choiceOrder: ChoiceOrder = "canonical",
+    progress?: (value: LocalModelProgress) => void,
+  ): Promise<LocalSemanticChoiceResult> {
+    return this.request<LocalSemanticChoiceResult>(
+      {
+        type: "semantic_choice",
+        backendId: this.backendId,
+        state: structuredClone(state),
+        choiceOrder,
+      },
+      progress,
+    );
+  }
+
+  appraise(
+    state: ActorPrivateState,
+    appraisalId: AppraisalId,
+    polarity: AppraisalPolarity = "positive",
+    progress?: (value: LocalModelProgress) => void,
+  ): Promise<LocalAppraisalResult> {
+    return this.request<LocalAppraisalResult>(
+      {
+        type: "appraisal",
+        backendId: this.backendId,
+        state: structuredClone(state),
+        appraisalId,
+        polarity,
+      },
+      progress,
+    );
+  }
+
+  appraiseBipolar(
+    state: ActorPrivateState,
+    appraisalId: AppraisalId,
+    order: BipolarAppraisalOrder = "positive-first",
+    progress?: (value: LocalModelProgress) => void,
+  ): Promise<LocalBipolarAppraisalResult> {
+    return this.request<LocalBipolarAppraisalResult>(
+      {
+        type: "bipolar_appraisal",
+        backendId: this.backendId,
+        state: structuredClone(state),
+        appraisalId,
+        order,
+      },
+      progress,
+    );
+  }
+
+  private request<T>(
+    request: LocalModelRequestBody,
+    progress?: (value: LocalModelProgress) => void,
+  ): Promise<T> {
+    const id = ++this.sequence;
+    return new Promise<T>((resolve, reject) => {
+      this.pending.set(id, {
+        resolve: (value) => resolve(value as T),
+        reject,
+        progress,
+      });
+      this.worker.postMessage({ id, ...request } as LocalModelRequest);
+    });
+  }
+}
