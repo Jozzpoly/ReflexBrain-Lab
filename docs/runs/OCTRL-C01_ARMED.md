@@ -69,3 +69,9 @@ Still NOT:
 If scientific evidence is valid, a replayable browser canvas may render researcher World truth, the actor-private last-seen vs live sensor, and decision provenance **as distinct layers**, with a clear research-only label. The canvas is not an independent simulator validation.
 
 No Owner action required. This run is a bounded experiment, not a new research road map.
+
+---
+
+## Closure
+
+**SCIENTIFIC PASS · EXECUTION VALID · CLOSED.** Frozen CI evidence and honest limitations: `docs/runs/OCTRL-C01_RESULT.md`. No threshold, control law, World timing or geometry was retuned. Viewer work that follows is presentation only, not a new qualification.
