@@ -12,6 +12,7 @@ export default defineConfig({
         e02bRobustness: "probes/e02b-robustness.html",
         b01bB0ScalePassage: "probes/b01b-b0-scale-passage.html",
         b01cActualB0Effectivity: "probes/b01c-actual-b0-effectivity.html",
+        c01PrivateMonitoring: "probes/c01-continuous-monitor.html",
       },
     },
   },
