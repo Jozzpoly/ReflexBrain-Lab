@@ -1198,3 +1198,32 @@ Current continuity consequence:
 - future/richer sensors must earn the same treatment independently.
 
 No Owner-facing persistence feature is authorized yet.
+
+
+---
+
+# MEDIUM-C/R2c dynamic binding result — 2026-10-07
+
+**FAIL · EXECUTION VALID**
+
+Isolated evidence:
+- draft PR #27
+- CI `37661374267`
+- result: `docs/medium-runs/MEDIUM-C-R2C_RESULT.md` on isolated run branch
+
+Positive surviving evidence:
+- an explicit map of **current live** A/C/D roles to current Rapier body/collider handles rebound exactly after snapshot restore;
+- source/restored worlds continued identically for 300 ticks under label-addressed forces.
+
+Falsified assumption:
+- a raw handle from removed B did **not** remain safely invalid after D was allocated;
+- stale B lookup resolved to the newly-live D object in the tested JS runtime path.
+
+Canonical continuity rule:
+
+> raw Rapier handle = low-level current binding coordinate, **not durable host/provenance identity across remove/recreate churn**.
+
+Future Chronicle/Fork needs a host-owned binding identity with explicit retirement and a current handle mapping. That host ID is research/runtime plumbing and must never leak into actor-private perception/identity.
+
+This FAIL does not revoke MEDIUM-C/R0 exact restore for current live handles.
+No Owner-facing save/fork feature is authorized.
