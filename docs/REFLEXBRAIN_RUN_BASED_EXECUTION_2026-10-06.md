@@ -870,21 +870,34 @@ It is to understand how reusable actor-relative meaning can become a **real orga
 
 **NO RUN ACTIVE.**
 
-Completed:
+This section is a live status pointer only. The methodology above remains current; when status differs, `docs/CONTINUE_HERE.md` and `docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md` are the execution-truth authorities.
+
+Completed / judged:
+
 - OCTRL-E01 — PASS
 - OCTRL-E02a — PASS
 - OCTRL-E02b — PASS
 - OCTRL-B01a — PASS
 - OCTRL-B01b — PASS
 - OCTRL-B01c — SCIENTIFIC FAIL / EXECUTION VALID
+- OCTRL-B01d — PASS
+- OCTRL-P01a — SCIENTIFIC FAIL / EXECUTION VALID
 
-Canonical correction from B01c:
+Canonical distinctions now defended:
 
-> researcher geometric OPEN/BLOCKED is not actor-relative effectivity truth for a movable obstacle.
+> researcher geometric OPEN/BLOCKED != actor-relative effectivity truth for a movable obstacle.
 
-Current next candidate:
-- **OCTRL-B01d — Actor-Relative Resistance Signature — PROPOSED**
+> researcher/microscope contact time != actor-private experiential consequence time.
 
-B01d should keep world/body/controller frozen and ask whether the material obstacle produces a stable difference in actual B0 progress/contact burden across a predeclared modest obstacle-position set.
+B01d qualifies only a narrow material effectivity/resistance signature under one frozen B0 action protocol. It does not qualify effort, reward, difficulty, affordance, semantic meaning or a scalar representation.
 
-Do not repair B01c by modifying physics.
+P01a preserves a narrower surviving observation: the resistant B01d cases produced deterministic legal private proprioceptive divergence and lower private forward progress than OPEN at the frozen comparison tick. The run still FAILed because its precommitted `contact+1` timing rule was false for H2. Do not repair that run by relaxing the threshold.
+
+**There is deliberately no frozen next run.**
+
+Before proposing another atomic run:
+1. recover live HEAD and current CI/check truth;
+2. preserve B01c FAIL, B01d PASS and P01a FAIL together;
+3. ask which missing causal link most directly advances researcher-observed consequences -> actor-lived consequences -> private temporal history -> history-dependent ordinary behaviour;
+4. do not introduce a semantic scalar, new architecture family or integration layout merely to keep the pressure map moving;
+5. if source-of-truth documents disagree, repair that routing before new research.
