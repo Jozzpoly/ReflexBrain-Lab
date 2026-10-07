@@ -438,3 +438,30 @@ The future ExperimentMoment envelope should therefore carry:
 It must not expose HostBindingId to actor-private state.
 
 This still does not freeze a product schema.
+
+
+---
+
+# R4 ExperimentMoment result — 2026-10-07
+
+MEDIUM-C/R4 qualified a first developer-only versioned causal moment envelope on E01.
+
+The envelope composed:
+- exact Rapier snapshot;
+- HostBindingRegistry snapshot;
+- explicit E01 process sidecar;
+- build/schema identity;
+- immutable/shared root provenance plus branch-local events.
+
+It supported:
+- exact root restore;
+- exact A/B fork before intervention;
+- one HostBindingId-addressed branch intervention;
+- exact capture/restore of both diverged child histories;
+- fail-closed validation for incompatible/missing required state.
+
+New distinction:
+
+> **host identity tells us which material binding is which across research history; process sidecar tells the host how that process is wired; actor-private identity remains a separate scientific problem.**
+
+Do not turn ExperimentMoment into a final product schema yet. The next causal boundary must include a legitimate occupant-private sidecar.
