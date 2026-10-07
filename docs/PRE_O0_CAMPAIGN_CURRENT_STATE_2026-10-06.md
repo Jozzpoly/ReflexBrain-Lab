@@ -1382,3 +1382,41 @@ Current next pressure:
 - validate a tiny developer-only MARK/FORK/COMPARE session against a real exact donor before any Workbench UI;
 - keep Habitat/Field UI out of this run;
 - do not resume MEDIUM-C storage work unless the experiment grammar exposes a concrete missing requirement.
+
+
+---
+
+# MEDIUM-D/R1 first-divergence microprobe — 2026-10-08
+
+**PASS · DESIGN/ARCHITECTURE PROBE CLOSED**
+
+Evidence:
+- PR #34
+- first CI `37701638918`: execution FAIL before experiment due omitted Rapier initialization block;
+- harness-only correction;
+- final CI `37701826399`: PASS;
+- `docs/medium-runs/MEDIUM-D-R1_ARMED.md`
+- `docs/medium-runs/MEDIUM-D-R1_RESULT.md`
+
+Using the exact R5 moment at tick 200, the candidate grammar executed:
+
+> MARK → FORK → INTERVENE → RUN → COMPARE → NOTE
+
+with one branch-B `PRIVATE_RESEARCH_CUT` clearing private lastSeen.
+
+Deterministic first-divergence ladder:
+
+- private state: **200**
+- motor demand: **231**
+- material World/body: **231**
+- current legal P0: **318**
+
+A NOTE-only A/B control remained exactly identical across private, motor, material and P0 layers.
+
+Canonical MEDIUM-D consequence:
+
+> first-divergence-by-causal-layer is a stronger candidate Owner comparison primitive than generic telemetry/state diff.
+
+Owner notes/verdicts remain non-causal metadata/project evidence.
+
+No Workbench UI is authorized yet. Next pressure should be interaction shape / low-attention storyboard, not a dashboard or full verb implementation.
