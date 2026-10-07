@@ -1157,3 +1157,23 @@ Immediate truth:
 - next mechanism work must separately address process integrity and lawful body/private contact evidence.
 
 The isolated failing test branch is intentionally not merged into the active green baseline.
+
+
+---
+
+# MEDIUM-C/R0 snapshot boundary result — 2026-10-07
+
+**PASS · ARCHITECTURE PROBE**
+
+Evidence:
+- PR #23
+- CI `37659904678`
+- `docs/medium-runs/MEDIUM-C-R0_RESULT.md`
+
+E01 at tick 300 was serialized with Rapier World.takeSnapshot() (5596 bytes), restored with stable body/collider handles, and paired with an explicit JS process sidecar. Correct restore continued **exactly for 1200 ticks** with no divergence. A negative-control restore with the same physics bytes but wrong process `direction` diverged on continuation tick **1**.
+
+Defended consequence:
+
+> future experiment fork/save must preserve **physics state + causally relevant non-physics/private state**, not merely object positions or a physics snapshot.
+
+This supports the MEDIUM-C Chronicle/Fork direction but does **not** authorize save/load UI yet. Field v0's private/process boundary remains under audit.
