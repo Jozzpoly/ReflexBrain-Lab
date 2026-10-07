@@ -901,3 +901,21 @@ Before proposing another atomic run:
 3. ask which missing causal link most directly advances researcher-observed consequences -> actor-lived consequences -> private temporal history -> history-dependent ordinary behaviour;
 4. do not introduce a semantic scalar, new architecture family or integration layout merely to keep the pressure map moving;
 5. if source-of-truth documents disagree, repair that routing before new research.
+
+
+---
+
+# 19. Live status amendment — 2026-10-07
+
+This section supersedes the run-status list in section 18. The methodology itself is unchanged.
+
+Additional judged run:
+- **OCTRL-P02a — PASS**
+
+P02a qualifies only one narrow synthetic P0 visibility/occlusion boundary: legal body-relative blob evidence appears with line of sight and remains unchanged across a real hidden physical displacement.
+
+Its first attempted readout was **INCONCLUSIVE**, not FAIL: a dedicated diagnostic showed that newly inserted Rapier colliders were absent from scene queries before the first simulation-step broad-phase update. Only neutral query readiness was corrected; the sensor law, geometry and scientific criteria remained frozen.
+
+Do not promote P02a into generic scene discovery, object identity, memory, P1, G1 or semantic meaning.
+
+**NO RUN ACTIVE. THERE IS DELIBERATELY NO FROZEN NEXT RUN.**
