@@ -1061,3 +1061,32 @@ A visible 4-world synchronized replay is an observation surface, **not independe
 Next substantive pressure should couple a continuing local concern to an **independent recurring material world process**, while allowing real varying consequences, bounded failure, and richer ordinary continuation. Do not build a 'more polished C01' and call it organism. Independent ecology + truthful actor-private evidence + observable concern must be compared against static ablation, then challenged beyond this frozen lane.
 
 **NO RESEARCH RUN ACTIVE at this checkpoint.** Re-plan the smallest causal question after verifying live head; avoid unbounded O-CTRL implementation by inertia.
+
+
+---
+
+# Owner medium verdict — C01 Pages — 2026-10-07
+
+**OWNER EXPERIMENTAL-MEDIUM VERDICT: FAIL**
+
+Owner directly tested the published C01 synchronized replay and judged it **interesting as an experiment but experimentally valueless to the Owner**.
+
+This does **not** revoke C01's narrow mechanistic CI result. It changes the product/experimental-medium claim:
+
+- C01 replay is a useful explanatory microscope and deterministic evidence surface;
+- it is **not** an Owner laboratory;
+- replay/scrubbing/speed controls do not provide meaningful experimental agency when the causal interventions and questions were all pre-authored by the researcher.
+
+Recovered Owner-level requirement:
+- the valuable organism/playground experience is hands-on and open enough that Owner can **provoke, intervene, watch, leave/continue, return, compare consequences and discover unplanned questions**;
+- the world/specimen must have meaningful continuation without requiring the Owner as heartbeat;
+- microscope/lenses should reveal why a trajectory happened, but must not replace the specimen with dashboards;
+- machine qualification and explanatory replay remain supporting evidence, not the main Owner experience.
+
+Therefore the interactive-medium direction changes:
+
+> **live specimen / manipulable causal world first; evidence replay second.**
+
+The next Pages surface should be an explicitly **unqualified Owner Field Lab** with a continuously running physical actor/world, direct material interventions, actor-private vs researcher lenses, event history and fast reset. It may reuse qualified body/sensor primitives, but must clearly separate exploratory Owner play from scientific qualification.
+
+Do not mark Owner-medium PASS until Owner has directly used that field surface and says it has real experimental value.
