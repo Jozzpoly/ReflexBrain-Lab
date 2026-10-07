@@ -47,3 +47,9 @@ Even PASS establishes only **one authored history-conditioned motor CHECK in one
 This run tests whether legal past perception *matters causally to later ordinary action*. Repeated isolated visibility PASSes are no longer a justified route toward the North Star.
 
 Owner touchpoint: none. If scientific FAIL, preserve failure and stop; no retuning in this run.
+
+---
+
+## Closure — result persisted
+
+Scientific outcome: **PASS, NARROW · CLOSED**. See `docs/runs/OCTRL-H01_RESULT.md`. No threshold, motor protocol, geometry or sensor law was retuned. The run deliberately used a researcher-timed CHECK comparison; this does not qualify self-directed continuation.
