@@ -406,3 +406,35 @@ with explicit retirement.
 Raw handle must not be used as durable event/provenance identity.
 
 HostBindingId is not actor-private object identity and must not enter P0/P1.
+
+
+---
+
+# R3 host identity result — 2026-10-07
+
+MEDIUM-C/R3 closed the immediate identity gap created by R2c without promoting raw physics handles.
+
+Qualified pattern:
+
+`HostBindingId -> current live Rapier handle(s)`
+
+with:
+- monotonic allocation inside one birth lineage;
+- explicit retirement;
+- inherited IDs shared across sibling forks for pre-fork objects;
+- branch-namespaced IDs for post-fork births;
+- sibling-local retirement;
+- resolution refusal for retired IDs;
+- verification that a live raw-handle lookup resolves to the expected current handle.
+
+R3 reproduced the stale-handle alias hazard and remained safe because retired HostBindingId resolution stops **before** raw-handle lookup.
+
+The future ExperimentMoment envelope should therefore carry:
+- HostBindingRegistry sidecar;
+- current live handle map;
+- retired provenance records;
+- fork lineage/birth lineage metadata.
+
+It must not expose HostBindingId to actor-private state.
+
+This still does not freeze a product schema.
