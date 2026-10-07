@@ -1348,3 +1348,37 @@ Current developer-level causal moment stack is now defended across:
 **No Owner save/fork feature is authorized.** Current private schema is occupant-specific and build-versioned; do not invent a universal ReflexBrain memory format.
 
 Campaign-level replan required before MEDIUM-C/R6 or any MEDIUM-D implementation.
+
+
+---
+
+# MEDIUM-D/R0 experiment grammar — 2026-10-08
+
+**DESIGN RESEARCH: CANDIDATE ADEQUATE · NO UI IMPLEMENTATION**
+
+After MEDIUM-C/R5, exact developer-level causal moments are sufficiently defended to pause further continuity rabbit-hole work.
+
+Campaign replan:
+- `docs/REFLEXBRAIN_MEDIUM_REPLAN_2026-10-08.md`
+
+Candidate experimental grammar:
+- `docs/MEDIUM_D_R0_EXPERIMENT_GRAMMAR_2026-10-08.md`
+
+Candidate verbs:
+
+> WATCH → MARK → FORK → INTERVENE → RELEASE → RUN → COMPARE → NOTE → PROMOTE
+
+Key design result:
+- historical takeover/release, material perturb/release, R5 private-memory ablation, World/private replacement comparisons, actor-motor suppression and evidence replay can all be expressed without scenario-specific commands;
+- `INTERVENE` is constrained by causal authority layer (MATERIAL, MOTOR_AUTHORITY, PRIVATE_RESEARCH_CUT, WORLD_REPLACEMENT, OCCUPANT_REPLACEMENT);
+- Owner/research provenance must never become actor-private knowledge automatically;
+- RELEASE is first-class because historical Owner value strongly depended on autonomous aftermath after intervention;
+- COMPARE should prioritize a **first-divergence ladder** across provenance -> private state -> motor -> material World -> later perception/trajectory rather than dumping every variable;
+- PROMOTE creates a candidate falsifier package, never a scientific PASS.
+
+R0 is not Owner-tested and is not a frozen UX spec.
+
+Current next pressure:
+- validate a tiny developer-only MARK/FORK/COMPARE session against a real exact donor before any Workbench UI;
+- keep Habitat/Field UI out of this run;
+- do not resume MEDIUM-C storage work unless the experiment grammar exposes a concrete missing requirement.
