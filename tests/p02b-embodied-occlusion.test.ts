@@ -23,6 +23,11 @@ describe('OCTRL-P02b embodied occlusion transition integration', () => {
           outcome: result.outcome,
           deterministic: result.deterministic,
           initialBlobCount: result.run.initialFrame.blobs.length,
+          initialRotation: result.run.trace[0]?.actorWorld.rotation ?? null,
+          expectedInitialRotation: -Math.PI / 2,
+          initialRotationError: result.run.trace[0]
+            ? Math.abs(result.run.trace[0].actorWorld.rotation + Math.PI / 2)
+            : null,
           firstOccludedTick: result.run.firstOccludedTick,
           actorYAtOcclusion: result.run.actorYAtOcclusion,
           targetDisplacementAtOcclusion: result.run.targetDisplacementAtOcclusion,
