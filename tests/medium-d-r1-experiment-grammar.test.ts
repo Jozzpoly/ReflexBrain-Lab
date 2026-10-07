@@ -12,6 +12,10 @@ import {
   R5_CAPTURE_TICK,
 } from '../src/medium-c01-moment-host';
 
+beforeAll(async () => {
+  await initE0Rapier();
+});
+
 type GrammarVerb =
   | 'MARK'
   | 'FORK'
