@@ -964,7 +964,7 @@ Do not promote P02a to generic scene discovery, object identity, P1, memory/stal
 
 Evidence:
 - PR #16
-- merge SHA `d8547c4085` (full SHA is in the merged PR; verify live before relying on this shortened identifier);
+- merge SHA `d8547c4085edd34bfc877c9a6bf03f41e543f36e`;
 - `docs/runs/OCTRL-P02B_RESULT.md`
 
 Qualified narrow claim:
@@ -986,3 +986,35 @@ The initial run was INCONCLUSIVE owing to a setup-only exact-angle tolerance nar
 **Current causal gap:** actor-private history must become a persistent state that changes *later material behaviour*, rather than merely storing a past blob or being narrated by a microscope. A candidate experiment must first identify an independent control/ablation, a legal downstream consumer and an honest maximum claim. Do not auto-execute a P02c/P03 merely because it is next in a sequence.
 
 **NO RUN ACTIVE at this checkpoint.** Verify live branch before activation.
+
+
+---
+
+# H01 result — 2026-10-07
+
+**OCTRL-H01 — Private-history-driven material CHECK: PASS · CLOSED · MERGED**
+
+Evidence:
+- PR #17
+- merge SHA `d0df27d1a1a9822453756b514eedbf11493092e3`
+- `docs/runs/OCTRL-H01_ARMED.md`
+- `docs/runs/OCTRL-H01_RESULT.md`
+- CI scientific run `37560061698`: PASS; 12/12 tests, type check and build
+- closure CI `37560242040`: PASS
+
+Qualified narrow observation:
+- pre-CHECK World snapshots identical across two replicas, with identical empty private P0 frames;
+- the enabled replica retained its last legal P0 record from tick 50; the history-ablation replica did not;
+- a 0.472197 hidden physical target displacement produced no change to the retained record;
+- fixed authored readout issued E0 demand -1 vs 0 solely from that private historical difference;
+- enabled actor physically moved 2.933932 and obtained a new legal blob after 69 CHECK ticks;
+- ablated actor stayed stationary and did not obtain a new blob;
+- deterministic repeats, no scientific reason flags.
+
+**Important anti-overclaim:** the CHECK stage was still triggered by the researcher's frozen experiment timeline. The local readout was an explicit if-condition; the memory ablation was artificial. The later blob was not privately reidentified as the same object. Thus H01 qualifies a minimal lawful **private-history-to-body causal wiring** and physical observation, NOT self-timed autonomous monitoring, ordinary concern continuation, object permanence, epistemic revision, semantic meaning, learning or life.
+
+This is an *integration prerequisite*, not an organism milestone. Do not open H01b/H01c simply to accumulate more PASSes.
+
+**Current North-Star bottleneck:** construct one continuing host process whose CHECK/actuation is initiated by actor-private concern, history and legal perception, not by the researcher's scenario phase or Owner heartbeat. It must experience independent material change without hidden World notifications. Before calling such a loop an organism, it must earn Owner-observed continuation and causality, not only a machine PASS.
+
+**NO RUN ACTIVE at this checkpoint. Re-plan independently before any new ACTIVE run.**
