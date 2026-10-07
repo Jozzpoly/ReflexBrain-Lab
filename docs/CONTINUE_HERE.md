@@ -301,3 +301,26 @@ If a session breaks again:
 The project should remain:
 
 > **clean forward, rich backward.**
+
+
+---
+
+## Recovery amendment — P02a — 2026-10-07
+
+Latest judged run:
+**OCTRL-P02a — PASS · CLOSED · MERGED**
+
+Evidence:
+- PR #15
+- merge SHA `c23e68f395d9153228fd4ab3e0a6b2b0344913c6`
+- `docs/runs/OCTRL-P02A_RESULT.md`
+
+Qualified narrow fact:
+
+> a real hidden material displacement can remain absent from one legal body-relative P0 blob stream while the object is occluded, while the same sensor law exposes the object when line of sight exists.
+
+The first P02a readout was INCONCLUSIVE because fresh Rapier colliders were not query-visible before the first broad-phase update. A dedicated diagnostic proved the apparatus defect; only neutral initial query readiness was corrected.
+
+Do not infer generic perception, identity, P1, memory, G1, semantic meaning or organism continuity.
+
+**No run is ACTIVE and no next run is frozen.**
