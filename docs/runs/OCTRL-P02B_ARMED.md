@@ -150,3 +150,33 @@ Not:
 A later run may legitimately ask whether evidence acquired before occlusion can persist as actor-private history and remain stale through hidden World change.
 
 That later run is not authorized by this card.
+
+
+---
+
+## Protocol incident — heading validation
+
+First execution was **INCONCLUSIVE** because the setup validator used an unjustified `1e-9` exact-angle tolerance.
+
+Measured:
+- requested heading: `-1.5707963267948966`
+- Rapier heading: `-1.5707963705062866`
+- absolute representation error: `4.371139006309477e-8`
+
+The physical trajectory itself was consistent with the intended downward heading:
+- initial blob count: 1
+- first occlusion tick: 51
+- target displacement at occlusion: 0
+- actor self-displacement: 3.242185
+- no actor contact contamination
+- no reappearance
+- hidden target displacement: 0.472197
+- no hidden P0 leaks
+
+Classification:
+**INCONCLUSIVE — SETUP VALIDATION DEFECT**
+
+Allowed correction:
+- heading setup tolerance `1e-9 -> 1e-6`.
+
+This changes only whether the already-applied Rapier angle is recognized as the requested setup. It does not change body state, motor demand, geometry, sensor law, timing, target motion or scientific PASS/FAIL criteria.
