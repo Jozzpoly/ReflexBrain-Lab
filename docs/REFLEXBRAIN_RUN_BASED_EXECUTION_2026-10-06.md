@@ -866,56 +866,17 @@ It is to understand how reusable actor-relative meaning can become a **real orga
 
 ---
 
-# 18. Current execution state
+# 18. Recovery routing / run status
 
-**NO RUN ACTIVE.**
+**This document governs methodology, not current run status.**
 
-This section is a live status pointer only. The methodology above remains current; when status differs, `docs/CONTINUE_HERE.md` and `docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md` are the execution-truth authorities.
+The previous chronological run-status snapshots are preserved through the Git history and individually through `docs/runs/*_RESULT.md`.
 
-Completed / judged:
+For current truth read:
+1. `docs/CONTINUE_HERE.md` — recovery routing;
+2. `docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md` — **single mutable chronological execution authority**;
+3. the last relevant immutable `docs/runs/*_ARMED.md` and `*_RESULT.md` pairs.
 
-- OCTRL-E01 — PASS
-- OCTRL-E02a — PASS
-- OCTRL-E02b — PASS
-- OCTRL-B01a — PASS
-- OCTRL-B01b — PASS
-- OCTRL-B01c — SCIENTIFIC FAIL / EXECUTION VALID
-- OCTRL-B01d — PASS
-- OCTRL-P01a — SCIENTIFIC FAIL / EXECUTION VALID
+Do not infer current ACTIVE/PROPOSED state from an embedded copy of a past run list. Cross-check the active parent PR head and CI each time.
 
-Canonical distinctions now defended:
-
-> researcher geometric OPEN/BLOCKED != actor-relative effectivity truth for a movable obstacle.
-
-> researcher/microscope contact time != actor-private experiential consequence time.
-
-B01d qualifies only a narrow material effectivity/resistance signature under one frozen B0 action protocol. It does not qualify effort, reward, difficulty, affordance, semantic meaning or a scalar representation.
-
-P01a preserves a narrower surviving observation: the resistant B01d cases produced deterministic legal private proprioceptive divergence and lower private forward progress than OPEN at the frozen comparison tick. The run still FAILed because its precommitted `contact+1` timing rule was false for H2. Do not repair that run by relaxing the threshold.
-
-**There is deliberately no frozen next run.**
-
-Before proposing another atomic run:
-1. recover live HEAD and current CI/check truth;
-2. preserve B01c FAIL, B01d PASS and P01a FAIL together;
-3. ask which missing causal link most directly advances researcher-observed consequences -> actor-lived consequences -> private temporal history -> history-dependent ordinary behaviour;
-4. do not introduce a semantic scalar, new architecture family or integration layout merely to keep the pressure map moving;
-5. if source-of-truth documents disagree, repair that routing before new research.
-
-
----
-
-# 19. Live status amendment — 2026-10-07
-
-This section supersedes the run-status list in section 18. The methodology itself is unchanged.
-
-Additional judged run:
-- **OCTRL-P02a — PASS**
-
-P02a qualifies only one narrow synthetic P0 visibility/occlusion boundary: legal body-relative blob evidence appears with line of sight and remains unchanged across a real hidden physical displacement.
-
-Its first attempted readout was **INCONCLUSIVE**, not FAIL: a dedicated diagnostic showed that newly inserted Rapier colliders were absent from scene queries before the first simulation-step broad-phase update. Only neutral query readiness was corrected; the sensor law, geometry and scientific criteria remained frozen.
-
-Do not promote P02a into generic scene discovery, object identity, memory, P1, G1 or semantic meaning.
-
-**NO RUN ACTIVE. THERE IS DELIBERATELY NO FROZEN NEXT RUN.**
+The next research question must be selected from the North Star rather than from suffix increments. In particular, independent component PASSes are not organism claims, and actor-private causal history only matters insofar as it changes real ordinary action in a continuing World.
