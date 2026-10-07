@@ -1,41 +1,26 @@
-# ReflexBrain Lab
+# ReflexBrain Lab — repository entrypoint
 
-Experimental laboratory for a **fast local semantic-reflex layer** for embodied game actors.
+> **This `main` branch is a historical R0 baseline, not the current ReflexBrain experiment.** The active research has deliberately remained on qualified experimental branches; the repository entrypoint was not maintained until this correction. The R0 code on `main` has not been merged with, or replaced by, the new experiments.
 
-## Core research question
+## Current research
 
-> Can a small local model continuously interpret an actor's bounded private state well enough to improve attention, appraisal, local reaction and escalation to deeper cognition without becoming the world authority, memory system, planner or motor controller?
+- **Active research branch:** [`research/pre-o0-foundations-campaign`](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/research/pre-o0-foundations-campaign)
+- **Continuity / draft research PR:** [PR #6](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6)
+- **Recover first:** [`docs/CONTINUE_HERE.md`](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/pre-o0-foundations-campaign/docs/CONTINUE_HERE.md)
+- **Single mutable current-state authority:** [`docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md`](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/pre-o0-foundations-campaign/docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md)
+- **Source methodology:** [`docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md`](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/pre-o0-foundations-campaign/docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md)
+- **Live research preview:** https://jozzpoly.github.io/ReflexBrain-Lab/
 
-The project is inspired by the System One / Jev pattern, but it is **not a Jev clone** and does not use Jev outputs as training data. The intended result is an independently developed local primitive for Jozzpoly embodied-agent projects.
+**Status and HEAD are not copied here** because they change during atomic research. Before continuing, check the actual active PR/branch and current CI, then read the mutable current-state authority.
 
-## Current stage
+## Project North Star
 
-**R0 — Semantic Shadow Probe.**
+Can a small, cheap, local learned organ extract useful actor-relative meaning from the temporal **private experience of a continuing embodied actor**, without becoming World authority, factual memory, the whole planner or motor controller?
 
-The first goal is deliberately narrow:
+The physical substrate research is only a prerequisite. Its machine PASSes do not establish autonomous organism life or override Owner-observed experiential FAILs. Past Proto-Life / Persistent Playground are phenomenon and donor evidence, **not an architecture to reinstall**.
 
-1. build a tiny deterministic temporal micro-world;
-2. keep the reflex system at **zero authority**;
-3. expose compact actor-private state;
-4. compare a simple rule baseline with replaceable semantic providers;
-5. inspect raw semantic signals separately from temporal reflex dynamics;
-6. only later plug in a local WebGPU model.
+## Historical R0 baseline
 
-Current bootstrap makes no claim that semantic reflexes improve behavior yet.
+The rest of the files on this `main` branch belong to the old R0 semantic-shadow bootstrap. Its previous README is preserved verbatim at [R0 README @ `6ecb6b0ed6`](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/6ecb6b0ed6ae2ca8de84209c139205641af78c65/README.md).
 
-## Defended boundaries
-
-- World truth is authoritative and independent from model judgement.
-- Actor-private state contains only information the actor can legitimately possess.
-- Reflex output is probabilistic evidence / preference, not physical fact or command authority.
-- Temporal continuity belongs to an explicit reflex-dynamics layer rather than being hidden inside prompts.
-- Large-model cognition remains a separate possible System-2 layer.
-- Donor code and ideas are reused selectively; sibling repositories are evidence sources, not automatic architecture authority.
-
-## Research ladder
-
-- **R0 — Semantic Probe:** stock small local model, direct constrained scoring, shadow-only comparison.
-- **R1 — Reflex Model:** learn/calibrate a dedicated decision/readout layer if R0 earns it.
-- **R2 — Embodied Reflex Brain:** train/evaluate on temporal actor/world episodes and counterfactual families.
-
-The immediate target is not a full NPC. It is a falsifiable semantic-reflex experiment.
+**Do not use R0 on `main` as a source of current experiment status, and do not force-merge the active campaign into `main` to make the repository look up to date.** Any eventual default-branch normalization should be a separate reviewed operation.
