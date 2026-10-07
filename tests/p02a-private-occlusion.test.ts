@@ -26,13 +26,15 @@ describe('OCTRL-P02a private dynamic-blob occlusion null', () => {
     expect(result.hiddenMaterialDisplacement).toBe(true);
     expect(['PASS', 'FAIL', 'INCONCLUSIVE']).toContain(result.outcome);
 
-    if (result.outcome === 'PASS') {
-      expect(result.visibleHasBlob).toBe(true);
-      expect(result.hiddenOccludedAllTicks).toBe(true);
-      expect(result.hiddenPrivateUnchanged).toBe(true);
-      expect(result.hidden.hiddenLeakTicks).toEqual([]);
-      expect(result.hidden.privateBefore).toEqual(result.hidden.privateAfter);
-      expect(result.reasons).toEqual([]);
+    if (result.outcome !== 'PASS') {
+      throw new Error('P02A_SCIENTIFIC_RESULT ' + JSON.stringify(result));
     }
+
+    expect(result.visibleHasBlob).toBe(true);
+    expect(result.hiddenOccludedAllTicks).toBe(true);
+    expect(result.hiddenPrivateUnchanged).toBe(true);
+    expect(result.hidden.hiddenLeakTicks).toEqual([]);
+    expect(result.hidden.privateBefore).toEqual(result.hidden.privateAfter);
+    expect(result.reasons).toEqual([]);
   });
 });
