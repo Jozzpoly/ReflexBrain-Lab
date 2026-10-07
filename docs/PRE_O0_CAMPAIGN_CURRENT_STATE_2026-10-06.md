@@ -1177,3 +1177,24 @@ Defended consequence:
 > future experiment fork/save must preserve **physics state + causally relevant non-physics/private state**, not merely object positions or a physics snapshot.
 
 This supports the MEDIUM-C Chronicle/Fork direction but does **not** authorize save/load UI yet. Field v0's private/process boundary remains under audit.
+
+
+---
+
+# MEDIUM-C/R2a P0 reconstructibility — 2026-10-07
+
+**PASS · ARCHITECTURE PROBE**
+
+Evidence:
+- PR #25
+- CI `37660650252`
+- `docs/medium-runs/MEDIUM-C-R2A_RESULT.md`
+
+Current P02a legal sensory frame is exactly reconstructible immediately from restored physics state without an extra physics tick. A moving visible case matched exactly after restore; deliberately advancing one extra tick changed the blob, proving that a restore-time warm-up step would alter causal history. Hidden-moving empty P0 also reconstructed exactly.
+
+Current continuity consequence:
+- P02a `currentFrame` is derived/reconstructible state under the current sensor version;
+- do not duplicate it as authoritative save truth;
+- future/richer sensors must earn the same treatment independently.
+
+No Owner-facing persistence feature is authorized yet.
