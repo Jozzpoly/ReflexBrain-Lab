@@ -123,3 +123,10 @@ Does NOT establish:
 - scientific qualification of free play.
 
 No Pages/UI changes.
+
+
+---
+
+## Closure
+
+**PASS · CLOSED.** See `docs/medium-runs/MEDIUM-D-R1_RESULT.md`. The first CI failure was a pre-experiment Rapier-init harness omission; only that setup bug was corrected. No frozen grammar, donor, timing or comparison criterion changed.
