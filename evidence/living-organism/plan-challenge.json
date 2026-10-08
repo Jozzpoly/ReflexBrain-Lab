@@ -1,0 +1,122 @@
+{
+  "sourceCommit": "d3f0ae509561b534e2a87fa0ce382788edc7e3cb",
+  "scope": "One physical scene; three controller seeds. Host metrics and interventions never supplied as observations.",
+  "gazeChecks": [
+    {
+      "gazeDegrees": 0,
+      "matchedPixels": 26,
+      "physicalTargetDistance": 6,
+      "targetRadius": 0.6,
+      "physicalAngularExtentDegrees": 11.478340954533572,
+      "demand": {
+        "drive": 0,
+        "turn": 0,
+        "gazeRate": 0
+      },
+      "privateMode": "approach"
+    },
+    {
+      "gazeDegrees": 30.08028424436823,
+      "matchedPixels": 6,
+      "physicalTargetDistance": 6,
+      "targetRadius": 0.6,
+      "physicalAngularExtentDegrees": 11.478340954533572,
+      "demand": {
+        "drive": 0.65,
+        "turn": 0.030679235467200524,
+        "gazeRate": -0.5250000000000001
+      },
+      "privateMode": "approach"
+    },
+    {
+      "gazeDegrees": 60.16056848873646,
+      "matchedPixels": 4,
+      "physicalTargetDistance": 6,
+      "targetRadius": 0.6,
+      "physicalAngularExtentDegrees": 11.478340954533572,
+      "demand": {
+        "drive": 0.65,
+        "turn": -0.038028333693052925,
+        "gazeRate": -1
+      },
+      "privateMode": "approach"
+    }
+  ],
+  "ablations": [
+    {
+      "seed": 1,
+      "ablateDirection": false,
+      "simulatedSeconds": 180,
+      "visitedCells": 42,
+      "distance": 80.86778531994105,
+      "counts": {
+        "approach": 4756,
+        "explore": 14452,
+        "yield": 2264,
+        "inspect": 128
+      }
+    },
+    {
+      "seed": 1,
+      "ablateDirection": true,
+      "simulatedSeconds": 180,
+      "visitedCells": 40,
+      "distance": 82.97735833586525,
+      "counts": {
+        "approach": 4552,
+        "explore": 14628,
+        "yield": 2420
+      }
+    },
+    {
+      "seed": 42,
+      "ablateDirection": false,
+      "simulatedSeconds": 180,
+      "visitedCells": 37,
+      "distance": 92.89134208939694,
+      "counts": {
+        "approach": 5140,
+        "explore": 12828,
+        "yield": 3236,
+        "inspect": 396
+      }
+    },
+    {
+      "seed": 42,
+      "ablateDirection": true,
+      "simulatedSeconds": 180,
+      "visitedCells": 34,
+      "distance": 78.14260070572367,
+      "counts": {
+        "approach": 5104,
+        "explore": 13760,
+        "yield": 2736
+      }
+    },
+    {
+      "seed": 1831565813,
+      "ablateDirection": false,
+      "simulatedSeconds": 180,
+      "visitedCells": 38,
+      "distance": 79.31738443390202,
+      "counts": {
+        "approach": 5100,
+        "explore": 14648,
+        "yield": 1756,
+        "inspect": 96
+      }
+    },
+    {
+      "seed": 1831565813,
+      "ablateDirection": true,
+      "simulatedSeconds": 180,
+      "visitedCells": 40,
+      "distance": 79.87918866996183,
+      "counts": {
+        "approach": 5132,
+        "explore": 14604,
+        "yield": 1864
+      }
+    }
+  ]
+}

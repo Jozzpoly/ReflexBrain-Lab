@@ -86,7 +86,9 @@ Rapier chunk warning. This checkpoint does not complete Campaign A.
 Keep E0 disk as comparison control until sensor/body boundary checks are complete.
 Direct collider rays avoid uninitialized broad-phase queries without extra physics steps.
 Existing Field/C01, public frontdoor and Pages deployment remain unchanged.
-Next: challenge the visual concern itself (angular extent versus pixel count), broaden
-scene/seed coverage and measure purposeful activity, not only locomotion or visited cells.
+Nearest plan is revised by PLAN_REVIEW.md after actual gaze and direction-memory ablations.
+Nonuniform sample count misreads apparent size; memory usefulness is not established.
+Correct angular interpretation, then test a material, memory-relevant relation activity.
+Do not extend the current roaming/color-chase controller merely to increase movement.
 Resolve a reachable rendered test surface before promoting the UI.
 Do not repeat completed sensory-clock or checkpoint implementation after handoff.
