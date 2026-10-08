@@ -15,6 +15,7 @@ export default defineConfig({
         c01PrivateMonitoring: "probes/c01-continuous-monitor.html",
         ownerFieldLab: "probes/owner-field-lab.html",
         mediumDR3A: "probes/medium-d-r3a-material-fork.html",
+        mediumDR3C: "probes/medium-d-r3c-shadow-fork.html",
       },
     },
   },
