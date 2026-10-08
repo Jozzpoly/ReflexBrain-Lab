@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07111c">
+<link rel="icon" href="data:,">
 <title>ReflexBrain · MEDIUM-D/R3E</title>
 <style>
 :root{
@@ -329,6 +330,15 @@ function updateSpatialProxy(){
     return;
   }
   const rect=worldCanvas.getBoundingClientRect();
+  if (
+    !Number.isFinite(rect.width) ||
+    !Number.isFinite(rect.height) ||
+    rect.width <= 0 ||
+    rect.height <= 0
+  ) {
+    looseProxy.style.display='none';
+    return;
+  }
   const p=projection(rect.width,rect.height);
   const center={x:p.X(snap.loose.x),y:p.Y(snap.loose.y)};
   const visualRadius=p.radiusToScreen(.32);
