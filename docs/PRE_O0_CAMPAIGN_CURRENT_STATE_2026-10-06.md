@@ -1528,3 +1528,54 @@ Next pressure:
 - do not treat accessibility metadata as actor/world causality.
 
 No homepage promotion. No Owner usability PASS.
+
+
+---
+
+# MEDIUM-D/R3G runtime-clean spatial interaction — 2026-10-08
+
+**PASS · REAL BROWSER POINTER PATH CLOSED**
+
+Evidence:
+- PR #44;
+- final workflow `37775391324`;
+- normal Check PASS;
+- real Chrome browser probe PASS;
+- `docs/medium-runs/MEDIUM-D-R3F_RESULT.md`;
+- `docs/medium-runs/MEDIUM-D-R3G_ARMED.md`;
+- `docs/medium-runs/MEDIUM-D-R3G_RESULT.md`.
+
+Final real-browser path:
+
+> WATCH → MARK → delayed FORK → derived material-body spatial proxy → real pointer drag → B-only material divergence → Compare A/B → Return to Habitat
+
+Measured:
+- shadow age before FORK: **242 ticks** (> rejected R3A 240-tick bound);
+- FORK exposure tick: **301**;
+- A/B synchronized at exposure;
+- semantic proxy found;
+- real drag: **+140 px / -35 px**;
+- intervention tick: **350**;
+- first material divergence: **350**;
+- Compare opened;
+- Return to Habitat succeeded;
+- proxy visible again after return;
+- runtime errors: **none**.
+
+Canonical MEDIUM-D consequence:
+
+> selected physical entities may expose one-way derived spatial interaction proxies over a world-first canvas, allowing direct inspectable/testable Owner interaction without turning the proxy into World truth or a scenario button.
+
+R3F's real runtime defects were repaired:
+- zero-size proxy projection now fails closed;
+- generic browser favicon 404 removed.
+
+Do not continue deepening E01 interaction infrastructure by inertia.
+
+Next move requires campaign-level re-evaluation against:
+- organism/world substrate gaps;
+- Field v0 integrity FAIL;
+- Owner experimental-value needs;
+- whether the medium should now host a stronger organism rather than acquire more generic UI machinery.
+
+No homepage promotion. No Owner usability PASS.
