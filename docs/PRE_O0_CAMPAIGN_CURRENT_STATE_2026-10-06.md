@@ -1420,3 +1420,36 @@ Canonical MEDIUM-D consequence:
 Owner notes/verdicts remain non-causal metadata/project evidence.
 
 No Workbench UI is authorized yet. Next pressure should be interaction shape / low-attention storyboard, not a dashboard or full verb implementation.
+
+
+---
+
+# MEDIUM-D/R3A interaction-shape verdict — 2026-10-08
+
+**MIXED · ENGINEERING PASS · INTERACTION-SHAPE FAIL · CLOSED**
+
+Evidence:
+- PR #36;
+- CI `37707308482`: PASS;
+- parent Check + Research Preview: PASS;
+- live Opera inspection;
+- `docs/medium-runs/MEDIUM-D-R3A_RESULT.md`.
+
+Surviving result:
+- world-first visual hierarchy is materially better than Field v0 dashboard gravity;
+- MARK can be small/contextual;
+- utilities can retreat;
+- exact E01 mark/fork + branch-local material impulse works mechanically.
+
+Rejected interaction mechanism:
+- R3A replay-catch-up allowed only 240 ticks from MARK;
+- at 120 Hz that is about 2 seconds at 1x;
+- this is not human-scale experimental thinking time.
+
+Do not fix by pausing World or silently extending beyond evidence.
+
+Next pressure:
+- MEDIUM-D/R3B should test a hidden, non-causal shadow/reference history spawned at MARK and advanced synchronously with visible source for a long interval;
+- FORK can then be exposed later without replaying an old mark.
+
+No homepage promotion and no Owner-medium PASS.
