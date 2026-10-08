@@ -150,3 +150,18 @@ Szczegółowy plan, krytyka oraz protokół następnego etapu:
 docs/superpowers/plans/2026-10-08-private-prediction.md. Następny krok bada decyzję
 jakościową z historii i kontaktu, nie czeka na nieomylną głębokość. QA renderu i
 niezależna kwalifikacja całej kampanii nadal otwarte.
+# Epizod zbliżenia i ponawiania — 2026-10-08
+
+Dodano samodzielny ApproachEpisode, poza default runtime: reactive/permanent/reconsider.
+72 headless przebiegi (8 rodzin × 3 starty × 3 polityki) wykazały użyteczną redukcję
+bezskutecznych komend, lecz także fałszywe porzucenie osiągalnych dalekich rzeczy,
+opóźnione wznowienie i zatrzymanie na obcym kontakcie. Nie promować tych regulatorów
+do domyślnego brainu. Reconsider odzyskuje czynność w osobnej próbie15s, ale nie osiąga
+sukcesu w podstawowej próbie10s po chwilowym oddalaniu celu. Nie mylić tych horyzontów.
+
+Szczegóły, tabela, specyfikacja reguł i kierunek challengera:
+docs/living-organism/APPROACH_EPISODE.md. Dane:
+evidence/living-organism/approach-episode.json. Pełny check: 34 pliki / 89 testów,
+typy i build PASS. Niezależny przegląd wykonany, render QA nadal otwarte.
+Istniejący runtime/occupant i checkpoint v4 pozostają bieżącym organizmem; nowy
+epizod to narzędzie badań, nie ogłoszona autonomiczna motywacja ani uczony brain.
