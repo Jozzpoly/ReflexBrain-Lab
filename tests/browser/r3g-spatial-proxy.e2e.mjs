@@ -89,19 +89,32 @@ try {
   await fork.click();
 
   await requireVisible(branches, 'branch strip');
-  if (!/sync/i.test(await sync.textContent())) {
+
+  // Read the live A/B tick labels and sync badge in one browser task.
+  // Separate Playwright round-trips can span RAF/simulation steps and compare
+  // different causal moments even when the branches are actually synchronized.
+  const exposure = await page.evaluate(() => {
+    const parse = (value) => {
+      const match = String(value ?? '').replaceAll(',', '').match(/-?\\d+/);
+      if (!match) throw new Error('missing branch tick');
+      return Number(match[0]);
+    };
+    return {
+      a: parse(document.querySelector('#tickA')?.textContent),
+      b: parse(document.querySelector('#tickB')?.textContent),
+      sync: document.querySelector('#sync')?.textContent ?? '',
+    };
+  });
+
+  if (!/sync/i.test(exposure.sync)) {
     throw new Error('A/B were not synchronized at semantic FORK exposure');
   }
 
-  const branchATick = parseFirstInteger(
-    await page.locator('#tickA').textContent(),
-  );
-  const branchBTick = parseFirstInteger(
-    await page.locator('#tickB').textContent(),
-  );
+  const branchATick = exposure.a;
+  const branchBTick = exposure.b;
   if (branchATick !== branchBTick) {
     throw new Error(
-      'branch tick mismatch at exposure: A=' +
+      'branch tick mismatch in atomic exposure read: A=' +
         branchATick +
         ' B=' +
         branchBTick,
