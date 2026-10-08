@@ -95,7 +95,7 @@ function dist(a: { x: number; y: number }, b: { x: number; y: number }): number 
 
 // This is the *entire* actor-private policy interface. World, target identity,
 // research impulse schedule and simulator timeline are never passed in.
-class C01AuthoredMonitor {
+export class C01AuthoredMonitor {
   private tick = 0;
   private odometry = 0;
   private lastSeen: C01LastSeen | null = null;
