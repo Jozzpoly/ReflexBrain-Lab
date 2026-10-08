@@ -95,7 +95,7 @@ try {
   // different causal moments even when the branches are actually synchronized.
   const exposure = await page.evaluate(() => {
     const parse = (value) => {
-      const match = String(value ?? '').replaceAll(',', '').match(/-?\\d+/);
+      const match = String(value ?? '').replaceAll(',', '').match(/-?\d+/);
       if (!match) throw new Error('missing branch tick');
       return Number(match[0]);
     };
