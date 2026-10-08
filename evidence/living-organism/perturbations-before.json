@@ -1,0 +1,256 @@
+[
+  {
+    "intervention": "control",
+    "simulatedSeconds": 240,
+    "gridCellSize": 1,
+    "visitedCells": 24,
+    "distance": 130.87201091992807,
+    "longestLowMotionSeconds": 1.85,
+    "counts": {
+      "explore": 20784,
+      "yield": 1128,
+      "approach": 6888
+    },
+    "windows": [
+      {
+        "seconds": 30,
+        "distance": 15.44552867368505,
+        "cells": 9,
+        "mode": "explore"
+      },
+      {
+        "seconds": 60,
+        "distance": 31.230113081522514,
+        "cells": 16,
+        "mode": "approach"
+      },
+      {
+        "seconds": 90,
+        "distance": 46.7532102960869,
+        "cells": 21,
+        "mode": "explore"
+      },
+      {
+        "seconds": 120,
+        "distance": 64.53809822036084,
+        "cells": 22,
+        "mode": "explore"
+      },
+      {
+        "seconds": 150,
+        "distance": 81.30927123407992,
+        "cells": 24,
+        "mode": "explore"
+      },
+      {
+        "seconds": 180,
+        "distance": 97.91091391327039,
+        "cells": 24,
+        "mode": "explore"
+      },
+      {
+        "seconds": 210,
+        "distance": 114.96680597390018,
+        "cells": 24,
+        "mode": "explore"
+      },
+      {
+        "seconds": 240,
+        "distance": 130.87201091992807,
+        "cells": 24,
+        "mode": "approach"
+      }
+    ],
+    "final": {
+      "x": 0.46278315782546997,
+      "y": 2.7487611770629883,
+      "vx": 0.00005511704148375429,
+      "vy": -0.000012042522030242253,
+      "angle": 0.0885896161198616
+    },
+    "private": {
+      "lastTick": 35996,
+      "heading": 1.3392568113779237,
+      "lastDirection": 1.3369077860654344,
+      "lastSeenTick": 35996,
+      "mode": "approach",
+      "yieldUntil": 34668,
+      "closeSince": 35760,
+      "ignoreUntil": 35668,
+      "demand": {
+        "drive": 0,
+        "turn": -0.004698050624978568,
+        "gazeRate": -0.00007504309305839162
+      }
+    }
+  },
+  {
+    "intervention": "remove-turquoise",
+    "simulatedSeconds": 240,
+    "gridCellSize": 1,
+    "visitedCells": 10,
+    "distance": 154.5353228204355,
+    "longestLowMotionSeconds": 0,
+    "counts": {
+      "explore": 28696,
+      "yield": 104
+    },
+    "windows": [
+      {
+        "seconds": 30,
+        "distance": 19.00212229976856,
+        "cells": 10,
+        "mode": "explore"
+      },
+      {
+        "seconds": 60,
+        "distance": 38.36400668973433,
+        "cells": 10,
+        "mode": "explore"
+      },
+      {
+        "seconds": 90,
+        "distance": 57.725894917639316,
+        "cells": 10,
+        "mode": "explore"
+      },
+      {
+        "seconds": 120,
+        "distance": 77.08778563526127,
+        "cells": 10,
+        "mode": "explore"
+      },
+      {
+        "seconds": 150,
+        "distance": 96.4496663902031,
+        "cells": 10,
+        "mode": "explore"
+      },
+      {
+        "seconds": 180,
+        "distance": 115.81155211622502,
+        "cells": 10,
+        "mode": "explore"
+      },
+      {
+        "seconds": 210,
+        "distance": 135.17342823541716,
+        "cells": 10,
+        "mode": "explore"
+      },
+      {
+        "seconds": 240,
+        "distance": 154.5353228204355,
+        "cells": 10,
+        "mode": "explore"
+      }
+    ],
+    "final": {
+      "x": 2.8280184268951416,
+      "y": 2.9480669498443604,
+      "vx": 0.28271201252937317,
+      "vy": 0.5611470341682434,
+      "angle": 1.207608938217163
+    },
+    "private": {
+      "lastTick": 35996,
+      "heading": 1.9865132908717904,
+      "lastDirection": null,
+      "lastSeenTick": null,
+      "mode": "explore",
+      "yieldUntil": 8156,
+      "closeSince": null,
+      "ignoreUntil": 8004,
+      "demand": {
+        "drive": 0.12,
+        "turn": 0.25,
+        "gazeRate": -0.4992320269156537
+      }
+    }
+  },
+  {
+    "intervention": "manual-turn",
+    "simulatedSeconds": 240,
+    "gridCellSize": 1,
+    "visitedCells": 37,
+    "distance": 122.67711320819089,
+    "longestLowMotionSeconds": 4.216666666666667,
+    "counts": {
+      "explore": 20356,
+      "yield": 1776,
+      "approach": 6668
+    },
+    "windows": [
+      {
+        "seconds": 30,
+        "distance": 11.302290168013412,
+        "cells": 6,
+        "mode": "explore"
+      },
+      {
+        "seconds": 60,
+        "distance": 28.12931593575749,
+        "cells": 13,
+        "mode": "explore"
+      },
+      {
+        "seconds": 90,
+        "distance": 44.26712379114043,
+        "cells": 16,
+        "mode": "yield"
+      },
+      {
+        "seconds": 120,
+        "distance": 60.095805970403745,
+        "cells": 19,
+        "mode": "approach"
+      },
+      {
+        "seconds": 150,
+        "distance": 76.23862371979905,
+        "cells": 19,
+        "mode": "yield"
+      },
+      {
+        "seconds": 180,
+        "distance": 91.16523651648274,
+        "cells": 28,
+        "mode": "explore"
+      },
+      {
+        "seconds": 210,
+        "distance": 107.09067085437127,
+        "cells": 32,
+        "mode": "approach"
+      },
+      {
+        "seconds": 240,
+        "distance": 122.67711320819089,
+        "cells": 37,
+        "mode": "explore"
+      }
+    ],
+    "final": {
+      "x": 7.678987979888916,
+      "y": 1.8392568826675415,
+      "vx": -0.02401616983115673,
+      "vy": 0.5612613558769226,
+      "angle": 1.6794663667678833
+    },
+    "private": {
+      "lastTick": 35996,
+      "heading": 2.4246504200130885,
+      "lastDirection": null,
+      "lastSeenTick": null,
+      "mode": "explore",
+      "yieldUntil": 34100,
+      "closeSince": null,
+      "ignoreUntil": 37148,
+      "demand": {
+        "drive": 0.12,
+        "turn": 0.25,
+        "gazeRate": -0.4992320269156537
+      }
+    }
+  }
+]

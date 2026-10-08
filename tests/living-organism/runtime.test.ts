@@ -21,3 +21,11 @@ it('observes embodied manual movement without resetting private history on relea
  expect(a.occupant.capture().lastTick).toBeGreaterThanOrEqual(controlled.lastTick!);
  a.free();
 });
+it('uses actual rear contact from the world to choose a forward escape',()=>{
+ const r=new LivingRuntime();r.world.addObject(-1.35,-.3,.4,[1,0,0]);
+ for(let i=0;i<4;i++)r.world.step({drive:0,turn:0,gazeRate:0},{x:-30,y:-6.66});
+ expect(r.observe().touch[0]).toBeGreaterThan(0);
+ r.step();expect(r.occupant.capture().mode).toBe('yield');
+ expect(r.occupant.capture().demand.drive).toBeGreaterThan(0);
+ r.free();
+});

@@ -1,0 +1,273 @@
+[
+  {
+    "intervention": "control",
+    "simulatedSeconds": 240,
+    "gridCellSize": 1,
+    "visitedCells": 42,
+    "distance": 109.47421115225191,
+    "longestLowMotionSeconds": 2.7,
+    "counts": {
+      "explore": 19572,
+      "approach": 6680,
+      "inspect": 136,
+      "yield": 2412
+    },
+    "windows": [
+      {
+        "seconds": 30,
+        "distance": 13.631598025587113,
+        "cells": 11,
+        "mode": "explore"
+      },
+      {
+        "seconds": 60,
+        "distance": 26.82559749748489,
+        "cells": 18,
+        "mode": "yield"
+      },
+      {
+        "seconds": 90,
+        "distance": 39.35317900590914,
+        "cells": 25,
+        "mode": "yield"
+      },
+      {
+        "seconds": 120,
+        "distance": 52.876332083400406,
+        "cells": 29,
+        "mode": "approach"
+      },
+      {
+        "seconds": 150,
+        "distance": 64.70414457138261,
+        "cells": 34,
+        "mode": "explore"
+      },
+      {
+        "seconds": 180,
+        "distance": 78.83413680509771,
+        "cells": 38,
+        "mode": "explore"
+      },
+      {
+        "seconds": 210,
+        "distance": 94.87398526750636,
+        "cells": 40,
+        "mode": "explore"
+      },
+      {
+        "seconds": 240,
+        "distance": 109.47421115225191,
+        "cells": 42,
+        "mode": "explore"
+      }
+    ],
+    "final": {
+      "x": 5.024791240692139,
+      "y": 2.5371031761169434,
+      "vx": 0.07274969667196274,
+      "vy": 0.06640367209911346,
+      "angle": 0.7272340655326843
+    },
+    "private": {
+      "lastTick": 35996,
+      "heading": 0.019795095617508227,
+      "lastDirection": null,
+      "lastSeenTick": null,
+      "mode": "explore",
+      "yieldUntil": 34824,
+      "closeSince": null,
+      "ignoreUntil": 36712,
+      "exploreTravel": 0,
+      "exploreTurn": 0,
+      "randomState": 3247092732,
+      "escapeDrive": -0.2,
+      "escapeTurn": 0.65,
+      "demand": {
+        "drive": 0.12,
+        "turn": 0,
+        "gazeRate": -0.4992320269156537
+      }
+    }
+  },
+  {
+    "intervention": "remove-turquoise",
+    "simulatedSeconds": 240,
+    "gridCellSize": 1,
+    "visitedCells": 78,
+    "distance": 132.40333019750412,
+    "longestLowMotionSeconds": 0.7916666666666666,
+    "counts": {
+      "explore": 26564,
+      "yield": 2236
+    },
+    "windows": [
+      {
+        "seconds": 30,
+        "distance": 17.068159358271846,
+        "cells": 17,
+        "mode": "explore"
+      },
+      {
+        "seconds": 60,
+        "distance": 33.50663945941525,
+        "cells": 34,
+        "mode": "yield"
+      },
+      {
+        "seconds": 90,
+        "distance": 49.675121390148654,
+        "cells": 36,
+        "mode": "explore"
+      },
+      {
+        "seconds": 120,
+        "distance": 66.8744603792052,
+        "cells": 52,
+        "mode": "explore"
+      },
+      {
+        "seconds": 150,
+        "distance": 83.29628986133964,
+        "cells": 67,
+        "mode": "explore"
+      },
+      {
+        "seconds": 180,
+        "distance": 100.08218415390907,
+        "cells": 78,
+        "mode": "yield"
+      },
+      {
+        "seconds": 210,
+        "distance": 115.86479344166504,
+        "cells": 78,
+        "mode": "explore"
+      },
+      {
+        "seconds": 240,
+        "distance": 132.40333019750412,
+        "cells": 78,
+        "mode": "explore"
+      }
+    ],
+    "final": {
+      "x": -6.7398200035095215,
+      "y": 4.611189842224121,
+      "vx": -0.611484169960022,
+      "vy": -0.11777094751596451,
+      "angle": -2.951862096786499
+    },
+    "private": {
+      "lastTick": 35996,
+      "heading": -3.0812422768953573,
+      "lastDirection": null,
+      "lastSeenTick": null,
+      "mode": "explore",
+      "yieldUntil": 35880,
+      "closeSince": null,
+      "ignoreUntil": 8008,
+      "exploreTravel": 2.9828498684624885,
+      "exploreTurn": 0,
+      "randomState": 594494322,
+      "escapeDrive": -0.2,
+      "escapeTurn": 0.65,
+      "demand": {
+        "drive": 0.12,
+        "turn": 0,
+        "gazeRate": -0.4992320269156537
+      }
+    }
+  },
+  {
+    "intervention": "manual-turn",
+    "simulatedSeconds": 240,
+    "gridCellSize": 1,
+    "visitedCells": 43,
+    "distance": 107.73300878660754,
+    "longestLowMotionSeconds": 4.491666666666666,
+    "counts": {
+      "explore": 19900,
+      "yield": 2384,
+      "approach": 6364,
+      "inspect": 152
+    },
+    "windows": [
+      {
+        "seconds": 30,
+        "distance": 10.987025436118957,
+        "cells": 8,
+        "mode": "explore"
+      },
+      {
+        "seconds": 60,
+        "distance": 24.2475505581757,
+        "cells": 12,
+        "mode": "explore"
+      },
+      {
+        "seconds": 90,
+        "distance": 40.73345859862568,
+        "cells": 19,
+        "mode": "explore"
+      },
+      {
+        "seconds": 120,
+        "distance": 53.726072825583536,
+        "cells": 27,
+        "mode": "explore"
+      },
+      {
+        "seconds": 150,
+        "distance": 67.38837413194997,
+        "cells": 30,
+        "mode": "explore"
+      },
+      {
+        "seconds": 180,
+        "distance": 80.68892214235922,
+        "cells": 31,
+        "mode": "explore"
+      },
+      {
+        "seconds": 210,
+        "distance": 93.99978303865058,
+        "cells": 34,
+        "mode": "explore"
+      },
+      {
+        "seconds": 240,
+        "distance": 107.73300878660754,
+        "cells": 43,
+        "mode": "explore"
+      }
+    ],
+    "final": {
+      "x": 1.197797417640686,
+      "y": 0.04090568795800209,
+      "vx": 0.515783429145813,
+      "vy": -0.3624672293663025,
+      "angle": -0.6129100322723389
+    },
+    "private": {
+      "lastTick": 35996,
+      "heading": -1.7358639165883167,
+      "lastDirection": null,
+      "lastSeenTick": null,
+      "mode": "explore",
+      "yieldUntil": 35408,
+      "closeSince": null,
+      "ignoreUntil": 36576,
+      "exploreTravel": 0.6444883658528728,
+      "exploreTurn": 0,
+      "randomState": 3247092732,
+      "escapeDrive": 0.2,
+      "escapeTurn": 0.65,
+      "demand": {
+        "drive": 0.12,
+        "turn": 0,
+        "gazeRate": -0.4992320269156537
+      }
+    }
+  }
+]

@@ -1,17 +1,24 @@
 import type { Demand,PrivateFrame } from './world';
 export type OccupantState = {
  lastTick:number|null;heading:number;lastDirection:number|null;lastSeenTick:number|null;
- mode:'explore'|'approach'|'inspect'|'yield';yieldUntil:number;closeSince:number|null;ignoreUntil:number;demand:Demand;
+ mode:'explore'|'approach'|'inspect'|'yield';yieldUntil:number;closeSince:number|null;ignoreUntil:number;exploreTravel:number;exploreTurn:number;randomState:number;escapeDrive:number;escapeTurn:number;demand:Demand;
 };
 const wrap=(x:number)=>Math.atan2(Math.sin(x),Math.cos(x));
 const clamp=(x:number)=>Math.max(-1,Math.min(1,x));
 export class Occupant {
- private state:OccupantState={lastTick:null,heading:0,lastDirection:null,lastSeenTick:null,mode:'explore',yieldUntil:0,closeSince:null,ignoreUntil:0,demand:{drive:0,turn:0,gazeRate:0}};
+ private state:OccupantState={lastTick:null,heading:0,lastDirection:null,lastSeenTick:null,mode:'explore',yieldUntil:0,closeSince:null,ignoreUntil:0,exploreTravel:0,exploreTurn:0,randomState:0x6d2b79f5,escapeDrive:0,escapeTurn:0,demand:{drive:0,turn:0,gazeRate:0}};
  decide(frame:PrivateFrame):Demand{
   const s=this.state;
   if(s.lastTick!==null&&frame.tick<=s.lastTick)return {...s.demand};
   const dt=s.lastTick===null?0:(frame.tick-s.lastTick)/120;
-  s.heading=wrap(s.heading+frame.proprio.omega*dt);s.lastTick=frame.tick;
+  const rotation=frame.proprio.omega*dt;
+  s.heading=wrap(s.heading+rotation);s.lastTick=frame.tick;
+  if(s.exploreTurn!==0){
+   const remaining=wrap(s.exploreTurn-rotation);
+   const crossedGoal=Math.sign(remaining)!==Math.sign(s.exploreTurn)&&Math.abs(s.exploreTurn)<=Math.abs(rotation)+.05;
+   s.exploreTurn=crossedGoal||Math.abs(remaining)<.05?0:remaining;
+  }
+  if(s.mode==='explore'&&s.demand.drive>0)s.exploreTravel+=Math.hypot(frame.proprio.forward,frame.proprio.lateral)*dt;
   // Authored visual concern: largest contiguous turquoise patch, not object ID.
   const groups:Array<{sum:number;count:number}>=[];
   let group:{sum:number;count:number}|null=null;
@@ -33,9 +40,15 @@ export class Occupant {
    bearing=wrap(frame.proprio.gaze+Math.sign(u)*u*u*(80*Math.PI/180));
    s.lastDirection=wrap(s.heading+bearing);s.lastSeenTick=frame.tick;
   }
-  if(frame.touch.some(v=>v>.001))s.yieldUntil=frame.tick+48;
+  const strongest=Math.max(...frame.touch);
+  if(strongest>.001){
+   const sector=frame.touch.indexOf(strongest),angle=-Math.PI+(sector+.5)*Math.PI/4;
+   s.escapeDrive=-.2*Math.sign(Math.cos(angle));
+   s.escapeTurn=-.65*Math.sign(Math.sin(angle));
+   s.yieldUntil=frame.tick+48;
+  }
   if(frame.tick<s.yieldUntil){
-   s.mode='yield';s.demand={drive:-.2,turn:.65,gazeRate:0};
+   s.mode='yield';s.demand={drive:s.escapeDrive,turn:s.escapeTurn,gazeRate:0};
   }else if(bearing!==null&&patch){
    s.mode='approach';
    s.demand={drive:Math.abs(bearing)<.3&&patch.count<18?.65:0,turn:clamp(bearing*2),gazeRate:clamp(-frame.proprio.gaze)};
@@ -44,7 +57,13 @@ export class Occupant {
    s.demand={drive:Math.abs(error)<.25?.15:0,turn:clamp(error*2),gazeRate:clamp(-frame.proprio.gaze)};
   }else{
    s.lastDirection=null;s.lastSeenTick=null;s.mode='explore';
-   s.demand={drive:.12,turn:.25,gazeRate:Math.sin(frame.tick/120)*.5};
+   if(s.exploreTravel>=6&&s.exploreTurn===0){
+    s.exploreTravel=0;
+    // Deterministic private variation; checkpointed, with no world coordinates.
+    let bits=s.randomState;bits^=bits<<13;bits^=bits>>>17;bits^=bits<<5;s.randomState=bits>>>0;
+    s.exploreTurn=(bits&1?1:-1)*(1.05+(s.randomState/4294967296)*1.57);
+   }
+   s.demand={drive:s.exploreTurn===0?.12:0,turn:clamp(s.exploreTurn*1.5),gazeRate:Math.sin(frame.tick/120)*.5};
   }
   return {...s.demand};
  }

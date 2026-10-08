@@ -1,21 +1,24 @@
 # Campaign A — continuing authored occupant checkpoint
 
 2026-10-08. Base: 87d94c84288982dd6c150494b24504097ec4474f.
-Previous runtime checkpoint: 819cd669d33a5bce57a480def69d2e528e8b805d.
+Previous checkpoints: 819cd669d33a5bce57a480def69d2e528e8b805d (world),
+daf818635c5aace756aa52673488a22a23f92908 (initial private continuation).
 
 ## Implemented
 - E0 disk world with finite summed forces/torque and independent physical mover;
 - directional gaze and RGB-only 96-sample nonuniform angular retina across 160 degrees;
 - fixed 120 Hz physics, 30 Hz private sensory frames, four-step touch accumulation;
 - private controller receives cached retina, touch and ideal body-local proprioception;
-- authored turquoise-patch concern, bounded direction memory, contact retreat;
+- authored turquoise-patch concern, bounded direction memory and directional contact escape;
+- exploration uses sensed travelled legs and sensed rotations, with checkpointed private
+  deterministic angle variation; no host map or position is supplied;
 - bounded close inspection followed by ten seconds of visual-concern suppression;
 - manual takeover with private perception continuing; release preserves private state;
 - checkpoint restores physical state, sensory phase/accumulator, mover and private continuation;
 - separate host world and private retina views, pause, save/restore and object dragging.
 
 ## Verified
-Full `npm run check`: 28 files, 54 tests PASS; typecheck/build PASS.
+Full `npm run check`: 31 files, 66 tests PASS; typecheck/build PASS.
 Regression tests cover sensory timing, transient contacts, partial-interval restore,
 private history affecting identical later images, override/release and 600-step
 whole-loop exact continuation after a checkpoint at tick 123.
@@ -26,7 +29,42 @@ path 0.7015104235. Cause: a large visible patch suppressed drive indefinitely wi
 an end to the concern. A failing close-patch continuation test reproduced this.
 After adding bounded inspection and suppression: path 327.1490805618;
 approach 16964, explore 51536, yield 3500 ticks. Every minute adds movement.
-Exact raw before/after measurements: `evidence/living-organism/whole-loop-600s*.json`.
+The earlier inspection-fix measurement is retained as `whole-loop-600s-inspection-fix.json`.
+The current controller's ten-minute path is 274.1153179347, with movement every minute.
+Exact raw measurements: `evidence/living-organism/whole-loop-600s*.json`.
+
+Removing all turquoise objects after sixty seconds exposed a second failure: the old
+constant-turn exploration travelled 154.535 units in four minutes but visited only ten
+1-unit grid cells, with no new cells after thirty seconds. These are host-only metrics.
+A whole-loop regression fails on daf8186 (zero new cells after minute one) and passes
+on the current code. Current exploration uses body-local speed integrated over time;
+turn completion uses sensed angular motion, not a timer. Authored private angle variation
+is deterministic and restored with its state.
+
+| Four minutes after intervention | Old visited cells | Travelled-leg exploration | Plus directional escape |
+| --- | ---: | ---: | ---: |
+| Control | 24 | 52 | 42 |
+| Turquoise removed | 10 | 72 | 78 |
+| Five seconds manual rotation | 37 | 55 | 43 |
+
+Directional escape fixes rear contacts causing reverse drive and chooses a turn away
+from the strongest contacted sector. The two changes were measured sequentially;
+directional escape does not improve coverage uniformly. All results use one initial
+scene and fixed private seed. New place counts do not establish meaningful activities.
+Raw data: `perturbations-before.json`, `perturbations-after.json`, `perturbations-final.json`.
+Reproduction harness: `probes/living-organism-perturbations.ts`.
+Six physical touch fixtures pass (four angles, fixed wall, rotated body), plus an
+actual rear collision driving the controller forward. Thirty seconds of the independent
+mover verify repeated reversals from actual displacement, not a controller flag.
+Runtime checkpoint schema is now version 2 for the additional private state.
+An opposite sensed rotation could accumulate more than one revolution of turn debt.
+A failing regression reproduced this; remaining rotation is now wrapped to the shortest
+signed angle, preserving a crossing-of-goal check. Recovery and restore tests pass.
+Re-running the three perturbations and ten-minute characterization after this fix
+produced identical saved metrics; the adverse sampled-rotation fixture exercises the fix.
+Independent review was dispatched as required by requesting-code-review, but the
+reviewer hit a usage limit before a final verdict. Its one potential turn-debt finding
+was reproduced and fixed. No completed independent review is claimed.
 Reproduction harness: `probes/living-organism-characterization.ts`, run from repo root
 with Node and a tsx loader (not bundled browser UI).
 
@@ -36,8 +74,8 @@ Continuing movement is a regression gate, not evidence of meaningful activity.
 Patch width is an appearance cue, not true distance; suppression affects all matching
 patches, with no object identity. Integrated heading drifts; direction memory lacks
 positional correction. No route planning, task completion or Owner-test gate yet.
-Touch sectors/contact-normal orientation need dedicated directional validation.
-Independent mover displacement is tested, not long-run patrol quality under obstruction.
+Touch orientation passed current creation-order fixtures; other collider orderings are not qualified.
+Independent mover patrol reversals are tested; persistent obstruction recovery is not qualified.
 UI takeover/pause state is outside the organism checkpoint.
 Browser QA remains blocked: cloud browser localhost connection refused; local
 Playwright has no binary and its official headless-shell download was invalid/truncated.
@@ -48,7 +86,7 @@ Rapier chunk warning. This checkpoint does not complete Campaign A.
 Keep E0 disk as comparison control until sensor/body boundary checks are complete.
 Direct collider rays avoid uninitialized broad-phase queries without extra physics steps.
 Existing Field/C01, public frontdoor and Pages deployment remain unchanged.
-Next: validate directional touch, perturb visual continuity and independent motion,
-measure recovery/loops rather than total path, then compare a richer activity controller.
+Next: challenge the visual concern itself (angular extent versus pixel count), broaden
+scene/seed coverage and measure purposeful activity, not only locomotion or visited cells.
 Resolve a reachable rendered test surface before promoting the UI.
 Do not repeat completed sensory-clock or checkpoint implementation after handoff.
