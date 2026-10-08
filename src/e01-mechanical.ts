@@ -18,6 +18,19 @@ const WALL_Y = 1.2;
 const WALL_HALF_X = 5.4;
 const LOOSE_START = { x: -0.1, y: 0.48 };
 
+export const E01_PROCESS_DONOR = Object.freeze({
+  shuttleRadius: SHUTTLE_RADIUS,
+  shuttleMass: SHUTTLE_MASS,
+  shuttleForce: SHUTTLE_FORCE,
+  shuttleDamping: SHUTTLE_DAMPING,
+  looseRadius: LOOSE_RADIUS,
+  looseMass: LOOSE_MASS,
+  looseDamping: LOOSE_DAMPING,
+  endRadius: END_RADIUS,
+  laneWallOffset: WALL_Y,
+  laneWallHalfThickness: 0.12,
+});
+
 export async function initE01Rapier(): Promise<void> {
   await RAPIER.init();
 }
