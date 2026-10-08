@@ -115,3 +115,10 @@ Does NOT establish:
 - production architecture.
 
 No Pages/UI changes in R3B.
+
+
+---
+
+## Closure
+
+**PASS · CLOSED.** See `docs/medium-runs/MEDIUM-D-R3B_RESULT.md`. First CI failure was only the default 5 s Vitest timeout after the full result had already executed; only harness timeout changed. The 36,000-tick frozen protocol and causal criteria were unchanged.
