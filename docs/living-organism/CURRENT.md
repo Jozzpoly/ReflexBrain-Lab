@@ -214,3 +214,15 @@ Raport/plan: ACTION_CONDITIONED_RESULTS.md i ACTION_CONDITIONED_PLAN.md.
 Runtimev5 i occupant bez zmian.99 testów/typy/build PASS, niezależny review wykonany.
 Następny klocek: prywatne touch-interruption i dalsze sprawdzanie następstw zamiast
 terminalnego contact. RenderQA oraz doświadczenie Przemka nadal niekwalifikowane.
+# Prywatne przerwanie po dotyku — 2026-10-09
+
+TouchInterruption poza runtime: active/quiet/backoff, fresh upstream resumption zamiast
+terminalnego contact. Primary72 przebiegi18s:touch windows6237->655,266 resumptions,
+ale0 backoff; obstacle/similar blokują visual masks, rear-obstacle bez kontaktu.
+Mechanical challenge ujawnił nowy rear contact wskutek reverse (impulse5.41/2.48).
+Opcjonalne cancellation redukuje jeden przypadek do3.55, drugi bez poprawy: collision
+następuje po zerowej komendzie przez pęd, tick124vx-.291 ->rear touch132.
+
+Nie promować. Raport/plan: TOUCH_INTERRUPTION_RESULTS.md / TOUCH_INTERRUPTION_PLAN.md.
+Frozen baseline i artifacts zachowane.108testów/typy/build PASS, niezależny review.
+Następna kontrola: hamowanie proprioceptywnego ruchu po backoff, osobno od quiet.

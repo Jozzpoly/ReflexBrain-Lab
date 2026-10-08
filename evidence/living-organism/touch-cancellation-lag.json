@@ -1,0 +1,1108 @@
+{
+  "scope": "Post-primary mechanical stress:constant upstream demand, no visual motor policy. No safety or success claim.",
+  "episodes": [
+    {
+      "fixture": "pinch-force",
+      "config": 1,
+      "policy": "interrupted-cancel",
+      "force": 1.5,
+      "samples": 359,
+      "touchWindows": 56,
+      "coverage": 0,
+      "frontImpulse": 5.844195340760052,
+      "rearImpulse": 2.482614293694496,
+      "targetImpulse": 0,
+      "commandCost": 0.6000000000000004,
+      "minX": -0.029987165704369545,
+      "maxX": 0.05001068487763405,
+      "backoffFrames": 145,
+      "controller": {
+        "mode": "backoff",
+        "lastTick": 1436,
+        "until": 1474,
+        "lastTouch": 1436,
+        "lastDrive": 0.12,
+        "interruptions": 1,
+        "resumptions": 0,
+        "withdrawals": 14,
+        "demand": {
+          "drive": -0.12,
+          "turn": 0,
+          "gazeRate": 0
+        },
+        "cancelOppositeTouch": true,
+        "lastSector": 4,
+        "backoffSector": 4,
+        "cancellations": 0
+      },
+      "events": [
+        {
+          "tick": 20,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.5494233965873718,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.05000137910246849,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 80,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.0625000074505806,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.050010669976472855,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 124,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.02124079130589962,
+            "y": 0,
+            "vx": -0.2908394932746887,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 132,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0.19100554287433624,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.02942371740937233,
+            "y": 0,
+            "vx": 0.037129685282707214,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 184,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.3422465920448303,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.050002165138721466,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 228,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.02124929614365101,
+            "y": 0,
+            "vx": -0.2908394932746887,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 236,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0.19094832241535187,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.02942519076168537,
+            "y": 0,
+            "vx": 0.03708141669631004,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 288,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.3372279405593872,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.05000213906168938,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 332,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.021249322220683098,
+            "y": 0,
+            "vx": -0.2908394932746887,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 340,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0.19094832241535187,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.02942521683871746,
+            "y": 0,
+            "vx": 0.03708141669631004,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 392,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.3372279405593872,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.050002116709947586,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 436,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.02124934457242489,
+            "y": 0,
+            "vx": -0.2908394932746887,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 444,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0.19100554287433624,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.029423687607049942,
+            "y": 0,
+            "vx": 0.037129685282707214,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 496,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.3422465920448303,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.05000186339020729,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 540,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.021249597892165184,
+            "y": 0,
+            "vx": -0.2908394932746887,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 548,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0.19100554287433624,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.029423702508211136,
+            "y": 0,
+            "vx": 0.037129685282707214,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 600,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.3422465920448303,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.05000217258930206,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 644,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.02124928869307041,
+            "y": 0,
+            "vx": -0.2908394932746887,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 652,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0.19094832241535187,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.029425183311104774,
+            "y": 0,
+            "vx": 0.03708141669631004,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 704,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.2860018014907837,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.05000247806310654,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 748,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.021248983219265938,
+            "y": 0,
+            "vx": -0.2908394932746887,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 756,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0.19100554287433624,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.029423683881759644,
+            "y": 0,
+            "vx": 0.037129685282707214,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 808,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.3422465920448303,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.05000218003988266,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 852,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.021249281242489815,
+            "y": 0,
+            "vx": -0.2908394932746887,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 860,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0.19094832241535187,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.029425175860524178,
+            "y": 0,
+            "vx": 0.03708141669631004,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 912,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.3372875452041626,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.05000215768814087,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 956,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.021249303594231606,
+            "y": 0,
+            "vx": -0.2908394932746887,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 964,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0.19094832241535187,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.02942519821226597,
+            "y": 0,
+            "vx": 0.03708141669631004,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 1016,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.3372279405593872,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.05000213161110878,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 1060,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.021249329671263695,
+            "y": 0,
+            "vx": -0.2908394932746887,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 1068,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0.19094832241535187,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.029425224289298058,
+            "y": 0,
+            "vx": 0.03708141669631004,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 1120,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.3372279405593872,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.05000211298465729,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 1164,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.021249348297715187,
+            "y": 0,
+            "vx": -0.2908394932746887,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 1172,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0.19100554287433624,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.02942369133234024,
+            "y": 0,
+            "vx": 0.037129685282707214,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 1224,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.3422465920448303,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.05000218003988266,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 1268,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.021249281242489815,
+            "y": 0,
+            "vx": -0.2908394932746887,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 1276,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0.19094832241535187,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.029425175860524178,
+            "y": 0,
+            "vx": 0.03708141669631004,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 1328,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.3372279405593872,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.05000215396285057,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 1372,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.021249307319521904,
+            "y": 0,
+            "vx": -0.2908394932746887,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 1380,
+          "mode": "quiet",
+          "demand": {
+            "drive": 0,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0.19094832241535187,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": -0.029425201937556267,
+            "y": 0,
+            "vx": 0.03708141669631004,
+            "vy": 0,
+            "angle": 0
+          }
+        },
+        {
+          "tick": 1432,
+          "mode": "backoff",
+          "demand": {
+            "drive": -0.12,
+            "turn": 0,
+            "gazeRate": 0
+          },
+          "privateTouch": [
+            0,
+            0,
+            0,
+            0,
+            0.2860018014907837,
+            0,
+            0,
+            0
+          ],
+          "actor": {
+            "x": 0.05000246688723564,
+            "y": 0,
+            "vx": 0,
+            "vy": 0,
+            "angle": 0
+          }
+        }
+      ]
+    }
+  ]
+}
