@@ -55,3 +55,15 @@ Nowe3 testy najpierw RED, potem GREEN. Cancellation policy/sector są w capture/
 Porównanie na36 mechanical runs:27 identycznych control +9 wariantu. To poprawka
 na ujawnionym zestawie, nie unseen qualification. Nominalny backoff42ticki jest
 na realnym sensory cadence4ticki wykonywany44ticki; progi nie retunowane.
+
+## Proprioceptywne hamowanie (przed wynikiem)
+Wariant opt-in brakeAfterBackoff (domyślnie false): po końcu backoff lub cancellation,
+gdy zmierzony forward velocity w kierunku wycofania>.03, przeciwna drive.12 na
+maksymalnie30ticków; wcześniej koniec, gdy ruch w dawnym kierunku<=.03. Potem quiet60.
+Deadline z sensor cadence może dać32ticki; timeout jawnie zapisany. Hamowanie jest
+siłą, nie teleportem/zerowaniem velocity; externalforce nadal działa. Nie gwarantuje
+braku contact. Nie rozbudowujemy planowania ani learned brain tym authored regulatorem.
+3 nowe testy RED->GREEN. Mode/brakeDrive/flag/counters zachowane capture/restore.
+45 ponowionych scen mechanicznych (poprzednie36 +9 braking) jako kontrola na znanych
+failures. Następnie18 nowych holdout (front/pinch ×3config ×baseline/cancel/brake):
+frontx1.13,hx.05,rearx-1.10,hx.05,force.8/2.1/3.8,12s. Bez zmiany parametrów po wyniku.

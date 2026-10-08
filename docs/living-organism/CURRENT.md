@@ -226,3 +226,16 @@ następuje po zerowej komendzie przez pęd, tick124vx-.291 ->rear touch132.
 Nie promować. Raport/plan: TOUCH_INTERRUPTION_RESULTS.md / TOUCH_INTERRUPTION_PLAN.md.
 Frozen baseline i artifacts zachowane.108testów/typy/build PASS, niezależny review.
 Następna kontrola: hamowanie proprioceptywnego ruchu po backoff, osobno od quiet.
+# Proprioceptywne hamowanie po przerwaniu — 2026-10-09
+
+Opt-in brakeAfterBackoff przeciwdziała zmierzonemu pędowi ciała po końcu wycofania.
+45 mechanicznych przebiegów zachowało36 kontroli z dokładnie tymi samymi metrykami.
+Known pinch1.5:rear impulse2.48->0,front5.84->9.48.18 nowych holdout:pinch.8 rear1.14->0,
+średnia siła2.1 pogarsza front11.73->16.17. To tradeoff, bez promocji i deklaracji safety.
+
+Raport: BRAKING_RESULTS.md; przebiegi i prawdziwy wykres:touch-braking*.json/png.
+113testów/typy/build PASS. Niezależny review, restored physical mid-brake fork,
+mutation restore->no-op RED4failures potem GREEN. Statyczną figure sprawdzono wizualnie;
+renderQA interaktywnego organism lab nadal otwarte. Runtimev5 i occupant bez zmian.
+Następny uczony kandydat: prywatny model własnego ruchu i następstw komend, z historią
+proprio/komend i nowymi perturbacjami. Powinien poprawić materialną decyzję, nie imitację.

@@ -58,3 +58,32 @@ it('restores the withdrawal cancellation policy and remembered contact sector',(
  const a=new TouchInterruption(true);a.decide(frame(0),forward);a.decide(directionalFrame(4,4),forward);a.decide(directionalFrame(64,4),forward);
  const b=new TouchInterruption(false);b.restore(a.capture());expect(b.decide(directionalFrame(68,0),forward)).toEqual(zero);expect(b.capture().cancelOppositeTouch).toBe(true);
 });
+const movingFrame=(tick:number,velocity:number,sector?:number):PrivateFrame=>{const f=sector===undefined?frame(tick):directionalFrame(tick,sector);f.proprio.forward=velocity;return f;};
+it('can brake measured reverse momentum after the withdrawal command expires',()=>{
+ const c=new TouchInterruption(true,true);c.decide(frame(0),forward);c.decide(directionalFrame(4,4),forward);c.decide(directionalFrame(64,4),forward);
+ expect(c.decide(movingFrame(108,-.3),forward).drive).toBe(.12);expect(c.capture().mode).toBe('brake');
+ expect(c.decide(movingFrame(112,-.1),forward).drive).toBe(.12);expect(c.decide(movingFrame(116,0),forward)).toEqual(zero);
+ expect(c.decide(frame(176),forward)).toEqual(forward);
+});
+it('uses braking rather than coasting when opposing touch cancels a still-moving withdrawal',()=>{
+ const c=new TouchInterruption(true,true);c.decide(frame(0),forward);c.decide(directionalFrame(4,4),forward);c.decide(directionalFrame(64,4),forward);
+ expect(c.decide(movingFrame(68,-.2,0),forward).drive).toBe(.12);expect(c.capture().cancellations).toBe(1);expect(c.capture().brakes).toBe(1);
+ expect(c.decide(movingFrame(72,0),forward)).toEqual(zero);
+});
+it('bounds a failed braking attempt and records that motion remained',()=>{
+ const c=new TouchInterruption(true,true);c.decide(frame(0),forward);c.decide(directionalFrame(4,4),forward);c.decide(directionalFrame(64,4),forward);c.decide(movingFrame(108,-.4),forward);
+ expect(c.decide(movingFrame(136,-.4),forward).drive).toBe(.12);expect(c.decide(movingFrame(140,-.4),forward)).toEqual(zero);expect(c.capture().brakeTimeouts).toBe(1);
+});
+it('brakes a forward withdrawal after interrupting an originally reverse command',()=>{
+ const c=new TouchInterruption(true,true),reverse={drive:-.12,turn:0,gazeRate:0};c.decide(frame(0),reverse);c.decide(directionalFrame(4,0),reverse);c.decide(directionalFrame(64,0),reverse);
+ expect(c.decide(movingFrame(108,.3),reverse).drive).toBe(-.12);expect(c.capture().mode).toBe('brake');
+ expect(c.decide(movingFrame(112,.1),reverse).drive).toBe(-.12);expect(c.decide(movingFrame(116,0),reverse)).toEqual(zero);
+});
+it('restores active physical braking with its policy and partial sensory window',()=>{
+ const w=new LivingWorld(false),a=new TouchInterruption(true,true),intent={drive:.12,turn:0,gazeRate:0};w.addWall(1.1,0,.05,1,[.4,.4,.45]);w.addWall(-1.08,0,.05,1,[.4,.4,.45]);
+ for(let i=0;i<600&&a.capture().mode!=='brake';i++)w.step(a.decide(w.observe(),intent),{x:1.5,y:0});
+ expect(a.capture().mode).toBe('brake');for(let i=0;i<2;i++)w.step(a.decide(w.observe(),intent),{x:1.5,y:0});
+ const fork=new LivingWorld(false),b=new TouchInterruption();fork.restoreCheckpoint(w.captureCheckpoint());b.restore(a.capture());
+ for(let i=0;i<180;i++){expect(fork.observe()).toEqual(w.observe());const d=a.decide(w.observe(),intent);expect(b.decide(fork.observe(),intent)).toEqual(d);w.step(d,{x:1.5,y:0});fork.step(d,{x:1.5,y:0});}
+ expect(b.capture()).toEqual(a.capture());expect(fork.inspectContactSample()).toEqual(w.inspectContactSample());w.free();fork.free();
+});
