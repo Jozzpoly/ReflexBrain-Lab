@@ -14,6 +14,7 @@ export default defineConfig({
         b01cActualB0Effectivity: "probes/b01c-actual-b0-effectivity.html",
         c01PrivateMonitoring: "probes/c01-continuous-monitor.html",
         ownerFieldLab: "probes/owner-field-lab.html",
+        livingOrganism: "probes/living-organism.html",
         mediumDR3A: "probes/medium-d-r3a-material-fork.html",
         mediumDR3C: "probes/medium-d-r3c-shadow-fork.html",
         mediumDR3E: "probes/medium-d-r3e-spatial-proxy.html",
