@@ -179,3 +179,21 @@ Dane: evidence/living-organism/approach-contact-attribution.json. Check: 35 plik
 92 testy, typy/build PASS; niezależny review bez blokujących usterek. Następna praca
 ma wrócić do prywatnego sprawdzania następstw i predykcji uczonej; instrumentacja
 nie staje się zastępczym celem. Render QA i promocja nowych sterowników nadal niegotowe.
+# Pierwszy wyuczony sensoryczny challenger — 2026-10-08
+
+SensoryRegressor uczy współczynniki ridge i scaler tylko z train; sensoryFeatures
+operują na dwóch prywatnych próbkach, proprio i bieżącej własnej komendzie. Cel:
+delta bearing/log extent po24 tickach, z maskami pojedynczego nieuciętego fragmentu.
+Nie jest NN, learned vision ani motor policy. Brak host XY/IDs/range w features/labels.
+
+51 fizycznych przebiegów:24 train,21 test,6 stress dodanych po pierwszym pomiarze.
+Test bearing MAE:ridge .01130rad vs hold .03813, body/gaze .01285 i no-history .01157.
+Stress:ridge .03769 vs body/gaze .02687 i geometry/fallback .01806. Historia nie ma
+tu udowodnionej ogólnej przewagi. Nagłe własne komendy ujawniają słabą generalizację.
+Model pozostaje offline; istniejący runtimev5 i occupant nie zmienione.
+
+Spec, tabela, ablacją i kierunek dalszej kampanii:docs/living-organism/LEARNED_PREDICTION.md.
+Manifest splitu, per-episode metrics i wagi:evidence/living-organism/learned-prediction.json;
+pełny model:evidence/living-organism/sensory-regressor-weights.json.
+Check:37 plików /99 testów, typy/build PASS. Niezależny review bez blokującego błędu,
+ze wskazanym ograniczeniem zależnych okien. RenderQA i wpływ na czynność niekwalifikowane.
