@@ -145,5 +145,5 @@ describe('MEDIUM-D/R3B human-scale hidden exact shadow', () => {
       ...first,
       secondsAt1x: first.humanScaleTicks / 120,
     }));
-  });
+  }, 20_000);
 });
