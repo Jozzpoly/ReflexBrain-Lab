@@ -29,3 +29,13 @@ it('uses actual rear contact from the world to choose a forward escape',()=>{
  expect(r.occupant.capture().demand.drive).toBeGreaterThan(0);
  r.free();
 });
+it('continues private visual evidence across manual movement and a runtime restore',()=>{
+ const a=new LivingRuntime();
+ for(let i=0;i<123;i++)a.step({drive:.4,turn:.3,gazeRate:.1});
+ const b=new LivingRuntime();b.restore(a.capture());
+ expect(b.vision.capture()).toEqual(a.vision.capture());
+ for(let i=0;i<120;i++){a.step();b.step();}
+ expect(b.vision.capture()).toEqual(a.vision.capture());
+ expect(a.vision.capture().lastTick).toBeGreaterThan(0);
+ a.free();b.free();
+});

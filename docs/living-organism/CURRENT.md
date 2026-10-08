@@ -19,7 +19,7 @@ daf818635c5aace756aa52673488a22a23f92908 (initial private continuation).
 - separate host world and private retina views, pause, save/restore and object dragging.
 
 ## Verified
-Full `npm run check`: 32 files, 71 tests PASS; typecheck/build PASS.
+Full `npm run check`: 33 files, 78 tests PASS; typecheck/build PASS.
 Regression tests cover sensory timing, transient contacts, partial-interval restore,
 private history affecting identical later images, override/release and 600-step
 whole-loop exact continuation after a checkpoint at tick 123.
@@ -116,3 +116,16 @@ retinas with identical realized body motion. relation-observability.json records
 Active motion can disambiguate these fixtures; range inference and a material relation
 activity are not implemented. No host coordinates or object sizes were added to policy input.
 Browser QA and completed independent review remain open.
+
+## Broader campaign started
+CAMPAIGN_PRIVATE_MODEL.md preserves the broader organism goal and makes object/landmark
+maintenance an optional episode, not the project's mandatory objective. PrivateVision
+now derives tentative stationary-fragment estimates from private visual/proprioceptive
+history, with no host coordinates, sizes, distances or IDs in its input. It is integrated
+in runtime checkpoint version 3, including takeover and exact tested continuation.
+It does not yet influence motor demand. This is analytic inference, not NN training.
+Real-world fixtures fit static near/far ranges closely but a moving alias gives a
+wrong range near twice the actual value with an even smaller residual. Assumption and
+tentative status must remain explicit; low fit error is not calibrated confidence.
+Raw characterization is retained. Active information-seeking, multi-hypothesis reasoning,
+learned challenger and a material activity remain unimplemented.
