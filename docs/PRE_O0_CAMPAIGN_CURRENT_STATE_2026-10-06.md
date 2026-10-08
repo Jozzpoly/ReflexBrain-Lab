@@ -1453,3 +1453,39 @@ Next pressure:
 - FORK can then be exposed later without replaying an old mark.
 
 No homepage promotion and no Owner-medium PASS.
+
+
+---
+
+# MEDIUM-D/R3B human-scale MARK — 2026-10-08
+
+**PASS · ARCHITECTURE PROBE CLOSED**
+
+Evidence:
+- PR #38;
+- first CI `37708041679`: harness timeout after completed result;
+- only test timeout changed;
+- final CI `37708123920`: PASS;
+- `docs/medium-runs/MEDIUM-D-R3B_ARMED.md`;
+- `docs/medium-runs/MEDIUM-D-R3B_RESULT.md`.
+
+Defended result:
+- MARK at tick 300 prepared hidden reference A + replacement visible working B;
+- untouched control C, hidden A and visible B remained exact for **36,000 ticks (~5 min at 1×)**;
+- periodic Rapier snapshot bytes also remained exact;
+- MARK emitted no causal experiment event;
+- semantic FORK was exposed only at tick 36,300;
+- exposure itself changed no causal state;
+- only later branch-B material impulse created divergence;
+- A remained exact with untouched C.
+
+Canonical medium consequence:
+
+> MARK may prepare a non-causal latent branch immediately while Owner-visible FORK happens much later.
+
+This resolves R3A's two-second catch-up interaction failure without pausing World or replaying an old mark.
+
+Next:
+- MEDIUM-D/R3C may replace the hidden R3A prototype's expiring catch-up implementation with the R3B latent-shadow mechanism;
+- world-first interaction shape remains;
+- still no homepage promotion or Owner usability PASS.
