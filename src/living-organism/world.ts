@@ -1,3 +1,4 @@
+import {retinalAngle} from './retina-geometry';
 import { E0_RAPIER as R, E0_DT, E0_FMAX, E0_TMAX, createE0World, createE0Body } from '../e0-body-seam';
 
 export const initLivingWorld = async () => { await R.init(); };
@@ -93,7 +94,7 @@ export class LivingWorld {
     for(let i=0;i<96;i++){
       const u=(i+.5)/96*2-1;
       // Quadratic angular spacing concentrates samples in the centre.
-      const angle=a+this.gaze+Math.sign(u)*u*u*(80*Math.PI/180);
+      const angle=a+this.gaze+retinalAngle(u);
       const ray=new R.Ray(p,{x:Math.cos(angle),y:Math.sin(angle)});
       // Direct collider queries work at tick zero and immediately after restore;
       // world broad-phase queries are not initialized until a physics step.

@@ -1,4 +1,7 @@
 import type { Demand,PrivateFrame } from './world';
+import {visibleTurquoisePatches,type VisualPatch} from './retina-geometry';
+// Authored angular appearance threshold; never a true distance measurement.
+const INSPECTION_EXTENT=20*Math.PI/180;
 export type OccupantState = {
  lastTick:number|null;heading:number;lastDirection:number|null;lastSeenTick:number|null;
  mode:'explore'|'approach'|'inspect'|'yield';yieldUntil:number;closeSince:number|null;ignoreUntil:number;exploreTravel:number;exploreTurn:number;randomState:number;escapeDrive:number;escapeTurn:number;demand:Demand;
@@ -19,25 +22,17 @@ export class Occupant {
    s.exploreTurn=crossedGoal||Math.abs(remaining)<.05?0:remaining;
   }
   if(s.mode==='explore'&&s.demand.drive>0)s.exploreTravel+=Math.hypot(frame.proprio.forward,frame.proprio.lateral)*dt;
-  // Authored visual concern: largest contiguous turquoise patch, not object ID.
-  const groups:Array<{sum:number;count:number}>=[];
-  let group:{sum:number;count:number}|null=null;
-  for(let i=0;i<96;i++){
-   const r=frame.retina[i*3],g=frame.retina[i*3+1],b=frame.retina[i*3+2];
-   if(g>.65&&b>.6&&r<.3){if(!group){group={sum:0,count:0};groups.push(group);}group.sum+=i;group.count++;}
-   else group=null;
-  }
-  let patch:{sum:number;count:number}|undefined=groups.sort((a,b)=>b.count-a.count)[0];
+  // Rank visible fragments by angular extent, not foveal sample density.
+  let patch:VisualPatch|undefined=visibleTurquoisePatches(frame.retina).sort((a,b)=>b.extent-a.extent)[0];
   // A bounded authored inspection ends; this is not learned interest or identity.
   if(frame.tick<s.ignoreUntil)patch=undefined;
-  if(patch&&patch.count>=18){
+  if(patch&&!patch.clipped&&patch.extent>=INSPECTION_EXTENT){
    s.closeSince??=frame.tick;
    if(frame.tick-s.closeSince>=300){s.ignoreUntil=frame.tick+1200;s.closeSince=null;s.lastDirection=null;s.lastSeenTick=null;patch=undefined;}
   }else s.closeSince=null;
   let bearing:number|null=null;
   if(patch){
-   const u=(patch.sum/patch.count+.5)/96*2-1;
-   bearing=wrap(frame.proprio.gaze+Math.sign(u)*u*u*(80*Math.PI/180));
+   bearing=wrap(frame.proprio.gaze+patch.bearing);
    s.lastDirection=wrap(s.heading+bearing);s.lastSeenTick=frame.tick;
   }
   const strongest=Math.max(...frame.touch);
@@ -51,7 +46,7 @@ export class Occupant {
    s.mode='yield';s.demand={drive:s.escapeDrive,turn:s.escapeTurn,gazeRate:0};
   }else if(bearing!==null&&patch){
    s.mode='approach';
-   s.demand={drive:Math.abs(bearing)<.3&&patch.count<18?.65:0,turn:clamp(bearing*2),gazeRate:clamp(-frame.proprio.gaze)};
+   s.demand={drive:Math.abs(bearing)<.3&&(patch.clipped||patch.extent<INSPECTION_EXTENT)?.65:0,turn:clamp(bearing*2),gazeRate:clamp(-frame.proprio.gaze)};
   }else if(s.lastDirection!==null&&s.lastSeenTick!==null&&frame.tick-s.lastSeenTick<360){
    s.mode='inspect';const error=wrap(s.lastDirection-s.heading);
    s.demand={drive:Math.abs(error)<.25?.15:0,turn:clamp(error*2),gazeRate:clamp(-frame.proprio.gaze)};

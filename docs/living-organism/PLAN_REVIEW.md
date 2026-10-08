@@ -98,3 +98,18 @@ compare against the authored baseline. The current color chase is a poor trainin
 Implementation of this revised activity has not started. This run performs adversarial
 measurements and revises the nearest plan; 66 prior production tests are not proof of its
 new behavioral claims. Browser validation and completed independent review remain open.
+
+## Preparation update: retinal prerequisite implemented
+The angular interpretation correction is now implemented and verified by five additional
+tests and the full 71-test suite. Its data are saved separately; the counterevidence above
+remains the pre-fix baseline. Current source hashes accompany the new characterization.
+
+Before implementing the relation activity, a physical observability probe established
+identical single-frame images for different object size/distance pairs. Equal lateral
+body motion disambiguates those two static scenes. Do not grant true range merely to
+make the planned activity easier, or infer distance by silently assuming known object size.
+Next prototype a fallible private estimate informed by active observations; evaluate it
+with similarly appearing things, motion and occlusion before using it for material action.
+If the ambiguity cannot be resolved, keep uncertainty and revise action, rather than
+inventing a stable object ID. This preparation does not yet establish general triangulation
+or learned perception. The material activity remains unimplemented.

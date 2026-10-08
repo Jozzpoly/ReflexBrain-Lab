@@ -12,13 +12,14 @@ daf818635c5aace756aa52673488a22a23f92908 (initial private continuation).
 - authored turquoise-patch concern, bounded direction memory and directional contact escape;
 - exploration uses sensed travelled legs and sensed rotations, with checkpointed private
   deterministic angle variation; no host map or position is supplied;
-- bounded close inspection followed by ten seconds of visual-concern suppression;
+- bounded angular-appearance inspection followed by ten seconds of visual-concern suppression;
+- shared nonuniform retinal calibration, angular fragment selection and explicit FOV clipping;
 - manual takeover with private perception continuing; release preserves private state;
 - checkpoint restores physical state, sensory phase/accumulator, mover and private continuation;
 - separate host world and private retina views, pause, save/restore and object dragging.
 
 ## Verified
-Full `npm run check`: 31 files, 66 tests PASS; typecheck/build PASS.
+Full `npm run check`: 32 files, 71 tests PASS; typecheck/build PASS.
 Regression tests cover sensory timing, transient contacts, partial-interval restore,
 private history affecting identical later images, override/release and 600-step
 whole-loop exact continuation after a checkpoint at tick 123.
@@ -30,7 +31,9 @@ an end to the concern. A failing close-patch continuation test reproduced this.
 After adding bounded inspection and suppression: path 327.1490805618;
 approach 16964, explore 51536, yield 3500 ticks. Every minute adds movement.
 The earlier inspection-fix measurement is retained as `whole-loop-600s-inspection-fix.json`.
-The current controller's ten-minute path is 274.1153179347, with movement every minute.
+The pre-retinal-fix controller's ten-minute path was 274.1153179347; current angular
+interpretation gives 287.1342975055, with movement every minute. See the separately
+saved whole-loop-600s-after-retinal-fix.json; older runs remain historical controls.
 Exact raw measurements: `evidence/living-organism/whole-loop-600s*.json`.
 
 Removing all turquoise objects after sixty seconds exposed a second failure: the old
@@ -87,8 +90,29 @@ Keep E0 disk as comparison control until sensor/body boundary checks are complet
 Direct collider rays avoid uninitialized broad-phase queries without extra physics steps.
 Existing Field/C01, public frontdoor and Pages deployment remain unchanged.
 Nearest plan is revised by PLAN_REVIEW.md after actual gaze and direction-memory ablations.
-Nonuniform sample count misreads apparent size; memory usefulness is not established.
-Correct angular interpretation, then test a material, memory-relevant relation activity.
+The nonuniform sample-count error is fixed; memory usefulness is still not established.
+Next test a material, memory-relevant relation activity with information acquired through motion.
 Do not extend the current roaming/color-chase controller merely to increase movement.
 Resolve a reachable rendered test surface before promoting the UI.
 Do not repeat completed sensory-clock or checkpoint implementation after handoff.
+
+## Retinal correction checkpoint
+The same object six units ahead now requests drive .65 at 0, 30 and 60 degree gaze,
+instead of 0, .65, .65. New tests cover far/close decisions at central/peripheral gaze,
+FOV clipping, separate occluded fragments and ranking by angular rather than pixel extent.
+The older close-inspection synthetic fixture was widened to express angular closeness,
+rather than accidentally enshrine the faulty pixel-count threshold.
+The inspection threshold remains explicitly authored at 20 degrees. Angular cell bounds
+are quantized; extent is visible appearance, never true size, distance or identity.
+FOV-clipped patches do not complete a close inspection. Occluded fragments remain separate.
+
+Post-fix three-seed direction ablation gives visited cells 38/63, 57/37, 45/34
+(full/reset). This is mixed evidence, not a memory competence score.
+Measurements include exact production source hashes in plan-challenge-after-retinal-fix.json.
+
+A preparation probe places radius-.3/distance-3 and radius-.6/distance-6 objects in
+separate scenes: initial retinas are identical. Equal lateral body movement gives distinct
+retinas with identical realized body motion. relation-observability.json records this.
+Active motion can disambiguate these fixtures; range inference and a material relation
+activity are not implemented. No host coordinates or object sizes were added to policy input.
+Browser QA and completed independent review remain open.

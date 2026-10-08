@@ -1,0 +1,11 @@
+import {LivingWorld,initLivingWorld} from '../src/living-organism/world';
+import {writeFileSync} from 'node:fs';
+await initLivingWorld();
+const near=new LivingWorld(false),far=new LivingWorld(false);
+near.addObject(3,0,.3,[.1,.85,.8]);far.addObject(6,0,.6,[.1,.85,.8]);
+const same=(a:Float32Array,b:Float32Array)=>a.every((v,i)=>v===b[i]);
+const initialIdentical=same(near.observe().retina,far.observe().retina);
+for(let i=0;i<60;i++)for(const w of [near,far])w.step({drive:0,turn:0,gazeRate:0},{x:0,y:30});
+const a=near.inspect().actor,b=far.inspect().actor;
+const result={scope:'Two static scenes; different physical size and distance, equal initial angular appearance. Lateral movement is a host intervention, not an inference input.',initialIdentical,actorMotionIdentical:JSON.stringify(a)===JSON.stringify(b),afterLateralRetinaIdentical:same(near.observe().retina,far.observe().retina),hostAudit:{nearDistance:3,nearRadius:.3,farDistance:6,farRadius:.6,actor:a}};
+writeFileSync('evidence/living-organism/relation-observability.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));near.free();far.free();

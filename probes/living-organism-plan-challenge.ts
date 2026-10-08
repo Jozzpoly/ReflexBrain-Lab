@@ -1,7 +1,9 @@
 import {LivingRuntime} from '../src/living-organism/runtime';
 import {LivingWorld,initLivingWorld} from '../src/living-organism/world';
 import {Occupant} from '../src/living-organism/occupant';
-import {mkdirSync,writeFileSync} from 'node:fs';
+import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
 await initLivingWorld();
 const gazeChecks=[];
 for(const degrees of [0,30,60]){
@@ -26,5 +28,5 @@ for(const seed of [1,42,0x6d2b79f5])for(const ablateDirection of [false,true]){
  }
  ablations.push({seed,ablateDirection,simulatedSeconds:180,visitedCells:cells.size,distance,counts});r.free();
 }
-const result={sourceCommit:'d3f0ae509561b534e2a87fa0ce382788edc7e3cb',scope:'One physical scene; three controller seeds. Host metrics and interventions never supplied as observations.',gazeChecks,ablations};
-mkdirSync('evidence/living-organism',{recursive:true});writeFileSync('evidence/living-organism/plan-challenge.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
+const result={baseCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),sourceHashes:Object.fromEntries(['src/living-organism/world.ts','src/living-organism/occupant.ts','src/living-organism/retina-geometry.ts'].map(p=>[p,createHash('sha256').update(readFileSync(p)).digest('hex')])),scope:'One physical scene; three controller seeds. Host metrics and interventions never supplied as observations.',gazeChecks,ablations};
+mkdirSync('evidence/living-organism',{recursive:true});writeFileSync('evidence/living-organism/plan-challenge-after-retinal-fix.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));

@@ -32,7 +32,7 @@ describe('private authored continuation',()=>{
  });
  it('finishes sustained close inspection and explores despite the same visible patch',()=>{
   const o=new Occupant();
-  for(let tick=0;tick<=360;tick+=4){const f=frame(tick,null);for(let i=34;i<=61;i++)f.retina.set([.1,.85,.8],i*3);o.decide(f);}
+  for(let tick=0;tick<=360;tick+=4){const f=frame(tick,null);for(let i=26;i<=69;i++)f.retina.set([.1,.85,.8],i*3);o.decide(f);}
   expect(o.capture().mode).toBe('explore');
   expect(o.capture().demand.drive).toBeGreaterThan(0);
   const restored=new Occupant();restored.restore(o.capture());

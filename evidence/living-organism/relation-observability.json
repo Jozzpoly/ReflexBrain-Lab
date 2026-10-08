@@ -1,0 +1,19 @@
+{
+  "scope": "Two static scenes; different physical size and distance, equal initial angular appearance. Lateral movement is a host intervention, not an inference input.",
+  "initialIdentical": true,
+  "actorMotionIdentical": true,
+  "afterLateralRetinaIdentical": false,
+  "hostAudit": {
+    "nearDistance": 3,
+    "nearRadius": 0.3,
+    "farDistance": 6,
+    "farRadius": 0.6,
+    "actor": {
+      "x": 0,
+      "y": 1.8936448097229004,
+      "vx": 0,
+      "vy": 5.306920051574707,
+      "angle": 0
+    }
+  }
+}
