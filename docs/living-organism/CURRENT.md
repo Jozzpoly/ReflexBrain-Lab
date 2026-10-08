@@ -1,41 +1,54 @@
-# Campaign A — first runtime checkpoint
+# Campaign A — continuing authored occupant checkpoint
 
 2026-10-08. Base: 87d94c84288982dd6c150494b24504097ec4474f.
+Previous runtime checkpoint: 819cd669d33a5bce57a480def69d2e528e8b805d.
 
 ## Implemented
-- isolated world with finite force/torque, summed external force;
-- directional gaze, 96 nonuniform angular samples across 160 degrees;
-- RGB-only retina, no object IDs/range/world positions in private observation;
-- all registered surface contact pairs queried for current touch;
-- physical checkpoint with clock, gaze and host surface registry;
-- manual scene, separate world/retina views, pause, save/restore and dragging.
+- E0 disk world with finite summed forces/torque and independent physical mover;
+- directional gaze and RGB-only 96-sample nonuniform angular retina across 160 degrees;
+- fixed 120 Hz physics, 30 Hz private sensory frames, four-step touch accumulation;
+- private controller receives cached retina, touch and ideal body-local proprioception;
+- authored turquoise-patch concern, bounded direction memory, contact retreat;
+- bounded close inspection followed by ten seconds of visual-concern suppression;
+- manual takeover with private perception continuing; release preserves private state;
+- checkpoint restores physical state, sensory phase/accumulator, mover and private continuation;
+- separate host world and private retina views, pause, save/restore and object dragging.
 
 ## Verified
-Eight new tests plus full suite: 24 files, 41 tests PASS; typecheck/build PASS.
-Direct collider ray casts work before first physics step and after restore.
-240-step continuation matches after restoring checkpoint in tested scene.
-Partial occlusion retains visible edge samples; hidden movement does not change retina.
+Full `npm run check`: 28 files, 54 tests PASS; typecheck/build PASS.
+Regression tests cover sensory timing, transient contacts, partial-interval restore,
+private history affecting identical later images, override/release and 600-step
+whole-loop exact continuation after a checkpoint at tick 123.
+Ten-minute whole-loop regression requires movement in every 60-second window.
+
+The first authored controller permanently stopped: 600 seconds, approach 72000 ticks,
+path 0.7015104235. Cause: a large visible patch suppressed drive indefinitely without
+an end to the concern. A failing close-patch continuation test reproduced this.
+After adding bounded inspection and suppression: path 327.1490805618;
+approach 16964, explore 51536, yield 3500 ticks. Every minute adds movement.
+Exact raw before/after measurements: `evidence/living-organism/whole-loop-600s*.json`.
+Reproduction harness: `probes/living-organism-characterization.ts`, run from repo root
+with Node and a tsx loader (not bundled browser UI).
 
 ## Open / not qualified
-No autonomous occupant, learned brain, task continuity or independent mover yet.
-Touch is currently instantaneous; four-tick accumulation is not implemented.
-Retina is computed on demand; the planned fixed 30 Hz sensory scheduler is not implemented.
-Manual browser scene is not a campaign completion or Owner-test gate.
-Browser QA blocked: cloud browser localhost connection refused; local Playwright
-has no browser binary, and official headless-shell download yielded invalid/truncated ZIP.
-No screenshot/interaction success claimed. Build retains inherited large Rapier chunk warning.
+This is authored control, not learned interests, identity, goals, an NN or an LLM.
+Continuing movement is a regression gate, not evidence of meaningful activity.
+Patch width is an appearance cue, not true distance; suppression affects all matching
+patches, with no object identity. Integrated heading drifts; direction memory lacks
+positional correction. No route planning, task completion or Owner-test gate yet.
+Touch sectors/contact-normal orientation need dedicated directional validation.
+Independent mover displacement is tested, not long-run patrol quality under obstruction.
+UI takeover/pause state is outside the organism checkpoint.
+Browser QA remains blocked: cloud browser localhost connection refused; local
+Playwright has no binary and its official headless-shell download was invalid/truncated.
+No rendered screenshot or interaction success claimed. Build retains inherited large
+Rapier chunk warning. This checkpoint does not complete Campaign A.
 
-## Rulings
-- Initial body remains E0 disk as comparison control; capsule comes after sensor boundary checks.
-- Direct collider queries replace uninitialized world broad-phase rays without extra physics steps.
-- Force test includes inherited damping; undamped velocity=1 was an incorrect expectation.
-- Existing Field/C01 and public frontdoor remain unchanged.
-
-## Next
-1. Verify rendered scene through a reachable browser surface before promoting UI.
-2. Add four-step touch accumulation and fixed 30 Hz sensor/control clock with checkpoint tests.
-3. Add independent mover and test contacts.
-4. Add actor-private temporal state and continuing authored concerns.
-
-Do not repeat completed world-senses work after handoff. This is an initial
-runtime checkpoint, not completion of Task 1 or Campaign A.
+## Rulings and next work
+Keep E0 disk as comparison control until sensor/body boundary checks are complete.
+Direct collider rays avoid uninitialized broad-phase queries without extra physics steps.
+Existing Field/C01, public frontdoor and Pages deployment remain unchanged.
+Next: validate directional touch, perturb visual continuity and independent motion,
+measure recovery/loops rather than total path, then compare a richer activity controller.
+Resolve a reachable rendered test surface before promoting the UI.
+Do not repeat completed sensory-clock or checkpoint implementation after handoff.
