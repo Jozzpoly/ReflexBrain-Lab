@@ -165,3 +165,17 @@ evidence/living-organism/approach-episode.json. Pełny check: 34 pliki / 89 test
 typy i build PASS. Niezależny przegląd wykonany, render QA nadal otwarte.
 Istniejący runtime/occupant i checkpoint v4 pozostają bieżącym organizmem; nowy
 epizod to narzędzie badań, nie ogłoszona autonomiczna motywacja ani uczony brain.
+# Atrybucja rzeczywistych kontaktów — 2026-10-08
+
+World checkpoint v3 / runtime v5 zachowują hostową paczkę kontaktów z dodatnim solver
+impulse, zgodną z tickiem prywatnego touch, także w częściowym oknie i po restore.
+inspectContactSample() jest wyłącznie instrumentacją hosta; PrivateFrame bez zmian.
+72 ponowione epizody zachowały końcowe stany, koszt, drogę i zapisane snapshoty;
+klasyfikacje proxy i prawdziwych par są zgodne w tym zestawie. Osobny test wykazuje
+błędną atrybucję proxy bliskości w scenie z celem obok i faktycznym dotykiem przeszkody.
+
+Plan, wyniki oraz protokół challengera: docs/living-organism/CONTACT_EVIDENCE_PLAN.md.
+Dane: evidence/living-organism/approach-contact-attribution.json. Check: 35 plików /
+92 testy, typy/build PASS; niezależny review bez blokujących usterek. Następna praca
+ma wrócić do prywatnego sprawdzania następstw i predykcji uczonej; instrumentacja
+nie staje się zastępczym celem. Render QA i promocja nowych sterowników nadal niegotowe.

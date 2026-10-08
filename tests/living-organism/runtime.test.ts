@@ -2,8 +2,8 @@ import {beforeAll,expect,it} from 'vitest';
 import {initLivingWorld} from '../../src/living-organism/world';
 import {LivingRuntime} from '../../src/living-organism/runtime';
 beforeAll(initLivingWorld);
-it('versions the changed visual prediction checkpoint explicitly',()=>{
- const r=new LivingRuntime();expect(r.capture().version).toBe(4);r.free();
+it('versions the changed host contact checkpoint explicitly',()=>{
+ const r=new LivingRuntime();expect(r.capture().version).toBe(5);r.free();
 });
 it('continues physical and private state identically after an autonomous fork',()=>{
  const a=new LivingRuntime();

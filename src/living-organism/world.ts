@@ -6,7 +6,9 @@ export type Demand = {drive:number;turn:number;gazeRate:number};
 type Color = [number,number,number];
 type Surface = {handle:number;color:Color;kind:'object'|'wall';hx:number;hy:number};
 export type PrivateFrame = {tick:number;retina:Float32Array;touch:Float32Array;proprio:{forward:number;lateral:number;omega:number;gaze:number}};
-export type Checkpoint = {version:2;physics:Uint8Array;actorHandle:number;tick:number;gaze:number;surfaces:Surface[];frame:PrivateFrame;pendingTouch:Float32Array;mover:{handle:number;direction:number}|null};
+export type HostContactEvent={tick:number;handle:number;impulse:number};
+export type HostContactSample={tick:number;contacts:HostContactEvent[]};
+export type Checkpoint = {version:3;physics:Uint8Array;actorHandle:number;tick:number;gaze:number;surfaces:Surface[];frame:PrivateFrame;pendingTouch:Float32Array;pendingContactEvents:HostContactEvent[];contactSample:HostContactSample;mover:{handle:number;direction:number}|null};
 const clamp=(x:number)=>Math.max(-1,Math.min(1,x));
 const background:Color=[.025,.04,.06];
 
@@ -19,6 +21,8 @@ export class LivingWorld {
   private surfaces:Surface[]=[];
   private frame:PrivateFrame|null=null;
   private pendingTouch=new Float32Array(8);
+  private pendingContactEvents:HostContactEvent[]=[];
+  private contactSample:HostContactSample={tick:0,contacts:[]};
   private mover:{handle:number;direction:number}|null=null;
   constructor(scene=true) {
     this.world=createE0World();
@@ -74,11 +78,20 @@ export class LivingWorld {
     this.gaze=Math.max(-Math.PI/2,Math.min(Math.PI/2,this.gaze+3*clamp(d.gazeRate)*E0_DT));
     this.world.step();this.tick++;
     const touch=this.sampleTouch();
+    for(const s of this.surfaces){
+      let impulse=0;
+      this.world.contactPair(this.actor.collider(0),this.world.getCollider(s.handle),(m:any)=>{
+        for(let i=0;i<m.numSolverContacts();i++)impulse+=Math.abs(m.contactImpulse(i));
+      });
+      if(impulse>0)this.pendingContactEvents.push({tick:this.tick,handle:s.handle,impulse});
+    }
     for(let i=0;i<8;i++)this.pendingTouch[i]+=touch[i];
     if(this.tick%4===0){
       this.frame=this.sample();
       this.frame.touch=this.pendingTouch.slice();
       this.pendingTouch.fill(0);
+      this.contactSample={tick:this.tick,contacts:this.pendingContactEvents};
+      this.pendingContactEvents=[];
     }
   }
   observe() {
@@ -125,16 +138,19 @@ export class LivingWorld {
     return {tick:this.tick,gaze:this.gaze,actor:{x:p.x,y:p.y,vx:v.x,vy:v.y,angle:this.actor.rotation()},
       objects:this.surfaces.map(s=>{const b=this.world.getCollider(s.handle).parent(),p=b.translation();return {...s,color:[...s.color] as Color,x:p.x,y:p.y,angle:b.rotation()};})};
   }
+  /** Host-only attribution aligned with the private sensory window, never brain input. */
+  inspectContactSample():HostContactSample{return structuredClone(this.contactSample);}
   captureCheckpoint():Checkpoint {
     const frame=this.observe();
-    return {version:2,physics:this.world.takeSnapshot(),actorHandle:this.actor.handle,tick:this.tick,gaze:this.gaze,surfaces:this.surfaces.map(s=>({...s,color:[...s.color]})),frame,pendingTouch:this.pendingTouch.slice(),mover:this.mover?{...this.mover}:null};
+    return {version:3,physics:this.world.takeSnapshot(),actorHandle:this.actor.handle,tick:this.tick,gaze:this.gaze,surfaces:this.surfaces.map(s=>({...s,color:[...s.color]})),frame,pendingTouch:this.pendingTouch.slice(),pendingContactEvents:structuredClone(this.pendingContactEvents),contactSample:this.inspectContactSample(),mover:this.mover?{...this.mover}:null};
   }
   restoreCheckpoint(cp:Checkpoint) {
-    if(cp.version!==2)throw new Error('Unsupported checkpoint');
+    if(cp.version!==3)throw new Error('Unsupported checkpoint');
     const restored=R.World.restoreSnapshot(cp.physics);
     this.world.free();this.world=restored;this.actor=restored.getRigidBody(cp.actorHandle);
     this.tick=cp.tick;this.gaze=cp.gaze;this.surfaces=cp.surfaces.map(s=>({...s,color:[...s.color]}));
     this.frame=this.copyFrame(cp.frame);this.pendingTouch=cp.pendingTouch.slice();this.mover=cp.mover?{...cp.mover}:null;
+    this.pendingContactEvents=structuredClone(cp.pendingContactEvents);this.contactSample=structuredClone(cp.contactSample);
   }
   free(){this.world.free();}
 }
