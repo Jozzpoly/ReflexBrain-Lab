@@ -93,3 +93,10 @@ PASS would establish only that the shadow-MARK interaction shape works in this o
 No Owner experimental-value PASS.
 No Field integration.
 No homepage promotion.
+
+
+---
+
+## Closure
+
+**PARTIAL PASS · CLOSED.** Human-scale delayed MARK/FORK interaction was validated live (955-tick mark age, synchronized exact exposure, no dashboard/runtime failure). The available browser actuator could not execute the canvas-only material gesture, so post-intervention Compare remains unresolved rather than PASS/FAIL. See `MEDIUM-D-R3C_RESULT.md`.
