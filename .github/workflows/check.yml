@@ -16,3 +16,40 @@ jobs:
           node-version: 22
       - run: yarn install --non-interactive
       - run: yarn run check
+
+
+  browser-r3f:
+    if: github.event_name == 'pull_request' && github.head_ref == 'medium/medium-d-r3f-browser-pointer-e2e'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: yarn install --non-interactive
+      - run: yarn run build
+      - name: Confirm system Chrome
+        run: google-chrome --version
+      - name: Install pinned Playwright client only
+        run: yarn add --dev --ignore-scripts playwright-core@1.56.0
+      - name: Start Vite preview
+        run: |
+          yarn vite preview --host 127.0.0.1 --port 4173 > /tmp/r3f-vite.log 2>&1 &
+          echo $! > /tmp/r3f-vite.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/probes/medium-d-r3e-spatial-proxy.html >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/r3f-vite.log
+          exit 1
+      - name: Run real pointer-path browser probe
+        run: node tests/browser/r3f-spatial-proxy.e2e.mjs
+      - name: Upload R3F browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: medium-d-r3f-browser-evidence
+          path: artifacts/r3f
+          if-no-files-found: ignore
