@@ -1,7 +1,7 @@
 import {LivingWorld,type Demand,type Checkpoint} from './world';
 import {Occupant,type OccupantState} from './occupant';
 import {PrivateVision,type VisionState} from './private-vision';
-export type RuntimeCheckpoint={version:3;world:Checkpoint;occupant:OccupantState;vision:VisionState};
+export type RuntimeCheckpoint={version:4;world:Checkpoint;occupant:OccupantState;vision:VisionState};
 export class LivingRuntime{
  readonly world:LivingWorld;
  readonly occupant=new Occupant();
@@ -14,7 +14,7 @@ export class LivingRuntime{
  }
  inspect(){return this.world.inspect();}
  observe(){return this.world.observe();}
- capture():RuntimeCheckpoint{return {version:3,world:this.world.captureCheckpoint(),occupant:this.occupant.capture(),vision:this.vision.capture()};}
- restore(cp:RuntimeCheckpoint){if(cp.version!==3)throw new Error('Unsupported runtime checkpoint');this.world.restoreCheckpoint(cp.world);this.occupant.restore(cp.occupant);this.vision.restore(cp.vision);}
+ capture():RuntimeCheckpoint{return {version:4,world:this.world.captureCheckpoint(),occupant:this.occupant.capture(),vision:this.vision.capture()};}
+ restore(cp:RuntimeCheckpoint){if(cp.version!==4)throw new Error('Unsupported runtime checkpoint');this.world.restoreCheckpoint(cp.world);this.occupant.restore(cp.occupant);this.vision.restore(cp.vision);}
  free(){this.world.free();}
 }

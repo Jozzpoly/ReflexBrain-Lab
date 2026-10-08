@@ -129,3 +129,24 @@ wrong range near twice the actual value with an even smaller residual. Assumptio
 tentative status must remain explicit; low fit error is not calibrated confidence.
 Raw characterization is retained. Active information-seeking, multi-hypothesis reasoning,
 learned challenger and a material activity remain unimplemented.
+# Etap predykcji wcześniejszej hipotezy — 2026-10-08
+
+PrivateVision ocenia poprzedni estimate na kolejnym obrazie, warunkując przewidywany
+bearing aktualną prywatną odometrią i gaze. Wynik zapisuje przed refitem. Compatible
+oznacza zgodność kierunku pojedynczej plamy z tolerancją .08 rad; nie pewność dystansu,
+tożsamości ani nieruchomości. Missing/ambiguous/clipped daje unavailable; brak poprzedniego
+estimate daje null. Diagnostyka przechowuje tylko ostatnie porównanie, nie długą pamięć błędów.
+Checkpoint runtime v4 zawiera ten stan; motor pozostaje sterowany przez occupant.
+
+Kontrpróba czterech scen ze zmianą osi translacji nie odrzuciła aliasów: 23 zgodne
+porównania w każdej scenie, 0 sprzecznych; scale-alias ma range hosta 4.200 przy hipotezie
+8.125. Także zamrożony fit z tick 60 pozostaje w tolerancji. To ograniczenie epistemiczne
+tego pomiaru, nie sukces percepcji ruchu. Retiny far/scale nie są bitowo identyczne;
+interwencja hosta po step wprowadza przesunięcie fazy cached sensor. Zapis:
+evidence/living-organism/private-prediction.json; reprodukcja:
+probes/living-organism-prediction.ts. Pełny check: 33 pliki / 83 testy, typy i build PASS.
+
+Szczegółowy plan, krytyka oraz protokół następnego etapu:
+docs/superpowers/plans/2026-10-08-private-prediction.md. Następny krok bada decyzję
+jakościową z historii i kontaktu, nie czeka na nieomylną głębokość. QA renderu i
+niezależna kwalifikacja całej kampanii nadal otwarte.

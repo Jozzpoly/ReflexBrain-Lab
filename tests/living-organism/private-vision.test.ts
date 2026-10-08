@@ -7,6 +7,49 @@ it('keeps single-image size-distance ambiguity unresolved',()=>{
  const v=new PrivateVision();v.observe(w.observe());
  expect(v.capture().estimate).toBeNull();w.free();
 });
+function warmVision(){
+ const w=new LivingWorld(false),h=w.addObject(6,0,.6,[.1,.85,.8]),v=new PrivateVision();v.observe(w.observe());
+ for(let i=0;i<60;i++){w.step({drive:0,turn:0,gazeRate:0},{x:0,y:30});v.observe(w.observe());}
+ return {w,h,v};
+}
+it('evaluates the previous hypothesis before new evidence can refit a displaced fragment',()=>{
+ const {w,h,v}=warmVision(),sourceTick=v.capture().lastTick;
+ w.moveObject(h,6,1);
+ for(let i=0;i<4;i++){w.step({drive:0,turn:0,gazeRate:0},{x:0,y:30});v.observe(w.observe());}
+ const prediction=v.capture().prediction;
+ expect(prediction).toBeDefined();expect(prediction!.sourceTick).toBe(sourceTick);
+ expect(prediction!.evaluatedTick).toBeGreaterThan(sourceTick!);
+ expect(prediction!.status).toBe('inconsistent');expect(Math.abs(prediction!.angularError!)).toBeGreaterThan(.08);
+ const saved=v.capture();v.observe(w.observe());expect(v.capture()).toEqual(saved);w.free();
+});
+it('keeps stationary predictions compatible during a change of gaze',()=>{
+ const {w,v}=warmVision();
+ for(let i=0;i<12;i++){w.step({drive:0,turn:0,gazeRate:.5});v.observe(w.observe());}
+ expect(v.capture().prediction?.status).toBe('compatible');
+ expect(Math.abs(v.capture().prediction!.angularError!)).toBeLessThan(.08);w.free();
+});
+it('restores a nonempty prediction and continues checking future frames identically',()=>{
+ const {w,v}=warmVision(),saved=v.capture();
+ expect(saved.prediction?.status).toBe('compatible');
+ const restored=new PrivateVision();restored.restore(saved);
+ expect(restored.capture().prediction).toEqual(saved.prediction);
+ for(let i=0;i<24;i++){
+  w.step({drive:0,turn:0,gazeRate:.2},{x:-30,y:0});
+  const f=w.observe();v.observe(f);restored.observe(f);
+ }
+ expect(restored.capture()).toEqual(v.capture());w.free();
+});
+it('does not claim a prediction comparison without an unambiguous visible fragment',()=>{
+ for(const variant of ['missing','ambiguous','clipped'] as const){
+  const {w,h,v}=warmVision();
+  if(variant==='missing')w.moveObject(h,-6,0);
+  if(variant==='ambiguous')w.addObject(4,2,.3,[.1,.85,.8]);
+  if(variant==='clipped'){const a=w.inspect().actor;w.moveObject(h,a.x+1,a.y+5);}
+  for(let i=0;i<4;i++){w.step({drive:0,turn:0,gazeRate:0});v.observe(w.observe());}
+  expect(v.capture().prediction?.status,variant).toBe('unavailable');
+  expect(v.capture().prediction!.angularError).toBeNull();w.free();
+ }
+});
 it('derives different tentative distances from actual motion and identical initial images',()=>{
  const distances=[];
  for(const [distance,radius] of [[3,.3],[6,.6]]){

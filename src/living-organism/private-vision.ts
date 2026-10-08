@@ -2,20 +2,33 @@ import type {PrivateFrame} from './world';
 import {visibleTurquoisePatches} from './retina-geometry';
 type RayEvidence={tick:number;x:number;y:number;angle:number};
 export type VisualEstimate={x:number;y:number;distance:number;angularResidual:number;assumption:'stationary-fragment'};
-export type VisionState={lastTick:number|null;pose:{x:number;y:number;heading:number};rays:RayEvidence[];estimate:VisualEstimate|null;reason:'insufficient'|'tentative'|'missing'|'ambiguous'|'clipped'|'inconsistent'};
+export type VisualPrediction={sourceTick:number;evaluatedTick:number;predictedBearing:number;observedBearing:number|null;angularError:number|null;status:'compatible'|'inconsistent'|'unavailable'};
+export type VisionState={lastTick:number|null;pose:{x:number;y:number;heading:number};rays:RayEvidence[];estimate:VisualEstimate|null;prediction:VisualPrediction|null;reason:'insufficient'|'tentative'|'missing'|'ambiguous'|'clipped'|'inconsistent'};
 const wrap=(a:number)=>Math.atan2(Math.sin(a),Math.cos(a));
 /** Coordinates are private integrated proprioception, never host position or object identity. */
 export class PrivateVision{
- private state:VisionState={lastTick:null,pose:{x:0,y:0,heading:0},rays:[],estimate:null,reason:'insufficient'};
+ private state:VisionState={lastTick:null,pose:{x:0,y:0,heading:0},rays:[],estimate:null,prediction:null,reason:'insufficient'};
  observe(frame:PrivateFrame){
   const s=this.state;
   if(s.lastTick!==null&&frame.tick<=s.lastTick)return;
+  const previous=s.estimate,sourceTick=s.lastTick;
   const dt=s.lastTick===null?0:(frame.tick-s.lastTick)/120,p=s.pose;
   const rotation=frame.proprio.omega*dt,heading=p.heading+rotation/2;
   p.x+=(frame.proprio.forward*Math.cos(heading)-frame.proprio.lateral*Math.sin(heading))*dt;
   p.y+=(frame.proprio.forward*Math.sin(heading)+frame.proprio.lateral*Math.cos(heading))*dt;
   p.heading=wrap(p.heading+rotation);s.lastTick=frame.tick;s.estimate=null;
   const patches=visibleTurquoisePatches(frame.retina);
+  // Test the previous hypothesis before fitting any part of the new image.
+  // Compatibility is conditional on fragment correspondence, never identity or confidence.
+  s.prediction=null;
+  if(previous&&sourceTick!==null){
+   const predictedBearing=wrap(Math.atan2(previous.y-p.y,previous.x-p.x)-p.heading-frame.proprio.gaze);
+   const comparable=patches.length===1&&!patches[0].clipped;
+   const observedBearing=comparable?patches[0].bearing:null;
+   const angularError=observedBearing===null?null:wrap(observedBearing-predictedBearing);
+   s.prediction={sourceTick,evaluatedTick:frame.tick,predictedBearing,observedBearing,angularError,
+    status:angularError===null?'unavailable':Math.abs(angularError)<=.08?'compatible':'inconsistent'};
+  }
   if(patches.length!==1||patches[0].clipped){
    s.rays=[];s.reason=patches.length===0?'missing':patches.length>1?'ambiguous':'clipped';return;
   }

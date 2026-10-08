@@ -1,5 +1,11 @@
 # Kampania: prywatny model sytuacji i zdobywanie informacji działaniem
 
+Aktualizacja: pierwsza część niżej opisuje start v3 / 78 testów. Etap predykcji
+jest w runtime v4; bieżący stan i wyniki kontrpróby opisuje CURRENT.md oraz
+docs/superpowers/plans/2026-10-08-private-prediction.md. Zgodność przyszłego bearing
+nie potwierdziła prawdziwego dystansu; kierunek obejmuje decyzje jakościowe i kontakt,
+bez oczekiwania na nieomylną monokularną głębokość.
+
 2026-10-08. Start z c30e4541ec11fbb625f9c2e641bd5ee5bfe5733e.
 Cel projektu pozostaje szeroki: ciągły organizm w interesującym świecie, ze zmysłami,
 pamięcią, własną organizacją działania i możliwością porównania szybkich lokalnych,

@@ -1,0 +1,2979 @@
+{
+  "scope": "Host truth only evaluates or constructs interventions. Motion switches axis at tick 60. Scale alias is deliberately observer-correlated, not a naturalistic motion prior. Object edits occur after step, so cached retina precedes that edit by one physics step. Exact retinal equality is measured, not assumed. No model sees host XY. Hashes retain sample identity; rerun probe to reproduce full RGB buffers.",
+  "identicalFarAndScaleRetinas": false,
+  "differingFarAndScaleSamples": 8,
+  "results": [
+    {
+      "variant": "static-near",
+      "actualDistance": 5.67477068671969,
+      "final": {
+        "lastTick": 120,
+        "pose": {
+          "x": -1.9237315316994987,
+          "y": 2.803514989217122,
+          "heading": 0
+        },
+        "rays": [
+          {
+            "tick": 0,
+            "x": 0,
+            "y": 0,
+            "angle": -4.163336342344337e-17
+          },
+          {
+            "tick": 4,
+            "x": 0,
+            "y": 0.030005929867426555,
+            "angle": -0.007575213767336511
+          },
+          {
+            "tick": 8,
+            "x": 0,
+            "y": 0.08532508810361226,
+            "angle": -0.022725641302009457
+          },
+          {
+            "tick": 12,
+            "x": 0,
+            "y": 0.16199867526690165,
+            "angle": -0.037876068836682514
+          },
+          {
+            "tick": 16,
+            "x": 0,
+            "y": 0.25668701926867166,
+            "angle": -0.07272205216643039
+          },
+          {
+            "tick": 20,
+            "x": 0,
+            "y": 0.3665727436542511,
+            "angle": -0.11423422361143444
+          },
+          {
+            "tick": 24,
+            "x": 0,
+            "y": 0.4892790933450063,
+            "angle": -0.14574711288355424
+          },
+          {
+            "tick": 28,
+            "x": 0,
+            "y": 0.6228010316689809,
+            "angle": -0.19028936983549286
+          },
+          {
+            "tick": 32,
+            "x": 0,
+            "y": 0.765447090069453,
+            "angle": -0.2284684472228688
+          },
+          {
+            "tick": 36,
+            "x": 0,
+            "y": 0.9157903333504995,
+            "angle": -0.2875551146080934
+          },
+          {
+            "tick": 40,
+            "x": 0,
+            "y": 1.0726269702116649,
+            "angle": -0.326037200546163
+          },
+          {
+            "tick": 44,
+            "x": 0,
+            "y": 1.234941480557124,
+            "angle": -0.3842148422793072
+          },
+          {
+            "tick": 48,
+            "x": 0,
+            "y": 1.4018771628538769,
+            "angle": -0.4293631163326329
+          },
+          {
+            "tick": 52,
+            "x": 0,
+            "y": 1.5727112909158072,
+            "angle": -0.4620880398075264
+          },
+          {
+            "tick": 56,
+            "x": 0,
+            "y": 1.7468341966470085,
+            "angle": -0.5311739893656355
+          },
+          {
+            "tick": 60,
+            "x": 0,
+            "y": 1.9237315316994987,
+            "angle": -0.5675350154488505
+          },
+          {
+            "tick": 64,
+            "x": -0.030005929867426555,
+            "y": 2.072963442405065,
+            "angle": -0.6051080757348397
+          },
+          {
+            "tick": 68,
+            "x": -0.08532508810361226,
+            "y": 2.1988566060860952,
+            "angle": -0.6229855802257537
+          },
+          {
+            "tick": 72,
+            "x": -0.16199867526690165,
+            "y": 2.305061028401057,
+            "angle": -0.6229855802257537
+          },
+          {
+            "tick": 76,
+            "x": -0.25668701926867166,
+            "y": 2.3946558773517608,
+            "angle": -0.6414691018180547
+          },
+          {
+            "tick": 80,
+            "x": -0.3665727436542511,
+            "y": 2.470238771041234,
+            "angle": -0.6414691018180547
+          },
+          {
+            "tick": 84,
+            "x": -0.4892790933450063,
+            "y": 2.534001074234644,
+            "angle": -0.6414691018180547
+          },
+          {
+            "tick": 88,
+            "x": -0.6228010316689809,
+            "y": 2.587791432936986,
+            "angle": -0.6414691018180547
+          },
+          {
+            "tick": 92,
+            "x": -0.765447090069453,
+            "y": 2.6331693867842354,
+            "angle": -0.6229855802257537
+          },
+          {
+            "tick": 96,
+            "x": -0.9157903333504995,
+            "y": 2.6714505692323045,
+            "angle": -0.6026840073292918
+          },
+          {
+            "tick": 100,
+            "x": -1.0726269702116649,
+            "y": 2.703744864463806,
+            "angle": -0.6026840073292918
+          },
+          {
+            "tick": 104,
+            "x": -1.234941480557124,
+            "y": 2.7309885760148362,
+            "angle": -0.6026840073292918
+          },
+          {
+            "tick": 108,
+            "x": -1.4018771628538769,
+            "y": 2.7539715766906734,
+            "angle": -0.5651109470433029
+          },
+          {
+            "tick": 112,
+            "x": -1.5727112909158072,
+            "y": 2.7733602086702978,
+            "angle": -0.5651109470433029
+          },
+          {
+            "tick": 116,
+            "x": -1.7468341966470085,
+            "y": 2.7897166073322293,
+            "angle": -0.5287499209600875
+          },
+          {
+            "tick": 120,
+            "x": -1.9237315316994987,
+            "y": 2.803514989217122,
+            "angle": -0.5287499209600875
+          }
+        ],
+        "estimate": {
+          "x": 2.8676143664952796,
+          "y": 0.05039760643709567,
+          "distance": 5.525997723444471,
+          "angularResidual": 0.01113006982699307,
+          "assumption": "stationary-fragment"
+        },
+        "prediction": {
+          "sourceTick": 116,
+          "evaluatedTick": 120,
+          "predictedBearing": -0.521229410236179,
+          "observedBearing": -0.5287499209600875,
+          "angularError": -0.00752051072390858,
+          "status": "compatible"
+        },
+        "reason": "tentative"
+      },
+      "frozenAtTick60": {
+        "x": 3.004571895120517,
+        "y": 0.030960333152447922,
+        "distance": 3.5510611207070677,
+        "angularResidual": 0.00711124941619155,
+        "assumption": "stationary-fragment"
+      },
+      "compatible": 23,
+      "inconsistent": 0,
+      "frozenMaxAngularError": 0.03559289010543532,
+      "samples": [
+        {
+          "tick": 4,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "a142bde969a836aab65f2f05c92235cf62527431fb4cd174d2035f2720295a24"
+        },
+        {
+          "tick": 8,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "0d38ed8099ec5c916c57a06e2233c0b0dd9bca1c6d69297ebc2c87e065c0df8a"
+        },
+        {
+          "tick": 12,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "d0c885e5cd5819ebf786157eebabb162dc836fedb38af24d0714e3c847370537"
+        },
+        {
+          "tick": 16,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "ebd390cd8d6363a1733ea7fbfa7727db6c091ac6ee6d1b36f53f5c300ce7fd91"
+        },
+        {
+          "tick": 20,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "297c7536ccbf0833cad6450900d9d3cd90eaf2955ba61276a3be75e75340f5d3"
+        },
+        {
+          "tick": 24,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "025dd4d644ef20875a88d2e1618ec70ab83703566b1de9b36d12d7aae24a153b"
+        },
+        {
+          "tick": 28,
+          "prediction": null,
+          "estimate": {
+            "x": 3.188938677842954,
+            "y": 0.014348998402490412,
+            "distance": 3.246466350946656,
+            "angularResidual": 0.00407911743864208,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "702735e53b06c6325edec4595b4766b996c1993e72f1d7df1179eef2d302ffbe"
+        },
+        {
+          "tick": 32,
+          "prediction": {
+            "sourceTick": 28,
+            "evaluatedTick": 32,
+            "predictedBearing": -0.23131635175585488,
+            "observedBearing": -0.2284684472228688,
+            "angularError": 0.002847904532986084,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 3.2121334739249137,
+            "y": 0.013271667471055081,
+            "distance": 3.299025510763749,
+            "angularResidual": 0.003880814648239989,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "783ffa468cea4a21157a67734164785739d7e218b76a4c1bb65b737884682a08"
+        },
+        {
+          "tick": 36,
+          "prediction": {
+            "sourceTick": 32,
+            "evaluatedTick": 36,
+            "predictedBearing": -0.2739095508911976,
+            "observedBearing": -0.28755511460809347,
+            "angularError": -0.013645563716895848,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 3.1226317088572375,
+            "y": 0.01864699482510586,
+            "distance": 3.24895290193951,
+            "angularResidual": 0.0050453906940997545,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "56b04d6bd14153804c47cc21ca4d507486dde66136f55b922349b8b2f1d95e7a"
+        },
+        {
+          "tick": 40,
+          "prediction": {
+            "sourceTick": 36,
+            "evaluatedTick": 40,
+            "predictedBearing": -0.32552223948433257,
+            "observedBearing": -0.326037200546163,
+            "angularError": -0.0005149610618304101,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 3.1201136742017987,
+            "y": 0.018821502577458304,
+            "distance": 3.2932681797200787,
+            "angularResidual": 0.004817062629649021,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "c81e4d940179e479b7dcb868ab46b18dda3b9b321f49bde07e1e35c2857afd47"
+        },
+        {
+          "tick": 44,
+          "prediction": {
+            "sourceTick": 40,
+            "evaluatedTick": 44,
+            "predictedBearing": -0.3716545506860512,
+            "observedBearing": -0.3842148422793072,
+            "angularError": -0.012560291593256003,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 3.0688413618136887,
+            "y": 0.02311147928810333,
+            "distance": 3.2994422643765366,
+            "angularResidual": 0.005572363693821806,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "adaa949b5231cf1ddec8813d8d8875b4c10dc11fc177ff8e62a618838777577f"
+        },
+        {
+          "tick": 48,
+          "prediction": {
+            "sourceTick": 44,
+            "evaluatedTick": 48,
+            "predictedBearing": -0.42225410030395266,
+            "observedBearing": -0.4293631163326329,
+            "angularError": -0.007109016028680248,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 3.0454164893641145,
+            "y": 0.02533934643123256,
+            "distance": 3.3420679157869415,
+            "angularResidual": 0.0056678890257396254,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "f46ad34d9e7e8e24efead0b5b12ffc2e76874f6a356e7dfdfaa0bd036ab52978"
+        },
+        {
+          "tick": 52,
+          "prediction": {
+            "sourceTick": 48,
+            "evaluatedTick": 52,
+            "predictedBearing": -0.47010550249489297,
+            "observedBearing": -0.4620880398075264,
+            "angularError": 0.008017462687366585,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 3.067110867494306,
+            "y": 0.023076543917705333,
+            "distance": 3.4363551799261884,
+            "angularResidual": 0.005694241194910931,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "412a3952c3a16c8dd58e14ab747fc01450ff5bcde3e5665a108ee7a9bb9a1616"
+        },
+        {
+          "tick": 56,
+          "prediction": {
+            "sourceTick": 52,
+            "evaluatedTick": 56,
+            "predictedBearing": -0.5120198016553491,
+            "observedBearing": -0.5311739893656354,
+            "angularError": -0.01915418771028632,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 3.0195086772598336,
+            "y": 0.02896041279597913,
+            "distance": 3.473977977663371,
+            "angularResidual": 0.0070884276845556045,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "800473ca1aa96992167517933aa5b4e3c43448fbaaed64f140eab14b0315ea98"
+        },
+        {
+          "tick": 60,
+          "prediction": {
+            "sourceTick": 56,
+            "evaluatedTick": 60,
+            "predictedBearing": -0.560402040126097,
+            "observedBearing": -0.5675350154488505,
+            "angularError": -0.007132975322753587,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 3.004571895120517,
+            "y": 0.030960333152447922,
+            "distance": 3.5510611207070677,
+            "angularResidual": 0.00711124941619155,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "10228b9f18cd4bfc4ef3d4540c17b866b9737efaaaac7b6718bdbba3b83f504e"
+        },
+        {
+          "tick": 64,
+          "prediction": {
+            "sourceTick": 60,
+            "evaluatedTick": 64,
+            "predictedBearing": -0.5923136778398738,
+            "observedBearing": -0.6051080757348396,
+            "angularError": -0.012794397894965835,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.981043222382442,
+            "y": 0.03438267288840272,
+            "distance": 3.636238241797119,
+            "angularResidual": 0.00756742881760978,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.012794397894965724,
+          "retinaSha256": "8cc2ea7419d36adad7e5c25d1be4d63f8564cd000e341d1d60dc33b2d8a0f1e1"
+        },
+        {
+          "tick": 68,
+          "prediction": {
+            "sourceTick": 64,
+            "evaluatedTick": 68,
+            "predictedBearing": -0.6146583059244798,
+            "observedBearing": -0.6229855802257536,
+            "angularError": -0.00832727430127378,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.967793102847592,
+            "y": 0.036391260288232204,
+            "distance": 3.7413616584999945,
+            "angularResidual": 0.007664286256079888,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.011181273069008624,
+          "retinaSha256": "976f9772983ab3c99432df83e86c575e2e64d207bd260b30c70d21e413928e5c"
+        },
+        {
+          "tick": 72,
+          "prediction": {
+            "sourceTick": 68,
+            "evaluatedTick": 72,
+            "predictedBearing": -0.6272182846280986,
+            "observedBearing": -0.6229855802257536,
+            "angularError": 0.004232704402345023,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.973596809154166,
+            "y": 0.03551147566975889,
+            "distance": 3.87076403494512,
+            "angularResidual": 0.00746741604440763,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.00017614213872108042,
+          "retinaSha256": "976f9772983ab3c99432df83e86c575e2e64d207bd260b30c70d21e413928e5c"
+        },
+        {
+          "tick": 76,
+          "prediction": {
+            "sourceTick": 72,
+            "evaluatedTick": 76,
+            "predictedBearing": -0.6307871899164587,
+            "observedBearing": -0.6414691018180547,
+            "angularError": -0.010681911901596066,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.960033779805534,
+            "y": 0.03768345011636912,
+            "distance": 3.9878078842823523,
+            "angularResidual": 0.007714521266946589,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.014305065851650367,
+          "retinaSha256": "8d3640fcf13308c76ed598c8d847540264fc0548779c7539e6b9310ce35d103f"
+        },
+        {
+          "tick": 80,
+          "prediction": {
+            "sourceTick": 76,
+            "evaluatedTick": 80,
+            "predictedBearing": -0.6313876860030198,
+            "observedBearing": -0.6414691018180547,
+            "angularError": -0.010081415815034966,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.948558049833565,
+            "y": 0.03952116583714483,
+            "distance": 4.110776113361108,
+            "angularResidual": 0.007916986117973195,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.015095107482804184,
+          "retinaSha256": "8d3640fcf13308c76ed598c8d847540264fc0548779c7539e6b9310ce35d103f"
+        },
+        {
+          "tick": 84,
+          "prediction": {
+            "sourceTick": 80,
+            "evaluatedTick": 84,
+            "predictedBearing": -0.6276985561124299,
+            "observedBearing": -0.6414691018180547,
+            "angularError": -0.013770545705624861,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.9342591297132627,
+            "y": 0.04181098533964127,
+            "distance": 4.2345749968476705,
+            "angularResidual": 0.008382205377394765,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.01981233505907387,
+          "retinaSha256": "8d3640fcf13308c76ed598c8d847540264fc0548779c7539e6b9310ce35d103f"
+        },
+        {
+          "tick": 88,
+          "prediction": {
+            "sourceTick": 84,
+            "evaluatedTick": 88,
+            "predictedBearing": -0.62122113020844,
+            "observedBearing": -0.6414691018180547,
+            "angularError": -0.02024797160961467,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.9148389696746575,
+            "y": 0.04492091677669097,
+            "distance": 4.356728961166158,
+            "angularResidual": 0.009395181619576878,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.027481279617272314,
+          "retinaSha256": "8d3640fcf13308c76ed598c8d847540264fc0548779c7539e6b9310ce35d103f"
+        },
+        {
+          "tick": 92,
+          "prediction": {
+            "sourceTick": 88,
+            "evaluatedTick": 92,
+            "predictedBearing": -0.6129197148004955,
+            "observedBearing": -0.6229855802257536,
+            "angularError": -0.010065865425258114,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.906313010028355,
+            "y": 0.046160951961149124,
+            "distance": 4.491596027529196,
+            "angularResidual": 0.009547287350429798,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.018841619692034905,
+          "retinaSha256": "976f9772983ab3c99432df83e86c575e2e64d207bd260b30c70d21e413928e5c"
+        },
+        {
+          "tick": 96,
+          "prediction": {
+            "sourceTick": 92,
+            "evaluatedTick": 96,
+            "predictedBearing": -0.6018596874445741,
+            "observedBearing": -0.6026840073292918,
+            "angularError": -0.0008243198847177613,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.9056953806456263,
+            "y": 0.04623826573126333,
+            "distance": 4.636323187691915,
+            "angularResidual": 0.009366736064676126,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.00994338424862118,
+          "retinaSha256": "f0e21aa9c7b3b5d9ec65d52d3fe4ee5b1a05b81378dd619f872d4e8cb290e71c"
+        },
+        {
+          "tick": 100,
+          "prediction": {
+            "sourceTick": 96,
+            "evaluatedTick": 100,
+            "predictedBearing": -0.5889228996737752,
+            "observedBearing": -0.6026840073292918,
+            "angularError": -0.013761107655516634,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.895798869695404,
+            "y": 0.04747709373060322,
+            "distance": 4.77537036434642,
+            "angularResidual": 0.009729400839317701,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.022421071422249916,
+          "retinaSha256": "f0e21aa9c7b3b5d9ec65d52d3fe4ee5b1a05b81378dd619f872d4e8cb290e71c"
+        },
+        {
+          "tick": 104,
+          "prediction": {
+            "sourceTick": 100,
+            "evaluatedTick": 104,
+            "predictedBearing": -0.5761250521414863,
+            "observedBearing": -0.6026840073292918,
+            "angularError": -0.02655895518780549,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.8774164440742602,
+            "y": 0.049778173744540494,
+            "distance": 4.909213472799995,
+            "angularResidual": 0.011124724732778275,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.03559289010543532,
+          "retinaSha256": "f0e21aa9c7b3b5d9ec65d52d3fe4ee5b1a05b81378dd619f872d4e8cb290e71c"
+        },
+        {
+          "tick": 108,
+          "prediction": {
+            "sourceTick": 104,
+            "evaluatedTick": 108,
+            "predictedBearing": -0.5635637310733373,
+            "observedBearing": -0.565110947043303,
+            "angularError": -0.001547215969965654,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.876543923972861,
+            "y": 0.04983506436615521,
+            "distance": 5.061347772430807,
+            "angularResidual": 0.010949035188805587,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.011589802909133251,
+          "retinaSha256": "fa18d7f5d1bb2ecd1fcf0429621e39ca80919da0b44bcbf61562a9dcce8d2643"
+        },
+        {
+          "tick": 112,
+          "prediction": {
+            "sourceTick": 108,
+            "evaluatedTick": 112,
+            "predictedBearing": -0.5492913256989195,
+            "observedBearing": -0.565110947043303,
+            "angularError": -0.015819621344383528,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.8678178537800423,
+            "y": 0.05040402725506384,
+            "distance": 5.208914421527838,
+            "angularResidual": 0.011349463862643436,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.025329436844631625,
+          "retinaSha256": "fa18d7f5d1bb2ecd1fcf0429621e39ca80919da0b44bcbf61562a9dcce8d2643"
+        },
+        {
+          "tick": 116,
+          "prediction": {
+            "sourceTick": 112,
+            "evaluatedTick": 116,
+            "predictedBearing": -0.5357091609335047,
+            "observedBearing": -0.5287499209600875,
+            "angularError": 0.006959239973417185,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.8708310233427836,
+            "y": 0.05049910451403756,
+            "distance": 5.3689984737983405,
+            "angularResidual": 0.011143478012826684,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.002703126886689833,
+          "retinaSha256": "7e1f27f76142ea11d653034c9bced2c057852dcbca57269be0adabc8a7a3d3a2"
+        },
+        {
+          "tick": 120,
+          "prediction": {
+            "sourceTick": 116,
+            "evaluatedTick": 120,
+            "predictedBearing": -0.521229410236179,
+            "observedBearing": -0.5287499209600875,
+            "angularError": -0.00752051072390858,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 2.8676143664952796,
+            "y": 0.05039760643709567,
+            "distance": 5.525997723444471,
+            "angularResidual": 0.01113006982699307,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.016301276549024135,
+          "retinaSha256": "7e1f27f76142ea11d653034c9bced2c057852dcbca57269be0adabc8a7a3d3a2"
+        }
+      ]
+    },
+    {
+      "variant": "static-far",
+      "actualDistance": 8.400291138120778,
+      "final": {
+        "lastTick": 120,
+        "pose": {
+          "x": -1.9237315316994987,
+          "y": 2.803514989217122,
+          "heading": 0
+        },
+        "rays": [
+          {
+            "tick": 0,
+            "x": 0,
+            "y": 0,
+            "angle": -4.163336342344337e-17
+          },
+          {
+            "tick": 4,
+            "x": 0,
+            "y": 0.030005929867426555,
+            "angle": -4.163336342344337e-17
+          },
+          {
+            "tick": 8,
+            "x": 0,
+            "y": 0.08532508810361226,
+            "angle": -0.0157564446360599
+          },
+          {
+            "tick": 12,
+            "x": 0,
+            "y": 0.16199867526690165,
+            "angle": -0.022725641302009457
+          },
+          {
+            "tick": 16,
+            "x": 0,
+            "y": 0.25668701926867166,
+            "angle": -0.037876068836682514
+          },
+          {
+            "tick": 20,
+            "x": 0,
+            "y": 0.3665727436542511,
+            "angle": -0.05302649637135551
+          },
+          {
+            "tick": 24,
+            "x": 0,
+            "y": 0.4892790933450063,
+            "angle": -0.07272205216643039
+          },
+          {
+            "tick": 28,
+            "x": 0,
+            "y": 0.6228010316689809,
+            "angle": -0.0969627362219072
+          },
+          {
+            "tick": 32,
+            "x": 0,
+            "y": 0.765447090069453,
+            "angle": -0.12029439462530364
+          },
+          {
+            "tick": 36,
+            "x": 0,
+            "y": 0.9157903333504995,
+            "angle": -0.14574711288355424
+          },
+          {
+            "tick": 40,
+            "x": 0,
+            "y": 1.0726269702116649,
+            "angle": -0.17029080548972447
+          },
+          {
+            "tick": 44,
+            "x": 0,
+            "y": 1.234941480557124,
+            "angle": -0.19786458360282938
+          },
+          {
+            "tick": 48,
+            "x": 0,
+            "y": 1.4018771628538769,
+            "angle": -0.21968119925275845
+          },
+          {
+            "tick": 52,
+            "x": 0,
+            "y": 1.5727112909158072,
+            "angle": -0.25210311417695874
+          },
+          {
+            "tick": 56,
+            "x": 0,
+            "y": 1.7468341966470085,
+            "angle": -0.2769498153338224
+          },
+          {
+            "tick": 60,
+            "x": 0,
+            "y": 1.9237315316994987,
+            "angle": -0.3142198670691181
+          },
+          {
+            "tick": 64,
+            "x": -0.030005929867426555,
+            "y": 2.072963442405065,
+            "angle": -0.326037200546163
+          },
+          {
+            "tick": 68,
+            "x": -0.08532508810361226,
+            "y": 2.1988566060860952,
+            "angle": -0.3545200043113481
+          },
+          {
+            "tick": 72,
+            "x": -0.16199867526690165,
+            "y": 2.305061028401057,
+            "angle": -0.3545200043113481
+          },
+          {
+            "tick": 76,
+            "x": -0.25668701926867166,
+            "y": 2.3946558773517608,
+            "angle": -0.3842148422793072
+          },
+          {
+            "tick": 80,
+            "x": -0.3665727436542511,
+            "y": 2.470238771041234,
+            "angle": -0.3842148422793072
+          },
+          {
+            "tick": 84,
+            "x": -0.4892790933450063,
+            "y": 2.534001074234644,
+            "angle": -0.3842148422793072
+          },
+          {
+            "tick": 88,
+            "x": -0.6228010316689809,
+            "y": 2.587791432936986,
+            "angle": -0.3842148422793072
+          },
+          {
+            "tick": 92,
+            "x": -0.765447090069453,
+            "y": 2.6331693867842354,
+            "angle": -0.3842148422793072
+          },
+          {
+            "tick": 96,
+            "x": -0.9157903333504995,
+            "y": 2.6714505692323045,
+            "angle": -0.3842148422793072
+          },
+          {
+            "tick": 100,
+            "x": -1.0726269702116649,
+            "y": 2.703744864463806,
+            "angle": -0.367549371991167
+          },
+          {
+            "tick": 104,
+            "x": -1.234941480557124,
+            "y": 2.7309885760148362,
+            "angle": -0.367549371991167
+          },
+          {
+            "tick": 108,
+            "x": -1.4018771628538769,
+            "y": 2.7539715766906734,
+            "angle": -0.367549371991167
+          },
+          {
+            "tick": 112,
+            "x": -1.5727112909158072,
+            "y": 2.7733602086702978,
+            "angle": -0.367549371991167
+          },
+          {
+            "tick": 116,
+            "x": -1.7468341966470085,
+            "y": 2.7897166073322293,
+            "angle": -0.367549371991167
+          },
+          {
+            "tick": 120,
+            "x": -1.9237315316994987,
+            "y": 2.803514989217122,
+            "angle": -0.3384605511245948
+          }
+        ],
+        "estimate": {
+          "x": 5.686528670593572,
+          "y": 0.05801417702120352,
+          "distance": 8.090354445657756,
+          "angularResidual": 0.0074608774755159585,
+          "assumption": "stationary-fragment"
+        },
+        "prediction": {
+          "sourceTick": 116,
+          "evaluatedTick": 120,
+          "predictedBearing": -0.34662619735687505,
+          "observedBearing": -0.33846055112459483,
+          "angularError": 0.008165646232280221,
+          "status": "compatible"
+        },
+        "reason": "tentative"
+      },
+      "frozenAtTick60": {
+        "x": 6.004303140580907,
+        "y": 0.028834816584212216,
+        "distance": 6.296212334804509,
+        "angularResidual": 0.003540459125227215,
+        "assumption": "stationary-fragment"
+      },
+      "compatible": 23,
+      "inconsistent": 0,
+      "frozenMaxAngularError": 0.025370275511492846,
+      "samples": [
+        {
+          "tick": 4,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "36375527821aca631971ca4be83b2900a9896263ea42416b316db6998db9e017"
+        },
+        {
+          "tick": 8,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "db099deb5c2457aa78ac1ce3b88010c2bfc75d0ba45cdad8eff4f6f39d08c0ef"
+        },
+        {
+          "tick": 12,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "0d38ed8099ec5c916c57a06e2233c0b0dd9bca1c6d69297ebc2c87e065c0df8a"
+        },
+        {
+          "tick": 16,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "d0c885e5cd5819ebf786157eebabb162dc836fedb38af24d0714e3c847370537"
+        },
+        {
+          "tick": 20,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "5e2cc4be15d0427ff9c6e3110b1285043b3cdd3c0ed82d7964af85d00b9bf5c8"
+        },
+        {
+          "tick": 24,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "ebd390cd8d6363a1733ea7fbfa7727db6c091ac6ee6d1b36f53f5c300ce7fd91"
+        },
+        {
+          "tick": 28,
+          "prediction": null,
+          "estimate": {
+            "x": 6.427295854199231,
+            "y": 0.01090459452049016,
+            "distance": 6.456357273819475,
+            "angularResidual": 0.00228101054494964,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "2c156caac3680cc9744de2a1b7f23cc2f4055c549e0c0b93a08744ad9d2a35ba"
+        },
+        {
+          "tick": 32,
+          "prediction": {
+            "sourceTick": 28,
+            "evaluatedTick": 32,
+            "predictedBearing": -0.11686166942024935,
+            "observedBearing": -0.12029439462530364,
+            "angularError": -0.0034327252050542906,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.315355406682739,
+            "y": 0.01365358150416961,
+            "distance": 6.359945549471144,
+            "angularResidual": 0.002344785131862746,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "ede22c3e4eb8d767813e009abff543e0a9a71c082a161bb767c27ed9767ff01e"
+        },
+        {
+          "tick": 36,
+          "prediction": {
+            "sourceTick": 32,
+            "evaluatedTick": 36,
+            "predictedBearing": -0.14188822846646135,
+            "observedBearing": -0.14574711288355424,
+            "angularError": -0.003858884417092895,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.221745927424301,
+            "y": 0.016483997443835614,
+            "distance": 6.286403922054543,
+            "angularResidual": 0.0024432313692338797,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "025dd4d644ef20875a88d2e1618ec70ab83703566b1de9b36d12d7aae24a153b"
+        },
+        {
+          "tick": 40,
+          "prediction": {
+            "sourceTick": 36,
+            "evaluatedTick": 40,
+            "predictedBearing": -0.1681474193857232,
+            "observedBearing": -0.17029080548972447,
+            "angularError": -0.002143386104001277,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.1820283638307565,
+            "y": 0.017911243671485173,
+            "distance": 6.271355511770892,
+            "angularResidual": 0.0023999863255776267,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "29f2da7cb4de68b604d1307049a04a3715a80cfd41c84506f730ae469d1daa51"
+        },
+        {
+          "tick": 44,
+          "prediction": {
+            "sourceTick": 40,
+            "evaluatedTick": 44,
+            "predictedBearing": -0.194380140826797,
+            "observedBearing": -0.19786458360282938,
+            "angularError": -0.0034844427760323815,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.130278338430434,
+            "y": 0.020110159197819232,
+            "distance": 6.249490190886372,
+            "angularResidual": 0.0024569905847630327,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "d4bf5a5c91ea67d39359916a59b69654d0d88cf8057e24a38d70114256faa0eb"
+        },
+        {
+          "tick": 48,
+          "prediction": {
+            "sourceTick": 44,
+            "evaluatedTick": 48,
+            "predictedBearing": -0.2216954872723665,
+            "observedBearing": -0.21968119925275847,
+            "angularError": 0.002014288019608012,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.1541317622348535,
+            "y": 0.018965960540336686,
+            "distance": 6.30759709718623,
+            "angularResidual": 0.0023943816526128627,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "38a756fe05c5cc68b1b01efd20272450317bb9dfd19659fda4d1ad07209427a1"
+        },
+        {
+          "tick": 52,
+          "prediction": {
+            "sourceTick": 48,
+            "evaluatedTick": 52,
+            "predictedBearing": -0.2473037994009112,
+            "observedBearing": -0.25210311417695874,
+            "angularError": -0.004799314776047531,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.105117200626452,
+            "y": 0.0217180420052565,
+            "distance": 6.299050411891549,
+            "angularResidual": 0.002564152442228436,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "6488f86e56a84257b533fc54b72225e94af799c660874edd53dc7e0e4f86d331"
+        },
+        {
+          "tick": 56,
+          "prediction": {
+            "sourceTick": 52,
+            "evaluatedTick": 56,
+            "predictedBearing": -0.27538923624063616,
+            "observedBearing": -0.27694981533382235,
+            "angularError": -0.0015605790931861874,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.091890347978326,
+            "y": 0.02254434081664894,
+            "distance": 6.331216590728118,
+            "angularResidual": 0.0025076614861675966,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "bf53ecec5024bad063c3f17c02d797a37ce350d8894d8e6273c80e5d16a2c554"
+        },
+        {
+          "tick": 60,
+          "prediction": {
+            "sourceTick": 56,
+            "evaluatedTick": 60,
+            "predictedBearing": -0.30250668434127653,
+            "observedBearing": -0.3142198670691181,
+            "angularError": -0.011713182727841553,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.004303140580907,
+            "y": 0.028834816584212216,
+            "distance": 6.296212334804509,
+            "angularResidual": 0.003540459125227215,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "16cbdce8f499a18edc522eb04da3b6e457c419aae1bd2a2b42645f0764101fe9"
+        },
+        {
+          "tick": 64,
+          "prediction": {
+            "sourceTick": 60,
+            "evaluatedTick": 64,
+            "predictedBearing": -0.32661856256024296,
+            "observedBearing": -0.326037200546163,
+            "angularError": 0.0005813620140799891,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.007818820727535,
+            "y": 0.028571122157584842,
+            "distance": 6.3745484293386605,
+            "angularResidual": 0.00343381636889406,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.0005813620140799891,
+          "retinaSha256": "c81e4d940179e479b7dcb868ab46b18dda3b9b321f49bde07e1e35c2857afd47"
+        },
+        {
+          "tick": 68,
+          "prediction": {
+            "sourceTick": 64,
+            "evaluatedTick": 68,
+            "predictedBearing": -0.3421740379330443,
+            "observedBearing": -0.35452000431134817,
+            "angularError": -0.012345966378303874,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.940595895719877,
+            "y": 0.03416885853008574,
+            "distance": 6.402936572206799,
+            "angularResidual": 0.004281392163338697,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.012201918391316124,
+          "retinaSha256": "57753e1d973b1e144a736ab59152f24bf354129303f7940004c6a31e8df4ff8f"
+        },
+        {
+          "tick": 72,
+          "prediction": {
+            "sourceTick": 68,
+            "evaluatedTick": 72,
+            "predictedBearing": -0.35624258515019447,
+            "observedBearing": -0.35452000431134817,
+            "angularError": 0.0017225808388462993,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.948294565672611,
+            "y": 0.033527780730966295,
+            "distance": 6.518860850297521,
+            "angularResidual": 0.004172619431055135,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.0008970880928295677,
+          "retinaSha256": "57753e1d973b1e144a736ab59152f24bf354129303f7940004c6a31e8df4ff8f"
+        },
+        {
+          "tick": 76,
+          "prediction": {
+            "sourceTick": 72,
+            "evaluatedTick": 76,
+            "predictedBearing": -0.36360251520442355,
+            "observedBearing": -0.3842148422793072,
+            "angularError": -0.02061232707488364,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.860430015004942,
+            "y": 0.04175665294877892,
+            "distance": 6.5540259055939485,
+            "angularResidual": 0.005966136116035345,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.02293308099969582,
+          "retinaSha256": "adaa949b5231cf1ddec8813d8d8875b4c10dc11fc177ff8e62a618838777577f"
+        },
+        {
+          "tick": 80,
+          "prediction": {
+            "sourceTick": 76,
+            "evaluatedTick": 80,
+            "predictedBearing": -0.3718492496182204,
+            "observedBearing": -0.3842148422793072,
+            "angularError": -0.012365592661086776,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.815643629112229,
+            "y": 0.045951079982302655,
+            "distance": 6.640554953369619,
+            "angularResidual": 0.006430623573661231,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.01826304258739475,
+          "retinaSha256": "adaa949b5231cf1ddec8813d8d8875b4c10dc11fc177ff8e62a618838777577f"
+        },
+        {
+          "tick": 84,
+          "prediction": {
+            "sourceTick": 80,
+            "evaluatedTick": 84,
+            "predictedBearing": -0.3758600500548515,
+            "observedBearing": -0.3842148422793072,
+            "angularError": -0.008354792224455676,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.789099245629145,
+            "y": 0.048437069361672934,
+            "distance": 6.752485689701237,
+            "angularResidual": 0.0065684406736125555,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.01601720314152033,
+          "retinaSha256": "adaa949b5231cf1ddec8813d8d8875b4c10dc11fc177ff8e62a618838777577f"
+        },
+        {
+          "tick": 88,
+          "prediction": {
+            "sourceTick": 84,
+            "evaluatedTick": 88,
+            "predictedBearing": -0.3770859580628311,
+            "observedBearing": -0.3842148422793072,
+            "angularError": -0.007128884216476117,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.768795258749518,
+            "y": 0.050338620240553564,
+            "distance": 6.876857561150482,
+            "angularResidual": 0.006634044580870664,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.015717927485829397,
+          "retinaSha256": "adaa949b5231cf1ddec8813d8d8875b4c10dc11fc177ff8e62a618838777577f"
+        },
+        {
+          "tick": 92,
+          "prediction": {
+            "sourceTick": 88,
+            "evaluatedTick": 92,
+            "predictedBearing": -0.3764275514670796,
+            "observedBearing": -0.3842148422793072,
+            "angularError": -0.007787290812227564,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.7486007743935605,
+            "y": 0.05222991576311703,
+            "distance": 7.006715930704622,
+            "angularResidual": 0.006731804631656604,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.016965799337811116,
+          "retinaSha256": "adaa949b5231cf1ddec8813d8d8875b4c10dc11fc177ff8e62a618838777577f"
+        },
+        {
+          "tick": 96,
+          "prediction": {
+            "sourceTick": 92,
+            "evaluatedTick": 96,
+            "predictedBearing": -0.37447230736147585,
+            "observedBearing": -0.3842148422793072,
+            "angularError": -0.009742534917831336,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.725326632408189,
+            "y": 0.05440963373722165,
+            "distance": 7.138160674217475,
+            "angularResidual": 0.006935298401392649,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.019429802288094267,
+          "retinaSha256": "adaa949b5231cf1ddec8813d8d8875b4c10dc11fc177ff8e62a618838777577f"
+        },
+        {
+          "tick": 100,
+          "prediction": {
+            "sourceTick": 96,
+            "evaluatedTick": 100,
+            "predictedBearing": -0.3716177099186184,
+            "observedBearing": -0.367549371991167,
+            "angularError": 0.0040683379274514255,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.733585174423979,
+            "y": 0.05374552516772286,
+            "distance": 7.303904452829008,
+            "angularResidual": 0.006812398028708319,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.0061721233903357375,
+          "retinaSha256": "c79891e03ddbb3d88457a3129b7dacfe3b03c646665c756dd5c81b173175f846"
+        },
+        {
+          "tick": 104,
+          "prediction": {
+            "sourceTick": 100,
+            "evaluatedTick": 104,
+            "predictedBearing": -0.3668038136283561,
+            "observedBearing": -0.367549371991167,
+            "angularError": -0.000745558362810872,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.732150139425518,
+            "y": 0.05386092314453074,
+            "distance": 7.463737543013903,
+            "angularResidual": 0.006691659112177629,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.010301014256626549,
+          "retinaSha256": "c79891e03ddbb3d88457a3129b7dacfe3b03c646665c756dd5c81b173175f846"
+        },
+        {
+          "tick": 108,
+          "prediction": {
+            "sourceTick": 104,
+            "evaluatedTick": 108,
+            "predictedBearing": -0.3618210757519439,
+            "observedBearing": -0.367549371991167,
+            "angularError": -0.005728296239223108,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.721653463606666,
+            "y": 0.05470501067828953,
+            "distance": 7.61779026887152,
+            "angularResidual": 0.00669289071819305,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.014969912808838361,
+          "retinaSha256": "c79891e03ddbb3d88457a3129b7dacfe3b03c646665c756dd5c81b173175f846"
+        },
+        {
+          "tick": 112,
+          "prediction": {
+            "sourceTick": 108,
+            "evaluatedTick": 112,
+            "predictedBearing": -0.35675818010927335,
+            "observedBearing": -0.367549371991167,
+            "angularError": -0.010791191881893647,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.702763722012339,
+            "y": 0.05622402447569007,
+            "distance": 7.766296782070682,
+            "angularResidual": 0.006934608609188015,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.02003230982923665,
+          "retinaSha256": "c79891e03ddbb3d88457a3129b7dacfe3b03c646665c756dd5c81b173175f846"
+        },
+        {
+          "tick": 116,
+          "prediction": {
+            "sourceTick": 112,
+            "evaluatedTick": 116,
+            "predictedBearing": -0.35167827416673225,
+            "observedBearing": -0.367549371991167,
+            "angularError": -0.015871097824434743,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.676145980568518,
+            "y": 0.05836448342834115,
+            "distance": 7.90954607648814,
+            "angularResidual": 0.007500800855782432,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.025370275511492846,
+          "retinaSha256": "c79891e03ddbb3d88457a3129b7dacfe3b03c646665c756dd5c81b173175f846"
+        },
+        {
+          "tick": 120,
+          "prediction": {
+            "sourceTick": 116,
+            "evaluatedTick": 120,
+            "predictedBearing": -0.34662619735687505,
+            "observedBearing": -0.33846055112459483,
+            "angularError": 0.008165646232280221,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.686528670593572,
+            "y": 0.05801417702120352,
+            "distance": 8.090354445657756,
+            "angularResidual": 0.0074608774755159585,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.0018005603819659657,
+          "retinaSha256": "d7bb00424a7161e55d7fe3977a7d8980c7038fb3905436e76f6ba16ee287e303"
+        }
+      ]
+    },
+    {
+      "variant": "moving-line-alias",
+      "actualDistance": 5.100154431927447,
+      "final": {
+        "lastTick": 120,
+        "pose": {
+          "x": -1.9237315316994987,
+          "y": 2.803514989217122,
+          "heading": 0
+        },
+        "rays": [
+          {
+            "tick": 0,
+            "x": 0,
+            "y": 0,
+            "angle": -4.163336342344337e-17
+          },
+          {
+            "tick": 4,
+            "x": 0,
+            "y": 0.030005929867426555,
+            "angle": -4.163336342344337e-17
+          },
+          {
+            "tick": 8,
+            "x": 0,
+            "y": 0.08532508810361226,
+            "angle": -0.0157564446360599
+          },
+          {
+            "tick": 12,
+            "x": 0,
+            "y": 0.16199867526690165,
+            "angle": -0.022725641302009457
+          },
+          {
+            "tick": 16,
+            "x": 0,
+            "y": 0.25668701926867166,
+            "angle": -0.037876068836682514
+          },
+          {
+            "tick": 20,
+            "x": 0,
+            "y": 0.3665727436542511,
+            "angle": -0.05817764173314432
+          },
+          {
+            "tick": 24,
+            "x": 0,
+            "y": 0.4892790933450063,
+            "angle": -0.07666116332544536
+          },
+          {
+            "tick": 28,
+            "x": 0,
+            "y": 0.6228010316689809,
+            "angle": -0.09938680462745487
+          },
+          {
+            "tick": 32,
+            "x": 0,
+            "y": 0.765447090069453,
+            "angle": -0.12423350578431863
+          },
+          {
+            "tick": 36,
+            "x": 0,
+            "y": 0.9157903333504995,
+            "angle": -0.14574711288355424
+          },
+          {
+            "tick": 40,
+            "x": 0,
+            "y": 1.0726269702116649,
+            "angle": -0.17029080548972447
+          },
+          {
+            "tick": 44,
+            "x": 0,
+            "y": 1.234941480557124,
+            "angle": -0.19786458360282938
+          },
+          {
+            "tick": 48,
+            "x": 0,
+            "y": 1.4018771628538769,
+            "angle": -0.2284684472228688
+          },
+          {
+            "tick": 52,
+            "x": 0,
+            "y": 1.5727112909158072,
+            "angle": -0.25210311417695874
+          },
+          {
+            "tick": 56,
+            "x": 0,
+            "y": 1.7468341966470085,
+            "angle": -0.2875551146080934
+          },
+          {
+            "tick": 60,
+            "x": 0,
+            "y": 1.9237315316994987,
+            "angle": -0.3142198670691181
+          },
+          {
+            "tick": 64,
+            "x": -0.030005929867426555,
+            "y": 2.072963442405065,
+            "angle": -0.3420966537329163
+          },
+          {
+            "tick": 68,
+            "x": -0.08532508810361226,
+            "y": 2.1988566060860952,
+            "angle": -0.3545200043113481
+          },
+          {
+            "tick": 72,
+            "x": -0.16199867526690165,
+            "y": 2.305061028401057,
+            "angle": -0.3545200043113481
+          },
+          {
+            "tick": 76,
+            "x": -0.25668701926867166,
+            "y": 2.3946558773517608,
+            "angle": -0.3545200043113481
+          },
+          {
+            "tick": 80,
+            "x": -0.3665727436542511,
+            "y": 2.470238771041234,
+            "angle": -0.3545200043113481
+          },
+          {
+            "tick": 84,
+            "x": -0.4892790933450063,
+            "y": 2.534001074234644,
+            "angle": -0.3545200043113481
+          },
+          {
+            "tick": 88,
+            "x": -0.6228010316689809,
+            "y": 2.587791432936986,
+            "angle": -0.3545200043113481
+          },
+          {
+            "tick": 92,
+            "x": -0.765447090069453,
+            "y": 2.6331693867842354,
+            "angle": -0.3384605511245948
+          },
+          {
+            "tick": 96,
+            "x": -0.9157903333504995,
+            "y": 2.6714505692323045,
+            "angle": -0.3384605511245948
+          },
+          {
+            "tick": 100,
+            "x": -1.0726269702116649,
+            "y": 2.703744864463806,
+            "angle": -0.3384605511245948
+          },
+          {
+            "tick": 104,
+            "x": -1.234941480557124,
+            "y": 2.7309885760148362,
+            "angle": -0.3105837644607964
+          },
+          {
+            "tick": 108,
+            "x": -1.4018771628538769,
+            "y": 2.7539715766906734,
+            "angle": -0.3105837644607964
+          },
+          {
+            "tick": 112,
+            "x": -1.5727112909158072,
+            "y": 2.7733602086702978,
+            "angle": -0.3105837644607964
+          },
+          {
+            "tick": 116,
+            "x": -1.7468341966470085,
+            "y": 2.7897166073322293,
+            "angle": -0.29573634547681693
+          },
+          {
+            "tick": 120,
+            "x": -1.9237315316994987,
+            "y": 2.803514989217122,
+            "angle": -0.2839190119997721
+          }
+        ],
+        "estimate": {
+          "x": 6.461473764494192,
+          "y": 0.0004991081093529713,
+          "distance": 8.841298880201771,
+          "angularResidual": 0.017322544753258846,
+          "assumption": "stationary-fragment"
+        },
+        "prediction": {
+          "sourceTick": 116,
+          "evaluatedTick": 120,
+          "predictedBearing": -0.3243550363133254,
+          "observedBearing": -0.28391901199977204,
+          "angularError": 0.04043602431355337,
+          "status": "compatible"
+        },
+        "reason": "tentative"
+      },
+      "frozenAtTick60": {
+        "x": 5.932023555342064,
+        "y": 0.024525231403626262,
+        "distance": 6.228634523891784,
+        "angularResidual": 0.0030860460794687734,
+        "assumption": "stationary-fragment"
+      },
+      "compatible": 23,
+      "inconsistent": 0,
+      "frozenMaxAngularError": 0.05609450554439038,
+      "samples": [
+        {
+          "tick": 4,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "36375527821aca631971ca4be83b2900a9896263ea42416b316db6998db9e017"
+        },
+        {
+          "tick": 8,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "db099deb5c2457aa78ac1ce3b88010c2bfc75d0ba45cdad8eff4f6f39d08c0ef"
+        },
+        {
+          "tick": 12,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "0d38ed8099ec5c916c57a06e2233c0b0dd9bca1c6d69297ebc2c87e065c0df8a"
+        },
+        {
+          "tick": 16,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "d0c885e5cd5819ebf786157eebabb162dc836fedb38af24d0714e3c847370537"
+        },
+        {
+          "tick": 20,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "d2b0130e00f0bc5c10e9c8f4fcaf1a139819581f99c1ccfcead04b41721bcdd4"
+        },
+        {
+          "tick": 24,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "e99477d781410a27b43223406491072313f819cbbaca28aeb45d6093a66fc4b7"
+        },
+        {
+          "tick": 28,
+          "prediction": null,
+          "estimate": {
+            "x": 6.16104303030793,
+            "y": 0.011957348348180892,
+            "distance": 6.191250376681502,
+            "angularResidual": 0.002071950147101498,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "b9c554130c803b02cf6dba879d436fc0a8b93b51498052b4032fc457b627e997"
+        },
+        {
+          "tick": 32,
+          "prediction": {
+            "sourceTick": 28,
+            "evaluatedTick": 32,
+            "predictedBearing": -0.12169472469062487,
+            "observedBearing": -0.12423350578431863,
+            "angularError": -0.002538781093693765,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.085125414641592,
+            "y": 0.013875275872330357,
+            "distance": 6.1313629401473655,
+            "angularResidual": 0.002073258154295698,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "59aa3c0f1d3733cfe9e29413fbc7379f9f75965f07960d98e4375a0c39cd14d7"
+        },
+        {
+          "tick": 36,
+          "prediction": {
+            "sourceTick": 32,
+            "evaluatedTick": 36,
+            "predictedBearing": -0.14714508850234406,
+            "observedBearing": -0.14574711288355424,
+            "angularError": 0.0013979756187898207,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.1161638047897755,
+            "y": 0.012932560369118754,
+            "distance": 6.182443840849138,
+            "angularResidual": 0.00198536916121433,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "025dd4d644ef20875a88d2e1618ec70ab83703566b1de9b36d12d7aae24a153b"
+        },
+        {
+          "tick": 40,
+          "prediction": {
+            "sourceTick": 36,
+            "evaluatedTick": 40,
+            "predictedBearing": -0.17155812226129394,
+            "observedBearing": -0.17029080548972447,
+            "angularError": 0.0012673167715694658,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.138621263739152,
+            "y": 0.012113778713016093,
+            "distance": 6.229555301060671,
+            "angularResidual": 0.00190978169843711,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "29f2da7cb4de68b604d1307049a04a3715a80cfd41c84506f730ae469d1daa51"
+        },
+        {
+          "tick": 44,
+          "prediction": {
+            "sourceTick": 40,
+            "evaluatedTick": 44,
+            "predictedBearing": -0.19662845869906964,
+            "observedBearing": -0.19786458360282938,
+            "angularError": -0.0012361249037597388,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.120642840163295,
+            "y": 0.012891814432973322,
+            "distance": 6.24144808224152,
+            "angularResidual": 0.0018561027803203865,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "d4bf5a5c91ea67d39359916a59b69654d0d88cf8057e24a38d70114256faa0eb"
+        },
+        {
+          "tick": 48,
+          "prediction": {
+            "sourceTick": 44,
+            "evaluatedTick": 48,
+            "predictedBearing": -0.2231550133347539,
+            "observedBearing": -0.2284684472228688,
+            "angularError": -0.0053134338881148935,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.056516457418068,
+            "y": 0.016141911632307538,
+            "distance": 6.213022918471653,
+            "angularResidual": 0.002173331872579628,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "783ffa468cea4a21157a67734164785739d7e218b76a4c1bb65b737884682a08"
+        },
+        {
+          "tick": 52,
+          "prediction": {
+            "sourceTick": 48,
+            "evaluatedTick": 52,
+            "predictedBearing": -0.25156288561511436,
+            "observedBearing": -0.25210311417695874,
+            "angularError": -0.0005402285618443803,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.0512331011722384,
+            "y": 0.01644092108665261,
+            "distance": 6.248151687397703,
+            "angularResidual": 0.0021000619468100265,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "6488f86e56a84257b533fc54b72225e94af799c660874edd53dc7e0e4f86d331"
+        },
+        {
+          "tick": 56,
+          "prediction": {
+            "sourceTick": 52,
+            "evaluatedTick": 56,
+            "predictedBearing": -0.27852416483246534,
+            "observedBearing": -0.28755511460809347,
+            "angularError": -0.009030949775628128,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.9743867244118,
+            "y": 0.02146973896059463,
+            "distance": 6.2185351365635535,
+            "angularResidual": 0.002864409922892532,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "56b04d6bd14153804c47cc21ca4d507486dde66136f55b922349b8b2f1d95e7a"
+        },
+        {
+          "tick": 60,
+          "prediction": {
+            "sourceTick": 56,
+            "evaluatedTick": 60,
+            "predictedBearing": -0.30825348499088057,
+            "observedBearing": -0.3142198670691181,
+            "angularError": -0.00596638207823752,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.932023555342064,
+            "y": 0.024525231403626262,
+            "distance": 6.228634523891784,
+            "angularResidual": 0.0030860460794687734,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "16cbdce8f499a18edc522eb04da3b6e457c419aae1bd2a2b42645f0764101fe9"
+        },
+        {
+          "tick": 64,
+          "prediction": {
+            "sourceTick": 60,
+            "evaluatedTick": 64,
+            "predictedBearing": -0.3309446519731166,
+            "observedBearing": -0.3420966537329163,
+            "angularError": -0.011152001759799688,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.863873619514037,
+            "y": 0.029937156053332626,
+            "distance": 6.237930149443901,
+            "angularResidual": 0.003872789981066309,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.011152001759799688,
+          "retinaSha256": "5de742eafab1293bde83ba1728973db86a700642c8de848f31f9ae054751e4f8"
+        },
+        {
+          "tick": 68,
+          "prediction": {
+            "sourceTick": 64,
+            "evaluatedTick": 68,
+            "predictedBearing": -0.3495983335994289,
+            "observedBearing": -0.35452000431134817,
+            "angularError": -0.00492167071191929,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.83879470751492,
+            "y": 0.032018492487585926,
+            "distance": 6.307961854940351,
+            "angularResidual": 0.003934401287964701,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.0077753456584541145,
+          "retinaSha256": "57753e1d973b1e144a736ab59152f24bf354129303f7940004c6a31e8df4ff8f"
+        },
+        {
+          "tick": 72,
+          "prediction": {
+            "sourceTick": 68,
+            "evaluatedTick": 72,
+            "predictedBearing": -0.36208955573321605,
+            "observedBearing": -0.35452000431134817,
+            "angularError": 0.007569551421867882,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.870919532005101,
+            "y": 0.029352405232374663,
+            "distance": 6.447864129554711,
+            "angularResidual": 0.004101940305019754,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.0035710880195103933,
+          "retinaSha256": "57753e1d973b1e144a736ab59152f24bf354129303f7940004c6a31e8df4ff8f"
+        },
+        {
+          "tick": 76,
+          "prediction": {
+            "sourceTick": 72,
+            "evaluatedTick": 76,
+            "predictedBearing": -0.3683861838082718,
+            "observedBearing": -0.35452000431134817,
+            "angularError": 0.013866179496923649,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.922047370137165,
+            "y": 0.02510922943939743,
+            "distance": 6.617515392612172,
+            "angularResidual": 0.004875174143936243,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.011225348160712967,
+          "retinaSha256": "57753e1d973b1e144a736ab59152f24bf354129303f7940004c6a31e8df4ff8f"
+        },
+        {
+          "tick": 80,
+          "prediction": {
+            "sourceTick": 76,
+            "evaluatedTick": 80,
+            "predictedBearing": -0.3708298278196086,
+            "observedBearing": -0.35452000431134817,
+            "angularError": 0.016309823508260435,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.975710275046034,
+            "y": 0.020655664661203173,
+            "distance": 6.798897799228669,
+            "angularResidual": 0.005783732568392184,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.015855322098295266,
+          "retinaSha256": "57753e1d973b1e144a736ab59152f24bf354129303f7940004c6a31e8df4ff8f"
+        },
+        {
+          "tick": 84,
+          "prediction": {
+            "sourceTick": 80,
+            "evaluatedTick": 84,
+            "predictedBearing": -0.3707814959483015,
+            "observedBearing": -0.35452000431134817,
+            "angularError": 0.01626149163695334,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.024328575752599,
+            "y": 0.016620759134376186,
+            "distance": 6.983143168930554,
+            "angularResidual": 0.006528921052288291,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.018034422272484307,
+          "retinaSha256": "57753e1d973b1e144a736ab59152f24bf354129303f7940004c6a31e8df4ff8f"
+        },
+        {
+          "tick": 88,
+          "prediction": {
+            "sourceTick": 84,
+            "evaluatedTick": 88,
+            "predictedBearing": -0.36908350726755984,
+            "observedBearing": -0.35452000431134817,
+            "angularError": 0.014563502956211671,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.064414489336803,
+            "y": 0.013293969182480436,
+            "distance": 7.165674330812072,
+            "angularResidual": 0.007022613280342687,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.018247395521234333,
+          "retinaSha256": "57753e1d973b1e144a736ab59152f24bf354129303f7940004c6a31e8df4ff8f"
+        },
+        {
+          "tick": 92,
+          "prediction": {
+            "sourceTick": 88,
+            "evaluatedTick": 92,
+            "predictedBearing": -0.3662814046703969,
+            "observedBearing": -0.33846055112459483,
+            "angularError": 0.02782085354580205,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.129278708937734,
+            "y": 0.008746144401244327,
+            "distance": 7.3773193775690205,
+            "angularResidual": 0.008805756649960873,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.032958780639810066,
+          "retinaSha256": "d7bb00424a7161e55d7fe3977a7d8980c7038fb3905436e76f6ba16ee287e303"
+        },
+        {
+          "tick": 96,
+          "prediction": {
+            "sourceTick": 92,
+            "evaluatedTick": 96,
+            "predictedBearing": -0.3613570160651415,
+            "observedBearing": -0.33846055112459483,
+            "angularError": 0.022896464940546646,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.179948229448509,
+            "y": 0.00519355250312235,
+            "distance": 7.580134050981587,
+            "angularResidual": 0.009737279662788636,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.03038515957653698,
+          "retinaSha256": "d7bb00424a7161e55d7fe3977a7d8980c7038fb3905436e76f6ba16ee287e303"
+        },
+        {
+          "tick": 100,
+          "prediction": {
+            "sourceTick": 96,
+            "evaluatedTick": 100,
+            "predictedBearing": -0.3562098063528358,
+            "observedBearing": -0.33846055112459483,
+            "angularError": 0.01774925522824095,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.217382422015702,
+            "y": 0.0025689291025788857,
+            "distance": 7.774354530926527,
+            "angularResidual": 0.010172890010197687,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.02686182227538442,
+          "retinaSha256": "d7bb00424a7161e55d7fe3977a7d8980c7038fb3905436e76f6ba16ee287e303"
+        },
+        {
+          "tick": 104,
+          "prediction": {
+            "sourceTick": 100,
+            "evaluatedTick": 104,
+            "predictedBearing": -0.3509598488981698,
+            "observedBearing": -0.3105837644607964,
+            "angularError": 0.040376084437373394,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.282157001166808,
+            "y": 0.0006379117139358767,
+            "distance": 7.997598660472068,
+            "angularResidual": 0.01262429222230688,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.05049094871162774,
+          "retinaSha256": "53619384162a4d9dc9578c7ece006300b1ff5407bc45f21b7238890eb1aed0fd"
+        },
+        {
+          "tick": 108,
+          "prediction": {
+            "sourceTick": 104,
+            "evaluatedTick": 108,
+            "predictedBearing": -0.3440664421792782,
+            "observedBearing": -0.3105837644607964,
+            "angularError": 0.03348267771848178,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.334476450161146,
+            "y": -0.0009218014805962866,
+            "distance": 8.212222887300522,
+            "angularResidual": 0.01394833360471193,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.04570212894015202,
+          "retinaSha256": "53619384162a4d9dc9578c7ece006300b1ff5407bc45f21b7238890eb1aed0fd"
+        },
+        {
+          "tick": 112,
+          "prediction": {
+            "sourceTick": 108,
+            "evaluatedTick": 112,
+            "predictedBearing": -0.3374369456955315,
+            "observedBearing": -0.3105837644607964,
+            "angularError": 0.026853181234735124,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.3753853219268555,
+            "y": -0.002141350009735455,
+            "distance": 8.418767645523678,
+            "angularResidual": 0.014639765944119231,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.040520226622251736,
+          "retinaSha256": "53619384162a4d9dc9578c7ece006300b1ff5407bc45f21b7238890eb1aed0fd"
+        },
+        {
+          "tick": 116,
+          "prediction": {
+            "sourceTick": 112,
+            "evaluatedTick": 116,
+            "predictedBearing": -0.33107900959101216,
+            "observedBearing": -0.29573634547681693,
+            "angularError": 0.03534266411419523,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.419600713692393,
+            "y": -0.001761302303311435,
+            "distance": 8.630353878306108,
+            "angularResidual": 0.01585661157702659,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.04991175931373326,
+          "retinaSha256": "171a778f9c666df26f92adcfbe539aa2415a9628c5b0348adcf1aa304cfc94f1"
+        },
+        {
+          "tick": 120,
+          "prediction": {
+            "sourceTick": 116,
+            "evaluatedTick": 120,
+            "predictedBearing": -0.3243550363133254,
+            "observedBearing": -0.28391901199977204,
+            "angularError": 0.04043602431355337,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.461473764494192,
+            "y": 0.0004991081093529713,
+            "distance": 8.841298880201771,
+            "angularResidual": 0.017322544753258846,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.05609450554439038,
+          "retinaSha256": "3db451dc970196dbc8151302ce069f61762fa1a1945475470a9da421b10d317e"
+        }
+      ]
+    },
+    {
+      "variant": "moving-scale-alias",
+      "actualDistance": 4.200145569060389,
+      "final": {
+        "lastTick": 120,
+        "pose": {
+          "x": -1.9237315316994987,
+          "y": 2.803514989217122,
+          "heading": 0
+        },
+        "rays": [
+          {
+            "tick": 0,
+            "x": 0,
+            "y": 0,
+            "angle": -4.163336342344337e-17
+          },
+          {
+            "tick": 4,
+            "x": 0,
+            "y": 0.030005929867426555,
+            "angle": -4.163336342344337e-17
+          },
+          {
+            "tick": 8,
+            "x": 0,
+            "y": 0.08532508810361226,
+            "angle": -0.0157564446360599
+          },
+          {
+            "tick": 12,
+            "x": 0,
+            "y": 0.16199867526690165,
+            "angle": -0.022725641302009457
+          },
+          {
+            "tick": 16,
+            "x": 0,
+            "y": 0.25668701926867166,
+            "angle": -0.037876068836682514
+          },
+          {
+            "tick": 20,
+            "x": 0,
+            "y": 0.3665727436542511,
+            "angle": -0.05817764173314432
+          },
+          {
+            "tick": 24,
+            "x": 0,
+            "y": 0.4892790933450063,
+            "angle": -0.07666116332544536
+          },
+          {
+            "tick": 28,
+            "x": 0,
+            "y": 0.6228010316689809,
+            "angle": -0.09938680462745487
+          },
+          {
+            "tick": 32,
+            "x": 0,
+            "y": 0.765447090069453,
+            "angle": -0.12423350578431863
+          },
+          {
+            "tick": 36,
+            "x": 0,
+            "y": 0.9157903333504995,
+            "angle": -0.14574711288355424
+          },
+          {
+            "tick": 40,
+            "x": 0,
+            "y": 1.0726269702116649,
+            "angle": -0.17029080548972447
+          },
+          {
+            "tick": 44,
+            "x": 0,
+            "y": 1.234941480557124,
+            "angle": -0.19786458360282938
+          },
+          {
+            "tick": 48,
+            "x": 0,
+            "y": 1.4018771628538769,
+            "angle": -0.2284684472228688
+          },
+          {
+            "tick": 52,
+            "x": 0,
+            "y": 1.5727112909158072,
+            "angle": -0.25210311417695874
+          },
+          {
+            "tick": 56,
+            "x": 0,
+            "y": 1.7468341966470085,
+            "angle": -0.2875551146080934
+          },
+          {
+            "tick": 60,
+            "x": 0,
+            "y": 1.9237315316994987,
+            "angle": -0.3142198670691181
+          },
+          {
+            "tick": 64,
+            "x": -0.030005929867426555,
+            "y": 2.072963442405065,
+            "angle": -0.3420966537329163
+          },
+          {
+            "tick": 68,
+            "x": -0.08532508810361226,
+            "y": 2.1988566060860952,
+            "angle": -0.3545200043113481
+          },
+          {
+            "tick": 72,
+            "x": -0.16199867526690165,
+            "y": 2.305061028401057,
+            "angle": -0.3545200043113481
+          },
+          {
+            "tick": 76,
+            "x": -0.25668701926867166,
+            "y": 2.3946558773517608,
+            "angle": -0.3842148422793072
+          },
+          {
+            "tick": 80,
+            "x": -0.3665727436542511,
+            "y": 2.470238771041234,
+            "angle": -0.3842148422793072
+          },
+          {
+            "tick": 84,
+            "x": -0.4892790933450063,
+            "y": 2.534001074234644,
+            "angle": -0.3842148422793072
+          },
+          {
+            "tick": 88,
+            "x": -0.6228010316689809,
+            "y": 2.587791432936986,
+            "angle": -0.3842148422793072
+          },
+          {
+            "tick": 92,
+            "x": -0.765447090069453,
+            "y": 2.6331693867842354,
+            "angle": -0.3842148422793072
+          },
+          {
+            "tick": 96,
+            "x": -0.9157903333504995,
+            "y": 2.6714505692323045,
+            "angle": -0.367549371991167
+          },
+          {
+            "tick": 100,
+            "x": -1.0726269702116649,
+            "y": 2.703744864463806,
+            "angle": -0.367549371991167
+          },
+          {
+            "tick": 104,
+            "x": -1.234941480557124,
+            "y": 2.7309885760148362,
+            "angle": -0.367549371991167
+          },
+          {
+            "tick": 108,
+            "x": -1.4018771628538769,
+            "y": 2.7539715766906734,
+            "angle": -0.367549371991167
+          },
+          {
+            "tick": 112,
+            "x": -1.5727112909158072,
+            "y": 2.7733602086702978,
+            "angle": -0.367549371991167
+          },
+          {
+            "tick": 116,
+            "x": -1.7468341966470085,
+            "y": 2.7897166073322293,
+            "angle": -0.367549371991167
+          },
+          {
+            "tick": 120,
+            "x": -1.9237315316994987,
+            "y": 2.803514989217122,
+            "angle": -0.3384605511245948
+          }
+        ],
+        "estimate": {
+          "x": 5.718020946550469,
+          "y": 0.04402159127905417,
+          "distance": 8.124726749380764,
+          "angularResidual": 0.006348929478224031,
+          "assumption": "stationary-fragment"
+        },
+        "prediction": {
+          "sourceTick": 116,
+          "evaluatedTick": 120,
+          "predictedBearing": -0.346944875617736,
+          "observedBearing": -0.33846055112459483,
+          "angularError": 0.00848432449314118,
+          "status": "compatible"
+        },
+        "reason": "tentative"
+      },
+      "frozenAtTick60": {
+        "x": 5.932023555342064,
+        "y": 0.024525231403626262,
+        "distance": 6.228634523891784,
+        "angularResidual": 0.0030860460794687734,
+        "assumption": "stationary-fragment"
+      },
+      "compatible": 23,
+      "inconsistent": 0,
+      "frozenMaxAngularError": 0.0219012672006168,
+      "samples": [
+        {
+          "tick": 4,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "36375527821aca631971ca4be83b2900a9896263ea42416b316db6998db9e017"
+        },
+        {
+          "tick": 8,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "db099deb5c2457aa78ac1ce3b88010c2bfc75d0ba45cdad8eff4f6f39d08c0ef"
+        },
+        {
+          "tick": 12,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "0d38ed8099ec5c916c57a06e2233c0b0dd9bca1c6d69297ebc2c87e065c0df8a"
+        },
+        {
+          "tick": 16,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "d0c885e5cd5819ebf786157eebabb162dc836fedb38af24d0714e3c847370537"
+        },
+        {
+          "tick": 20,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "d2b0130e00f0bc5c10e9c8f4fcaf1a139819581f99c1ccfcead04b41721bcdd4"
+        },
+        {
+          "tick": 24,
+          "prediction": null,
+          "estimate": null,
+          "frozenAngularError": null,
+          "retinaSha256": "e99477d781410a27b43223406491072313f819cbbaca28aeb45d6093a66fc4b7"
+        },
+        {
+          "tick": 28,
+          "prediction": null,
+          "estimate": {
+            "x": 6.16104303030793,
+            "y": 0.011957348348180892,
+            "distance": 6.191250376681502,
+            "angularResidual": 0.002071950147101498,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "b9c554130c803b02cf6dba879d436fc0a8b93b51498052b4032fc457b627e997"
+        },
+        {
+          "tick": 32,
+          "prediction": {
+            "sourceTick": 28,
+            "evaluatedTick": 32,
+            "predictedBearing": -0.12169472469062487,
+            "observedBearing": -0.12423350578431863,
+            "angularError": -0.002538781093693765,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.085125414641592,
+            "y": 0.013875275872330357,
+            "distance": 6.1313629401473655,
+            "angularResidual": 0.002073258154295698,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "59aa3c0f1d3733cfe9e29413fbc7379f9f75965f07960d98e4375a0c39cd14d7"
+        },
+        {
+          "tick": 36,
+          "prediction": {
+            "sourceTick": 32,
+            "evaluatedTick": 36,
+            "predictedBearing": -0.14714508850234406,
+            "observedBearing": -0.14574711288355424,
+            "angularError": 0.0013979756187898207,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.1161638047897755,
+            "y": 0.012932560369118754,
+            "distance": 6.182443840849138,
+            "angularResidual": 0.00198536916121433,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "025dd4d644ef20875a88d2e1618ec70ab83703566b1de9b36d12d7aae24a153b"
+        },
+        {
+          "tick": 40,
+          "prediction": {
+            "sourceTick": 36,
+            "evaluatedTick": 40,
+            "predictedBearing": -0.17155812226129394,
+            "observedBearing": -0.17029080548972447,
+            "angularError": 0.0012673167715694658,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.138621263739152,
+            "y": 0.012113778713016093,
+            "distance": 6.229555301060671,
+            "angularResidual": 0.00190978169843711,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "29f2da7cb4de68b604d1307049a04a3715a80cfd41c84506f730ae469d1daa51"
+        },
+        {
+          "tick": 44,
+          "prediction": {
+            "sourceTick": 40,
+            "evaluatedTick": 44,
+            "predictedBearing": -0.19662845869906964,
+            "observedBearing": -0.19786458360282938,
+            "angularError": -0.0012361249037597388,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.120642840163295,
+            "y": 0.012891814432973322,
+            "distance": 6.24144808224152,
+            "angularResidual": 0.0018561027803203865,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "d4bf5a5c91ea67d39359916a59b69654d0d88cf8057e24a38d70114256faa0eb"
+        },
+        {
+          "tick": 48,
+          "prediction": {
+            "sourceTick": 44,
+            "evaluatedTick": 48,
+            "predictedBearing": -0.2231550133347539,
+            "observedBearing": -0.2284684472228688,
+            "angularError": -0.0053134338881148935,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.056516457418068,
+            "y": 0.016141911632307538,
+            "distance": 6.213022918471653,
+            "angularResidual": 0.002173331872579628,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "783ffa468cea4a21157a67734164785739d7e218b76a4c1bb65b737884682a08"
+        },
+        {
+          "tick": 52,
+          "prediction": {
+            "sourceTick": 48,
+            "evaluatedTick": 52,
+            "predictedBearing": -0.25156288561511436,
+            "observedBearing": -0.25210311417695874,
+            "angularError": -0.0005402285618443803,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 6.0512331011722384,
+            "y": 0.01644092108665261,
+            "distance": 6.248151687397703,
+            "angularResidual": 0.0021000619468100265,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "6488f86e56a84257b533fc54b72225e94af799c660874edd53dc7e0e4f86d331"
+        },
+        {
+          "tick": 56,
+          "prediction": {
+            "sourceTick": 52,
+            "evaluatedTick": 56,
+            "predictedBearing": -0.27852416483246534,
+            "observedBearing": -0.28755511460809347,
+            "angularError": -0.009030949775628128,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.9743867244118,
+            "y": 0.02146973896059463,
+            "distance": 6.2185351365635535,
+            "angularResidual": 0.002864409922892532,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "56b04d6bd14153804c47cc21ca4d507486dde66136f55b922349b8b2f1d95e7a"
+        },
+        {
+          "tick": 60,
+          "prediction": {
+            "sourceTick": 56,
+            "evaluatedTick": 60,
+            "predictedBearing": -0.30825348499088057,
+            "observedBearing": -0.3142198670691181,
+            "angularError": -0.00596638207823752,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.932023555342064,
+            "y": 0.024525231403626262,
+            "distance": 6.228634523891784,
+            "angularResidual": 0.0030860460794687734,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": null,
+          "retinaSha256": "16cbdce8f499a18edc522eb04da3b6e457c419aae1bd2a2b42645f0764101fe9"
+        },
+        {
+          "tick": 64,
+          "prediction": {
+            "sourceTick": 60,
+            "evaluatedTick": 64,
+            "predictedBearing": -0.3309446519731166,
+            "observedBearing": -0.3420966537329163,
+            "angularError": -0.011152001759799688,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.863873619514037,
+            "y": 0.029937156053332626,
+            "distance": 6.237930149443901,
+            "angularResidual": 0.003872789981066309,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.011152001759799688,
+          "retinaSha256": "5de742eafab1293bde83ba1728973db86a700642c8de848f31f9ae054751e4f8"
+        },
+        {
+          "tick": 68,
+          "prediction": {
+            "sourceTick": 64,
+            "evaluatedTick": 68,
+            "predictedBearing": -0.3495983335994289,
+            "observedBearing": -0.35452000431134817,
+            "angularError": -0.00492167071191929,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.83879470751492,
+            "y": 0.032018492487585926,
+            "distance": 6.307961854940351,
+            "angularResidual": 0.003934401287964701,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.0077753456584541145,
+          "retinaSha256": "57753e1d973b1e144a736ab59152f24bf354129303f7940004c6a31e8df4ff8f"
+        },
+        {
+          "tick": 72,
+          "prediction": {
+            "sourceTick": 68,
+            "evaluatedTick": 72,
+            "predictedBearing": -0.36208955573321605,
+            "observedBearing": -0.35452000431134817,
+            "angularError": 0.007569551421867882,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.870919532005101,
+            "y": 0.029352405232374663,
+            "distance": 6.447864129554711,
+            "angularResidual": 0.004101940305019754,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.0035710880195103933,
+          "retinaSha256": "57753e1d973b1e144a736ab59152f24bf354129303f7940004c6a31e8df4ff8f"
+        },
+        {
+          "tick": 76,
+          "prediction": {
+            "sourceTick": 72,
+            "evaluatedTick": 76,
+            "predictedBearing": -0.3683861838082718,
+            "observedBearing": -0.3842148422793072,
+            "angularError": -0.015828658471035373,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.806056159549802,
+            "y": 0.03544286487689422,
+            "distance": 6.505593046797553,
+            "angularResidual": 0.0052178283038807755,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.01846948980724605,
+          "retinaSha256": "adaa949b5231cf1ddec8813d8d8875b4c10dc11fc177ff8e62a618838777577f"
+        },
+        {
+          "tick": 80,
+          "prediction": {
+            "sourceTick": 76,
+            "evaluatedTick": 80,
+            "predictedBearing": -0.3757130984147954,
+            "observedBearing": -0.3842148422793072,
+            "angularError": -0.008501743864511802,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.776217363403189,
+            "y": 0.03824463075635496,
+            "distance": 6.6066985550835255,
+            "angularResidual": 0.005429570913987849,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.013839515869663756,
+          "retinaSha256": "adaa949b5231cf1ddec8813d8d8875b4c10dc11fc177ff8e62a618838777577f"
+        },
+        {
+          "tick": 84,
+          "prediction": {
+            "sourceTick": 80,
+            "evaluatedTick": 84,
+            "predictedBearing": -0.3790688191652407,
+            "observedBearing": -0.3842148422793072,
+            "angularError": -0.005146023114066478,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.760285135618484,
+            "y": 0.03974061511080603,
+            "distance": 6.72892177766161,
+            "angularResidual": 0.005438409745169014,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.011660415695474713,
+          "retinaSha256": "adaa949b5231cf1ddec8813d8d8875b4c10dc11fc177ff8e62a618838777577f"
+        },
+        {
+          "tick": 88,
+          "prediction": {
+            "sourceTick": 84,
+            "evaluatedTick": 88,
+            "predictedBearing": -0.3798061023742968,
+            "observedBearing": -0.3842148422793072,
+            "angularError": -0.004408739905010395,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.7479984595528135,
+            "y": 0.04089429401942021,
+            "distance": 6.861032808082057,
+            "angularResidual": 0.005419118992921291,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.011447442446724687,
+          "retinaSha256": "adaa949b5231cf1ddec8813d8d8875b4c10dc11fc177ff8e62a618838777577f"
+        },
+        {
+          "tick": 92,
+          "prediction": {
+            "sourceTick": 88,
+            "evaluatedTick": 92,
+            "predictedBearing": -0.3787709470681408,
+            "observedBearing": -0.3842148422793072,
+            "angularError": -0.005443895211166394,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.734140601693212,
+            "y": 0.04219550178674015,
+            "distance": 6.996984052836747,
+            "angularResidual": 0.005446058715592181,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.012795510514902297,
+          "retinaSha256": "adaa949b5231cf1ddec8813d8d8875b4c10dc11fc177ff8e62a618838777577f"
+        },
+        {
+          "tick": 96,
+          "prediction": {
+            "sourceTick": 92,
+            "evaluatedTick": 96,
+            "predictedBearing": -0.3765179835019557,
+            "observedBearing": -0.367549371991167,
+            "angularError": 0.008968611510788704,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.753484559666383,
+            "y": 0.04061661661170716,
+            "distance": 7.1694152400936195,
+            "angularResidual": 0.005555989439946475,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.0012963387099648171,
+          "retinaSha256": "c79891e03ddbb3d88457a3129b7dacfe3b03c646665c756dd5c81b173175f846"
+        },
+        {
+          "tick": 100,
+          "prediction": {
+            "sourceTick": 96,
+            "evaluatedTick": 100,
+            "predictedBearing": -0.371976198889026,
+            "observedBearing": -0.367549371991167,
+            "angularError": 0.004426826897859003,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.762498309661848,
+            "y": 0.03988089974037011,
+            "distance": 7.335878189700128,
+            "angularResidual": 0.005493349830643035,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.0022269985911877455,
+          "retinaSha256": "c79891e03ddbb3d88457a3129b7dacfe3b03c646665c756dd5c81b173175f846"
+        },
+        {
+          "tick": 104,
+          "prediction": {
+            "sourceTick": 100,
+            "evaluatedTick": 104,
+            "predictedBearing": -0.3671470276598137,
+            "observedBearing": -0.367549371991167,
+            "angularError": -0.0004023443313532771,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.761721222121146,
+            "y": 0.03994432688384378,
+            "distance": 7.496332978585608,
+            "angularResidual": 0.005392596414780559,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.006474658818742873,
+          "retinaSha256": "c79891e03ddbb3d88457a3129b7dacfe3b03c646665c756dd5c81b173175f846"
+        },
+        {
+          "tick": 108,
+          "prediction": {
+            "sourceTick": 104,
+            "evaluatedTick": 108,
+            "predictedBearing": -0.362153696390339,
+            "observedBearing": -0.367549371991167,
+            "angularError": -0.005395675600827987,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.751796883837168,
+            "y": 0.04075436744587929,
+            "distance": 7.650921512526653,
+            "angularResidual": 0.005406256856132578,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.01126347859021859,
+          "retinaSha256": "c79891e03ddbb3d88457a3129b7dacfe3b03c646665c756dd5c81b173175f846"
+        },
+        {
+          "tick": 112,
+          "prediction": {
+            "sourceTick": 108,
+            "evaluatedTick": 112,
+            "predictedBearing": -0.3570837240615913,
+            "observedBearing": -0.367549371991167,
+            "angularError": -0.010465647929575717,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.733403185536639,
+            "y": 0.04225569088759735,
+            "distance": 7.799887219061638,
+            "angularResidual": 0.005683025279352314,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.016445380908118864,
+          "retinaSha256": "c79891e03ddbb3d88457a3129b7dacfe3b03c646665c756dd5c81b173175f846"
+        },
+        {
+          "tick": 116,
+          "prediction": {
+            "sourceTick": 112,
+            "evaluatedTick": 116,
+            "predictedBearing": -0.3519993897825468,
+            "observedBearing": -0.367549371991167,
+            "angularError": -0.015549982208620194,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.707212915190709,
+            "y": 0.0443933831652926,
+            "distance": 7.943526795488674,
+            "angularResidual": 0.0063185367758870695,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": -0.0219012672006168,
+          "retinaSha256": "c79891e03ddbb3d88457a3129b7dacfe3b03c646665c756dd5c81b173175f846"
+        },
+        {
+          "tick": 120,
+          "prediction": {
+            "sourceTick": 116,
+            "evaluatedTick": 120,
+            "predictedBearing": -0.346944875617736,
+            "observedBearing": -0.33846055112459483,
+            "angularError": 0.00848432449314118,
+            "status": "compatible"
+          },
+          "estimate": {
+            "x": 5.718020946550469,
+            "y": 0.04402159127905417,
+            "distance": 8.124726749380764,
+            "angularResidual": 0.006348929478224031,
+            "assumption": "stationary-fragment"
+          },
+          "frozenAngularError": 0.001552966419567592,
+          "retinaSha256": "d7bb00424a7161e55d7fe3977a7d8980c7038fb3905436e76f6ba16ee287e303"
+        }
+      ]
+    }
+  ]
+}
