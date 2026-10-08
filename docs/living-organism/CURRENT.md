@@ -197,3 +197,20 @@ Manifest splitu, per-episode metrics i wagi:evidence/living-organism/learned-pre
 pełny model:evidence/living-organism/sensory-regressor-weights.json.
 Check:37 plików /99 testów, typy/build PASS. Niezależny review bez blokującego błędu,
 ze wskazanym ograniczeniem zależnych okien. RenderQA i wpływ na czynność niekwalifikowane.
+# Held-action i kontrola rzeczywistych decyzji — 2026-10-09
+
+Bogatszy train48 epizodów nie poprawił bearing względem frozen starego modelu na nowych
+21test+6stress. Pary fizycznych fork oddzieliły przewidywanie pod nieznanymi komendami
+od utrzymania własnej komendy. Held model .00721rad vs body/gaze .01306;1044 exact
+scheduled fork matches i source physics/frame invariant. Train-only fit, prywatne labels.
+
+Ranking261 stanów z9 nowych epizodów: full learned nie poprawia wyboru ponad motor-only
+lub no-history. Następne36 przebiegów closed-loop12s: full koszt .08435 vs motor-only
+.08004, przegrywa7/12 scen. Korzyść kalibracji ciała realna w tym authored zadaniu,
+wartość historii dla decyzji niewykazana. Touch-positive windows większe niż body/gaze;
+centrowanie nie kwalifikuje materialnego sukcesu ani bezpieczeństwa.
+
+Raport/plan: ACTION_CONDITIONED_RESULTS.md i ACTION_CONDITIONED_PLAN.md.
+Runtimev5 i occupant bez zmian.99 testów/typy/build PASS, niezależny review wykonany.
+Następny klocek: prywatne touch-interruption i dalsze sprawdzanie następstw zamiast
+terminalnego contact. RenderQA oraz doświadczenie Przemka nadal niekwalifikowane.

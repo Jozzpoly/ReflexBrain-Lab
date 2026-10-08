@@ -1,0 +1,2729 @@
+{
+  "scope": "Second offline ridge campaign:48 training episodes with smooth and piecewise own motor,21 new evaluation episodes and6 new stress episodes. Frozen previous weights evaluated unchanged. 0.2s appearance prediction conditional on single unclipped continuous fragments; future masks exclude discontinuities. Labels are future private retina, no host truth. Motor changes, parameters and external push differ from prior eval. Neither improved error nor lower command correlation qualifies motor competence.",
+  "settings": {
+    "lambda": 0.001,
+    "horizonTicks": 24,
+    "episodeTicks": 960,
+    "featureCount": 11,
+    "campaign": 2,
+    "ablationAddedAfterFirstEvaluation": false,
+    "stressAddedAfterFirstEvaluation": false,
+    "protocolNote": "Controls and stress specified before campaign-2 result; inherited provenance flags corrected after result, without changing trajectories or fit"
+  },
+  "episodes": [
+    {
+      "id": "varied:train:static:0",
+      "family": "static",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 4,
+      "radius": 0.4,
+      "angle": -0.25,
+      "speed": 0.15,
+      "drive": 0.1,
+      "examples": 223,
+      "masked": 11,
+      "dataSha256": "f172b02de39f349ae5edd0756095929971744f43ca08c8c65736d85cdb477857"
+    },
+    {
+      "id": "varied:train:static:1",
+      "family": "static",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 5,
+      "radius": 0.44,
+      "angle": -0.15,
+      "speed": 0.22999999999999998,
+      "drive": 0.13,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "9e329ae2d29df0b4a660eb6c9f344c14de8c54d0c21447147fea0f6417770470"
+    },
+    {
+      "id": "varied:train:static:2",
+      "family": "static",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 6,
+      "radius": 0.48000000000000004,
+      "angle": -0.04999999999999999,
+      "speed": 0.31,
+      "drive": 0.16,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "6dfe72d2fd05942eeb5e1ca329b760f3a44e992153d93590c19084549946c77d"
+    },
+    {
+      "id": "varied:train:static:3",
+      "family": "static",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 7,
+      "radius": 0.52,
+      "angle": 0.050000000000000044,
+      "speed": 0.39,
+      "drive": 0.1,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "3db1bd780c5a02bb471aee62894643796fce4acc31ef81c2e9d01e40c78bdfaf"
+    },
+    {
+      "id": "varied:train:static:4",
+      "family": "static",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 8,
+      "radius": 0.56,
+      "angle": 0.15000000000000002,
+      "speed": 0.47,
+      "drive": 0.13,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "51f81c0cd1372f365778b0d9d1147cf32e970ccf4e415c6a426b6e7e52cab1cf"
+    },
+    {
+      "id": "varied:train:static:5",
+      "family": "static",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 9,
+      "radius": 0.6000000000000001,
+      "angle": 0.25,
+      "speed": 0.55,
+      "drive": 0.16,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "aa720177267c88cf5c0411acf338aca80afaa6979f3628303a324631a97ee530"
+    },
+    {
+      "id": "varied:train:static:6",
+      "family": "static",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 4,
+      "radius": 0.4,
+      "angle": -0.25,
+      "speed": 0.15,
+      "drive": 0.1,
+      "examples": 161,
+      "masked": 73,
+      "dataSha256": "7a49ff35800c0308d52a75db82703c8f0bf25998f87ebb5952a4b50509620a13"
+    },
+    {
+      "id": "varied:train:static:7",
+      "family": "static",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 5,
+      "radius": 0.44,
+      "angle": -0.15,
+      "speed": 0.22999999999999998,
+      "drive": 0.13,
+      "examples": 219,
+      "masked": 15,
+      "dataSha256": "c01b5f40f10d51b88bc62cf009027f8b3e4a3b171be1b9b138de43a466797a8b"
+    },
+    {
+      "id": "varied:train:static:8",
+      "family": "static",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 6,
+      "radius": 0.48000000000000004,
+      "angle": -0.04999999999999999,
+      "speed": 0.31,
+      "drive": 0.16,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "748b6f06beea458d90976cb0cf8470dd875e60d61793e41d8508d0ed58eb1722"
+    },
+    {
+      "id": "varied:train:static:9",
+      "family": "static",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 7,
+      "radius": 0.52,
+      "angle": 0.050000000000000044,
+      "speed": 0.39,
+      "drive": 0.1,
+      "examples": 205,
+      "masked": 29,
+      "dataSha256": "cfcd454d8e58841c694d78ddcc5508c693f41d1b078ab0e0b8f626c3d34e8be2"
+    },
+    {
+      "id": "varied:train:static:10",
+      "family": "static",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 8,
+      "radius": 0.56,
+      "angle": 0.15000000000000002,
+      "speed": 0.47,
+      "drive": 0.13,
+      "examples": 173,
+      "masked": 61,
+      "dataSha256": "6ee3911ffd3e429e0790bbb2a69d2b726e8f1507e2cf9cbcd918fb27c09fb6cb"
+    },
+    {
+      "id": "varied:train:static:11",
+      "family": "static",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 9,
+      "radius": 0.6000000000000001,
+      "angle": 0.25,
+      "speed": 0.55,
+      "drive": 0.16,
+      "examples": 216,
+      "masked": 18,
+      "dataSha256": "6ff3c65a57a18bdd44186ec9f311f96d77bab97dfa84fe425efd579a552a8646"
+    },
+    {
+      "id": "varied:train:lateral:0",
+      "family": "lateral",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 4,
+      "radius": 0.4,
+      "angle": -0.25,
+      "speed": 0.15,
+      "drive": 0.1,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "72fe1f1edfd0b8f5f932b7f55afb685ebe820fb18c9c22a43d66090ba9859a14"
+    },
+    {
+      "id": "varied:train:lateral:1",
+      "family": "lateral",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 5,
+      "radius": 0.44,
+      "angle": -0.15,
+      "speed": 0.22999999999999998,
+      "drive": 0.13,
+      "examples": 148,
+      "masked": 86,
+      "dataSha256": "317c6605a492d5d76a71a255c4231007550afa1852cbc24a5321f0c98230b216"
+    },
+    {
+      "id": "varied:train:lateral:2",
+      "family": "lateral",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 6,
+      "radius": 0.48000000000000004,
+      "angle": -0.04999999999999999,
+      "speed": 0.31,
+      "drive": 0.16,
+      "examples": 103,
+      "masked": 131,
+      "dataSha256": "3fe11953e683b38e87ab1f441dfe3a8feef68fe431b024092e7e3d1692122abb"
+    },
+    {
+      "id": "varied:train:lateral:3",
+      "family": "lateral",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 7,
+      "radius": 0.52,
+      "angle": 0.050000000000000044,
+      "speed": 0.39,
+      "drive": 0.1,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "7b80806f4472606c5f257b301fb84cb65dd1be086693bde4b9988b8cfc51aca7"
+    },
+    {
+      "id": "varied:train:lateral:4",
+      "family": "lateral",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 8,
+      "radius": 0.56,
+      "angle": 0.15000000000000002,
+      "speed": 0.47,
+      "drive": 0.13,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "4f7653845c8a64adfc894be4b40d8664d722b7095b49ace9184cf5f8a9d564b1"
+    },
+    {
+      "id": "varied:train:lateral:5",
+      "family": "lateral",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 9,
+      "radius": 0.6000000000000001,
+      "angle": 0.25,
+      "speed": 0.55,
+      "drive": 0.16,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "eea7f270306220f7aaa45702cc969059878dfc6d3989e69435f016d25e3d5328"
+    },
+    {
+      "id": "varied:train:lateral:6",
+      "family": "lateral",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 4,
+      "radius": 0.4,
+      "angle": -0.25,
+      "speed": 0.15,
+      "drive": 0.1,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "d2a063cd7e1401f78d4d4c5ac65e0902aa2b522caf6befdd9e88451e7e47a90d"
+    },
+    {
+      "id": "varied:train:lateral:7",
+      "family": "lateral",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 5,
+      "radius": 0.44,
+      "angle": -0.15,
+      "speed": 0.22999999999999998,
+      "drive": 0.13,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "e6633d2cdf531a0505b373e89dfe1fd49842b0e80740bd46244453b575424e1c"
+    },
+    {
+      "id": "varied:train:lateral:8",
+      "family": "lateral",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 6,
+      "radius": 0.48000000000000004,
+      "angle": -0.04999999999999999,
+      "speed": 0.31,
+      "drive": 0.16,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "f71746131ce6a07b5c6847d48118816c4ab178cf6b43e07aae564185c42ecda9"
+    },
+    {
+      "id": "varied:train:lateral:9",
+      "family": "lateral",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 7,
+      "radius": 0.52,
+      "angle": 0.050000000000000044,
+      "speed": 0.39,
+      "drive": 0.1,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "1285b0a104db0be9d534e02b91606f7609024e81fd58bcb43572a1a5a0c173c7"
+    },
+    {
+      "id": "varied:train:lateral:10",
+      "family": "lateral",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 8,
+      "radius": 0.56,
+      "angle": 0.15000000000000002,
+      "speed": 0.47,
+      "drive": 0.13,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "6cf44f2a9a50c39a7ddb49a23033b8199f5cd060b05bacad58b7e707711e6d82"
+    },
+    {
+      "id": "varied:train:lateral:11",
+      "family": "lateral",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 9,
+      "radius": 0.6000000000000001,
+      "angle": 0.25,
+      "speed": 0.55,
+      "drive": 0.16,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "f6625f33df77631a4e16a1067e4180134caef43935d05639dcf82464884175b2"
+    },
+    {
+      "id": "varied:train:receding:0",
+      "family": "receding",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 4,
+      "radius": 0.4,
+      "angle": -0.25,
+      "speed": 0.15,
+      "drive": 0.1,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "659ca48ba93792fd46c0dc5453b6ea45daa2126dfb11c39b50d55980214e5168"
+    },
+    {
+      "id": "varied:train:receding:1",
+      "family": "receding",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 5,
+      "radius": 0.44,
+      "angle": -0.15,
+      "speed": 0.22999999999999998,
+      "drive": 0.13,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "19a30e858150fd1bba2e83b5a663e4fb89f41f10a2b3b88eac5420709bb8d4f3"
+    },
+    {
+      "id": "varied:train:receding:2",
+      "family": "receding",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 6,
+      "radius": 0.48000000000000004,
+      "angle": -0.04999999999999999,
+      "speed": 0.31,
+      "drive": 0.16,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "dcf58fdaf1c1a7d47b1df4d9938beb85e2b7c87b592f0b1e13f132ecab8474be"
+    },
+    {
+      "id": "varied:train:receding:3",
+      "family": "receding",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 7,
+      "radius": 0.52,
+      "angle": 0.050000000000000044,
+      "speed": 0.39,
+      "drive": 0.1,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "d482bf1e703cb71eeab975540fb63739f6f02c126c74df6db468c2628d235137"
+    },
+    {
+      "id": "varied:train:receding:4",
+      "family": "receding",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 8,
+      "radius": 0.56,
+      "angle": 0.15000000000000002,
+      "speed": 0.47,
+      "drive": 0.13,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "1195a05056cbe08037bd114ce7433b9f384623602e5a138709797c392dfff2a0"
+    },
+    {
+      "id": "varied:train:receding:5",
+      "family": "receding",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 9,
+      "radius": 0.6000000000000001,
+      "angle": 0.25,
+      "speed": 0.55,
+      "drive": 0.16,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "c859728bc0aaa64a7de8b9c89a03aeb798f646024d695348ea499af80dc6dccf"
+    },
+    {
+      "id": "varied:train:receding:6",
+      "family": "receding",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 4,
+      "radius": 0.4,
+      "angle": -0.25,
+      "speed": 0.15,
+      "drive": 0.1,
+      "examples": 232,
+      "masked": 2,
+      "dataSha256": "6f93071c89cc2df7a876f07afab24c51706325720835fc51c01e1fa2728ebdc7"
+    },
+    {
+      "id": "varied:train:receding:7",
+      "family": "receding",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 5,
+      "radius": 0.44,
+      "angle": -0.15,
+      "speed": 0.22999999999999998,
+      "drive": 0.13,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "6f9b2502da96b0cdf722351dff9f2fbbdfcad8facabab37654b69ae567714742"
+    },
+    {
+      "id": "varied:train:receding:8",
+      "family": "receding",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 6,
+      "radius": 0.48000000000000004,
+      "angle": -0.04999999999999999,
+      "speed": 0.31,
+      "drive": 0.16,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "fdc351d40e60e966e5938688e9895bcf89b9ca3013d486ab8cddca61ba8bfe37"
+    },
+    {
+      "id": "varied:train:receding:9",
+      "family": "receding",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 7,
+      "radius": 0.52,
+      "angle": 0.050000000000000044,
+      "speed": 0.39,
+      "drive": 0.1,
+      "examples": 209,
+      "masked": 25,
+      "dataSha256": "213787d6fc89ea16e07f9d3479583a8b6e6fa65340f8d01e66c201526c64451e"
+    },
+    {
+      "id": "varied:train:receding:10",
+      "family": "receding",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 8,
+      "radius": 0.56,
+      "angle": 0.15000000000000002,
+      "speed": 0.47,
+      "drive": 0.13,
+      "examples": 186,
+      "masked": 48,
+      "dataSha256": "79a108c593713ce3925c8cae05539b447a245334d0ae64b01293a81b31d4fd1d"
+    },
+    {
+      "id": "varied:train:receding:11",
+      "family": "receding",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 9,
+      "radius": 0.6000000000000001,
+      "angle": 0.25,
+      "speed": 0.55,
+      "drive": 0.16,
+      "examples": 209,
+      "masked": 25,
+      "dataSha256": "fa4703ba91c826ca3cc2e56e5a737932b1889019a6e4f117ef0ebf2015b8d2bc"
+    },
+    {
+      "id": "varied:train:observer-correlated:0",
+      "family": "observer-correlated",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 4,
+      "radius": 0.4,
+      "angle": -0.25,
+      "speed": 0.15,
+      "drive": 0.1,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "4ef7b42a00cca8b9c4e038d292d3a242498419bb50d5ea5b81a4330ab37b6ef0"
+    },
+    {
+      "id": "varied:train:observer-correlated:1",
+      "family": "observer-correlated",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 5,
+      "radius": 0.44,
+      "angle": -0.15,
+      "speed": 0.22999999999999998,
+      "drive": 0.13,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "006b92a17626b954d42c959cfba5b7eceffd5a8f6aeba13496565699ceb309e2"
+    },
+    {
+      "id": "varied:train:observer-correlated:2",
+      "family": "observer-correlated",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 6,
+      "radius": 0.48000000000000004,
+      "angle": -0.04999999999999999,
+      "speed": 0.31,
+      "drive": 0.16,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "7401fc8840f3a501c9006fd7d1572726869fda7c121a1e09b5ff5301b650ef77"
+    },
+    {
+      "id": "varied:train:observer-correlated:3",
+      "family": "observer-correlated",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 7,
+      "radius": 0.52,
+      "angle": 0.050000000000000044,
+      "speed": 0.39,
+      "drive": 0.1,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "00554d0fdb0c283db79e5373d36a3ba64f30fa662af3ca44d8c70f80c46d2002"
+    },
+    {
+      "id": "varied:train:observer-correlated:4",
+      "family": "observer-correlated",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 8,
+      "radius": 0.56,
+      "angle": 0.15000000000000002,
+      "speed": 0.47,
+      "drive": 0.13,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "4a04a4def20d0a49d6f9584541bfdbe76a4b05343dc8937a17d053f36f3e51dd"
+    },
+    {
+      "id": "varied:train:observer-correlated:5",
+      "family": "observer-correlated",
+      "split": "train",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 9,
+      "radius": 0.6000000000000001,
+      "angle": 0.25,
+      "speed": 0.55,
+      "drive": 0.16,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "66fe734d78ba466da18ca9c4dc72b7e298fcfe761dc449f5fafcca839008c57a"
+    },
+    {
+      "id": "varied:train:observer-correlated:6",
+      "family": "observer-correlated",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 4,
+      "radius": 0.4,
+      "angle": -0.25,
+      "speed": 0.15,
+      "drive": 0.1,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "7ce34ddbac2d989a91e1b31d0ffb16b85f0a1fc7197b7828f0186eca992b79c5"
+    },
+    {
+      "id": "varied:train:observer-correlated:7",
+      "family": "observer-correlated",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 5,
+      "radius": 0.44,
+      "angle": -0.15,
+      "speed": 0.22999999999999998,
+      "drive": 0.13,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "ea94198be84c99bdcc89d08d3eac9d79b062181a21a0a762155ec8f2c03fb648"
+    },
+    {
+      "id": "varied:train:observer-correlated:8",
+      "family": "observer-correlated",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 6,
+      "radius": 0.48000000000000004,
+      "angle": -0.04999999999999999,
+      "speed": 0.31,
+      "drive": 0.16,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "cb9d345993972e8eb6ff83639c75b26a1c10189b95ff81c8ae65cd5bf12df206"
+    },
+    {
+      "id": "varied:train:observer-correlated:9",
+      "family": "observer-correlated",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 7,
+      "radius": 0.52,
+      "angle": 0.050000000000000044,
+      "speed": 0.39,
+      "drive": 0.1,
+      "examples": 216,
+      "masked": 18,
+      "dataSha256": "6614c4a44ac170b8e9b19e5630c125706349156a2adb2dc08af1cffd22cacaa0"
+    },
+    {
+      "id": "varied:train:observer-correlated:10",
+      "family": "observer-correlated",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 8,
+      "radius": 0.56,
+      "angle": 0.15000000000000002,
+      "speed": 0.47,
+      "drive": 0.13,
+      "examples": 226,
+      "masked": 8,
+      "dataSha256": "be2c321d868c0470b255c25f4d061ad620eee533920829d2410272ca6dfec98f"
+    },
+    {
+      "id": "varied:train:observer-correlated:11",
+      "family": "observer-correlated",
+      "split": "train",
+      "motorProfile": "piecewise",
+      "distance": 9,
+      "radius": 0.6000000000000001,
+      "angle": 0.25,
+      "speed": 0.55,
+      "drive": 0.16,
+      "examples": 213,
+      "masked": 21,
+      "dataSha256": "fe4f4b3b4892bbb893ce9eea6bd35001ba59d50a8a77078de53b0f9819f727ce"
+    },
+    {
+      "id": "varied:test:static:0",
+      "family": "static",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 6.2,
+      "radius": 0.46,
+      "angle": -0.18,
+      "speed": 0.22,
+      "drive": 0.12,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "a9894ba87e3422668d6d7545956a0aa32bcdb3339345761dfd3cb71fb594c407"
+    },
+    {
+      "id": "varied:test:static:1",
+      "family": "static",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 7.4,
+      "radius": 0.53,
+      "angle": 0,
+      "speed": 0.32,
+      "drive": 0.145,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "497573f39612d746a42acf82caa9a725f6990bcd2ea6cbdb8f3d0384c2f8705b"
+    },
+    {
+      "id": "varied:test:static:2",
+      "family": "static",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 8.6,
+      "radius": 0.6000000000000001,
+      "angle": 0.18,
+      "speed": 0.42000000000000004,
+      "drive": 0.16999999999999998,
+      "examples": 107,
+      "masked": 127,
+      "dataSha256": "e441daab153db090fc6773b4a38bcda372092c7c04ad3d7ea57bc8f49b05796e"
+    },
+    {
+      "id": "varied:test:lateral:0",
+      "family": "lateral",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 6.2,
+      "radius": 0.46,
+      "angle": -0.18,
+      "speed": 0.22,
+      "drive": 0.12,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "63f9b9c48a672bad8e8cd385487806b503c0d49763ccf0adc3706ab360139c2b"
+    },
+    {
+      "id": "varied:test:lateral:1",
+      "family": "lateral",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 7.4,
+      "radius": 0.53,
+      "angle": 0,
+      "speed": 0.32,
+      "drive": 0.145,
+      "examples": 144,
+      "masked": 90,
+      "dataSha256": "38ad58ed9391275b5aca4711364ef5f0e46f0b9ada559c85e8207dc8f49a21c2"
+    },
+    {
+      "id": "varied:test:lateral:2",
+      "family": "lateral",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 8.6,
+      "radius": 0.6000000000000001,
+      "angle": 0.18,
+      "speed": 0.42000000000000004,
+      "drive": 0.16999999999999998,
+      "examples": 87,
+      "masked": 147,
+      "dataSha256": "d39d31c7a606402770a0c435a083216fc66701627667532f3617e88f63832bb6"
+    },
+    {
+      "id": "varied:test:receding:0",
+      "family": "receding",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 6.2,
+      "radius": 0.46,
+      "angle": -0.18,
+      "speed": 0.22,
+      "drive": 0.12,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "7fed55810a5c8da896278cc915afc99b559e8cf6803e0c0c8e9248d31f0ba2ed"
+    },
+    {
+      "id": "varied:test:receding:1",
+      "family": "receding",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 7.4,
+      "radius": 0.53,
+      "angle": 0,
+      "speed": 0.32,
+      "drive": 0.145,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "be03ae3031c0f4eaab4ec6cbbcf93a69f98f9b2b32e984054725ccb730503c07"
+    },
+    {
+      "id": "varied:test:receding:2",
+      "family": "receding",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 8.6,
+      "radius": 0.6000000000000001,
+      "angle": 0.18,
+      "speed": 0.42000000000000004,
+      "drive": 0.16999999999999998,
+      "examples": 211,
+      "masked": 23,
+      "dataSha256": "d157ba3dc977fbf926e5db40dc4ed4a35db4197923c1e01b31b6e3b075e39606"
+    },
+    {
+      "id": "varied:test:observer-correlated:0",
+      "family": "observer-correlated",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 6.2,
+      "radius": 0.46,
+      "angle": -0.18,
+      "speed": 0.22,
+      "drive": 0.12,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "1828824517288049df85bfcba4a03a5046789ace2704336b1c1546ebe46b874b"
+    },
+    {
+      "id": "varied:test:observer-correlated:1",
+      "family": "observer-correlated",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 7.4,
+      "radius": 0.53,
+      "angle": 0,
+      "speed": 0.32,
+      "drive": 0.145,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "2afe15a0a7cc282869a180e088dbe46f2d7d525421a2f17d8412d4565622d801"
+    },
+    {
+      "id": "varied:test:observer-correlated:2",
+      "family": "observer-correlated",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 8.6,
+      "radius": 0.6000000000000001,
+      "angle": 0.18,
+      "speed": 0.42000000000000004,
+      "drive": 0.16999999999999998,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "e2fd2a20619ae9ee3dad7945a35126b5231681ae2452afb44e46f6e66f5eea29"
+    },
+    {
+      "id": "varied:test:reversal:0",
+      "family": "reversal",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 6.2,
+      "radius": 0.46,
+      "angle": -0.18,
+      "speed": 0.22,
+      "drive": 0.12,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "659cbe309be9dc0ed5fa34418e2fd62861092eb914e9a878c02f53cc5a65d1b9"
+    },
+    {
+      "id": "varied:test:reversal:1",
+      "family": "reversal",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 7.4,
+      "radius": 0.53,
+      "angle": 0,
+      "speed": 0.32,
+      "drive": 0.145,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "e98dc1c65b83b772d1af19fdce1dad6f29d7bc0f445dbc54f438c87af349aa00"
+    },
+    {
+      "id": "varied:test:reversal:2",
+      "family": "reversal",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 8.6,
+      "radius": 0.6000000000000001,
+      "angle": 0.18,
+      "speed": 0.42000000000000004,
+      "drive": 0.16999999999999998,
+      "examples": 87,
+      "masked": 147,
+      "dataSha256": "ca21e5d9bbb449cc05e2cdb91f60a6f142e0a18ac1f9d8d7a00b30f21fe144ca"
+    },
+    {
+      "id": "varied:test:occlusion:0",
+      "family": "occlusion",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 6.2,
+      "radius": 0.46,
+      "angle": -0.18,
+      "speed": 0.22,
+      "drive": 0.12,
+      "examples": 182,
+      "masked": 52,
+      "dataSha256": "73b198530e500d58011c3af4c1e8e5ee8f3c391bdad7c061bf7edc754689bf24"
+    },
+    {
+      "id": "varied:test:occlusion:1",
+      "family": "occlusion",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 7.4,
+      "radius": 0.53,
+      "angle": 0,
+      "speed": 0.32,
+      "drive": 0.145,
+      "examples": 198,
+      "masked": 36,
+      "dataSha256": "f6d04915898f80875896e2ede26e04eca344ccf6cbbb22a97cfd2d0601e11f77"
+    },
+    {
+      "id": "varied:test:occlusion:2",
+      "family": "occlusion",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 8.6,
+      "radius": 0.6000000000000001,
+      "angle": 0.18,
+      "speed": 0.42000000000000004,
+      "drive": 0.16999999999999998,
+      "examples": 182,
+      "masked": 52,
+      "dataSha256": "ac1fa6d4fdaf35f57d9dc0ca98b0f3481216986ee4a340e6bb22fb471585008e"
+    },
+    {
+      "id": "varied:test:similar:0",
+      "family": "similar",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 6.2,
+      "radius": 0.46,
+      "angle": -0.18,
+      "speed": 0.22,
+      "drive": 0.12,
+      "examples": 84,
+      "masked": 150,
+      "dataSha256": "536010db70c3614bac6b8c5a94101958b49639f4065316b45169b697dd2bead2"
+    },
+    {
+      "id": "varied:test:similar:1",
+      "family": "similar",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 7.4,
+      "radius": 0.53,
+      "angle": 0,
+      "speed": 0.32,
+      "drive": 0.145,
+      "examples": 84,
+      "masked": 150,
+      "dataSha256": "d85b649b2288020261803864f83c0fd32c65bbc26527122c7229b31a6dd28d46"
+    },
+    {
+      "id": "varied:test:similar:2",
+      "family": "similar",
+      "split": "test",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 8.6,
+      "radius": 0.6000000000000001,
+      "angle": 0.18,
+      "speed": 0.42000000000000004,
+      "drive": 0.16999999999999998,
+      "examples": 84,
+      "masked": 150,
+      "dataSha256": "6bc88f2edaa96e1a2e4f75ee70ff122cda9cb95a2f50f290a15f039a4ed686ba"
+    },
+    {
+      "id": "varied:stress:motor-change:0",
+      "family": "motor-change",
+      "split": "stress",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 6.2,
+      "radius": 0.46,
+      "angle": -0.18,
+      "speed": 0.22,
+      "drive": 0.12,
+      "examples": 172,
+      "masked": 62,
+      "dataSha256": "909287131a18fbe9d9c94d9c14fbdb8a49fa186ce2b84d9fdf83f240d3c8287d"
+    },
+    {
+      "id": "varied:stress:motor-change:1",
+      "family": "motor-change",
+      "split": "stress",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 7.4,
+      "radius": 0.53,
+      "angle": 0,
+      "speed": 0.32,
+      "drive": 0.145,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "cc597ccd196a9bae6945c20e4e0da9294b969a92819be918f9b89d0a4a5e4245"
+    },
+    {
+      "id": "varied:stress:motor-change:2",
+      "family": "motor-change",
+      "split": "stress",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 8.6,
+      "radius": 0.6000000000000001,
+      "angle": 0.18,
+      "speed": 0.42000000000000004,
+      "drive": 0.16999999999999998,
+      "examples": 208,
+      "masked": 26,
+      "dataSha256": "09ac7b57fdfd734454cd17ac9ffbbf0f9df5ff0dd4401cc721992fa33f4debf9"
+    },
+    {
+      "id": "varied:stress:external-push:0",
+      "family": "external-push",
+      "split": "stress",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 6.2,
+      "radius": 0.46,
+      "angle": -0.18,
+      "speed": 0.22,
+      "drive": 0.12,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "01bf5c68109967fb1cf6b3babf162e217dd2bf30b22437ea19be2c02791de1e2"
+    },
+    {
+      "id": "varied:stress:external-push:1",
+      "family": "external-push",
+      "split": "stress",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 7.4,
+      "radius": 0.53,
+      "angle": 0,
+      "speed": 0.32,
+      "drive": 0.145,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "282094e4405906bfe5882ffaf92b926d3a1ff1c0b965bd668311b910a2a12d55"
+    },
+    {
+      "id": "varied:stress:external-push:2",
+      "family": "external-push",
+      "split": "stress",
+      "motorProfile": "evaluation-or-smooth",
+      "distance": 8.6,
+      "radius": 0.6000000000000001,
+      "angle": 0.18,
+      "speed": 0.42000000000000004,
+      "drive": 0.16999999999999998,
+      "examples": 234,
+      "masked": 0,
+      "dataSha256": "d6d5296e97dd791bdee2c2dfddb71909d20fd99afc9dae60497a0f24b57f5d4d"
+    }
+  ],
+  "train": {
+    "examples": 10661,
+    "geometryAvailable": 4263,
+    "mae": {
+      "hold": {
+        "bearingRad": 0.05458221122275332,
+        "logExtent": 0.07309408678610034
+      },
+      "velocity": {
+        "bearingRad": 0.04972128444375534,
+        "logExtent": 0.3851361270243138
+      },
+      "bodyGaze": {
+        "bearingRad": 0.02012106070795324,
+        "logExtent": 0.07309408678610034
+      },
+      "ridge": {
+        "bearingRad": 0.01622249277836905,
+        "logExtent": 0.06476145082870936
+      },
+      "frozenOldRidge": {
+        "bearingRad": 0.021945428366658797,
+        "logExtent": 0.077088566070995
+      },
+      "ridgeNoHistory": {
+        "bearingRad": 0.016381487446313917,
+        "logExtent": 0.07261294688747433
+      },
+      "ridgeAppearanceHistory": {
+        "bearingRad": 0.03941681348395044,
+        "logExtent": 0.06494250721275634
+      },
+      "geometryOrHold": {
+        "bearingRad": 0.05849500216021449,
+        "logExtent": 0.0881262771441935
+      }
+    }
+  },
+  "test": {
+    "examples": 3790,
+    "geometryAvailable": 1278,
+    "mae": {
+      "hold": {
+        "bearingRad": 0.042139854857007844,
+        "logExtent": 0.0875070118129561
+      },
+      "velocity": {
+        "bearingRad": 0.048314673433329486,
+        "logExtent": 0.4235820233160034
+      },
+      "bodyGaze": {
+        "bearingRad": 0.012514502932596216,
+        "logExtent": 0.0875070118129561
+      },
+      "ridge": {
+        "bearingRad": 0.012565266278341203,
+        "logExtent": 0.07628900539600758
+      },
+      "frozenOldRidge": {
+        "bearingRad": 0.01037553823072,
+        "logExtent": 0.07621566381676982
+      },
+      "ridgeNoHistory": {
+        "bearingRad": 0.012898975040330697,
+        "logExtent": 0.08453282776073515
+      },
+      "ridgeAppearanceHistory": {
+        "bearingRad": 0.034922261410867524,
+        "logExtent": 0.07668952954060719
+      },
+      "geometryOrHold": {
+        "bearingRad": 0.04163533487088059,
+        "logExtent": 0.09273191612429575
+      }
+    }
+  },
+  "stress": {
+    "examples": 1316,
+    "geometryAvailable": 880,
+    "mae": {
+      "hold": {
+        "bearingRad": 0.0451065988651222,
+        "logExtent": 0.07465789719761
+      },
+      "velocity": {
+        "bearingRad": 0.051255185747886824,
+        "logExtent": 0.37011277959890193
+      },
+      "bodyGaze": {
+        "bearingRad": 0.017455679599515397,
+        "logExtent": 0.07465789719761
+      },
+      "ridge": {
+        "bearingRad": 0.019525478116734784,
+        "logExtent": 0.06613253023659911
+      },
+      "frozenOldRidge": {
+        "bearingRad": 0.01769188744124844,
+        "logExtent": 0.06543186304359563
+      },
+      "ridgeNoHistory": {
+        "bearingRad": 0.019925973502274007,
+        "logExtent": 0.07112999938519271
+      },
+      "ridgeAppearanceHistory": {
+        "bearingRad": 0.037055545427647704,
+        "logExtent": 0.06488251024585162
+      },
+      "geometryOrHold": {
+        "bearingRad": 0.028004837905727848,
+        "logExtent": 0.0736312954232794
+      }
+    }
+  },
+  "testWithGeometry": {
+    "examples": 1278,
+    "geometryAvailable": 1278,
+    "mae": {
+      "hold": {
+        "bearingRad": 0.044209611414675005,
+        "logExtent": 0.0849377193278211
+      },
+      "velocity": {
+        "bearingRad": 0.05479878816825187,
+        "logExtent": 0.42352517292238057
+      },
+      "bodyGaze": {
+        "bearingRad": 0.017348417718063724,
+        "logExtent": 0.0849377193278211
+      },
+      "ridge": {
+        "bearingRad": 0.012107832730384802,
+        "logExtent": 0.07285465360197135
+      },
+      "frozenOldRidge": {
+        "bearingRad": 0.011449439947361225,
+        "logExtent": 0.07272033543450547
+      },
+      "ridgeNoHistory": {
+        "bearingRad": 0.012537098242038585,
+        "logExtent": 0.07951905148062868
+      },
+      "ridgeAppearanceHistory": {
+        "bearingRad": 0.03804706396755842,
+        "logExtent": 0.07399249137592394
+      },
+      "geometryOrHold": {
+        "bearingRad": 0.042713421471465195,
+        "logExtent": 0.1004325451024509
+      }
+    }
+  },
+  "byFamily": {
+    "static": {
+      "examples": 575,
+      "geometryAvailable": 294,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.03946646849927876,
+          "logExtent": 0.07366555982600417
+        },
+        "velocity": {
+          "bearingRad": 0.0476671973095251,
+          "logExtent": 0.340661951515141
+        },
+        "bodyGaze": {
+          "bearingRad": 0.013418030480429553,
+          "logExtent": 0.07366555982600417
+        },
+        "ridge": {
+          "bearingRad": 0.009976537522403453,
+          "logExtent": 0.05955089452717485
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.009070101572684171,
+          "logExtent": 0.06027821976055644
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.010471798015776464,
+          "logExtent": 0.06750585663103624
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.03420401319318014,
+          "logExtent": 0.060840428311053976
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.02368878943842953,
+          "logExtent": 0.0698109117112992
+        }
+      }
+    },
+    "lateral": {
+      "examples": 465,
+      "geometryAvailable": 89,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.05442163896712905,
+          "logExtent": 0.07959036246339402
+        },
+        "velocity": {
+          "bearingRad": 0.05348589643208433,
+          "logExtent": 0.41737852553071064
+        },
+        "bodyGaze": {
+          "bearingRad": 0.015399159503259027,
+          "logExtent": 0.07959036246339402
+        },
+        "ridge": {
+          "bearingRad": 0.019256436285164092,
+          "logExtent": 0.06385772657317548
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.012102141014793042,
+          "logExtent": 0.06360736130307683
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.01915711526823525,
+          "logExtent": 0.07272893860711964
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.0407590397319925,
+          "logExtent": 0.06461297910252335
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.07047214448110481,
+          "logExtent": 0.09846742427207227
+        }
+      }
+    },
+    "receding": {
+      "examples": 679,
+      "geometryAvailable": 303,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.03996321315419844,
+          "logExtent": 0.08419698883913725
+        },
+        "velocity": {
+          "bearingRad": 0.04831893053738597,
+          "logExtent": 0.4249901530303595
+        },
+        "bodyGaze": {
+          "bearingRad": 0.009386794810198336,
+          "logExtent": 0.08419698883913725
+        },
+        "ridge": {
+          "bearingRad": 0.009933740585171118,
+          "logExtent": 0.0780186662691113
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.008157485526868808,
+          "logExtent": 0.07743407214168747
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.01052084953191787,
+          "logExtent": 0.0834035990341125
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.034194187342451395,
+          "logExtent": 0.0780317369047654
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.029488069558924,
+          "logExtent": 0.08517213569971512
+        }
+      }
+    },
+    "observer-correlated": {
+      "examples": 702,
+      "geometryAvailable": 15,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.04105334225784281,
+          "logExtent": 0.1059437729545587
+        },
+        "velocity": {
+          "bearingRad": 0.04829533294663897,
+          "logExtent": 0.5229446278666239
+        },
+        "bodyGaze": {
+          "bearingRad": 0.00846243113685543,
+          "logExtent": 0.1059437729545587
+        },
+        "ridge": {
+          "bearingRad": 0.011100096577781477,
+          "logExtent": 0.09758838459428369
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.009343655816198875,
+          "logExtent": 0.09758947488057575
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.011438167582221787,
+          "logExtent": 0.10962083007884932
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.03517054767923964,
+          "logExtent": 0.0967970148469471
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.04469499235400598,
+          "logExtent": 0.10780843902458183
+        }
+      }
+    },
+    "reversal": {
+      "examples": 555,
+      "geometryAvailable": 198,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.04382267988921073,
+          "logExtent": 0.07777876195459878
+        },
+        "velocity": {
+          "bearingRad": 0.047261144487890774,
+          "logExtent": 0.3800451377986393
+        },
+        "bodyGaze": {
+          "bearingRad": 0.021093417870096737,
+          "logExtent": 0.07777876195459878
+        },
+        "ridge": {
+          "bearingRad": 0.019254180790807297,
+          "logExtent": 0.06300822616210354
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.017647323734187124,
+          "logExtent": 0.063756216964376
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.01901567589496303,
+          "logExtent": 0.07100497900636053
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.034634234895413,
+          "logExtent": 0.06431481501930707
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.06875936041329359,
+          "logExtent": 0.09567378398185605
+        }
+      }
+    },
+    "occlusion": {
+      "examples": 562,
+      "geometryAvailable": 294,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.03719079505032772,
+          "logExtent": 0.09902992643603598
+        },
+        "velocity": {
+          "bearingRad": 0.04643740829657831,
+          "logExtent": 0.4158355246002893
+        },
+        "bodyGaze": {
+          "bearingRad": 0.011536355273014071,
+          "logExtent": 0.09902992643603598
+        },
+        "ridge": {
+          "bearingRad": 0.00910212880327653,
+          "logExtent": 0.09085894687535716
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.008369176040408611,
+          "logExtent": 0.08993860047290175
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.009719720502175375,
+          "logExtent": 0.09682460779085368
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.03246898645348109,
+          "logExtent": 0.090707771025353
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.0253468122616691,
+          "logExtent": 0.10302418974809881
+        }
+      }
+    },
+    "similar": {
+      "examples": 252,
+      "geometryAvailable": 85,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.04179954860220932,
+          "logExtent": 0.086984300587072
+        },
+        "velocity": {
+          "bearingRad": 0.0467991896886514,
+          "logExtent": 0.4568022734169991
+        },
+        "bodyGaze": {
+          "bearingRad": 0.008132740094215243,
+          "logExtent": 0.086984300587072
+        },
+        "ridge": {
+          "bearingRad": 0.010289138355780693,
+          "logExtent": 0.07018138569597042
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.007478433553006301,
+          "logExtent": 0.06985804073784288
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.010985473909657019,
+          "logExtent": 0.08070053099812127
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.033166512918933085,
+          "logExtent": 0.07149798398617156
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.03016936772368653,
+          "logExtent": 0.08338645439223726
+        }
+      }
+    },
+    "motor-change": {
+      "examples": 614,
+      "geometryAvailable": 346,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.05514854322474619,
+          "logExtent": 0.07732625093025107
+        },
+        "velocity": {
+          "bearingRad": 0.05519986714864216,
+          "logExtent": 0.42609254417384906
+        },
+        "bodyGaze": {
+          "bearingRad": 0.016852260137364718,
+          "logExtent": 0.07732625093025107
+        },
+        "ridge": {
+          "bearingRad": 0.028111197513324557,
+          "logExtent": 0.06537534091992647
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.02034597629603737,
+          "logExtent": 0.06656263999455507
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.028336335162515013,
+          "logExtent": 0.07354303253304526
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.039965172042653874,
+          "logExtent": 0.06643368478698401
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.0400819417556145,
+          "logExtent": 0.07800578776370948
+        }
+      }
+    },
+    "external-push": {
+      "examples": 702,
+      "geometryAvailable": 534,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.03632347374146257,
+          "logExtent": 0.07232403794997201
+        },
+        "velocity": {
+          "bearingRad": 0.04780499432329457,
+          "logExtent": 0.32115042140941963
+        },
+        "bodyGaze": {
+          "bearingRad": 0.017983456735926398,
+          "logExtent": 0.07232403794997201
+        },
+        "ridge": {
+          "bearingRad": 0.012016031237096447,
+          "logExtent": 0.06679480123437272
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.01537050488164669,
+          "logExtent": 0.0644428359098504
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.012569902192604487,
+          "logExtent": 0.0690194547231108
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.0345106583313316,
+          "logExtent": 0.06352578493494661
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.01744167299998648,
+          "logExtent": 0.06980517249304558
+        }
+      }
+    }
+  },
+  "byEpisode": {
+    "varied:test:static:0": {
+      "examples": 234,
+      "geometryAvailable": 200,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.03463879799594037,
+          "logExtent": 0.07354704957292053
+        },
+        "velocity": {
+          "bearingRad": 0.044612182002098634,
+          "logExtent": 0.3232775908421816
+        },
+        "bodyGaze": {
+          "bearingRad": 0.02030296855037353,
+          "logExtent": 0.07354704957292053
+        },
+        "ridge": {
+          "bearingRad": 0.009225217971563294,
+          "logExtent": 0.06415729796195038
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.011161799551087917,
+          "logExtent": 0.06317114992998343
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.009625275767801736,
+          "logExtent": 0.06893252316140015
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.030934213834255524,
+          "logExtent": 0.06540589150631711
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.01627208082558271,
+          "logExtent": 0.06910510895183332
+        }
+      }
+    },
+    "varied:test:static:1": {
+      "examples": 234,
+      "geometryAvailable": 36,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.035929821607228324,
+          "logExtent": 0.06342082492346576
+        },
+        "velocity": {
+          "bearingRad": 0.03916450263129783,
+          "logExtent": 0.2744866073370528
+        },
+        "bodyGaze": {
+          "bearingRad": 0.007313575622061837,
+          "logExtent": 0.06342082492346576
+        },
+        "ridge": {
+          "bearingRad": 0.009472863268158372,
+          "logExtent": 0.052036879430087585
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.006278053443616651,
+          "logExtent": 0.05407888945315989
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.009952145897792078,
+          "logExtent": 0.05905050958632993
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.029909160944549762,
+          "logExtent": 0.05328139974239147
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.027635279616184172,
+          "logExtent": 0.061635303794085536
+        }
+      }
+    },
+    "varied:test:static:2": {
+      "examples": 107,
+      "geometryAvailable": 58,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.05775852710227861,
+          "logExtent": 0.09632910530652398
+        },
+        "velocity": {
+          "bearingRad": 0.07294293690431908,
+          "logExtent": 0.5233999976379897
+        },
+        "bodyGaze": {
+          "bearingRad": 0.011711179344832819,
+          "logExtent": 0.09632910530652398
+        },
+        "ridge": {
+          "bearingRad": 0.012721103413898292,
+          "logExtent": 0.06590959666718389
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.010601708444229278,
+          "logExtent": 0.06750903875387312
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.013459506442266499,
+          "logExtent": 0.08287698971847669
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.05074726997979566,
+          "logExtent": 0.0673871039874602
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.03127786526844412,
+          "logExtent": 0.089233809826655
+        }
+      }
+    },
+    "varied:test:lateral:0": {
+      "examples": 234,
+      "geometryAvailable": 0,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.0493852141296888,
+          "logExtent": 0.07543851060163684
+        },
+        "velocity": {
+          "bearingRad": 0.05041596116538109,
+          "logExtent": 0.32054195050691764
+        },
+        "bodyGaze": {
+          "bearingRad": 0.013556951496833405,
+          "logExtent": 0.07543851060163684
+        },
+        "ridge": {
+          "bearingRad": 0.01809320144298942,
+          "logExtent": 0.06084616019131073
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.013645631271897543,
+          "logExtent": 0.06019393955579319
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.017889395091589398,
+          "logExtent": 0.06982607421120222
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.0380598844374505,
+          "logExtent": 0.06137156875835223
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.0493852141296888,
+          "logExtent": 0.07543851060163684
+        }
+      }
+    },
+    "varied:test:lateral:1": {
+      "examples": 144,
+      "geometryAvailable": 24,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.05280976108856782,
+          "logExtent": 0.05584461853840893
+        },
+        "velocity": {
+          "bearingRad": 0.04920732609699002,
+          "logExtent": 0.3661503092965098
+        },
+        "bodyGaze": {
+          "bearingRad": 0.01643460745683779,
+          "logExtent": 0.05584461853840893
+        },
+        "ridge": {
+          "bearingRad": 0.02056512886812278,
+          "logExtent": 0.04903796120674503
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.011758590816422254,
+          "logExtent": 0.048807394219710615
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.02069032320465175,
+          "logExtent": 0.04947896406550626
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.039835300782811736,
+          "logExtent": 0.04928692928442074
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.1253311310474796,
+          "logExtent": 0.1151599488414845
+        }
+      }
+    },
+    "varied:test:lateral:2": {
+      "examples": 87,
+      "geometryAvailable": 65,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.07063582088062138,
+          "logExtent": 0.13006071258809593
+        },
+        "velocity": {
+          "bearingRad": 0.06882473529026965,
+          "logExtent": 0.7626270507409674
+        },
+        "bodyGaze": {
+          "bearingRad": 0.018640218907721735,
+          "logExtent": 0.13006071258809593
+        },
+        "ridge": {
+          "bearingRad": 0.020219025033702216,
+          "logExtent": 0.09648706848262763
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.0085193192722981,
+          "logExtent": 0.09728478600272174
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.0200291219175587,
+          "logExtent": 0.1190193593270852
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.04954778395733568,
+          "logExtent": 0.09869851007198086
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.03638763455781062,
+          "logExtent": 0.13277825485697514
+        }
+      }
+    },
+    "varied:test:receding:0": {
+      "examples": 234,
+      "geometryAvailable": 184,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.03742932546066009,
+          "logExtent": 0.075076570310213
+        },
+        "velocity": {
+          "bearingRad": 0.042963763689992766,
+          "logExtent": 0.3726588100565075
+        },
+        "bodyGaze": {
+          "bearingRad": 0.010627377234992979,
+          "logExtent": 0.075076570310213
+        },
+        "ridge": {
+          "bearingRad": 0.00951433815366796,
+          "logExtent": 0.06538875854886199
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.008051946397177183,
+          "logExtent": 0.0654291668643716
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.009926495085715793,
+          "logExtent": 0.07381323100671239
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.0304786187429416,
+          "logExtent": 0.06532429958836512
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.02043994019339763,
+          "logExtent": 0.07516000009019012
+        }
+      }
+    },
+    "varied:test:receding:1": {
+      "examples": 234,
+      "geometryAvailable": 0,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.03500007742176719,
+          "logExtent": 0.06616802781959222
+        },
+        "velocity": {
+          "bearingRad": 0.03876049123037321,
+          "logExtent": 0.35477488404444557
+        },
+        "bodyGaze": {
+          "bearingRad": 0.007233008861577849,
+          "logExtent": 0.06616802781959222
+        },
+        "ridge": {
+          "bearingRad": 0.009959739249537872,
+          "logExtent": 0.062194604576487095
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.006731517150989385,
+          "logExtent": 0.06181606940170771
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.010464867060142267,
+          "logExtent": 0.06647523112482212
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.029374470793826397,
+          "logExtent": 0.06190359073370229
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.03500007742176719,
+          "logExtent": 0.06616802781959222
+        }
+      }
+    },
+    "varied:test:receding:2": {
+      "examples": 211,
+      "geometryAvailable": 119,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.04827744766451536,
+          "logExtent": 0.11430577942843534
+        },
+        "velocity": {
+          "bearingRad": 0.06485819044322008,
+          "logExtent": 0.5608949264833683
+        },
+        "bodyGaze": {
+          "bearingRad": 0.010399541846099987,
+          "logExtent": 0.11430577942843534
+        },
+        "ridge": {
+          "bearingRad": 0.010370027227398224,
+          "logExtent": 0.10957425320092405
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.009855934608876491,
+          "logExtent": 0.10806800804712476
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.01124207625612058,
+          "logExtent": 0.1128130028691151
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.04365985902332102,
+          "logExtent": 0.11001053565389522
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.03340964506426922,
+          "logExtent": 0.11735128724747645
+        }
+      }
+    },
+    "varied:test:observer-correlated:0": {
+      "examples": 234,
+      "geometryAvailable": 0,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.04102399100222012,
+          "logExtent": 0.10095104844762022
+        },
+        "velocity": {
+          "bearingRad": 0.04356978079137967,
+          "logExtent": 0.4778628459826191
+        },
+        "bodyGaze": {
+          "bearingRad": 0.00743272084477239,
+          "logExtent": 0.10095104844762022
+        },
+        "ridge": {
+          "bearingRad": 0.011532363071439095,
+          "logExtent": 0.09236609955190792
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.009657467536572317,
+          "logExtent": 0.09365161857130266
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.011628859252077847,
+          "logExtent": 0.10304643040813795
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.03308472783736228,
+          "logExtent": 0.09170853927741121
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.04102399100222012,
+          "logExtent": 0.10095104844762022
+        }
+      }
+    },
+    "varied:test:observer-correlated:1": {
+      "examples": 234,
+      "geometryAvailable": 0,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.0364400154917293,
+          "logExtent": 0.07370565476956045
+        },
+        "velocity": {
+          "bearingRad": 0.039319891631653475,
+          "logExtent": 0.46727697684715697
+        },
+        "bodyGaze": {
+          "bearingRad": 0.008058816711174125,
+          "logExtent": 0.07370565476956045
+        },
+        "ridge": {
+          "bearingRad": 0.01169322972349067,
+          "logExtent": 0.07171692869237738
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.007638556121099832,
+          "logExtent": 0.07180339099728505
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.012104748886134362,
+          "logExtent": 0.0797141887811035
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.03067432510136097,
+          "logExtent": 0.07058971502505444
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.0364400154917293,
+          "logExtent": 0.07370565476956045
+        }
+      }
+    },
+    "varied:test:observer-correlated:2": {
+      "examples": 234,
+      "geometryAvailable": 15,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.045696020279579086,
+          "logExtent": 0.14317461564649575
+        },
+        "velocity": {
+          "bearingRad": 0.06199632641688362,
+          "logExtent": 0.6236940607700955
+        },
+        "bodyGaze": {
+          "bearingRad": 0.009895755854619796,
+          "logExtent": 0.14317461564649575
+        },
+        "ridge": {
+          "bearingRad": 0.010074696938414687,
+          "logExtent": 0.12868212553856562
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.010734943790924493,
+          "logExtent": 0.12731341507313976
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.010580894608453233,
+          "logExtent": 0.14610187104730646
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.041752590098995734,
+          "logExtent": 0.12809279023837544
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.056620970568068585,
+          "logExtent": 0.14876861385656528
+        }
+      }
+    },
+    "varied:test:reversal:0": {
+      "examples": 234,
+      "geometryAvailable": 100,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.03324547662608499,
+          "logExtent": 0.06897696598930095
+        },
+        "velocity": {
+          "bearingRad": 0.041131468394132745,
+          "logExtent": 0.2856609292138877
+        },
+        "bodyGaze": {
+          "bearingRad": 0.025625284570057333,
+          "logExtent": 0.06897696598930095
+        },
+        "ridge": {
+          "bearingRad": 0.018401866540837267,
+          "logExtent": 0.05453369744405978
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.021742725623393983,
+          "logExtent": 0.05363428726846333
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.01810150115666129,
+          "logExtent": 0.06172150693738658
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.02914405508101317,
+          "logExtent": 0.056003432372666286
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.03841750886851458,
+          "logExtent": 0.07719545686795459
+        }
+      }
+    },
+    "varied:test:reversal:1": {
+      "examples": 234,
+      "geometryAvailable": 33,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.044430894835017096,
+          "logExtent": 0.06714239678692983
+        },
+        "velocity": {
+          "bearingRad": 0.04537358810384123,
+          "logExtent": 0.3321873531099605
+        },
+        "bodyGaze": {
+          "bearingRad": 0.017473637963839612,
+          "logExtent": 0.06714239678692983
+        },
+        "ridge": {
+          "bearingRad": 0.019747770899188194,
+          "logExtent": 0.05903549299174738
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.01694566709363135,
+          "logExtent": 0.0614123966332115
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.019553056599222778,
+          "logExtent": 0.06243695069968034
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.03457963364832874,
+          "logExtent": 0.05984251617200498
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.11113685362229084,
+          "logExtent": 0.10035685910372617
+        }
+      }
+    },
+    "varied:test:reversal:2": {
+      "examples": 87,
+      "geometryAvailable": 65,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.07063582088062138,
+          "logExtent": 0.13006071258809593
+        },
+        "velocity": {
+          "bearingRad": 0.06882473529026965,
+          "logExtent": 0.7626270507409674
+        },
+        "bodyGaze": {
+          "bearingRad": 0.018640218907721735,
+          "logExtent": 0.13006071258809593
+        },
+        "ridge": {
+          "bearingRad": 0.020219025033702216,
+          "logExtent": 0.09648706848262763
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.0085193192722981,
+          "logExtent": 0.09728478600272174
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.0200291219175587,
+          "logExtent": 0.1190193593270852
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.04954778395733568,
+          "logExtent": 0.09869851007198086
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.03638763455781062,
+          "logExtent": 0.13277825485697514
+        }
+      }
+    },
+    "varied:test:occlusion:0": {
+      "examples": 182,
+      "geometryAvailable": 121,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.041588756023750714,
+          "logExtent": 0.07758938379150386
+        },
+        "velocity": {
+          "bearingRad": 0.04535138967521896,
+          "logExtent": 0.4433627219762382
+        },
+        "bodyGaze": {
+          "bearingRad": 0.013197054662972654,
+          "logExtent": 0.07758938379150386
+        },
+        "ridge": {
+          "bearingRad": 0.006276706705107465,
+          "logExtent": 0.06586132986119123
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.006916434599183114,
+          "logExtent": 0.06497201533780354
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.007077858854292046,
+          "logExtent": 0.0748824043712237
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.031154584468206577,
+          "logExtent": 0.06637759691167441
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.023357144005919664,
+          "logExtent": 0.07591349984889634
+        }
+      }
+    },
+    "varied:test:occlusion:1": {
+      "examples": 198,
+      "geometryAvailable": 71,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.030354417186892805,
+          "logExtent": 0.1286392702209228
+        },
+        "velocity": {
+          "bearingRad": 0.040356760052208215,
+          "logExtent": 0.3996891296494301
+        },
+        "bodyGaze": {
+          "bearingRad": 0.009921686973004018,
+          "logExtent": 0.1286392702209228
+        },
+        "ridge": {
+          "bearingRad": 0.010056561081014052,
+          "logExtent": 0.12680272939592455
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.007108549359760035,
+          "logExtent": 0.12620427344071344
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.010431508119867703,
+          "logExtent": 0.1224702076889826
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.02924378726636157,
+          "logExtent": 0.12543476222689579
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.029533996128557612,
+          "logExtent": 0.13808311313864455
+        }
+      }
+    },
+    "varied:test:occlusion:2": {
+      "examples": 182,
+      "geometryAvailable": 102,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.040230212192070125,
+          "logExtent": 0.08825810606184517
+        },
+        "velocity": {
+          "bearingRad": 0.0541386376453293,
+          "logExtent": 0.4058741854675814
+        },
+        "bodyGaze": {
+          "bearingRad": 0.011632273044604891,
+          "logExtent": 0.08825810606184517
+        },
+        "ridge": {
+          "bearingRad": 0.010889212489401471,
+          "logExtent": 0.07675288840011445
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.011193368485856156,
+          "logExtent": 0.07545132161005093
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.011587219796745075,
+          "logExtent": 0.09086665307955201
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.03729212162034727,
+          "logExtent": 0.07725803163405634
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.022781192574320076,
+          "logExtent": 0.091993853101543
+        }
+      }
+    },
+    "varied:test:similar:0": {
+      "examples": 84,
+      "geometryAvailable": 50,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.04272781289242896,
+          "logExtent": 0.1077673029807748
+        },
+        "velocity": {
+          "bearingRad": 0.05328261074158447,
+          "logExtent": 0.5247079930288595
+        },
+        "bodyGaze": {
+          "bearingRad": 0.008790251228303377,
+          "logExtent": 0.1077673029807748
+        },
+        "ridge": {
+          "bearingRad": 0.007809052324883853,
+          "logExtent": 0.09871914561834733
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.008289160120719475,
+          "logExtent": 0.09670967761466587
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.008790200767639195,
+          "logExtent": 0.1023573246097597
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.033387326202835986,
+          "logExtent": 0.09982491018223431
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.031130586587625908,
+          "logExtent": 0.10408684948009646
+        }
+      }
+    },
+    "varied:test:similar:1": {
+      "examples": 84,
+      "geometryAvailable": 0,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.02515692419685939,
+          "logExtent": 0.04972411892786001
+        },
+        "velocity": {
+          "bearingRad": 0.019154469097408016,
+          "logExtent": 0.26192923307726346
+        },
+        "bodyGaze": {
+          "bearingRad": 0.003944446664865993,
+          "logExtent": 0.04972411892786001
+        },
+        "ridge": {
+          "bearingRad": 0.009786114069600399,
+          "logExtent": 0.041084686862327524
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.0036803164473055393,
+          "logExtent": 0.04064704826007811
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.009981074799507763,
+          "logExtent": 0.048698750215222804
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.019033565673712012,
+          "logExtent": 0.04172535503943954
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.02515692419685939,
+          "logExtent": 0.04972411892786001
+        }
+      }
+    },
+    "varied:test:similar:2": {
+      "examples": 84,
+      "geometryAvailable": 35,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.057513908717339586,
+          "logExtent": 0.10346147985258114
+        },
+        "velocity": {
+          "bearingRad": 0.06796048922696178,
+          "logExtent": 0.5837695941448744
+        },
+        "bodyGaze": {
+          "bearingRad": 0.01166352238947635,
+          "logExtent": 0.10346147985258114
+        },
+        "ridge": {
+          "bearingRad": 0.013272248672857806,
+          "logExtent": 0.07074032460723634
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.0104658240909939,
+          "logExtent": 0.07221739633878471
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.014185146161824107,
+          "logExtent": 0.09104551816938143
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.047078646880251304,
+          "logExtent": 0.07294368673684079
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.03422059238657428,
+          "logExtent": 0.09634839476875519
+        }
+      }
+    },
+    "varied:stress:motor-change:0": {
+      "examples": 172,
+      "geometryAvailable": 98,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.04964583701797904,
+          "logExtent": 0.09975235460504692
+        },
+        "velocity": {
+          "bearingRad": 0.06317552114196608,
+          "logExtent": 0.4864795408879432
+        },
+        "bodyGaze": {
+          "bearingRad": 0.012263852375452656,
+          "logExtent": 0.09975235460504692
+        },
+        "ridge": {
+          "bearingRad": 0.018543475238863464,
+          "logExtent": 0.09007088358637183
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.02375019509198236,
+          "logExtent": 0.08750006226954565
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.019296217170889647,
+          "logExtent": 0.09479071914888716
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.04031490617134924,
+          "logExtent": 0.09174149422772353
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.07508621277880513,
+          "logExtent": 0.11947075369809204
+        }
+      }
+    },
+    "varied:stress:motor-change:1": {
+      "examples": 234,
+      "geometryAvailable": 89,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.054238530574129314,
+          "logExtent": 0.05690112236929008
+        },
+        "velocity": {
+          "bearingRad": 0.04049178367600211,
+          "logExtent": 0.2943939376613433
+        },
+        "bodyGaze": {
+          "bearingRad": 0.017824599481289304,
+          "logExtent": 0.05690112236929008
+        },
+        "ridge": {
+          "bearingRad": 0.03239559078875781,
+          "logExtent": 0.04311613690765311
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.01779106121719442,
+          "logExtent": 0.04727301866230959
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.0323053690726932,
+          "logExtent": 0.054338850195058984
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.033771536600767975,
+          "logExtent": 0.04361303118198159
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.028844354093429884,
+          "logExtent": 0.045874407640621215
+        }
+      }
+    },
+    "varied:stress:motor-change:2": {
+      "examples": 208,
+      "geometryAvailable": 159,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.060722622204593714,
+          "logExtent": 0.08175985790717416
+        },
+        "velocity": {
+          "bearingRad": 0.0651512087147289,
+          "logExtent": 0.5243180753714557
+        },
+        "bodyGaze": {
+          "bearingRad": 0.019552638640107606,
+          "logExtent": 0.08175985790717416
+        },
+        "ridge": {
+          "bearingRad": 0.031203025420805015,
+          "logExtent": 0.06999563130571174
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.02040522867847345,
+          "logExtent": 0.07094982634285842
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.03134665419894716,
+          "logExtent": 0.07757753526941033
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.04664380869296977,
+          "logExtent": 0.07117930843969258
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.02377838837562577,
+          "logExtent": 0.07986525318721384
+        }
+      }
+    },
+    "varied:stress:external-push:0": {
+      "examples": 234,
+      "geometryAvailable": 200,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.036733959684068736,
+          "logExtent": 0.08023603098634577
+        },
+        "velocity": {
+          "bearingRad": 0.05127578030068222,
+          "logExtent": 0.37352803873484186
+        },
+        "bodyGaze": {
+          "bearingRad": 0.020837879251049272,
+          "logExtent": 0.08023603098634577
+        },
+        "ridge": {
+          "bearingRad": 0.009515731536300073,
+          "logExtent": 0.07479813516759937
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.015130143348549358,
+          "logExtent": 0.07062323696207183
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.010225101222210448,
+          "logExtent": 0.07857739843113747
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.03488596513329585,
+          "logExtent": 0.07239954362220212
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.01694142652863764,
+          "logExtent": 0.07998651615527305
+        }
+      }
+    },
+    "varied:stress:external-push:1": {
+      "examples": 234,
+      "geometryAvailable": 149,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.03455592386241739,
+          "logExtent": 0.06208902816450765
+        },
+        "velocity": {
+          "bearingRad": 0.03611758331599139,
+          "logExtent": 0.28440196150281205
+        },
+        "bodyGaze": {
+          "bearingRad": 0.014510886134525353,
+          "logExtent": 0.06208902816450765
+        },
+        "ridge": {
+          "bearingRad": 0.01027314661692858,
+          "logExtent": 0.056502945483494126
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.012166636339024295,
+          "logExtent": 0.054338034900268506
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.010627521138713092,
+          "logExtent": 0.05757417392966868
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.02859010008883384,
+          "logExtent": 0.054536626845525425
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.012468440924265675,
+          "logExtent": 0.05715719193148648
+        }
+      }
+    },
+    "varied:stress:external-push:2": {
+      "examples": 234,
+      "geometryAvailable": 185,
+      "mae": {
+        "hold": {
+          "bearingRad": 0.03768053767790167,
+          "logExtent": 0.0746470546990625
+        },
+        "velocity": {
+          "bearingRad": 0.05602161935321012,
+          "logExtent": 0.30552126399060336
+        },
+        "bodyGaze": {
+          "bearingRad": 0.018601604822204545,
+          "logExtent": 0.0746470546990625
+        },
+        "ridge": {
+          "bearingRad": 0.016259215558060695,
+          "logExtent": 0.06908332305202454
+        },
+        "frozenOldRidge": {
+          "bearingRad": 0.01881473495736645,
+          "logExtent": 0.06836723586721119
+        },
+        "ridgeNoHistory": {
+          "bearingRad": 0.016857084216889938,
+          "logExtent": 0.07090679180852623
+        },
+        "ridgeAppearanceHistory": {
+          "bearingRad": 0.04005590977186516,
+          "logExtent": 0.06364118433711248
+        },
+        "geometryOrHold": {
+          "bearingRad": 0.02291515154705611,
+          "logExtent": 0.07227180939237735
+        }
+      }
+    }
+  },
+  "model": {
+    "mean": [
+      -0.010508578694774805,
+      0.014009179901672041,
+      -0.19063603480995786,
+      -1.6020474789726733,
+      0.11664668046333383,
+      0.00020089805644000878,
+      0.004991103392897736,
+      0.13026577464381148,
+      0.11471934270810649,
+      0.01316496815795718,
+      0.010501965298921207
+    ],
+    "scale": [
+      0.0863185814966332,
+      0.5631324890481055,
+      0.4893471965017974,
+      0.3811565194162023,
+      0.05956888693543436,
+      0.006510828541419782,
+      0.02587263587571249,
+      0.4361016032248069,
+      0.06688119658918046,
+      0.0751715252612921,
+      0.0998010274881121
+    ],
+    "weights": [
+      [
+        -0.011429878542158925,
+        -0.00350708296741711,
+        0.000003535601825888535,
+        0.01651115312568136,
+        0.00035350546534157,
+        -0.002451115974370928,
+        -0.0006438134357461939,
+        -0.030102001182279035,
+        0.01687672736421781,
+        -0.0035890791414890655,
+        -0.008622910043720757,
+        -0.05248034667267222
+      ],
+      [
+        0.013785809705437599,
+        0.0009572826302430183,
+        -0.04609322123248205,
+        -0.0034559299957586734,
+        0.0027312574822607933,
+        0.006576948669981163,
+        -0.0026362304710266884,
+        -0.0030158477737056624,
+        -0.005386711489692677,
+        0.00245872494017308,
+        0.00016884452032353353,
+        -0.0009980490558980984
+      ]
+    ]
+  },
+  "ablationModels": {
+    "noHistory": {
+      "mean": [
+        -0.19063603480995786,
+        -1.6020474789726733,
+        0.11664668046333383,
+        0.00020089805644000878,
+        0.004991103392897736,
+        0.13026577464381148,
+        0.11471934270810649,
+        0.01316496815795718,
+        0.010501965298921207
+      ],
+      "scale": [
+        0.4893471965017974,
+        0.3811565194162023,
+        0.05956888693543436,
+        0.006510828541419782,
+        0.02587263587571249,
+        0.4361016032248069,
+        0.06688119658918046,
+        0.0751715252612921,
+        0.0998010274881121
+      ],
+      "weights": [
+        [
+          -0.011429878542158918,
+          0.01581793972361327,
+          0.00036126678814404813,
+          -0.0026846807460218242,
+          -0.0006273897489948569,
+          -0.029429672979329115,
+          0.016275866737395277,
+          -0.003326180430285805,
+          -0.008263938155513947,
+          -0.050063530937091684
+        ],
+        [
+          0.013785809705437404,
+          -0.006954083247253946,
+          -0.006249931418563302,
+          0.006762260365454288,
+          0.00011859035444992242,
+          -0.0016301525634355185,
+          -0.010076546874954026,
+          0.0014581031003399524,
+          -0.0010572000899596997,
+          -0.0018053865421728437
+        ]
+      ]
+    },
+    "appearanceHistory": {
+      "mean": [
+        -0.010508578694774805,
+        0.014009179901672041,
+        -0.19063603480995786,
+        -1.6020474789726733
+      ],
+      "scale": [
+        0.0863185814966332,
+        0.5631324890481055,
+        0.4893471965017974,
+        0.3811565194162023
+      ],
+      "weights": [
+        [
+          -0.011429878542158838,
+          0.04390132217446056,
+          0.0016733037996606464,
+          0.0011939495931080702,
+          0.0006702806892942466
+        ],
+        [
+          0.013785809705437376,
+          0.004828560002539213,
+          -0.04590662935429817,
+          0.0018149360303058597,
+          0.0033405225951761196
+        ]
+      ]
+    }
+  }
+}

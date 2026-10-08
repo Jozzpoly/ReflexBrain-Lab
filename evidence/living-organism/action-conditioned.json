@@ -1,0 +1,1093 @@
+{
+  "scope": "Offline paired action intervention, private sensory labels. No runtime integration.",
+  "settings": {
+    "horizonTicks": 24,
+    "episodeTicks": 720,
+    "lambda": 0.001,
+    "sampleTicks": 12,
+    "segmentTicks": 48
+  },
+  "verifiedScheduled": 1044,
+  "manifest": [
+    {
+      "id": "train:static:11",
+      "split": "train",
+      "family": "static",
+      "seed": 11,
+      "distance": 5,
+      "radius": 0.45,
+      "speed": 0,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "f68a38eb45f4f453260d78c03f0a6f9dfd73e0dd1f954731bad8009c2ac76c03"
+    },
+    {
+      "id": "train:static:12",
+      "split": "train",
+      "family": "static",
+      "seed": 12,
+      "distance": 5.5,
+      "radius": 0.47500000000000003,
+      "speed": 0,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "dbf1d7f29a1f590e57966d4ce0399214fb13302c9dafccd591b6e75642bab372"
+    },
+    {
+      "id": "train:static:13",
+      "split": "train",
+      "family": "static",
+      "seed": 13,
+      "distance": 6,
+      "radius": 0.5,
+      "speed": 0,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "8eb1dcaf5ef08718071ec1c822c6ad98232bf57550d39ec0b509c918656ae248"
+    },
+    {
+      "id": "train:static:14",
+      "split": "train",
+      "family": "static",
+      "seed": 14,
+      "distance": 6.5,
+      "radius": 0.525,
+      "speed": 0,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "67df2c9c12b528eda93f12ecde0abe875ba1efc96e25c3ec456755dd8c6f3f6a"
+    },
+    {
+      "id": "train:static:15",
+      "split": "train",
+      "family": "static",
+      "seed": 15,
+      "distance": 7,
+      "radius": 0.55,
+      "speed": 0,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "d693c0931171c736788c0178d20b5051cbeeb6a84b1d050e933736ab0c632e3b"
+    },
+    {
+      "id": "train:static:16",
+      "split": "train",
+      "family": "static",
+      "seed": 16,
+      "distance": 7.5,
+      "radius": 0.575,
+      "speed": 0,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "4cd197c70834c3bd121e314b969e1732a704e81ff8d41f30c538868aa53e1979"
+    },
+    {
+      "id": "train:lateral:11",
+      "split": "train",
+      "family": "lateral",
+      "seed": 11,
+      "distance": 5,
+      "radius": 0.45,
+      "speed": 0.15,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "72697d8a96cad901e9983d328641aba9a4df2bb4bbf755c02d1cd97febb8085b"
+    },
+    {
+      "id": "train:lateral:12",
+      "split": "train",
+      "family": "lateral",
+      "seed": 12,
+      "distance": 5.5,
+      "radius": 0.47500000000000003,
+      "speed": 0.19,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "427e86e11c340193731ff2c2f62205c49c603c1b8cfba44dff758bdc87c8806d"
+    },
+    {
+      "id": "train:lateral:13",
+      "split": "train",
+      "family": "lateral",
+      "seed": 13,
+      "distance": 6,
+      "radius": 0.5,
+      "speed": 0.22999999999999998,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "571948180eda88c7906a6c62194e877fcfa9c537ff4e74099be1fcfedf7e5221"
+    },
+    {
+      "id": "train:lateral:14",
+      "split": "train",
+      "family": "lateral",
+      "seed": 14,
+      "distance": 6.5,
+      "radius": 0.525,
+      "speed": 0.27,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "6a0c629989b416795f23824ba9474957a315df905b73895a2860ab5e8f9c1383"
+    },
+    {
+      "id": "train:lateral:15",
+      "split": "train",
+      "family": "lateral",
+      "seed": 15,
+      "distance": 7,
+      "radius": 0.55,
+      "speed": 0.31,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "c3a55984681370ff34fcadb0f7ec514695b9cd67c1d9ad73de548a1e496301ad"
+    },
+    {
+      "id": "train:lateral:16",
+      "split": "train",
+      "family": "lateral",
+      "seed": 16,
+      "distance": 7.5,
+      "radius": 0.575,
+      "speed": 0.35,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "7f5706b8303e03e1cc5afb8410b4c6d289e465e5202a78e8473e8124565206b2"
+    },
+    {
+      "id": "test:static:101",
+      "split": "test",
+      "family": "static",
+      "seed": 101,
+      "distance": 5.7,
+      "radius": 0.48,
+      "speed": 0,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "d4f6e4bef5b3184ba46311e2cae47842f3ace650aa99a343097cb4c8a36a22ba"
+    },
+    {
+      "id": "test:static:102",
+      "split": "test",
+      "family": "static",
+      "seed": 102,
+      "distance": 6.5,
+      "radius": 0.52,
+      "speed": 0,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "eb054b7b3f158dc00fe06e118757bfe9a61a0d4807ffa05686f96b134aa3b757"
+    },
+    {
+      "id": "test:static:103",
+      "split": "test",
+      "family": "static",
+      "seed": 103,
+      "distance": 7.300000000000001,
+      "radius": 0.5599999999999999,
+      "speed": 0,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "7cecd7e5d3cea51f251e938924769efb77e835958eb32c618852678066b43558"
+    },
+    {
+      "id": "test:lateral:101",
+      "split": "test",
+      "family": "lateral",
+      "seed": 101,
+      "distance": 5.7,
+      "radius": 0.48,
+      "speed": 0.23,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "6702935c5bc21c1f30f6f5b26399c23f7d6f301a5cb2ea92aafd2199fcdc2d69"
+    },
+    {
+      "id": "test:lateral:102",
+      "split": "test",
+      "family": "lateral",
+      "seed": 102,
+      "distance": 6.5,
+      "radius": 0.52,
+      "speed": 0.30000000000000004,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "13b4994412aea43c5c9561df324aecb07a1afbe970fc2c1403981746b70f3447"
+    },
+    {
+      "id": "test:lateral:103",
+      "split": "test",
+      "family": "lateral",
+      "seed": 103,
+      "distance": 7.300000000000001,
+      "radius": 0.5599999999999999,
+      "speed": 0.37,
+      "candidates": 58,
+      "masked": 0,
+      "rejectionCounts": {
+        "input": 0,
+        "held": 0,
+        "scheduled": 0
+      },
+      "examples": 58,
+      "dataSha256": "5adbbf0974924e531fd04e48f388108112c81d62929df7c5236ca3f6e92c456c"
+    }
+  ],
+  "testHeld": {
+    "examples": 348,
+    "labelBearingDifference": 0.01080904640318567,
+    "mae": {
+      "hold": {
+        "bearingRad": 0.06294567283543569,
+        "logExtent": 0.06208516857742209
+      },
+      "bodyGaze": {
+        "bearingRad": 0.01305643375439132,
+        "logExtent": 0.06208516857742209
+      },
+      "frozenOld": {
+        "bearingRad": 0.0178327233504691,
+        "logExtent": 0.07652669635036205
+      },
+      "trainedHeld": {
+        "bearingRad": 0.007205246169353422,
+        "logExtent": 0.05111893029584505
+      },
+      "noHistory": {
+        "bearingRad": 0.007514088244174444,
+        "logExtent": 0.05948822758847103
+      },
+      "motorOnly": {
+        "bearingRad": 0.009014868093167747,
+        "logExtent": 0.0609657837341893
+      },
+      "trainedScheduled": {
+        "bearingRad": 0.011882126399888776,
+        "logExtent": 0.05171648129036667
+      }
+    }
+  },
+  "testScheduled": {
+    "examples": 348,
+    "labelBearingDifference": 0.01080904640318567,
+    "mae": {
+      "hold": {
+        "bearingRad": 0.05668175469265191,
+        "logExtent": 0.058555596347479394
+      },
+      "bodyGaze": {
+        "bearingRad": 0.021581662965708622,
+        "logExtent": 0.058555596347479394
+      },
+      "frozenOld": {
+        "bearingRad": 0.026451712040431695,
+        "logExtent": 0.0750449913568029
+      },
+      "trainedHeld": {
+        "bearingRad": 0.016502873933091314,
+        "logExtent": 0.04961296986143721
+      },
+      "noHistory": {
+        "bearingRad": 0.01682941262905829,
+        "logExtent": 0.05572294156559418
+      },
+      "motorOnly": {
+        "bearingRad": 0.01807152830289634,
+        "logExtent": 0.0572098451886263
+      },
+      "trainedScheduled": {
+        "bearingRad": 0.018201246786934144,
+        "logExtent": 0.050108868086238545
+      }
+    }
+  },
+  "crossingHeld": {
+    "examples": 84,
+    "labelBearingDifference": 0.04478033509891206,
+    "mae": {
+      "hold": {
+        "bearingRad": 0.06315563935167971,
+        "logExtent": 0.06599619191036614
+      },
+      "bodyGaze": {
+        "bearingRad": 0.010019485651702117,
+        "logExtent": 0.06599619191036614
+      },
+      "frozenOld": {
+        "bearingRad": 0.016552636260750337,
+        "logExtent": 0.056068116168581705
+      },
+      "trainedHeld": {
+        "bearingRad": 0.006817911813833357,
+        "logExtent": 0.054721559185380686
+      },
+      "noHistory": {
+        "bearingRad": 0.007369252052576854,
+        "logExtent": 0.06605412410612628
+      },
+      "motorOnly": {
+        "bearingRad": 0.00924239480770267,
+        "logExtent": 0.06625192009258761
+      },
+      "trainedScheduled": {
+        "bearingRad": 0.012435842157184048,
+        "logExtent": 0.05458274525190309
+      }
+    }
+  },
+  "crossingScheduled": {
+    "examples": 84,
+    "labelBearingDifference": 0.04478033509891206,
+    "mae": {
+      "hold": {
+        "bearingRad": 0.037205121331575546,
+        "logExtent": 0.051373678386318004
+      },
+      "bodyGaze": {
+        "bearingRad": 0.045338292384302384,
+        "logExtent": 0.051373678386318004
+      },
+      "frozenOld": {
+        "bearingRad": 0.0522598751191668,
+        "logExtent": 0.049929624052407875
+      },
+      "trainedHeld": {
+        "bearingRad": 0.04533665540646177,
+        "logExtent": 0.04848258024283378
+      },
+      "noHistory": {
+        "bearingRad": 0.04596131021852429,
+        "logExtent": 0.050455082011350634
+      },
+      "motorOnly": {
+        "bearingRad": 0.04676284424800683,
+        "logExtent": 0.050691603260969484
+      },
+      "trainedScheduled": {
+        "bearingRad": 0.038615055189229086,
+        "logExtent": 0.04792263340622945
+      }
+    }
+  },
+  "byEpisode": {
+    "test:static:101": {
+      "held": {
+        "examples": 58,
+        "labelBearingDifference": 0.009999282172884176,
+        "mae": {
+          "hold": {
+            "bearingRad": 0.0571536818032147,
+            "logExtent": 0.04732250282293479
+          },
+          "bodyGaze": {
+            "bearingRad": 0.010130095503849808,
+            "logExtent": 0.04732250282293479
+          },
+          "frozenOld": {
+            "bearingRad": 0.016769824293281235,
+            "logExtent": 0.059026921636995876
+          },
+          "trainedHeld": {
+            "bearingRad": 0.005863220588050161,
+            "logExtent": 0.04037659488206667
+          },
+          "noHistory": {
+            "bearingRad": 0.00552579863805625,
+            "logExtent": 0.04275626906468278
+          },
+          "motorOnly": {
+            "bearingRad": 0.006255184749769077,
+            "logExtent": 0.043494807397445774
+          },
+          "trainedScheduled": {
+            "bearingRad": 0.010263320442254732,
+            "logExtent": 0.042526632052752894
+          }
+        }
+      },
+      "scheduled": {
+        "examples": 58,
+        "labelBearingDifference": 0.009999282172884176,
+        "mae": {
+          "hold": {
+            "bearingRad": 0.051386070769325394,
+            "logExtent": 0.03819626180548474
+          },
+          "bodyGaze": {
+            "bearingRad": 0.019142771845246157,
+            "logExtent": 0.03819626180548474
+          },
+          "frozenOld": {
+            "bearingRad": 0.025651109399813674,
+            "logExtent": 0.05004626956135891
+          },
+          "trainedHeld": {
+            "bearingRad": 0.015021925954372463,
+            "logExtent": 0.03100987513133705
+          },
+          "noHistory": {
+            "bearingRad": 0.014646440573314974,
+            "logExtent": 0.03417094962661027
+          },
+          "motorOnly": {
+            "bearingRad": 0.015282899368496543,
+            "logExtent": 0.03564110913267199
+          },
+          "trainedScheduled": {
+            "bearingRad": 0.016446908840696113,
+            "logExtent": 0.03193689782875641
+          }
+        }
+      }
+    },
+    "test:static:102": {
+      "held": {
+        "examples": 58,
+        "labelBearingDifference": 0.011326250653507263,
+        "mae": {
+          "hold": {
+            "bearingRad": 0.06396614990846076,
+            "logExtent": 0.08232979667816155
+          },
+          "bodyGaze": {
+            "bearingRad": 0.01310167355510849,
+            "logExtent": 0.08232979667816155
+          },
+          "frozenOld": {
+            "bearingRad": 0.01642780963885061,
+            "logExtent": 0.1037683872514204
+          },
+          "trainedHeld": {
+            "bearingRad": 0.008218216821585517,
+            "logExtent": 0.07337269479384204
+          },
+          "noHistory": {
+            "bearingRad": 0.009530987266481434,
+            "logExtent": 0.0804815409575521
+          },
+          "motorOnly": {
+            "bearingRad": 0.016282154678333487,
+            "logExtent": 0.083150679648607
+          },
+          "trainedScheduled": {
+            "bearingRad": 0.009847294795643629,
+            "logExtent": 0.07381067373224798
+          }
+        }
+      },
+      "scheduled": {
+        "examples": 58,
+        "labelBearingDifference": 0.011326250653507263,
+        "mae": {
+          "hold": {
+            "bearingRad": 0.058804555975958385,
+            "logExtent": 0.0826352176352361
+          },
+          "bodyGaze": {
+            "bearingRad": 0.022941556438452908,
+            "logExtent": 0.0826352176352361
+          },
+          "frozenOld": {
+            "bearingRad": 0.0260743085217078,
+            "logExtent": 0.10648885722879418
+          },
+          "trainedHeld": {
+            "bearingRad": 0.01854796097031805,
+            "logExtent": 0.07737845764891228
+          },
+          "noHistory": {
+            "bearingRad": 0.01975682373138035,
+            "logExtent": 0.08090380225933719
+          },
+          "motorOnly": {
+            "bearingRad": 0.025473469013098476,
+            "logExtent": 0.08239505196187756
+          },
+          "trainedScheduled": {
+            "bearingRad": 0.018203197465273074,
+            "logExtent": 0.07693442336221992
+          }
+        }
+      }
+    },
+    "test:static:103": {
+      "held": {
+        "examples": 58,
+        "labelBearingDifference": 0.011676277772411781,
+        "mae": {
+          "hold": {
+            "bearingRad": 0.06628573260687275,
+            "logExtent": 0.06707639795181172
+          },
+          "bodyGaze": {
+            "bearingRad": 0.009857555356025938,
+            "logExtent": 0.06707639795181172
+          },
+          "frozenOld": {
+            "bearingRad": 0.019492718630502656,
+            "logExtent": 0.08138737594533187
+          },
+          "trainedHeld": {
+            "bearingRad": 0.006415504665121314,
+            "logExtent": 0.04962653546925363
+          },
+          "noHistory": {
+            "bearingRad": 0.0068750888244320406,
+            "logExtent": 0.06312814248952797
+          },
+          "motorOnly": {
+            "bearingRad": 0.008333424413754512,
+            "logExtent": 0.06512680294051326
+          },
+          "trainedScheduled": {
+            "bearingRad": 0.012996040987314607,
+            "logExtent": 0.049772280089784876
+          }
+        }
+      },
+      "scheduled": {
+        "examples": 58,
+        "labelBearingDifference": 0.011676277772411781,
+        "mae": {
+          "hold": {
+            "bearingRad": 0.059175480236290025,
+            "logExtent": 0.06554659713706888
+          },
+          "bodyGaze": {
+            "bearingRad": 0.019983851637707502,
+            "logExtent": 0.06554659713706888
+          },
+          "frozenOld": {
+            "bearingRad": 0.028082056238079786,
+            "logExtent": 0.07882858176066082
+          },
+          "trainedHeld": {
+            "bearingRad": 0.016680648218746156,
+            "logExtent": 0.04550881618381796
+          },
+          "noHistory": {
+            "bearingRad": 0.017024518275825108,
+            "logExtent": 0.062028126347148695
+          },
+          "motorOnly": {
+            "bearingRad": 0.01820602716935692,
+            "logExtent": 0.06434698168550644
+          },
+          "trainedScheduled": {
+            "bearingRad": 0.01979583479885797,
+            "logExtent": 0.046082493994193424
+          }
+        }
+      }
+    },
+    "test:lateral:101": {
+      "held": {
+        "examples": 58,
+        "labelBearingDifference": 0.010014955028954527,
+        "mae": {
+          "hold": {
+            "bearingRad": 0.060178543024792516,
+            "logExtent": 0.050092162636694595
+          },
+          "bodyGaze": {
+            "bearingRad": 0.014808985422846822,
+            "logExtent": 0.050092162636694595
+          },
+          "frozenOld": {
+            "bearingRad": 0.015790066614495855,
+            "logExtent": 0.062399771126617154
+          },
+          "trainedHeld": {
+            "bearingRad": 0.006547101976896123,
+            "logExtent": 0.039294117257093406
+          },
+          "noHistory": {
+            "bearingRad": 0.007095000017099389,
+            "logExtent": 0.04773072969526581
+          },
+          "motorOnly": {
+            "bearingRad": 0.008933112153254872,
+            "logExtent": 0.049778628329983206
+          },
+          "trainedScheduled": {
+            "bearingRad": 0.017282093969106405,
+            "logExtent": 0.040593707463049
+          }
+        }
+      },
+      "scheduled": {
+        "examples": 58,
+        "labelBearingDifference": 0.010014955028954527,
+        "mae": {
+          "hold": {
+            "bearingRad": 0.05465647340267206,
+            "logExtent": 0.04768239561250697
+          },
+          "bodyGaze": {
+            "bearingRad": 0.02147748410367619,
+            "logExtent": 0.04768239561250697
+          },
+          "frozenOld": {
+            "bearingRad": 0.024369244246393286,
+            "logExtent": 0.061886340176640214
+          },
+          "trainedHeld": {
+            "bearingRad": 0.014139894572093322,
+            "logExtent": 0.039863755101572605
+          },
+          "noHistory": {
+            "bearingRad": 0.014951571872050436,
+            "logExtent": 0.045572513821457994
+          },
+          "motorOnly": {
+            "bearingRad": 0.01618657530247405,
+            "logExtent": 0.04665703258916438
+          },
+          "trainedScheduled": {
+            "bearingRad": 0.021539607182201218,
+            "logExtent": 0.04087106507003384
+          }
+        }
+      }
+    },
+    "test:lateral:102": {
+      "held": {
+        "examples": 58,
+        "labelBearingDifference": 0.010882186398180642,
+        "mae": {
+          "hold": {
+            "bearingRad": 0.061923454333958274,
+            "logExtent": 0.07588841459285402
+          },
+          "bodyGaze": {
+            "bearingRad": 0.012326428054439285,
+            "logExtent": 0.07588841459285402
+          },
+          "frozenOld": {
+            "bearingRad": 0.016697118368955124,
+            "logExtent": 0.09020150851896924
+          },
+          "trainedHeld": {
+            "bearingRad": 0.010216933767284334,
+            "logExtent": 0.06089988654119543
+          },
+          "noHistory": {
+            "bearingRad": 0.010068464885793976,
+            "logExtent": 0.0736799420053347
+          },
+          "motorOnly": {
+            "bearingRad": 0.006713911815575705,
+            "logExtent": 0.07586318654095617
+          },
+          "trainedScheduled": {
+            "bearingRad": 0.010450635049456406,
+            "logExtent": 0.06097791086242737
+          }
+        }
+      },
+      "scheduled": {
+        "examples": 58,
+        "labelBearingDifference": 0.010882186398180642,
+        "mae": {
+          "hold": {
+            "bearingRad": 0.055586396196179555,
+            "logExtent": 0.06719206247128165
+          },
+          "bodyGaze": {
+            "bearingRad": 0.02094136098085813,
+            "logExtent": 0.06719206247128165
+          },
+          "frozenOld": {
+            "bearingRad": 0.02520445595268655,
+            "logExtent": 0.08763836896161553
+          },
+          "trainedHeld": {
+            "bearingRad": 0.019038498593118236,
+            "logExtent": 0.058711787693807686
+          },
+          "noHistory": {
+            "bearingRad": 0.019034066704414696,
+            "logExtent": 0.06250829684045013
+          },
+          "motorOnly": {
+            "bearingRad": 0.016549229706410352,
+            "logExtent": 0.06522553670905556
+          },
+          "trainedScheduled": {
+            "bearingRad": 0.01693048032518766,
+            "logExtent": 0.059119528721692856
+          }
+        }
+      }
+    },
+    "test:lateral:103": {
+      "held": {
+        "examples": 58,
+        "labelBearingDifference": 0.01095532639317561,
+        "mae": {
+          "hold": {
+            "bearingRad": 0.06816647533531492,
+            "logExtent": 0.04980173678207558
+          },
+          "bodyGaze": {
+            "bearingRad": 0.018113864634077492,
+            "logExtent": 0.04980173678207558
+          },
+          "frozenOld": {
+            "bearingRad": 0.021818802556729126,
+            "logExtent": 0.062376213622837615
+          },
+          "trainedHeld": {
+            "bearingRad": 0.005970499197183069,
+            "logExtent": 0.04314375283161913
+          },
+          "noHistory": {
+            "bearingRad": 0.005989189833183574,
+            "logExtent": 0.04915274131846239
+          },
+          "motorOnly": {
+            "bearingRad": 0.0075714207483188415,
+            "logExtent": 0.0483805975476305
+          },
+          "trainedScheduled": {
+            "bearingRad": 0.010453373155556877,
+            "logExtent": 0.04261768354193784
+          }
+        }
+      },
+      "scheduled": {
+        "examples": 58,
+        "labelBearingDifference": 0.01095532639317561,
+        "mae": {
+          "hold": {
+            "bearingRad": 0.06048155157548596,
+            "logExtent": 0.050081043423298006
+          },
+          "bodyGaze": {
+            "bearingRad": 0.025002952788310787,
+            "logExtent": 0.050081043423298006
+          },
+          "frozenOld": {
+            "bearingRad": 0.029329097883909062,
+            "logExtent": 0.06538153045174727
+          },
+          "trainedHeld": {
+            "bearingRad": 0.015588315289899648,
+            "logExtent": 0.04520512740917551
+          },
+          "noHistory": {
+            "bearingRad": 0.015563054617364295,
+            "logExtent": 0.049153960498560266
+          },
+          "motorOnly": {
+            "bearingRad": 0.016730969257541705,
+            "logExtent": 0.04899335905348203
+          },
+          "trainedScheduled": {
+            "bearingRad": 0.01629145210938874,
+            "logExtent": 0.045708799540534834
+          }
+        }
+      }
+    }
+  },
+  "models": {
+    "held": {
+      "mean": [
+        -0.0014288420450803666,
+        0.0013955777134392604,
+        -0.030104509011353513,
+        -1.5752436558594447,
+        0.0862375245230049,
+        -0.00043485357261301654,
+        0.0029486059367084014,
+        0.12108355631992457,
+        0.08446005984889235,
+        0.009385943742570657,
+        0.004989887745328375
+      ],
+      "scale": [
+        0.07965887657821287,
+        0.41939532993494283,
+        0.2814340335802986,
+        0.18212282146082906,
+        0.0539656597880891,
+        0.0019414752030170188,
+        0.024673300681655637,
+        0.17590505998062808,
+        0.07092980949061171,
+        0.0741409578520787,
+        0.10380298693039242
+      ],
+      "weights": [
+        [
+          0.001042943413716941,
+          -0.0030156756912927823,
+          -0.00011657996838711996,
+          0.008223798055880815,
+          0.0009235565321672747,
+          0.00004605433450735521,
+          -0.0007560647037541282,
+          -0.013942790817514553,
+          0.004415647954472565,
+          0.00013343799285102636,
+          -0.014991643961605905,
+          -0.06404554808880997
+        ],
+        [
+          0.017080338948244296,
+          0.005174384117915053,
+          -0.03760157077540516,
+          -0.0021973140979745258,
+          0.00034666635432709363,
+          0.009739267293566181,
+          -0.0001799027923891278,
+          0.0020690762184579783,
+          0.0003917897382013959,
+          0.0038137815159094463,
+          -0.0010874234119576875,
+          0.0036875661359143967
+        ]
+      ]
+    },
+    "noHistory": {
+      "mean": [
+        -0.030104509011353513,
+        -1.5752436558594447,
+        0.0862375245230049,
+        -0.00043485357261301654,
+        0.0029486059367084014,
+        0.12108355631992457,
+        0.08446005984889235,
+        0.009385943742570657,
+        0.004989887745328375
+      ],
+      "scale": [
+        0.2814340335802986,
+        0.18212282146082906,
+        0.0539656597880891,
+        0.0019414752030170188,
+        0.024673300681655637,
+        0.17590505998062808,
+        0.07092980949061171,
+        0.0741409578520787,
+        0.10380298693039242
+      ],
+      "weights": [
+        [
+          0.0010429434137169398,
+          0.0077251880194629426,
+          0.0008326896850795111,
+          0.00015792907715074175,
+          -0.0005866800333774625,
+          -0.012847587045121567,
+          0.004487755873421693,
+          0.00016804371569831885,
+          -0.015179315493982527,
+          -0.062254102929254866
+        ],
+        [
+          0.01708033894824421,
+          -0.0009183840449424923,
+          -0.007632530085018534,
+          0.008367226133239477,
+          0.0006400085086060532,
+          -0.001411270427977001,
+          0.0014309103769339746,
+          0.00044684014031473547,
+          0.000840725120179069,
+          -0.00183531420011917
+        ]
+      ]
+    },
+    "motorOnly": {
+      "mean": [
+        0.0029486059367084014,
+        0.12108355631992457,
+        0.009385943742570657,
+        0.004989887745328375
+      ],
+      "scale": [
+        0.024673300681655637,
+        0.17590505998062808,
+        0.0741409578520787,
+        0.10380298693039242
+      ],
+      "weights": [
+        [
+          0.0010429434137169287,
+          -0.013938957478035727,
+          0.00230332441036261,
+          -0.014440793039841799,
+          -0.06287411474717852
+        ],
+        [
+          0.017080338948244303,
+          -0.0019610430302591316,
+          0.0019078558116956907,
+          0.002549335694648455,
+          -0.0018386532950941856
+        ]
+      ]
+    },
+    "scheduled": {
+      "mean": [
+        -0.0014288420450803666,
+        0.0013955777134392604,
+        -0.030104509011353513,
+        -1.5752436558594447,
+        0.0862375245230049,
+        -0.00043485357261301654,
+        0.0029486059367084014,
+        0.12108355631992457,
+        0.08446005984889235,
+        0.009385943742570657,
+        0.004989887745328375
+      ],
+      "scale": [
+        0.07965887657821287,
+        0.41939532993494283,
+        0.2814340335802986,
+        0.18212282146082906,
+        0.0539656597880891,
+        0.0019414752030170188,
+        0.024673300681655637,
+        0.17590505998062808,
+        0.07092980949061171,
+        0.0741409578520787,
+        0.10380298693039242
+      ],
+      "weights": [
+        [
+          0.0011599374830621619,
+          -0.004591654804012912,
+          -0.0007411645058138013,
+          0.007998166293385036,
+          0.0000220335750661597,
+          0.0003560469011944338,
+          -0.00035099935251959626,
+          -0.012266823961553954,
+          0.009024877852497507,
+          0.0003136900313428525,
+          -0.013842862334940973,
+          -0.05650058643479487
+        ],
+        [
+          0.016977720888190113,
+          0.0057978000357765316,
+          -0.03777476786629615,
+          -0.00236326949491377,
+          -0.0016003650496040495,
+          0.006959132711827582,
+          -0.00014187363595476638,
+          0.0033403773371940317,
+          0.0025908745783623853,
+          0.0026511558395380906,
+          -0.00036704751265257226,
+          0.004733700291883743
+        ]
+      ]
+    }
+  }
+}
