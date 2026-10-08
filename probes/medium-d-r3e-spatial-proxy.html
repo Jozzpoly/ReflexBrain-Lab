@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07111c">
+<title>ReflexBrain · MEDIUM-D/R3E</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#07101a;--panel:#0c1724;--edge:#26394e;--ink:#e9f1fb;--sub:#9cafc2;
+  --cyan:#72e4de;--owner:#ef9aaf;--material:#8fbaff;--process:#b6a5ef;--amber:#f2c777;--good:#8fe2a4;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+body{background:radial-gradient(900px 460px at 55% -15%,#15314a 0%,transparent 68%),var(--bg)}
+a{color:var(--cyan);text-underline-offset:3px}
+main{max-width:1450px;margin:auto;padding:18px clamp(14px,2.3vw,30px) 34px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:15px}
+.brand{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--cyan);font-weight:850}
+.links{font-size:11px;display:flex;gap:12px;color:var(--sub)}
+.hero{display:flex;justify-content:space-between;align-items:end;gap:18px;margin:0 0 12px}
+h1{font-size:clamp(24px,3.3vw,43px);line-height:1.05;letter-spacing:-.045em;margin:0}
+.lead{max-width:700px;color:var(--sub);margin:8px 0 0;font-size:13px}
+.badges{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.badge{font-size:10px;font-weight:800;letter-spacing:.05em;padding:5px 9px;border-radius:99px;border:1px solid var(--edge);background:#111e2d;color:var(--sub)}
+.badge.live{color:var(--good);border-color:#36594b}.badge.warn{color:var(--amber);border-color:#67523b}
+.stage{position:relative;border:1px solid var(--edge);border-radius:15px;background:#08131f;overflow:hidden;min-height:610px}
+.world-wrap{padding:9px;position:relative}
+canvas{display:block;width:100%;height:auto;aspect-ratio:16/8.3;background:#07111d;border-radius:10px;touch-action:none}
+#compareView{display:none;grid-template-columns:1fr 1fr;gap:8px}
+.compare-cell{position:relative}
+.compare-label{position:absolute;left:14px;top:12px;z-index:3;font-size:10px;letter-spacing:.1em;font-weight:850;padding:4px 8px;border-radius:99px;background:#0a1420cc;border:1px solid var(--edge)}
+.compare-label.a{color:var(--material)}.compare-label.b{color:var(--owner)}
+.hud{position:absolute;z-index:5;display:flex;align-items:center;gap:7px}
+.hud.left{left:20px;top:18px}.hud.right{right:20px;top:18px}
+.live{font-size:10px;font-weight:850;letter-spacing:.09em;color:var(--good);background:#0d211acc;border:1px solid #355847;border-radius:99px;padding:6px 9px}
+.tick{font-size:11px;font-variant-numeric:tabular-nums;color:var(--sub);background:#091521d9;border:1px solid var(--edge);border-radius:99px;padding:6px 9px}
+button,select{font:inherit;color:var(--ink);background:#132236;border:1px solid #36506b;border-radius:8px;padding:8px 11px;cursor:pointer}
+button:hover{background:#1b3048}button:disabled{opacity:.4;cursor:not-allowed}
+button.mark{font-weight:800;color:var(--cyan);border-color:#3e716f;background:#102b31d9}
+details.utility{position:relative}
+details.utility summary{list-style:none;cursor:pointer;border:1px solid var(--edge);background:#0c1927d9;border-radius:8px;padding:7px 10px;color:var(--sub);font-weight:800}
+details.utility summary::-webkit-details-marker{display:none}
+.utility-pop{position:absolute;right:0;top:42px;min-width:190px;border:1px solid var(--edge);background:#0b1724;padding:10px;border-radius:10px;box-shadow:0 14px 40px #0008;display:grid;gap:8px}
+.utility-pop label{color:var(--sub);font-size:11px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.branch-strip{position:absolute;z-index:5;left:50%;top:18px;transform:translateX(-50%);display:none;align-items:center;gap:7px;background:#091521e8;border:1px solid var(--edge);border-radius:99px;padding:5px 8px;font-size:10px}
+.branch{padding:4px 7px;border-radius:99px;font-weight:800}
+.branch.a{color:var(--material)}.branch.b{color:var(--owner);background:#281923}
+.intervention{display:none;position:absolute;z-index:6;left:50%;top:62px;transform:translateX(-50%);font-size:10px;letter-spacing:.08em;font-weight:850;color:#ffd8e0;background:#301824e8;border:1px solid #704457;border-radius:99px;padding:6px 10px;pointer-events:none}
+.hint{position:absolute;z-index:4;left:20px;bottom:66px;color:#8297af;font-size:10px;background:#07131dcc;padding:5px 8px;border-radius:7px}
+.rail{height:54px;border-top:1px solid var(--edge);background:#09141f;display:flex;align-items:center;gap:10px;padding:8px 13px;overflow-x:auto}
+.rail-title{font-size:9px;letter-spacing:.11em;color:#60758d;font-weight:850;margin-right:2px}
+.rail-node{display:flex;align-items:center;gap:6px;font-size:10px;border:1px solid var(--edge);border-radius:99px;padding:5px 8px;color:var(--sub);white-space:nowrap;background:#0d1a29}
+.rail-node.mark-node{color:var(--cyan);border-color:#345d62}
+.rail-node.owner-node{color:var(--owner);border-color:#624052}
+.rail-node.material-node{color:var(--material);border-color:#405b7a}
+.fork-action{display:none;align-items:center;gap:7px}
+.fork-action button{font-size:10px;padding:5px 8px;color:var(--cyan)}
+.ribbon{display:none;align-items:center;gap:7px;margin-left:auto}
+.arrow{color:#50687f}
+.compare-btn{font-size:10px;padding:5px 8px;color:#dce8ff;border-color:#49637e}
+.status-line{min-height:36px;padding:9px 13px;color:var(--sub);font-size:11px;border-top:1px solid #192b3e;background:#07121d}
+.status-line strong{color:var(--ink)}
+.spatial-proxy{
+  position:absolute;z-index:7;display:none;padding:0;margin:0;
+  border-radius:50%;border:1px solid transparent;background:transparent;
+  cursor:grab;touch-action:none;color:transparent;outline:none;
+}
+.spatial-proxy:hover,.spatial-proxy:focus-visible{
+  border-color:#72e4deaa;
+  box-shadow:0 0 0 3px #72e4de22, inset 0 0 0 1px #72e4de55;
+}
+.spatial-proxy[data-enabled="false"]{cursor:default;border-color:#72e4de33}
+#error{display:none;color:#ffc1cc;background:#2a151d;border:1px solid #704353;margin:8px;border-radius:8px;padding:9px 11px;font-size:11px}
+footer{color:#70859d;font-size:10px;margin-top:10px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media(max-width:760px){
+ .hero{display:block}.badges{justify-content:flex-start;margin-top:10px}.stage{min-height:470px}
+ #compareView{grid-template-columns:1fr}.branch-strip{top:58px}.intervention{top:96px}
+}
+</style>
+</head>
+<body>
+<main>
+<div class="top">
+  <div class="brand">◈ ReflexBrain / MEDIUM-D / R3E</div>
+  <div class="links"><a href="../index.html">project</a><a href="owner-field-lab.html">Field v0</a></div>
+</div>
+<div class="hero">
+  <div>
+    <h1>World first. Touch the thing itself.</h1>
+    <p class="lead">Derived spatial-interaction prototype on the exact E01 donor. Mark a live moment, expose the shadow fork when useful, then drag the material body itself through a semantic proxy derived from its real physical projection. No scenario button.</p>
+  </div>
+  <div class="badges">
+    <span class="badge live">● LIVE DONOR</span>
+    <span class="badge warn">PROTOTYPE · UNQUALIFIED UX</span>
+    <span class="badge">R3D · DERIVED SPATIAL PROXY</span>
+    <span class="badge">E01 / exact fork</span>
+  </div>
+</div>
+
+<section class="stage">
+  <div id="error"></div>
+  <div class="hud left">
+    <span class="live">● WORLD RUNNING</span>
+    <span id="tick" class="tick">tick 0</span>
+  </div>
+  <div class="hud right">
+    <button id="mark" class="mark" type="button">◆ Mark</button>
+    <details class="utility">
+      <summary>•••</summary>
+      <div class="utility-pop">
+        <label>speed
+          <select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select>
+        </label>
+        <button id="reset" type="button">↺ Reset prototype</button>
+      </div>
+    </details>
+  </div>
+
+  <div id="branches" class="branch-strip">
+    <span class="branch a">A · reference <span id="tickA">0</span></span>
+    <span style="color:#4d647d">|</span>
+    <span class="branch b">B · working <span id="tickB">0</span></span>
+    <span id="sync" style="color:var(--good)">● sync</span>
+  </div>
+
+  <div id="intervention" class="intervention">OWNER · MATERIAL · IMPULSE</div>
+
+  <div id="singleView" class="world-wrap">
+    <canvas id="world" aria-label="Live E01 material world"></canvas>
+    <button id="looseProxy" class="spatial-proxy" type="button" tabindex="0" aria-label="Movable material body — drag to define impulse" aria-roledescription="material body" data-enabled="false"></button>
+  </div>
+
+  <div id="compareView" class="world-wrap">
+    <div class="compare-cell"><span class="compare-label a">A · reference</span><canvas id="worldA"></canvas></div>
+    <div class="compare-cell"><span class="compare-label b">B · working</span><canvas id="worldB"></canvas></div>
+  </div>
+
+  <div id="hint" class="hint">Watch first. Mark only when something is worth keeping.</div>
+
+  <div class="rail">
+    <span class="rail-title">CAUSAL RAIL</span>
+    <span id="emptyRail" style="font-size:10px;color:#526980">no mark yet</span>
+    <span id="markNode" class="rail-node mark-node" style="display:none">◆ mark <b id="markTick">0</b></span>
+    <span id="forkAction" class="fork-action"><button id="fork" type="button">⑂ Fork this mark</button><span id="markAge" style="font-size:9px;color:#6e839a"></span></span>
+    <span id="ribbon" class="ribbon">
+      <span id="ownerNode" class="rail-node owner-node">✦ impulse <b id="impulseTick">0</b></span>
+      <span class="arrow">→</span>
+      <span id="materialNode" class="rail-node material-node">material divergence <b id="divTick">0</b></span>
+      <button id="compare" class="compare-btn" type="button">Compare A/B</button>
+    </span>
+  </div>
+  <div id="status" class="status-line"><strong>WATCH</strong> · E01 is continuing under its ordinary mechanical process.</div>
+</section>
+
+<footer>
+  <span>R3E tests a derived spatial interaction proxy, not organism life or Owner usability.</span>
+  <span>Direct gesture = material impulse, not a physical grab.</span>
+</footer>
+
+<script type="module">
+import { initE01Rapier } from '../src/e01-mechanical.ts';
+import { R3BShadowMarkSession } from '../src/medium-shadow-mark.ts';
+import { createR3EProjection, materialImpulseFromGesture } from '../src/medium-spatial-interaction.ts';
+
+const worldCanvas=document.querySelector('#world');
+const canvasA=document.querySelector('#worldA');
+const canvasB=document.querySelector('#worldB');
+const tickEl=document.querySelector('#tick');
+const tickA=document.querySelector('#tickA');
+const tickB=document.querySelector('#tickB');
+const branches=document.querySelector('#branches');
+const markBtn=document.querySelector('#mark');
+const forkBtn=document.querySelector('#fork');
+const resetBtn=document.querySelector('#reset');
+const speedSel=document.querySelector('#speed');
+const markNode=document.querySelector('#markNode');
+const markTickEl=document.querySelector('#markTick');
+const forkAction=document.querySelector('#forkAction');
+const markAgeEl=document.querySelector('#markAge');
+const emptyRail=document.querySelector('#emptyRail');
+const ribbon=document.querySelector('#ribbon');
+const impulseTickEl=document.querySelector('#impulseTick');
+const divTickEl=document.querySelector('#divTick');
+const compareBtn=document.querySelector('#compare');
+const singleView=document.querySelector('#singleView');
+const compareView=document.querySelector('#compareView');
+const interventionChip=document.querySelector('#intervention');
+const hint=document.querySelector('#hint');
+const status=document.querySelector('#status');
+const errorBox=document.querySelector('#error');
+const looseProxy=document.querySelector('#looseProxy');
+
+let session=null;
+let marked=false;
+let markedTick=null;
+let forkExposed=false;
+let compare=false;
+let interventionDone=false;
+let interventionTick=null;
+let divergenceTick=null;
+let drag=null;
+let lastTs=0;
+let accumulator=0;
+let impulseSerial=0;
+const DT=1/120;
+
+function fail(message){
+  errorBox.style.display='block';
+  errorBox.textContent=message;
+  status.innerHTML='<strong>PROTOTYPE STOPPED</strong> · '+message;
+}
+
+function resetPrototype(){
+  if(session)session.destroy();
+  session=R3BShadowMarkSession.create();
+  marked=false;markedTick=null;forkExposed=false;compare=false;
+  interventionDone=false;interventionTick=null;divergenceTick=null;drag=null;
+  lastTs=0;accumulator=0;
+  branches.style.display='none';
+  markNode.style.display='none';
+  forkAction.style.display='none';
+  ribbon.style.display='none';
+  emptyRail.style.display='';
+  compareView.style.display='none';
+  singleView.style.display='block';
+  compareBtn.textContent='Compare A/B';
+  markBtn.disabled=false;
+  forkBtn.disabled=false;
+  errorBox.style.display='none';
+  looseProxy.style.display='none';
+  looseProxy.dataset.enabled='false';
+  looseProxy.setAttribute('aria-disabled','true');
+  hint.textContent='Watch first. Mark only when something is worth keeping.';
+  status.innerHTML='<strong>WATCH</strong> · E01 is continuing under its ordinary mechanical process.';
+  paint();
+}
+
+function fit(canvas){
+  const rect=canvas.getBoundingClientRect();
+  const dpr=Math.min(devicePixelRatio||1,2);
+  const w=Math.max(300,rect.width),h=Math.max(160,rect.height);
+  if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){
+    canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
+  }
+  const ctx=canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w,h};
+}
+
+function projection(w,h){
+  const base=createR3EProjection(w,h);
+  return {
+    s:base.scale,
+    X:function(x){return base.worldToScreen({x:x,y:0}).x;},
+    Y:function(y){return base.worldToScreen({x:0,y:y}).y;},
+    screenToWorld:function(point){return base.screenToWorld(point);},
+    radiusToScreen:function(radius){return base.radiusToScreen(radius);}
+  };
+}
+
+function drawHost(canvas,host,label){
+  if(!host)return;
+  const box=fit(canvas),ctx=box.ctx,w=box.w,h=box.h,p=projection(w,h),s=p.s,X=p.X,Y=p.Y;
+  const snap=host.snapshot();
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#07111d';ctx.fillRect(0,0,w,h);
+
+  ctx.strokeStyle='#13273a';ctx.lineWidth=1;
+  for(let x=-5;x<=5;x++){ctx.beginPath();ctx.moveTo(X(x),Y(-1.7));ctx.lineTo(X(x),Y(1.7));ctx.stroke();}
+  for(let y=-1;y<=1;y++){ctx.beginPath();ctx.moveTo(X(-5.5),Y(y));ctx.lineTo(X(5.5),Y(y));ctx.stroke();}
+
+  ctx.fillStyle='#26384e';
+  ctx.fillRect(X(-5.4),Y(1.32),10.8*s,.12*s);
+  ctx.fillRect(X(-5.4),Y(-1.20),10.8*s,.12*s);
+
+  function circle(x,y,r,fill,stroke,line){
+    ctx.beginPath();ctx.arc(X(x),Y(y),r*s,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();
+    ctx.strokeStyle=stroke;ctx.lineWidth=line||2;ctx.stroke();
+  }
+
+  circle(-4.35,0,.28,'#33455a','#70849a',1.5);
+  circle(4.35,0,.28,'#33455a','#70849a',1.5);
+  circle(snap.shuttle.x,snap.shuttle.y,.55,'#554875','#b6a5ef',2.3);
+  if(snap.loose) circle(snap.loose.x,snap.loose.y,.32,'#245b70','#72e4de',2.3);
+
+  ctx.fillStyle='#9fb3c8';ctx.font='10px system-ui';
+  ctx.fillText('independent shuttle',X(snap.shuttle.x)-33,Y(snap.shuttle.y)-18);
+  if(snap.loose)ctx.fillText('loose body',X(snap.loose.x)-24,Y(snap.loose.y)-16);
+
+  if(label){
+    ctx.fillStyle='#6f8399';ctx.font='bold 9px system-ui';
+    ctx.fillText(label,12,h-12);
+  }
+
+  if(canvas===worldCanvas && drag && snap.loose){
+    const from={x:X(snap.loose.x),y:Y(snap.loose.y)};
+    const to={x:X(drag.worldX),y:Y(drag.worldY)};
+    ctx.strokeStyle='#ef9aaf';ctx.lineWidth=2.5;ctx.setLineDash([7,5]);
+    ctx.beginPath();ctx.moveTo(from.x,from.y);ctx.lineTo(to.x,to.y);ctx.stroke();ctx.setLineDash([]);
+    const angle=Math.atan2(to.y-from.y,to.x-from.x);
+    ctx.beginPath();ctx.moveTo(to.x,to.y);
+    ctx.lineTo(to.x-Math.cos(angle-.55)*11,to.y-Math.sin(angle-.55)*11);
+    ctx.lineTo(to.x-Math.cos(angle+.55)*11,to.y-Math.sin(angle+.55)*11);
+    ctx.closePath();ctx.fillStyle='#ef9aaf';ctx.fill();
+  }
+}
+
+function visibleHost(){ return session?session.getVisible():null; }
+function referenceHost(){ return session?session.getReference():null; }
+
+function updateMarkAge(){
+  if(!marked||markedTick===null||!session)return;
+  const age=session.getVisible().tick-markedTick;
+  const seconds=(age/120).toFixed(1);
+  markAgeEl.textContent=age.toLocaleString()+' ticks shadowed · '+seconds+' s';
+}
+
+function updateSpatialProxy(){
+  if(!session||!forkExposed||compare){
+    looseProxy.style.display='none';
+    return;
+  }
+  const visible=visibleHost();
+  const snap=visible.snapshot();
+  if(!snap.loose){
+    looseProxy.style.display='none';
+    return;
+  }
+  const rect=worldCanvas.getBoundingClientRect();
+  const p=projection(rect.width,rect.height);
+  const center={x:p.X(snap.loose.x),y:p.Y(snap.loose.y)};
+  const visualRadius=p.radiusToScreen(.32);
+  const hitRadius=visualRadius*1.45;
+  looseProxy.style.display='block';
+  looseProxy.style.left=(worldCanvas.offsetLeft+center.x-hitRadius)+'px';
+  looseProxy.style.top=(worldCanvas.offsetTop+center.y-hitRadius)+'px';
+  looseProxy.style.width=(hitRadius*2)+'px';
+  looseProxy.style.height=(hitRadius*2)+'px';
+  looseProxy.dataset.enabled=interventionDone?'false':'true';
+  looseProxy.setAttribute('aria-disabled',String(interventionDone));
+}
+
+function paint(){
+  if(!session)return;
+  const visible=visibleHost();
+  tickEl.textContent='tick '+visible.tick.toLocaleString();
+
+  if(forkExposed){
+    const ref=referenceHost();
+    if(ref){
+      tickA.textContent=String(ref.tick);
+      tickB.textContent=String(visible.tick);
+      document.querySelector('#sync').textContent=ref.tick===visible.tick?'● sync':'● tick mismatch';
+    }
+  }
+  updateMarkAge();
+
+  if(compare&&referenceHost()){
+    drawHost(canvasA,referenceHost(),'A · reference');
+    drawHost(canvasB,visible,'B · working');
+  }else{
+    drawHost(worldCanvas,visible,forkExposed?'B · working':marked?'LIVE · shadow prepared':'LIVE SOURCE');
+  }
+  updateSpatialProxy();
+}
+
+markBtn.addEventListener('click',function(){
+  if(marked||!session)return;
+  try{
+    const result=session.mark('moment:r3c:'+session.getVisible().tick);
+    marked=true;markedTick=result.tick;
+    emptyRail.style.display='none';
+    markNode.style.display='flex';
+    markTickEl.textContent=String(markedTick);
+    forkAction.style.display='flex';
+    markBtn.disabled=true;
+    hint.textContent='Hidden reference is now running exactly. Keep watching; this mark does not expire.';
+    status.innerHTML='<strong>MARK @ '+markedTick+'</strong> · Latent A/B prepared without pausing or rewinding the visible World.';
+    updateMarkAge();
+  }catch(e){fail('MARK refused: '+String(e));}
+});
+
+forkBtn.addEventListener('click',function(){
+  if(!marked||forkExposed||!session)return;
+  try{
+    const exposure=session.exposeFork();
+    forkExposed=true;
+    branches.style.display='flex';
+    forkAction.style.display='none';
+    hint.textContent='Fork exposed after '+exposure.ageTicks.toLocaleString()+' ticks. Touch the cyan material body itself and drag to define one B-only impulse.';
+    status.innerHTML='<strong>FORK EXPOSED</strong> · Hidden reference remained exact for '+exposure.ageTicks.toLocaleString()+' ticks; no replay catch-up was needed.';
+    paint();
+  }catch(e){fail('FORK refused: '+String(e));}
+});
+
+function canvasPoint(ev,canvas){
+  const rect=canvas.getBoundingClientRect();
+  const p=projection(rect.width,rect.height);
+  return p.screenToWorld({x:ev.clientX-rect.left,y:ev.clientY-rect.top});
+}
+
+looseProxy.addEventListener('pointerdown',function(ev){
+  if(!forkExposed||compare||!session||interventionDone)return;
+  const q=canvasPoint(ev,worldCanvas);
+  drag={pointerId:ev.pointerId,worldX:q.x,worldY:q.y};
+  looseProxy.setPointerCapture(ev.pointerId);
+  interventionChip.style.display='block';
+  hint.textContent='Release applies one B-only material impulse. This spatial target is derived from the real body; it is not a physical grab.';
+  ev.preventDefault();
+});
+
+looseProxy.addEventListener('pointermove',function(ev){
+  if(!drag||ev.pointerId!==drag.pointerId)return;
+  const q=canvasPoint(ev,worldCanvas);
+  drag.worldX=q.x;drag.worldY=q.y;
+});
+
+function releaseImpulse(ev){
+  if(!drag||!session||ev.pointerId!==drag.pointerId)return;
+  const working=session.getVisible();
+  const reference=session.getReference();
+  if(!reference)return;
+  const snap=working.snapshot();
+  const q=canvasPoint(ev,worldCanvas);
+  if(looseProxy.hasPointerCapture(ev.pointerId))looseProxy.releasePointerCapture(ev.pointerId);
+  interventionChip.style.display='none';
+  const loose=snap.loose;
+  drag=null;
+  if(!loose)return;
+
+  const mapped=materialImpulseFromGesture({
+    bodyWorld:{x:loose.x,y:loose.y},
+    pointerWorld:q
+  });
+  if(mapped.kind==='none'){
+    status.innerHTML='<strong>NO INTERVENTION</strong> · Gesture was too small; histories remain untouched.';
+    hint.textContent='Drag farther from the cyan material body to define an impulse.';
+    return;
+  }
+  interventionTick=working.tick;
+  impulseSerial+=1;
+  session.applyWorkingImpulse(mapped.impulse.x,mapped.impulse.y,'event:r3e:B:impulse:'+impulseSerial);
+  interventionDone=true;
+
+  if(JSON.stringify(reference.stableState())!==JSON.stringify(working.stableState())){
+    divergenceTick=working.tick;
+  }
+
+  impulseTickEl.textContent=String(interventionTick);
+  divTickEl.textContent=String(divergenceTick===null?'—':divergenceTick);
+  ribbon.style.display='flex';
+  hint.textContent='Release complete. Keep watching, or open Compare only if you need the microscope.';
+  status.innerHTML='<strong>RELEASE / IMPULSE @ '+interventionTick+'</strong> · B changed materially; A remains the untouched reference.';
+}
+
+looseProxy.addEventListener('pointerup',releaseImpulse);
+looseProxy.addEventListener('pointercancel',function(ev){
+  if(drag&&looseProxy.hasPointerCapture(ev.pointerId))looseProxy.releasePointerCapture(ev.pointerId);
+  drag=null;interventionChip.style.display='none';
+});
+looseProxy.addEventListener('click',function(ev){ev.preventDefault();});
+
+compareBtn.addEventListener('click',function(){
+  if(!session||!referenceHost()||divergenceTick===null)return;
+  compare=!compare;
+  compareView.style.display=compare?'grid':'none';
+  singleView.style.display=compare?'none':'block';
+  compareBtn.textContent=compare?'Return to Habitat':'Compare A/B';
+  hint.textContent=compare?'Microscope mode: synchronized A/B material histories.':'B is active again; comparison is collapsed.';
+  status.innerHTML=compare?'<strong>COMPARE</strong> · Split view is microscope-on-demand, not the default Habitat.':'<strong>HABITAT</strong> · Single active B World restored.';
+  paint();
+});
+
+resetBtn.addEventListener('click',function(){
+  try{resetPrototype();}catch(e){fail('Reset failed: '+String(e));}
+});
+
+function advance(dt){
+  if(!session)return;
+  const speed=Number(speedSel.value);
+  accumulator+=Math.min(dt,80)/1000*speed;
+  let steps=0;
+  while(accumulator>=DT&&steps<18){
+    session.step();
+    if(forkExposed&&interventionDone&&divergenceTick===null&&referenceHost()){
+      if(JSON.stringify(referenceHost().stableState())!==JSON.stringify(session.getVisible().stableState())){
+        divergenceTick=session.getVisible().tick;
+        divTickEl.textContent=String(divergenceTick);
+        ribbon.style.display='flex';
+      }
+    }
+    accumulator-=DT;steps+=1;
+  }
+}
+
+function frame(ts){
+  if(lastTs===0)lastTs=ts;
+  advance(ts-lastTs);lastTs=ts;
+  paint();
+  requestAnimationFrame(frame);
+}
+
+window.addEventListener('resize',paint);
+
+try{
+  await initE01Rapier();
+  resetPrototype();
+  requestAnimationFrame(frame);
+}catch(e){
+  fail('Prototype boot failed: '+String(e));
+}
+</script>
+</section>
+</main>
+</body>
+</html>
