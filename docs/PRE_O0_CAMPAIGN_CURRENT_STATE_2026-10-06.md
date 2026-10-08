@@ -1489,3 +1489,42 @@ Next:
 - MEDIUM-D/R3C may replace the hidden R3A prototype's expiring catch-up implementation with the R3B latent-shadow mechanism;
 - world-first interaction shape remains;
 - still no homepage promotion or Owner usability PASS.
+
+
+---
+
+# MEDIUM-D/R3C browser verdict — 2026-10-08
+
+**PARTIAL PASS · HUMAN-SCALE MARK/FORK VALIDATED · MATERIAL GESTURE LIVE-UNRESOLVED**
+
+Evidence:
+- prototype: `probes/medium-d-r3c-shadow-fork.html`
+- `docs/medium-runs/MEDIUM-D-R3C_RESULT.md`
+- static live Opera inspection;
+- real public browser interaction run.
+
+Measured browser interaction:
+- MARK tick: **1658**
+- semantic FORK exposure: **2613**
+- mark age at exposure: **955 ticks**
+- old rejected R3A mark horizon: **240 ticks**
+- A/B synchronized at exposure: **yes**
+- World continued to ~19.5k ticks without runtime errors;
+- no permanent dashboard appeared.
+
+Thus the R3B shadow architecture materially resolves the old human-timescale R3A interaction failure in the live page.
+
+Unresolved:
+- the available browser actuator could not manipulate the loose body because the direct world entity exists only inside canvas hit testing;
+- material gesture, divergence ribbon, Compare and Return-to-Habitat are therefore **not live-validated**, not FAIL.
+
+New medium finding:
+
+> canvas-only direct manipulation is visually world-first but opaque to available automation/accessibility semantics.
+
+Next pressure:
+- MEDIUM-D/R3D should investigate a spatial interaction surface that remains direct/material/contextual while exposing real interactable semantics for inspection/testing/accessibility;
+- do not regress to scenario buttons or dashboard controls;
+- do not treat accessibility metadata as actor/world causality.
+
+No homepage promotion. No Owner usability PASS.
