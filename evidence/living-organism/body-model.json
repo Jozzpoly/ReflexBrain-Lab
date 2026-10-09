@@ -1,0 +1,626 @@
+{
+  "scope": "Private body velocity prediction and matched-state action selection, free1D only. Analytic prior knows fixed body constants, learned model does not. No default runtime changes.",
+  "settings": {
+    "horizonTicks": 24,
+    "sourceTicks": 960,
+    "historyTicks": 4,
+    "lambda": 0.001,
+    "drives": [
+      -0.2,
+      -0.1,
+      0,
+      0.1,
+      0.2
+    ]
+  },
+  "invariantChecks": 858,
+  "manifest": [
+    {
+      "id": "train:-3:11",
+      "split": "train",
+      "force": -3,
+      "seed": 11,
+      "examples": 195,
+      "dataSha256": "60b8178d464d8c2d04b1e7d949222148245dd2ce511a6a8083692d4c78ba9657"
+    },
+    {
+      "id": "train:-3:12",
+      "split": "train",
+      "force": -3,
+      "seed": 12,
+      "examples": 195,
+      "dataSha256": "ccbcd56577131247c4bf108eaa703bad5ea020cfc7225aa3bdd8991d539abcfc"
+    },
+    {
+      "id": "train:-1:11",
+      "split": "train",
+      "force": -1,
+      "seed": 11,
+      "examples": 195,
+      "dataSha256": "8e41414ea76859f16069aa1e4bf63f262035d7aa8b589d64d84c6e2875035ec7"
+    },
+    {
+      "id": "train:-1:12",
+      "split": "train",
+      "force": -1,
+      "seed": 12,
+      "examples": 195,
+      "dataSha256": "0699da54cde8dcecfbdcb9f5dd1711b0d8b3c73c9d208162a81f45383156bd51"
+    },
+    {
+      "id": "train:0:11",
+      "split": "train",
+      "force": 0,
+      "seed": 11,
+      "examples": 195,
+      "dataSha256": "f9780fe8e587f9e92748d26713f1eacfdb18ee332ae6612eb9ea55ee8beec0b9"
+    },
+    {
+      "id": "train:0:12",
+      "split": "train",
+      "force": 0,
+      "seed": 12,
+      "examples": 195,
+      "dataSha256": "91a4450f59f260044665ba2dff7d9a4ae9ccc374526c4e6e8e00960df65dfb28"
+    },
+    {
+      "id": "train:1:11",
+      "split": "train",
+      "force": 1,
+      "seed": 11,
+      "examples": 195,
+      "dataSha256": "b80b7359d11769c442e2aeaeec9d17a6622f15769c21fb160515e0ebb5ec468a"
+    },
+    {
+      "id": "train:1:12",
+      "split": "train",
+      "force": 1,
+      "seed": 12,
+      "examples": 195,
+      "dataSha256": "d797fdca196ea8548d5819cb43e12df8f8a37014ec6c4cc722ccbf3292c127f8"
+    },
+    {
+      "id": "train:3:11",
+      "split": "train",
+      "force": 3,
+      "seed": 11,
+      "examples": 195,
+      "dataSha256": "113f07b718baea35516ec139b1ec6488062d138a773d2cb65f6ce93a076a872c"
+    },
+    {
+      "id": "train:3:12",
+      "split": "train",
+      "force": 3,
+      "seed": 12,
+      "examples": 195,
+      "dataSha256": "c1c60cda533cc78ac4ba842ad27c91ff978d3fa30a9a5147e0c1a0199abaf799"
+    },
+    {
+      "id": "test:-2.2:81",
+      "split": "test",
+      "force": -2.2,
+      "seed": 81,
+      "examples": 195,
+      "dataSha256": "ee620af4139bd4c1ad2950a640e34d446440149d24b37cfb25db9b7e627b87eb"
+    },
+    {
+      "id": "test:-2.2:82",
+      "split": "test",
+      "force": -2.2,
+      "seed": 82,
+      "examples": 195,
+      "dataSha256": "2a6a50884948f5311963c8bd551db872f943b6abb045503c0d0e9a977698aea5"
+    },
+    {
+      "id": "test:0.7:81",
+      "split": "test",
+      "force": 0.7,
+      "seed": 81,
+      "examples": 195,
+      "dataSha256": "a58f8d22fcd31eddeb36bce3a1ceb48d0738ca037bae5cfcda5aa94d9f7ec559"
+    },
+    {
+      "id": "test:0.7:82",
+      "split": "test",
+      "force": 0.7,
+      "seed": 82,
+      "examples": 195,
+      "dataSha256": "5bfd604cdf2ac77b0ca73967170e6a74e63fa3d25fe4b1bacc0d58818048d352"
+    },
+    {
+      "id": "test:2.4:81",
+      "split": "test",
+      "force": 2.4,
+      "seed": 81,
+      "examples": 195,
+      "dataSha256": "ca28c592f1da9fdba6a9a60b724a0dce1d8f9f9759418f366cdec07d20370c86"
+    },
+    {
+      "id": "test:2.4:82",
+      "split": "test",
+      "force": 2.4,
+      "seed": 82,
+      "examples": 195,
+      "dataSha256": "75aab04d8f384fe78f986a9a060d52abfc0c3af238b489c15d37aab564aa3d0f"
+    },
+    {
+      "id": "stress:-2.2:81",
+      "split": "stress",
+      "force": -2.2,
+      "seed": 81,
+      "examples": 195,
+      "dataSha256": "e0874d1e1ed4aaffef1aba7c5b12f6a0a507cd069d6d5213f57b398737a6a009"
+    },
+    {
+      "id": "stress:-2.2:82",
+      "split": "stress",
+      "force": -2.2,
+      "seed": 82,
+      "examples": 195,
+      "dataSha256": "b51e8a36f2f8b6730dd7fd763e7e24e437500b9a848bcde6d15e835626ffa863"
+    },
+    {
+      "id": "stress:0.7:81",
+      "split": "stress",
+      "force": 0.7,
+      "seed": 81,
+      "examples": 195,
+      "dataSha256": "c53e2145088a435190d518fcc5ba06367d91eda2447bad6d8f807a6bcbbd3c3d"
+    },
+    {
+      "id": "stress:0.7:82",
+      "split": "stress",
+      "force": 0.7,
+      "seed": 82,
+      "examples": 195,
+      "dataSha256": "6014423301ac91d33c63ab20d651704a6d9343efab8651d08ec4d80da7883639"
+    },
+    {
+      "id": "stress:2.4:81",
+      "split": "stress",
+      "force": 2.4,
+      "seed": 81,
+      "examples": 195,
+      "dataSha256": "9325354c4ce2bd715d3376827e5d1f1150d849ee1bde5b5efca4458da7fbc618"
+    },
+    {
+      "id": "stress:2.4:82",
+      "split": "stress",
+      "force": 2.4,
+      "seed": 82,
+      "examples": 195,
+      "dataSha256": "f36967d71c2e9bbb0033c3a05046db55a8ebc6080430ea7ac66ca0db0a65974d"
+    }
+  ],
+  "train": {
+    "examples": 1950,
+    "states": 390,
+    "velocityMAE": {
+      "history": 0.0416005775996545,
+      "noHistory": 0.15785529043102167,
+      "analyticFree": 0.19633030253473557,
+      "analyticResidual": 8.418245854900645e-7,
+      "hold": 0.4747318839626715
+    },
+    "stopCost": {
+      "history": 0.09675873110543949,
+      "noHistory": 0.17479675576510206,
+      "analyticFree": 0.21774934263271578,
+      "analyticResidual": 0.08590994540979573,
+      "hold": 0.3450982948938289
+    },
+    "regret": {
+      "history": 0.010848785695643761,
+      "noHistory": 0.08888681035530634,
+      "analyticFree": 0.13183939722292007,
+      "analyticResidual": 0,
+      "hold": 0.2591883494840332
+    }
+  },
+  "test": {
+    "examples": 1170,
+    "states": 234,
+    "velocityMAE": {
+      "history": 0.036617222764437296,
+      "noHistory": 0.15513948249834894,
+      "analyticFree": 0.21678125017018474,
+      "analyticResidual": 8.450444906289936e-7,
+      "hold": 0.4680014559536183
+    },
+    "stopCost": {
+      "history": 0.08556760478509554,
+      "noHistory": 0.1794338758801544,
+      "analyticFree": 0.2184929491921714,
+      "analyticResidual": 0.07992341605293202,
+      "hold": 0.33542719377681385
+    },
+    "regret": {
+      "history": 0.005644188732163519,
+      "noHistory": 0.09951045982722237,
+      "analyticFree": 0.1385695331392394,
+      "analyticResidual": 0,
+      "hold": 0.2555037777238818
+    }
+  },
+  "stress": {
+    "examples": 1170,
+    "states": 234,
+    "velocityMAE": {
+      "history": 0.10930418046477429,
+      "noHistory": 0.18535349832825654,
+      "analyticFree": 0.20009922561139434,
+      "analyticResidual": 0.06113755088034043,
+      "hold": 0.4894605740947344
+    },
+    "stopCost": {
+      "history": 0.14173453676294928,
+      "noHistory": 0.19612557306446923,
+      "analyticFree": 0.2060857944360399,
+      "analyticResidual": 0.1323649024591596,
+      "hold": 0.27933673418868776
+    },
+    "regret": {
+      "history": 0.060199094202934615,
+      "noHistory": 0.11459013050445455,
+      "analyticFree": 0.12455035187602521,
+      "analyticResidual": 0.05082945989914493,
+      "hold": 0.19780129162867308
+    }
+  },
+  "byEpisode": {
+    "test:-2.2:81": {
+      "examples": 195,
+      "states": 39,
+      "velocityMAE": {
+        "history": 0.02439111483218513,
+        "noHistory": 0.08865900676698937,
+        "analyticFree": 0.2699540975327746,
+        "analyticResidual": 0.0000014137596996588453,
+        "hold": 0.48229596815669
+      },
+      "stopCost": {
+        "history": 0.0858563421986615,
+        "noHistory": 0.14077386137050313,
+        "analyticFree": 0.2704334633472638,
+        "analyticResidual": 0.08298797526946053,
+        "hold": 0.5811492112966684
+      },
+      "regret": {
+        "history": 0.0028683669292009794,
+        "noHistory": 0.05778588610104261,
+        "analyticFree": 0.1874454880778033,
+        "analyticResidual": 0,
+        "hold": 0.4981612360272079
+      }
+    },
+    "test:-2.2:82": {
+      "examples": 195,
+      "states": 39,
+      "velocityMAE": {
+        "history": 0.04335343162693305,
+        "noHistory": 0.22050150343163846,
+        "analyticFree": 0.26995404645376436,
+        "analyticResidual": 6.391644059676852e-7,
+        "hold": 0.4526262970296487
+      },
+      "stopCost": {
+        "history": 0.09492595746399811,
+        "noHistory": 0.2496900977805639,
+        "analyticFree": 0.25161046171799684,
+        "analyticResidual": 0.08798510967589653,
+        "hold": 0.38107515508547807
+      },
+      "regret": {
+        "history": 0.0069408477881015875,
+        "noHistory": 0.16170498810466738,
+        "analyticFree": 0.16362535204210032,
+        "analyticResidual": 0,
+        "hold": 0.29309004540958156
+      }
+    },
+    "test:0.7:81": {
+      "examples": 195,
+      "states": 39,
+      "velocityMAE": {
+        "history": 0.037807902688818375,
+        "noHistory": 0.14329048370871617,
+        "analyticFree": 0.08589444042995593,
+        "analyticResidual": 7.319074845467719e-7,
+        "hold": 0.483599039083884
+      },
+      "stopCost": {
+        "history": 0.06928350092120802,
+        "noHistory": 0.12021907374638921,
+        "analyticFree": 0.08514765061241072,
+        "analyticResidual": 0.06506605640811941,
+        "hold": 0.07745062085674502
+      },
+      "regret": {
+        "history": 0.0042174445130886175,
+        "noHistory": 0.05515301733826979,
+        "analyticFree": 0.020081594204291318,
+        "analyticResidual": 0,
+        "hold": 0.012384564448625613
+      }
+    },
+    "test:0.7:82": {
+      "examples": 195,
+      "states": 39,
+      "velocityMAE": {
+        "history": 0.026704670948106368,
+        "noHistory": 0.07459388680353922,
+        "analyticFree": 0.08589472191614575,
+        "analyticResidual": 6.822830947604872e-7,
+        "hold": 0.4520725896008886
+      },
+      "stopCost": {
+        "history": 0.09619662745927389,
+        "noHistory": 0.13080058798480493,
+        "analyticFree": 0.10855508813013633,
+        "analyticResidual": 0.08816245893159738,
+        "hold": 0.1791656425413795
+      },
+      "regret": {
+        "history": 0.00803416852767651,
+        "noHistory": 0.042638129053207546,
+        "analyticFree": 0.02039262919853895,
+        "analyticResidual": 0,
+        "hold": 0.09100318360978212
+      }
+    },
+    "test:2.4:81": {
+      "examples": 195,
+      "states": 39,
+      "velocityMAE": {
+        "history": 0.05483915082554793,
+        "noHistory": 0.26564850928814443,
+        "analyticFree": 0.29449519405196883,
+        "analyticResidual": 4.6034991346254724e-7,
+        "hold": 0.4847716368878117
+      },
+      "stopCost": {
+        "history": 0.08188369268408188,
+        "noHistory": 0.3006778907699463,
+        "analyticFree": 0.2795628832700925,
+        "analyticResidual": 0.07018542089141332,
+        "hold": 0.2968247490815627
+      },
+      "regret": {
+        "history": 0.011698271792668562,
+        "noHistory": 0.23049246987853295,
+        "analyticFree": 0.20937746237867919,
+        "analyticResidual": 0,
+        "hold": 0.2266393281901494
+      }
+    },
+    "test:2.4:82": {
+      "examples": 195,
+      "states": 39,
+      "velocityMAE": {
+        "history": 0.032607065665033096,
+        "noHistory": 0.13814350499106653,
+        "analyticFree": 0.29449500063649814,
+        "analyticResidual": 0.000001142802345377625,
+        "hold": 0.452643204962787
+      },
+      "stopCost": {
+        "history": 0.08525950798334983,
+        "noHistory": 0.1344417436287189,
+        "analyticFree": 0.3156481480751282,
+        "analyticResidual": 0.08515347514110498,
+        "hold": 0.4968977837990492
+      },
+      "regret": {
+        "history": 0.0001060328422448574,
+        "noHistory": 0.04928826848761393,
+        "analyticFree": 0.23049467293402323,
+        "analyticResidual": 0,
+        "hold": 0.4117443086579442
+      }
+    },
+    "stress:-2.2:81": {
+      "examples": 195,
+      "states": 39,
+      "velocityMAE": {
+        "history": 0.13898879438982886,
+        "noHistory": 0.19434976490678035,
+        "analyticFree": 0.24918017721347765,
+        "analyticResidual": 0.0761334936833469,
+        "hold": 0.5136652146442197
+      },
+      "stopCost": {
+        "history": 0.18247314124630812,
+        "noHistory": 0.22802788021568304,
+        "analyticFree": 0.2485269738886601,
+        "analyticResidual": 0.15780608364357016,
+        "hold": 0.39312921598171574
+      },
+      "regret": {
+        "history": 0.09761875098905502,
+        "noHistory": 0.14317348995842996,
+        "analyticFree": 0.163672583631407,
+        "analyticResidual": 0.07295169338631706,
+        "hold": 0.3082748257244627
+      }
+    },
+    "stress:-2.2:82": {
+      "examples": 195,
+      "states": 39,
+      "velocityMAE": {
+        "history": 0.13446206673126634,
+        "noHistory": 0.2005728203026636,
+        "analyticFree": 0.24918019348133968,
+        "analyticResidual": 0.07613354282189573,
+        "hold": 0.4793149875285916
+      },
+      "stopCost": {
+        "history": 0.15412593943377337,
+        "noHistory": 0.2041597200366549,
+        "analyticFree": 0.24181828714716128,
+        "analyticResidual": 0.13897808474034834,
+        "hold": 0.3482560173441202
+      },
+      "regret": {
+        "history": 0.06813506228037369,
+        "noHistory": 0.11816884288325524,
+        "analyticFree": 0.15582740999376163,
+        "analyticResidual": 0.052987207586948686,
+        "hold": 0.26226514019072056
+      }
+    },
+    "stress:0.7:81": {
+      "examples": 195,
+      "states": 39,
+      "velocityMAE": {
+        "history": 0.04877465499971772,
+        "noHistory": 0.11562297138522004,
+        "analyticFree": 0.07928473006762811,
+        "analyticResidual": 0.024224644021601332,
+        "hold": 0.4861261621502658
+      },
+      "stopCost": {
+        "history": 0.0907967276736879,
+        "noHistory": 0.12910998448914585,
+        "analyticFree": 0.09928580185917851,
+        "analyticResidual": 0.09169603539003919,
+        "hold": 0.15529343951045751
+      },
+      "regret": {
+        "history": 0.015060898823997913,
+        "noHistory": 0.05337415563945587,
+        "analyticFree": 0.023549973009488523,
+        "analyticResidual": 0.015960206540349204,
+        "hold": 0.07955761066076751
+      }
+    },
+    "stress:0.7:82": {
+      "examples": 195,
+      "states": 39,
+      "velocityMAE": {
+        "history": 0.05350808208971647,
+        "noHistory": 0.10731863975975713,
+        "analyticFree": 0.07928473310356468,
+        "analyticResidual": 0.024224619276360056,
+        "hold": 0.45392720445241325
+      },
+      "stopCost": {
+        "history": 0.09070516616562739,
+        "noHistory": 0.1255763130596815,
+        "analyticFree": 0.09383833933791791,
+        "analyticResidual": 0.09641961485986264,
+        "hold": 0.13103647415529196
+      },
+      "regret": {
+        "history": 0.009413757767432775,
+        "noHistory": 0.04428490466148688,
+        "analyticFree": 0.012546930939723283,
+        "analyticResidual": 0.015128206461668015,
+        "hold": 0.04974506575709734
+      }
+    },
+    "stress:2.4:81": {
+      "examples": 195,
+      "states": 39,
+      "velocityMAE": {
+        "history": 0.1361610747082682,
+        "noHistory": 0.24876662512589665,
+        "analyticFree": 0.271832772740473,
+        "analyticResidual": 0.0830545663957574,
+        "hold": 0.5150285637101684
+      },
+      "stopCost": {
+        "history": 0.15527534389343017,
+        "noHistory": 0.26111506819963837,
+        "analyticFree": 0.271742461870114,
+        "analyticResidual": 0.15420890007263574,
+        "hold": 0.3128642163788661
+      },
+      "regret": {
+        "history": 0.07435409829784663,
+        "noHistory": 0.18019382260405484,
+        "analyticFree": 0.19082121627453047,
+        "analyticResidual": 0.0732876544770522,
+        "hold": 0.23194297078328255
+      }
+    },
+    "stress:2.4:82": {
+      "examples": 195,
+      "states": 39,
+      "velocityMAE": {
+        "history": 0.1439304098698482,
+        "noHistory": 0.24549016848922078,
+        "analyticFree": 0.2718327470618835,
+        "analyticResidual": 0.08305443908308158,
+        "hold": 0.488701312082748
+      },
+      "stopCost": {
+        "history": 0.17703090216486883,
+        "noHistory": 0.22876447238601172,
+        "analyticFree": 0.28130290251320755,
+        "analyticResidual": 0.15508069604850158,
+        "hold": 0.33544104176167494
+      },
+      "regret": {
+        "history": 0.09661199705890165,
+        "noHistory": 0.14834556728004453,
+        "analyticFree": 0.20088399740724036,
+        "analyticResidual": 0.07466179094253442,
+        "hold": 0.2550221366557078
+      }
+    }
+  },
+  "models": {
+    "history": {
+      "mean": [
+        -0.10933698601543139,
+        -0.1092460178805945,
+        -0.02086722672415463,
+        -1.423362852083534e-20
+      ],
+      "scale": [
+        0.6100569626460021,
+        0.599956610004636,
+        0.11034796827219409,
+        0.14142135623730887
+      ],
+      "weights": [
+        [
+          -0.03937093753499655,
+          1.4454978886584484,
+          -0.8537566236248063,
+          -0.29916121883913255,
+          0.47555786975406567
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "noHistory": {
+      "mean": [
+        -0.10933698601543139,
+        -1.423362852083534e-20
+      ],
+      "scale": [
+        0.6100569626460021,
+        0.14142135623730887
+      ],
+      "weights": [
+        [
+          -0.03937093753499807,
+          0.37165610521821096,
+          0.47555786975406567
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  }
+}

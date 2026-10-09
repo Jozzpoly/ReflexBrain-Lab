@@ -239,3 +239,17 @@ mutation restore->no-op RED4failures potem GREEN. Statyczną figure sprawdzono w
 renderQA interaktywnego organism lab nadal otwarte. Runtimev5 i occupant bez zmian.
 Następny uczony kandydat: prywatny model własnego ruchu i następstw komend, z historią
 proprio/komend i nowymi perturbacjami. Powinien poprawić materialną decyzję, nie imitację.
+
+# Historia własnego ruchu i granica kontaktu — 2026-10-09
+
+858 stanów/4290 forków: test MAE historia .03662 vs bez historii .15514 m/s;
+silny analityczny z prywatną resztą .000000845 wygrywa. Stress zależny od testowych seedów.
+48 closed-loop: swobodny ruch korzysta z historii; przy ścianach rear impulse169.14
+vs55.45 bez historii. Kontakt unieważnia model swobodny. Eksploracyjny touch gate:
+84 przebiegi,48 dokładnych kontroli i18 identycznych free counterparts; suma impulsów
+182.94->116.10, ale front13.80->69.52 i większa droga. Bez promocji do runtime.
+
+Raport BODY_MODEL_RESULTS.md odzyskuje cel i flow: organizm z własnymi czynnościami,
+nie wyścig MAE. Następna kampania: ciągła czynność, przerwanie i materialne wznowienie
+w nowych scenach, z silnymi zamrożonymi konkurentami.113testów/typy/build PASS,
+niezależny review i wszystkie trzy probes wykonane; interaktywny render niekwalifikowany.
