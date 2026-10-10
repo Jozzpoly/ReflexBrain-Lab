@@ -272,4 +272,80 @@ describe('RB-VISION/B1 real continuing approach activity with optional actor-pri
   // Only downstream actual contact, motion and private sight are evaluated.
  },120000);
 
+
+ it('B3: lawful different visual histories select attention with EXACT same present RGB/body',()=>{
+  const make=(priorSeen:boolean)=>{
+   const w=new LivingWorld(false);
+   const turquoise=w.addObject(priorSeen?7:-3,
+    priorSeen?0:5,.62,[.1,.85,.8]);
+   const approach=new ApproachEpisode(true,true);
+   const attention=new PrivateAttention('history-scan');
+   const first=w.observe();
+   const hadPatch=visibleTurquoisePatches(first.retina)
+    .some(p=>!p.clipped);
+   expect(hadPatch).toBe(priorSeen);
+   const demand=attention.decide(first,approach.decide(first));
+   // The initial optic encounter was REAL but no body action was taken
+   // before the host-only change; physical origins remain matched.
+   if(priorSeen)w.moveObject(turquoise,-3,5);
+   for(let i=0;i<4;i++)w.step({drive:0,turn:0,gazeRate:0});
+   return {w,approach,attention,first,demand};
+  };
+  const lived=make(true),unrelated=make(false);
+  try{
+   const fA=lived.w.observe(),fB=unrelated.w.observe();
+   expect(fA.tick).toBe(fB.tick);
+   expect(fA.retina).toEqual(fB.retina);
+   expect(fA.touch).toEqual(fB.touch);
+   expect(fA.proprio).toEqual(fB.proprio);
+   const actorA=lived.w.inspect().actor,actorB=unrelated.w.inspect().actor;
+   expect(actorA.x).toBe(actorB.x);
+   expect(actorA.y).toBe(actorB.y);
+   expect(actorA.angle).toBe(actorB.angle);
+   const targetA=lived.w.inspect().objects[0],
+    targetB=unrelated.w.inspect().objects[0];
+   expect(targetA.x).toBe(targetB.x);
+   expect(targetA.y).toBe(targetB.y);
+   // Everything material and presently sensed is equal. Only the lawful
+   // actor-private earlier patch/approach history differs.
+   const runs=[lived,unrelated].map((item,index)=>{
+    let reacquired:number|null=null;
+    let contact:number|null=null;
+    let travel=0;
+    let previous=item.w.inspect().actor;
+    for(let tick=4;tick<3600;tick++){
+     const frame=item.w.observe();
+     const base=item.approach.decide(frame);
+     const demand=item.attention.decide(frame,base);
+     if(index===0&&reacquired===null&&frame.tick>4
+       &&visibleTurquoisePatches(frame.retina).some(p=>!p.clipped))
+      reacquired=frame.tick;
+     item.w.step(demand);
+     const now=item.w.inspect().actor;
+     travel+=Math.hypot(now.x-previous.x,now.y-previous.y);
+     previous=now;
+     if(item.approach.capture().mode==='contact'){
+      contact=item.approach.capture().contactTick;
+      break;
+     }
+    }
+    return {
+     priorSeen:index===0,contact,reacquired,travel,
+     searchFrames:item.attention.searchingFrames,
+     finalMode:item.approach.capture().mode,
+     final:item.w.inspect().actor,
+    };
+   });
+   console.log('RB_VISION_B3_SAME_PRESENT_DIFFERENT_LIVED_HISTORY '+
+    JSON.stringify(runs));
+   expect(runs[0].searchFrames).toBeGreaterThan(0);
+   expect(runs[1].searchFrames).toBe(0);
+   expect(runs[0].reacquired).not.toBeNull();
+   expect(runs[0].contact).not.toBeNull();
+   expect(runs[1].contact).toBeNull();
+  }finally{
+   lived.w.free();unrelated.w.free();
+  }
+ },120000);
+
 });
