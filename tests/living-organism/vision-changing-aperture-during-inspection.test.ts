@@ -157,7 +157,8 @@ function physical(cp:Checkpoint,drive:0|1):Phys{
  * Edges are chosen from legal actor-private coarse RGB at latest sample.
  */
 function sequentialEdge(w:LivingWorld,
- old:PrivateFrame,queries:number,onHalf:()=>void):{
+ old:PrivateFrame,queries:number,onHalf:()=>void,
+ onMove?:(before:PrivateFrame,after:PrivateFrame)=>void):{
  edge:number|null;times:number[];last:PrivateFrame
 } {
  const initial=bracket(native(old));
@@ -168,8 +169,10 @@ function sequentialEdge(w:LivingWorld,
  for(let q=0;q<queries;q++){
   if(q===Math.floor(queries/2))onHalf();
   const m=(lo+hi)/2;
+  const before=w.observe();
   for(let t=0;t<4;t++)w.step(idle);
   const frame=w.observe();
+  if(onMove)onMove(before,frame);
   const h=hitUpper(look(w.captureCheckpoint(),[m]),0);
   if(h)hi=m;else lo=m;
   times.push(frame.tick);
@@ -198,13 +201,20 @@ function run(s:Spec):Row[]{
    }
   }
   if(s.when==='between')moveAperture(w,s.final);
-  // In all cases the native eye has 4 physical ticks to receive a new frame.
+  // After the motor burst, the body can still coast during passive looking.
+  // Integrate private proprioception for EVERY elapsed 4-tick sample window.
+  const beforeRefresh=w.observe();
   for(let t=0;t<4;t++)w.step(idle);
   const f1=w.observe(),retinalFrame1=f1.tick;
+  privateOdom+=.5*(beforeRefresh.proprio.forward+
+   f1.proprio.forward)*DT*(f1.tick-beforeRefresh.tick);
   const dense1=edge(look(w.captureCheckpoint(),denseAngles(f1)));
   // A serial edge query can cross a hidden external material transition.
   const q1=sequentialEdge(w,f1,4,()=>{
    if(s.when==='mid')moveAperture(w,s.final);
+  },(before,after)=>{
+   privateOdom+=.5*(before.proprio.forward+after.proprio.forward)
+    *DT*(after.tick-before.tick);
   });
   const after=w.observe();
   const finalCp=w.captureCheckpoint();
