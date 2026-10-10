@@ -205,3 +205,27 @@ Do not add:
 - larger sensory stack.
 
 One mirrored pair is sufficient for D0.
+
+
+---
+
+## Closure
+
+**MATERIAL ALIAS FOUND · DISCOVERY CLOSED**
+
+See `docs/competence-runs/RB-F3-D0_RESULT.md`.
+
+Frozen pair produced:
+- exactly equal F2-private histories;
+- exactly equal F2 signals;
+- same M drive (+0.5);
+- same F drive (0);
+- opposite regret sign:
+  - right: +0.64608 (M worse)
+  - left: −0.64608 (M better)
+
+Directional body-local touch separated the pair:
+- right mean signed impulse +0.30123
+- left mean signed impulse −0.29885
+
+No phase/force search was performed after activation.
