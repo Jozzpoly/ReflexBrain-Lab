@@ -16,7 +16,7 @@ import {ApproachEpisode} from '../../src/living-organism/approach-episode';
  * diagnostics. The actor and reward see ONLY PrivateFrame touch/clock
  * and its own gaze commands.
  */
-type Condition='target-only'|'unrelated-rear-touch'|'unrelated-side-touch';
+type Condition='target-only'|'unrelated-frontal-upper'|'unrelated-frontal-lower';
 type Result={
  condition:Condition;completionTick:number|null;
  privateContact:boolean;hostTargetTouched:boolean;
@@ -47,7 +47,7 @@ function run(condition:Condition):Result{
     // contact envelope while the actor retains a real forward demand.
     // The previous rear-side placement did not yield a Rapier impulse.
     w.moveObject(other,a.x+1.45,
-     a.y+(condition==='unrelated-rear-touch'?.32:-.32));
+     a.y+(condition==='unrelated-frontal-upper'?.32:-.32));
    }
    const frame=w.observe();
    if(frame.tick!==lastSample){
@@ -96,8 +96,8 @@ function run(condition:Condition):Result{
 beforeAll(initLivingWorld);
 describe('RB-VISION/C1 actor-private generic touch vs material activity completion',()=>{
  it('measures a physical unrelated-contact confound in the learned attention reward',()=>{
-  const cases=(['target-only','unrelated-rear-touch',
-   'unrelated-side-touch'] as const).map(run);
+  const cases=(['target-only','unrelated-frontal-upper',
+   'unrelated-frontal-lower'] as const).map(run);
   console.log('RB_VISION_C1_TOUCH_REWARD_CONFOUND '+
    JSON.stringify(cases.map(x=>({
     condition:x.condition,tick:x.completionTick,
@@ -122,5 +122,11 @@ describe('RB-VISION/C1 actor-private generic touch vs material activity completi
   // Successful fast fake contact can dominate the nominal reward.
   expect(intrusions.some(x=>!x.hostTargetTouched
    &&x.fakeReward>cases[0].fakeReward)).toBe(true);
+  // A generic "contact was forward" feature also aliases intended-target
+  // touch and one unrelated frontal collision in this controlled specimen.
+  // This does NOT mean the entire retina/proprio/historical state aliases.
+  const strongestSector=(r:Result)=>r.lastTouch.indexOf(
+   Math.max(...r.lastTouch));
+  expect(strongestSector(cases[0])).toBe(strongestSector(cases[1]));
  },30000);
 });
