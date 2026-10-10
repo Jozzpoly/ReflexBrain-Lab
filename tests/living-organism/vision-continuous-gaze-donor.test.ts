@@ -14,7 +14,7 @@ import { visibleTurquoisePatches } from '../../src/living-organism/retina-geomet
  * no inspect(), World handles, positions, collision labels or future events.
  */
 type GazePolicy = 'native' | 'center' | 'clock-sweep'
-  | 'private-reacquisition';
+  | 'visible-centering-only' | 'private-reacquisition';
 type Scene = 'native-world' | 'shifted-visible-surface';
 type GazeState = {
   lastTick:number|null;
@@ -23,11 +23,14 @@ type GazeState = {
   lastPatchTick:number|null;
   rememberedCount:number;
   gazeCommand:number;
+  memoryFollowSamples:number;
 };
 type Outcome = {
   scene:Scene;policy:GazePolicy;ticks:number;
   actualDistance:number;finalX:number;finalY:number;
   privateSamples:number;visibleSamples:number;fovealSamples:number;
+  orangeSamples:number;purpleSamples:number;
+  memoryFollowSamples:number;
   renewedSightings:number;recordedContactEvents:number;
   modeCounts:Record<string,number>;
   commandedGazeSum:number;distinctGazeBins:number;
@@ -45,6 +48,7 @@ class ActorPrivateFocus {
   readonly state:GazeState={
     lastTick:null,integratedHeading:0,rememberedWorldBearing:null,
     lastPatchTick:null,rememberedCount:0,gazeCommand:0,
+    memoryFollowSamples:0,
   };
   readonly policy:GazePolicy;
   constructor(policy:GazePolicy){this.policy=policy;}
@@ -69,14 +73,17 @@ class ActorPrivateFocus {
     }else if(this.policy==='clock-sweep'){
       // Strong cheap authored baseline: sweeping needs no memory.
       demand=Math.sin(frame.tick/72)*.8;
-    }else if(this.policy==='private-reacquisition'){
+    }else if(this.policy==='private-reacquisition'
+      || this.policy==='visible-centering-only'){
       if(patch){
         // Keep a visible fragment near the densest part of the retina.
         demand=clamp(patch.bearing*3);
       }else if(
-        s.rememberedWorldBearing!==null&&s.lastPatchTick!==null
+        this.policy==='private-reacquisition'
+        && s.rememberedWorldBearing!==null&&s.lastPatchTick!==null
         &&frame.tick-s.lastPatchTick<=360
       ){
+        s.memoryFollowSamples++;
         // Actor-private heading integration, not host World position.
         const desired=wrap(s.rememberedWorldBearing-s.integratedHeading);
         demand=clamp(wrap(desired-frame.proprio.gaze)*2.5);
@@ -88,6 +95,15 @@ class ActorPrivateFocus {
     s.gazeCommand=demand;
     return demand;
   }
+}
+
+function hasPaletteColor(frame:PrivateFrame, r:number,g:number,b:number):boolean {
+  const a=frame.retina;
+  for(let i=0;i<a.length;i+=3){
+    if(Math.abs(a[i]-r)<.035 && Math.abs(a[i+1]-g)<.035
+       && Math.abs(a[i+2]-b)<.035)return true;
+  }
+  return false;
 }
 
 function run(policy:GazePolicy,scene:Scene,ticks=RUN_TICKS):Outcome {
@@ -104,6 +120,7 @@ function run(policy:GazePolicy,scene:Scene,ticks=RUN_TICKS):Outcome {
     let lastSample=-1,privateSamples=0,visibleSamples=0,
       fovealSamples=0,renewedSightings=0,recordedContactEvents=0;
     let wasVisible=false,actualDistance=0;
+    let orangeSamples=0,purpleSamples=0;
     let firstSeenTick:number|null=null,lastSeenTick:number|null=null;
     let commandedGazeSum=0;
     const visited=new Set<string>(),gazeBins=new Set<number>();
@@ -129,6 +146,10 @@ function run(policy:GazePolicy,scene:Scene,ticks=RUN_TICKS):Outcome {
             .some(p=>!p.clipped&&Math.abs(p.bearing)<.08))fovealSamples++;
         }
         wasVisible=patch;
+        // Analyst-side secondary appearance coverage, NOT available to
+        // the private focus controller as an object identity or World cue.
+        if(hasPaletteColor(frame,.8,.5,.2))orangeSamples++;
+        if(hasPaletteColor(frame,.65,.4,.8))purpleSamples++;
         gazeBins.add(Math.floor((frame.proprio.gaze+Math.PI/2)/.12));
         modes[rt.occupant.capture().mode]=(modes[rt.occupant.capture().mode]??0)+1;
         // Host microscope, NOT delivered to the gaze or motor controller.
@@ -146,6 +167,8 @@ function run(policy:GazePolicy,scene:Scene,ticks=RUN_TICKS):Outcome {
       scene,policy,ticks,
       actualDistance,finalX:a.x,finalY:a.y,
       privateSamples,visibleSamples,fovealSamples,
+      orangeSamples,purpleSamples,
+      memoryFollowSamples:focus.state.memoryFollowSamples,
       renewedSightings,recordedContactEvents,
       modeCounts:modes,commandedGazeSum,
       distinctGazeBins:gazeBins.size,
@@ -160,6 +183,8 @@ function summary(x:Outcome){
     scene:x.scene,policy:x.policy,simulatedSeconds:x.ticks/120,
     distance:+x.actualDistance.toFixed(3),
     seen:x.visibleSamples,centered:x.fovealSamples,
+    orange:x.orangeSamples,purple:x.purpleSamples,
+    memoryFollow:x.memoryFollowSamples,
     reacquisitions:x.renewedSightings,contacts:x.recordedContactEvents,
     visited:x.distinctVisitedCells,gazeBins:x.distinctGazeBins,
     gazeDemandSum:+x.commandedGazeSum.toFixed(3),
@@ -172,7 +197,8 @@ beforeAll(initLivingWorld);
 describe('RB-VISION/L1 real RGB retina + continuous embodied gaze policies',()=>{
   it('independently executes actual continuous world + authored local focus rivalries',()=>{
     const policies:GazePolicy[]=[
-      'native','center','clock-sweep','private-reacquisition'];
+      'native','center','clock-sweep',
+      'visible-centering-only','private-reacquisition'];
     const scenes:Scene[]=['native-world','shifted-visible-surface'];
     const outcomes=scenes.flatMap(scene=>policies.map(policy=>
       run(policy,scene)));
@@ -185,6 +211,10 @@ describe('RB-VISION/L1 real RGB retina + continuous embodied gaze policies',()=>
     expect(outcomes.some(o=>o.visibleSamples>0)).toBe(true);
     // Mechanism must actually change lawful sampled experience.
     expect(new Set(outcomes.map(o=>o.visibleSamples)).size).toBeGreaterThan(1);
+    expect(outcomes.filter(o=>o.policy==='visible-centering-only')
+      .every(o=>o.memoryFollowSamples===0)).toBe(true);
+    expect(outcomes.filter(o=>o.policy==='private-reacquisition')
+      .every(o=>o.memoryFollowSamples>0)).toBe(true);
     console.log('RB_VISION_L1_CONTINUOUS '+JSON.stringify(outcomes.map(summary)));
   },120000);
 
