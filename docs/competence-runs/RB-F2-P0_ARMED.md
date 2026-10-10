@@ -370,3 +370,27 @@ P0 asks something none of those currently qualifies:
 > can the actor's own private temporal history tell it that **its local competence model itself has become unreliable**, before giving that evidence semantic meaning or escalating it?
 
 This is the first organism-frontier experiment selected by the ReflexBrain competence control room.
+
+
+---
+
+## Closure
+
+**SCIENTIFIC FAIL · EXECUTION VALID · CLOSED**
+
+See `docs/competence-runs/RB-F2-P0_RESULT.md`.
+
+Frozen result:
+- deterministic: PASS
+- 30/30 episodes executed
+- 21 informative M/F-different episodes
+- R AUC: 0.94118
+- touch baseline AUC: 0.94118
+- altered-dynamics touch-free M-worse count: **0**
+- recovery R returned near zero
+
+Canonical correction:
+
+> private evidence that a model assumption is violated is not equivalent to evidence that trusting that model produces a worse action.
+
+No post-hoc episode/threshold/model tuning is permitted under P0.
