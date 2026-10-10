@@ -144,6 +144,17 @@ class PrivateOutcomeLearner{
    return 'hold'; // conservative tie, not encoded target relevance.
   return this.mean[ctx].sweep>this.mean[ctx].hold?'sweep':'hold';
  }
+ fork():PrivateOutcomeLearner{
+  const clone=new PrivateOutcomeLearner();
+  clone.random=this.random;
+  for(const ctx of CONTEXTS){
+   for(const eye of EYES){
+    clone.count[ctx][eye]=this.count[ctx][eye];
+    clone.mean[ctx][eye]=this.mean[ctx][eye];
+   }
+  }
+  return clone;
+ }
  update(t:Trial){
   const n=++this.count[t.context][t.eye];
   const old=this.mean[t.context][t.eye];
@@ -246,6 +257,51 @@ describe('RB-VISION/B4 learn whether looking pays from actor-private touch/clock
   expect(absent.firstFrame).toEqual(unseen.firstFrame);
   expect(absent.decisionFrame).toEqual(unseen.decisionFrame);
   expect(absent.eye).toBe(unseen.eye);
+
+  // Same policy at deployment, now the WORLD distribution changes:
+  // an unseen useful object is common even when the actor never had a
+  // prior target. No such hidden setting or label reaches either learner.
+  // One competitor exploits past statistics greedily and can freeze
+  // itself out of experiencing any counterevidence. The other continues
+  // bounded exploratory trials and can discover different consequences.
+  const greedy=learner.fork(),adaptive=learner.fork();
+  const shift=Array.from({length:36},(_,i)=>e(
+   'novelty-shift-'+i,false,
+   i%6===0?'absent':i%2===0?'rear-left':'rear-right',
+  ));
+  const shiftRecords:{kind:string;t:Trial}[]=[];
+  for(const s of shift){
+   const pre=scenarioWorld(s),ctx=pre.ctx;pre.w.free();
+   for(const [kind,model,explore] of [
+    ['greedy',greedy,false],['adaptive',adaptive,true],
+   ] as const){
+    const eye=model.choice(ctx,explore);
+    const t=runTrial(s,eye);
+    model.update(t);
+    shiftRecords.push({kind,t});
+   }
+  }
+  const afterShift=shiftRecords.map(x=>x.t);
+  const shiftSummary=['greedy','adaptive'].map(kind=>{
+   const r=shiftRecords.filter(x=>x.kind===kind).map(x=>x.t);
+   return {kind,...summary(r),activeScans:r.filter(x=>x.eye==='sweep').length,
+    finalChoice:(kind==='greedy'?greedy:adaptive).choice('never-seen'),
+   };
+  });
+  console.log('RB_VISION_B5_DISTRIBUTION_SHIFT '+JSON.stringify({
+   before:learner.snapshot(),
+   after:{greedy:greedy.snapshot(),adaptive:adaptive.snapshot()},
+   totals:shiftSummary,
+   chronology:shiftRecords.filter(x=>x.kind==='adaptive').map(x=>({
+    id:x.t.id,eye:x.t.eye,touch:x.t.contact,
+    reward:+x.t.reward.toFixed(3),
+   })),
+  }));
+  expect(afterShift.length).toBe(72);
+  expect(shiftRecords.filter(x=>x.kind==='greedy')
+   .every(x=>x.t.eye==='hold')).toBe(true);
+  // Adaptive can learn only after actual sampled contact; no "novelty
+  // probability" is leaked from the generating host scenario labels.
  },120000);
  it('shows a real same-RGB information alias with opposite value for active looking',()=>{
   const absent=e('exact-absent',false,'absent');
