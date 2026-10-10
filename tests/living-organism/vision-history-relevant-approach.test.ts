@@ -108,9 +108,11 @@ class PrivateAttention {
 function run(policy:Policy,relocation:Relocation):Result{
  const w=new LivingWorld(false);
  const noHistory=relocation.startsWith('no-history');
- const firstSide=relocation.endsWith('left')?1:-1;
- const target=w.addObject(noHistory?-3:7,
-  noHistory?firstSide*5:0,.62,[.1,.85,.8]);
+ // In the no-prior-relation control no turquoise event has ever been
+ // visible, so an unconditional gaze sweep cannot accidentally create
+ // the very history that this ablation intends to remove.
+ const target=w.addObject(noHistory?100:7,
+  noHistory?100:0,.62,[.1,.85,.8]);
  const orange=w.addObject(-30,-30,.65,[.87,.51,.16]);
  if(relocation==='world-mover'){
   // Real independent World-powered finite mover; force ownership is World,
@@ -136,7 +138,8 @@ function run(policy:Policy,relocation:Relocation):Result{
     const side=relocation==='left-rear'?1:-1;
     w.moveObject(target,-3,side*5);
    }
-   if(t===ORANGE_START)w.moveObject(orange,3,-5.5);
+   if(t===ORANGE_START)w.moveObject(orange,3,
+    relocation==='no-history-left'?5.5:-5.5);
    if(t===ORANGE_END)w.moveObject(orange,-30,-30);
    const f=w.observe();
    if(f.tick!==lastSample){
