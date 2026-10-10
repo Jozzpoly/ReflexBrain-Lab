@@ -22,10 +22,11 @@ import {visibleTurquoisePatches} from '../../src/living-organism/retina-geometry
  * and 120Hz Rapier physics; no special directed-ray sidecar is used here.
  */
 type Policy='native'|'always-sweep'|'history-scan'|'history-freeze';
-type Relocation='left-rear'|'right-rear'|'stationary';
+type Relocation='left-rear'|'right-rear'|'stationary'|'no-history-left'|'no-history-right';
 type Result={
  policy:Policy;relocation:Relocation;duration:number;
  sawInitial:boolean;memoryActiveAfterRelocation:boolean;
+ firstLostTick:number|null;
  targetReacquiredTick:number|null;contactTick:number|null;
  turquoiseFrames:number;orangePeripheralFrames:number;
  effort:number;distance:number;touchEpisodes:number;
@@ -106,12 +107,16 @@ class PrivateAttention {
 }
 function run(policy:Policy,relocation:Relocation):Result{
  const w=new LivingWorld(false);
- const target=w.addObject(7,0,.62,[.1,.85,.8]);
+ const noHistory=relocation.startsWith('no-history');
+ const firstSide=relocation.endsWith('left')?1:-1;
+ const target=w.addObject(noHistory?-3:7,
+  noHistory?firstSide*5:0,.62,[.1,.85,.8]);
  const orange=w.addObject(-30,-30,.65,[.87,.51,.16]);
  const c=new ApproachEpisode(true,true);
  const attention=new PrivateAttention(policy);
  let lastSample=-1,seenAtStart=false,memoryAfter=false,
-  reacquiredTick:number|null=null,orangePeripheralFrames=0,
+  reacquiredTick:number|null=null,firstLostTick:number|null=null,
+  orangePeripheralFrames=0,
   turquoiseFrames=0,effort=0,distance=0,contactImpulse=0,
   touchEpisodes=0,lastTouch=false,searchingFrames=0;
  let prev=w.inspect().actor;
@@ -120,7 +125,7 @@ function run(policy:Policy,relocation:Relocation):Result{
  try{
   for(let t=0;t<TOTAL;t++){
    // World change is unrelated to the eye-controller's internal clock.
-   if(t===RELOCATE && relocation!=='stationary'){
+   if(t===RELOCATE && !noHistory&&relocation!=='stationary'){
     const side=relocation==='left-rear'?1:-1;
     w.moveObject(target,-3,side*5);
    }
@@ -132,8 +137,10 @@ function run(policy:Policy,relocation:Relocation):Result{
     const visible=visibleTurquoisePatches(f.retina)
       .some(p=>!p.clipped);
     if(t<RELOCATE && visible)seenAtStart=true;
-    if(t>=RELOCATE&&visible && reacquiredTick===null)
-      reacquiredTick=f.tick;
+    if(t>=RELOCATE+4 && !visible&&firstLostTick===null)
+      firstLostTick=f.tick;
+    if(t>=RELOCATE+4&&visible&&firstLostTick!==null
+       &&reacquiredTick===null)reacquiredTick=f.tick;
     if(visible)turquoiseFrames++;
     if(hasOrange(f))orangePeripheralFrames++;
     const touch=f.touch.some(value=>value>.001);
@@ -158,6 +165,7 @@ function run(policy:Policy,relocation:Relocation):Result{
   return {
    policy,relocation,duration:w.observe().tick,
    sawInitial:seenAtStart,memoryActiveAfterRelocation:memoryAfter,
+   firstLostTick,
    targetReacquiredTick:reacquiredTick,contactTick:c.capture().contactTick,
    turquoiseFrames,orangePeripheralFrames,effort,distance,
    touchEpisodes,contactImpulse,
@@ -171,6 +179,7 @@ function summarise(outcomes:Result[]){
  return outcomes.map(x=>({
   policy:x.policy,relocation:x.relocation,
   initial:x.sawInitial,hadHistory:x.memoryActiveAfterRelocation,
+  lost:x.firstLostTick,
   reacquired:x.targetReacquiredTick,contact:x.contactTick,
   duration:x.duration,seen:x.turquoiseFrames,orange:x.orangePeripheralFrames,
   gazeEffort:+x.effort.toFixed(3),
@@ -191,6 +200,8 @@ describe('RB-VISION/B1 real continuing approach activity with optional actor-pri
   const outcomes=relocations.flatMap(relocation=>
    policies.map(policy=>run(policy,relocation)));
   expect(outcomes.every(x=>x.sawInitial)).toBe(true);
+  expect(outcomes.filter(x=>x.relocation!=='stationary')
+   .every(x=>x.firstLostTick!==null)).toBe(true);
   expect(outcomes.every(x=>x.memoryActiveAfterRelocation)).toBe(true);
   expect(outcomes.every(x=>x.duration>160)).toBe(true);
   expect(outcomes.every(x=>Number.isFinite(x.distance)
@@ -222,4 +233,21 @@ describe('RB-VISION/B1 real continuing approach activity with optional actor-pri
   expect(oldSeen.hasHistory()).toBe(true);
   expect(noHistory.hasHistory()).toBe(false);
  },10000);
+
+ it('falsifies history-only focus as a universal exploration policy',()=>{
+  const policies:Policy[]=['native','always-sweep',
+   'history-scan','history-freeze'];
+  const unseen:Relocation[]=['no-history-left','no-history-right'];
+  const results=unseen.flatMap(relocation=>
+   policies.map(policy=>run(policy,relocation)));
+  expect(results.every(r=>r.sawInitial===false)).toBe(true);
+  expect(results.every(r=>r.memoryActiveAfterRelocation===false)).toBe(true);
+  expect(results.filter(r=>r.policy==='history-scan')
+   .every(r=>r.searchingFrames===0)).toBe(true);
+  expect(results.filter(r=>r.policy==='always-sweep')
+   .every(r=>r.searchingFrames>0)).toBe(true);
+  console.log('RB_VISION_B1_NO_PRIOR_RELATION '+
+   JSON.stringify(summarise(results)));
+ },120000);
+
 });
