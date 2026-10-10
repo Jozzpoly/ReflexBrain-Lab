@@ -268,4 +268,24 @@ describe('RB-VISION/B4 learn whether looking pays from actor-private touch/clock
     scanContact:novelScan.touchTick},
   }));
  },30000);
+
+ it('proves even OWN prior concern does not reveal whether a lost object still exists',()=>{
+  const stillSomewhere=e('same-history-moved',true,'rear-right');
+  const nowGone=e('same-history-gone',true,'absent');
+  const moved=[...EYES.map(eye=>runTrial(stillSomewhere,eye))];
+  const gone=[...EYES.map(eye=>runTrial(nowGone,eye))];
+  expect(moved[0].context).toBe('previously-seen-now-missing');
+  expect(gone[0].context).toBe(moved[0].context);
+  expect(moved[0].firstFrame).toEqual(gone[0].firstFrame);
+  expect(moved[0].decisionFrame).toEqual(gone[0].decisionFrame);
+  expect(moved[1].reward).toBeGreaterThan(moved[0].reward);
+  expect(gone[0].reward).toBeGreaterThan(gone[1].reward);
+  console.log('RB_VISION_B4_LOST_MATTER_ALIAS '+JSON.stringify({
+   samePrivateHistory:true,
+   foundElsewhere:{hold:moved[0].reward,sweep:moved[1].reward,
+    touch:moved[1].touchTick},
+   trulyGone:{hold:gone[0].reward,sweep:gone[1].reward},
+  }));
+ },30000);
+
 });
