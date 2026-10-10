@@ -1579,3 +1579,40 @@ Next move requires campaign-level re-evaluation against:
 - whether the medium should now host a stronger organism rather than acquire more generic UI machinery.
 
 No homepage promotion. No Owner usability PASS.
+
+
+---
+
+# ReflexBrain competence control room — 2026-10-10
+
+**ACTIVE PROJECT-LEVEL STEWARDSHIP LAYER**
+
+New recovery entrypoints:
+- `docs/REFLEXBRAIN_COMPETENCE_CONTROL_ROOM_2026-10-10.md`
+- `docs/competence-runs/RB-COMP-R0_RESULT.md`
+
+Owner direction:
+- ReflexBrain must not remain conceptually static while relevant embodied/local-cognition work advances in sibling projects;
+- other labs may continue independently;
+- this project now owns explicit cross-lab reconciliation of competence evidence, failures, donors and open questions.
+
+Current control-room distinctions:
+- canonical O-CTRL/G5 remains the hard **foundation track**;
+- richer organism/local-brain research runs as a separate **organism-frontier track**;
+- Medium is an instrument and is paused from generic deepening;
+- Combat Lab and LLM Live NPC are donor/evidence sources, not architecture authorities;
+- Living Organism Runtime A is currently **SCOUT / donor candidate / not independently qualified**.
+
+Current competence frontier:
+1. actor-relative relevance from lived history rather than event labels;
+2. local competence applicability / failure;
+3. owned-reason formation;
+4. active information acquisition;
+5. local-to-higher cognition escalation.
+
+Immediate control-room next run:
+**RB-COMP/R1 — independently qualify and decompose Living Organism Runtime A.**
+
+Do not merge Living Organism A wholesale.
+Do not copy R6 Matter/Commitment ontology into ReflexBrain as the answer.
+Do not abandon G5A; its foundation value remains high.
