@@ -22,7 +22,7 @@ import {visibleTurquoisePatches} from '../../src/living-organism/retina-geometry
  * and 120Hz Rapier physics; no special directed-ray sidecar is used here.
  */
 type Policy='native'|'always-sweep'|'history-scan'|'history-freeze';
-type Relocation='left-rear'|'right-rear'|'stationary'|'no-history-left'|'no-history-right';
+type Relocation='left-rear'|'right-rear'|'stationary'|'no-history-left'|'no-history-right'|'world-mover';
 type Result={
  policy:Policy;relocation:Relocation;duration:number;
  sawInitial:boolean;memoryActiveAfterRelocation:boolean;
@@ -112,6 +112,13 @@ function run(policy:Policy,relocation:Relocation):Result{
  const target=w.addObject(noHistory?-3:7,
   noHistory?firstSide*5:0,.62,[.1,.85,.8]);
  const orange=w.addObject(-30,-30,.65,[.87,.51,.16]);
+ if(relocation==='world-mover'){
+  // Real independent World-powered finite mover; force ownership is World,
+  // never the eye/controller. No relocation clock during this arm.
+  const cp=w.captureCheckpoint();
+  cp.mover={handle:target,direction:-1};
+  w.restoreCheckpoint(cp);
+ }
  const c=new ApproachEpisode(true,true);
  const attention=new PrivateAttention(policy);
  let lastSample=-1,seenAtStart=false,memoryAfter=false,
@@ -125,7 +132,7 @@ function run(policy:Policy,relocation:Relocation):Result{
  try{
   for(let t=0;t<TOTAL;t++){
    // World change is unrelated to the eye-controller's internal clock.
-   if(t===RELOCATE && !noHistory&&relocation!=='stationary'){
+   if(t===RELOCATE && (relocation==='left-rear'||relocation==='right-rear')){
     const side=relocation==='left-rear'?1:-1;
     w.moveObject(target,-3,side*5);
    }
@@ -248,6 +255,18 @@ describe('RB-VISION/B1 real continuing approach activity with optional actor-pri
    .every(r=>r.searchingFrames>0)).toBe(true);
   console.log('RB_VISION_B1_NO_PRIOR_RELATION '+
    JSON.stringify(summarise(results)));
+ },120000);
+
+
+ it('B2: compares gaze demand under a genuine independent World-powered target',()=>{
+  const variants:Policy[]=['native','always-sweep',
+    'history-scan','history-freeze'];
+  const outputs=variants.map(policy=>run(policy,'world-mover'));
+  expect(outputs.every(x=>x.sawInitial)).toBe(true);
+  expect(outputs.every(x=>x.duration>160)).toBe(true);
+  console.log('RB_VISION_B2_WORLD_MOVER '+JSON.stringify(summarise(outputs)));
+  // World mover is not an instruction or hidden motion signal to brain.
+  // Only downstream actual contact, motion and private sight are evaluated.
  },120000);
 
 });
