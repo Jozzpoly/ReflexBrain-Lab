@@ -141,7 +141,7 @@ function run(spec: Spec): Result {
       typeof raw === 'number' && raw >= 0 && raw <= VISUAL_RANGE
         ? raw : null;
 
-    const stateBefore = world.takeSnapshot().slice();
+    const stateBefore: Uint8Array = world.takeSnapshot().slice();
     const push = branch(
       stateBefore, body.rb.handle, body.co.handle,
       solid?.co.handle ?? null, 1,
@@ -150,7 +150,7 @@ function run(spec: Spec): Result {
       stateBefore, body.rb.handle, body.co.handle,
       solid?.co.handle ?? null, 0,
     );
-    const stateAfter = world.takeSnapshot().slice();
+    const stateAfter: Uint8Array = world.takeSnapshot().slice();
     return {
       spec, privateHistory, visualRayDistance, push, hold,
       regretPushMinusHold: push.cost - hold.cost,
