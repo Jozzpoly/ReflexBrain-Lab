@@ -188,6 +188,7 @@ function firstPrivateDivergence(
 function runOnce(
   config: G5D0Config,
   processEnabled: boolean,
+  historyEnabled = true,
 ): G5D0Run {
   const world = createE0World();
   try {
@@ -258,7 +259,7 @@ function runOnce(
     ]);
     const initialBlobCount = frame.blobs.length;
 
-    const controller = new C01AuthoredMonitor(true);
+    const controller = new C01AuthoredMonitor(historyEnabled);
     controller.seedLegalObservation(frame);
 
     let direction: -1 | 1 = -1;
@@ -559,4 +560,12 @@ export function runG5D0Discovery(): G5D0Discovery {
 
 export function rerunG5D0Config(config: G5D0Config): G5D0Pair {
   return evaluate(config);
+}
+
+export function runG5D0Variant(
+  config: G5D0Config,
+  processEnabled: boolean,
+  historyEnabled = true,
+): G5D0Run {
+  return runOnce(config, processEnabled, historyEnabled);
 }
