@@ -1,4 +1,5 @@
 import {beforeAll,describe,expect,it} from 'vitest';
+import {E0_RAPIER as R} from '../../src/e0-body-seam';
 import {LivingWorld,initLivingWorld,type PrivateFrame,type Demand} from '../../src/living-organism/world';
 import {ApproachEpisode} from '../../src/living-organism/approach-episode';
 import {visibleTurquoisePatches} from '../../src/living-organism/retina-geometry';
@@ -306,6 +307,22 @@ describe('RB-VISION/B1 real continuing approach activity with optional actor-pri
     targetB=unrelated.w.inspect().objects[0];
    expect(targetA.x).toBe(targetB.x);
    expect(targetA.y).toBe(targetB.y);
+   // Latent material equality is a HOST-ONLY audit, never delivered to
+   // either actor. Compare both real Rapier bodies' position/velocity.
+   const material=(world:LivingWorld)=>{
+    const cp=world.captureCheckpoint(),physics=R.World.restoreSnapshot(cp.physics);
+    if(!physics)throw Error('B3 physical audit snapshot unavailable');
+    try{
+     const actor=physics.getRigidBody(cp.actorHandle);
+     const object=physics.getCollider(cp.surfaces[0].handle).parent();
+     const state=(body:typeof actor)=>({
+      position:{...body.translation()},velocity:{...body.linvel()},
+      angle:body.rotation(),angularVelocity:body.angvel(),
+     });
+     return {actor:state(actor),target:state(object)};
+    }finally{physics.free();}
+   };
+   expect(material(lived.w)).toEqual(material(unrelated.w));
    // Everything material and presently sensed is equal. Only the lawful
    // actor-private earlier patch/approach history differs.
    const runs=[lived,unrelated].map((item,index)=>{
