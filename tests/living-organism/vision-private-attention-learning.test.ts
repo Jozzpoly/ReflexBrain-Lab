@@ -280,12 +280,20 @@ describe('RB-VISION/B4 learn whether looking pays from actor-private touch/clock
     model.update(t);
     shiftRecords.push({kind,t});
    }
+   // Strong unlearned challengers on EXACT same held-out worlds:
+   // always scanning and a cheap scheduled occasional scan, both
+   // without privileged knowledge of which trial contains a target.
+   shiftRecords.push({kind:'always',
+    t:runTrial(s,'sweep')});
+   shiftRecords.push({kind:'periodic3',
+    t:runTrial(s,shift.indexOf(s)%3===0?'sweep':'hold')});
   }
   const afterShift=shiftRecords.map(x=>x.t);
-  const shiftSummary=['greedy','adaptive'].map(kind=>{
+  const shiftSummary=['greedy','adaptive','always','periodic3'].map(kind=>{
    const r=shiftRecords.filter(x=>x.kind===kind).map(x=>x.t);
    return {kind,...summary(r),activeScans:r.filter(x=>x.eye==='sweep').length,
-    finalChoice:(kind==='greedy'?greedy:adaptive).choice('never-seen'),
+    finalChoice:kind==='greedy'?greedy.choice('never-seen'):
+     kind==='adaptive'?adaptive.choice('never-seen'):null,
    };
   });
   console.log('RB_VISION_B5_DISTRIBUTION_SHIFT '+JSON.stringify({
@@ -297,9 +305,23 @@ describe('RB-VISION/B4 learn whether looking pays from actor-private touch/clock
     reward:+x.t.reward.toFixed(3),
    })),
   }));
-  expect(afterShift.length).toBe(72);
+  expect(afterShift.length).toBe(144);
   expect(shiftRecords.filter(x=>x.kind==='greedy')
    .every(x=>x.t.eye==='hold')).toBe(true);
+  const reverser=adaptive.fork();
+  const reversal=Array.from({length:12},(_,i)=>{
+   const scene=e('reverse-rare-'+i,false,'absent');
+   const choice=reverser.choice('never-seen',true);
+   const t=runTrial(scene,choice);reverser.update(t);
+   return t;
+  });
+  console.log('RB_VISION_B5_REVERSE_SHIFT '+JSON.stringify({
+   noNoveltyEpisodes:reversal.length,
+   activeScans:reversal.filter(x=>x.eye==='sweep').length,
+   unnecessaryGaze:reversal.reduce((s,x)=>s+x.gazeEffort,0),
+   selectedAfter:reverser.choice('never-seen'),
+   valuesAfter:reverser.snapshot().find(x=>x.context==='never-seen'),
+  }));
   // Adaptive can learn only after actual sampled contact; no "novelty
   // probability" is leaked from the generating host scenario labels.
  },120000);
