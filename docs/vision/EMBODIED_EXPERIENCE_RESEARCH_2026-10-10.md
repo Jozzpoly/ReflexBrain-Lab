@@ -131,5 +131,36 @@ Do NOT immediately implement V1 rasters or rewrite Living Organism. Instead:
 - Affordance learning survey (2026 **preprint**, not qualified for this project): https://jingliangli.com/affordance-survey/ — useful taxonomy separating perception/feasibility, task relevance, and action; no transferable architecture verdict.
 - Historical Owner vision from Feniks conversations is contextual intent evidence, *not* experimental validation.
 
+
+## 11. Red-team correction: looking and moving are often the same physical act
+The active-sensing hypothesis has a **major attribution trap**. If an actor steps sideways to inspect a passage and later crosses it successfully, the step might have:
+- revealed useful visual information;
+- simply moved the body closer to the correct approach path;
+- changed the physical scene through contact;
+- improved the authored controller's geometry even if the retina was ignored.
+
+Thus "looked, then succeeded" does **not** prove that information acquisition improved its competence, much less that its motivation was self-generated.
+
+A future *diagnostic* 2x2 contrast should try to separate:
+1. **Same physical movement, fresh lawful observation:** sensory channel available as specified.
+2. **Same physical movement, withheld newly revealed information:** actor continues on the pre-intervention cached frame/declared occlusion, while World mechanics are held identical up to decision boundary.
+3. **Passive/no probing action, normal observation:** control for whether active exploration was necessary.
+4. **Matched-cost noninformative movement:** control for extra time, energy, contact and coincidental relocation.
+
+The resulting continuation may diverge physically **after** the informational boundary. Do not demand impossible equivalence then; declare the matched pre-branch causal substrate, all controlled channels and remaining unknowns. A log lacking an event is not proof that no event happened if coverage is incomplete.
+
+Outcome evidence required: observed private belief/action differences *after* lawful information; identifiable difference in subsequent material consequences; alternative explanation and blind spot accounting. If the extra view helps only an authored information trigger, report **host/controller improvement**, not learned curiosity. If observation changes nothing consequential, retain negative result.
+
+Further falsifier: a policy that constantly scans everything can win raw information gain while worsening the actor's real ongoing activity. **Information amount and information value are different quantities**, and latter is situated, not an unconditional salience scalar.
+
+## 12. Open Vision question for the next independent thinking run
+What minimal **already continuing, actor-originated activity** would make two legally identical present scenes have different reasons to look, move or ignore something, without giving the actor:
+- a host-authored `Matter` label;
+- privileged passability/value map;
+- researcher-assigned uncertainty priority;
+- future-branch ORACLE feedback?
+
+A scientifically credible negative answer ("we cannot yet ground actor-originated concern") is more valuable than a scripted fake pass. The Vision branch should seek this *qualifying provenance problem* before selecting raster size, network class or visual atlas.
+
 ### Status
 **SCOUT established; LIVE empirical advantage of raster/multiscale/learned perception is UNPROVEN.** No runtime, actor, sensor or canonical architecture was changed by this document.
