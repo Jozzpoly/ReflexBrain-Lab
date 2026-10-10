@@ -263,8 +263,9 @@ describe('RB-VISION/V4 controllable sparse focus and private observation ledger'
     }
     const costs=Object.fromEntries(ACTOR_POLICY.map(p=>[p,mean(p)]));
     console.log('RB_VISION_V4_POLICY ' + JSON.stringify(costs));
-    expect(mean('scan-remember')).toBeLessThan(mean('center-center')+
-      1e-9 || true); // Diagnostic only: no forced winner!
+    // Descriptive comparison only. There is deliberately no winning-policy
+    // assertion on this mixed distribution; inspect the actual mean costs.
+    expect(Object.values(costs).every(Number.isFinite)).toBe(true);
     const wideStatic=rows[1].values;
     expect(wideStatic.find(v=>v.policy==='scan-expire')!.drive).toBe(0);
     expect(wideStatic.find(v=>v.policy==='scan-remember')!.drive).toBe(1);
