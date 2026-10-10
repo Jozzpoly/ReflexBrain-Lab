@@ -40,7 +40,7 @@ const SPECS:Spec[]=[7,9.8,10.4].flatMap(range=>
  (['red-left','cyan-left'] as const).map(pattern=>({
    range,bearingDeg,phaseDeg,pattern,
  })))));
-function createScene(spec:Spec){
+function createScene(spec:Spec,otherAngle=-56,otherRadius=.76){
  const w=new LivingWorld(false);
  const a=spec.bearingDeg*RAD;
  w.addObject(spec.range*Math.cos(a),spec.range*Math.sin(a),.85,[...GRAY]);
@@ -51,8 +51,8 @@ function createScene(spec:Spec){
  const rc=spec.pattern==='red-left'?CYAN:RED;
  w.addObject(face*Math.cos(left),face*Math.sin(left),.072,[...lc]);
  w.addObject(face*Math.cos(right),face*Math.sin(right),.072,[...rc]);
- const other=-56*RAD;
- w.addObject(6*Math.cos(other),6*Math.sin(other),.76,[...ORANGE]);
+ const other=otherAngle*RAD;
+ w.addObject(6*Math.cos(other),6*Math.sin(other),otherRadius,[...ORANGE]);
  return w;
 }
 function bins(frame:Frame,col:readonly number[]):number[]{
@@ -122,8 +122,8 @@ function classify(frame:Frame):Pattern|null{
  if(Math.abs(delta)<.25*RAD)return null;
  return delta<0?'red-left':'cyan-left';
 }
-function scenario(spec:Spec){
- const w=createScene(spec);
+function scenario(spec:Spec,otherAngle=-56,otherRadius=.76){
+ const w=createScene(spec,otherAngle,otherRadius);
  try {
   const cp=w.captureCheckpoint();
   // This is the exact EXISTING quadratic RGB sampling law at body gaze=0.
