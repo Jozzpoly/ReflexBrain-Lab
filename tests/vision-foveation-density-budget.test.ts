@@ -96,6 +96,24 @@ describe('RB-VISION/V6 equal-budget 96-ray foveal angular allocation',()=>{
       expect(ours).toBeCloseTo(original,12);
     }
   });
+
+  it('stress-tests fixed angular grids against held-out fractional-degree phase offsets',()=>{
+    // D1 stress was proposed AFTER observing D0 integer-grid results.
+    // This is exploratory sensitivity, not a retroactive D0 PASS gate.
+    const offsets=[0,.29,.71,1.13];
+    const sweeps=offsets.map(offset=>{
+      const data=RADII.flatMap(radius=>
+        DEGREES.flatMap(angle=>trialAt(angle+offset,radius)));
+      return {offset,stats:summarize(data)};
+    });
+    console.log('RB_VISION_V6_PHASE '+JSON.stringify(sweeps));
+    expect(sweeps.length).toBe(4);
+    expect(sweeps.every(x=>x.stats.length===LENSES.length)).toBe(true);
+    expect(sweeps.every(x=>x.stats.every(s=>
+      s.rayBudget===COUNT && s.scenes===DEGREES.length*RADII.length)))
+      .toBe(true);
+  });
+
   it('compares periphery, fovea and shifted focus on physically raycast targets',()=>{
     const data=run();
     expect(data.length).toBe(DEGREES.length*RADII.length*LENSES.length);
