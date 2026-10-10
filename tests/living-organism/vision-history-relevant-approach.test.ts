@@ -313,13 +313,20 @@ describe('RB-VISION/B1 real continuing approach activity with optional actor-pri
     let contact:number|null=null;
     let travel=0;
     let previous=item.w.inspect().actor;
+    let lastSample=-1;
+    let demand:Demand={drive:0,turn:0,gazeRate:0};
     for(let tick=4;tick<3600;tick++){
      const frame=item.w.observe();
-     const base=item.approach.decide(frame);
-     const demand=item.attention.decide(frame,base);
-     if(index===0&&reacquired===null&&frame.tick>4
+     if(frame.tick!==lastSample){
+      lastSample=frame.tick;
+      const base=item.approach.decide(frame);
+      demand=item.attention.decide(frame,base);
+      if(index===0&&reacquired===null&&frame.tick>4
        &&visibleTurquoisePatches(frame.retina).some(p=>!p.clipped))
-      reacquired=frame.tick;
+       reacquired=frame.tick;
+     }
+     // Hold the last command through all four 120Hz physics ticks
+     // belonging to this 30Hz private sense/update window.
      item.w.step(demand);
      const now=item.w.inspect().actor;
      travel+=Math.hypot(now.x-previous.x,now.y-previous.y);
