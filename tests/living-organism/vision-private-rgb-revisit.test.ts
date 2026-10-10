@@ -11,7 +11,7 @@ import { visibleTurquoisePatches } from '../../src/living-organism/retina-geomet
  * The fixation heuristic is authored; no learned skill or object identity.
  */
 type Side = -1|1;
-type Policy = 'memory'|'right-sweep'|'left-sweep'|'center';
+type Policy = 'memory'|'memory-verify-search'|'right-sweep'|'left-sweep'|'center';
 type Spec = {side:Side;hiddenMoved:boolean};
 type PrivateRemember = {bearing:number;lastSeenTick:number};
 type Frozen = {
@@ -29,14 +29,14 @@ type Trial = {
   firstVisibleBearing:number|null;
   endActorX:number;endActorY:number;
   sampledFrames:number;motorTravel:number;
-  gazeTravel:number;
+  gazeTravel:number;memoryDisconfirmedTick:number|null;
 };
 const IDLE={drive:0,turn:0,gazeRate:0};
 const ANGLE=112*Math.PI/180;
 const DIST=5;
 const RADIUS=.55;
 const PREP_STEPS=60;
-const BRANCH_STEPS=180;
+const BRANCH_STEPS=300;
 function matching(frame:PrivateFrame){
   return visibleTurquoisePatches(frame.retina).filter(p=>!p.clipped);
 }
@@ -103,6 +103,7 @@ function branch(frozen:Frozen,policy:Policy):Trial{
     let firstReappearanceTick:number|null=null;
     let firstVisibleBearing:number|null=null;
     let sampledFrames=0,gazeTravel=0,motorTravel=0;
+    let memoryDisconfirmedTick:number|null=null;
     let lastSampleTick=decisionTick;
     const before=w.inspect().actor;
     let previous=before;
@@ -121,13 +122,27 @@ function branch(frozen:Frozen,policy:Policy):Trial{
       else if(policy==='right-sweep')gazeRate=1;
       else if(policy==='left-sweep')gazeRate=-1;
       else{
-        // This uses ONLY the previously stored lawful bearing and
-        // the actor's current gaze proprioception, never hidden World XY.
+        // Both remembered-bearing policies use only actor-private history.
         const diff=Math.atan2(
           Math.sin(frozen.remembered.bearing-f.proprio.gaze),
           Math.cos(frozen.remembered.bearing-f.proprio.gaze),
         );
-        gazeRate=Math.max(-1,Math.min(1,diff*2.4));
+        if(
+          policy==='memory-verify-search'
+          && memoryDisconfirmedTick===null
+          && f.tick>decisionTick
+          && Math.abs(diff)<.5
+          && matching(f).length===0
+        ){
+          // We should now see the remembered bearing within a dense part
+          // of the retina, but cannot. This is negative perceptual evidence,
+          // NOT proof that the World target moved rather than occluded.
+          memoryDisconfirmedTick=f.tick;
+        }
+        gazeRate=policy==='memory-verify-search'
+          &&memoryDisconfirmedTick!==null
+          ? -Math.sign(frozen.remembered.bearing)
+          : Math.max(-1,Math.min(1,diff*2.4));
       }
       const priorGaze=f.proprio.gaze;
       w.step({...IDLE,gazeRate});
@@ -144,12 +159,12 @@ function branch(frozen:Frozen,policy:Policy):Trial{
       decisionTick,decisionGaze:frozen.decisionFrame.proprio.gaze,
       firstReappearanceTick,firstVisibleBearing,
       endActorX:previous.x,endActorY:previous.y,
-      sampledFrames,motorTravel,gazeTravel,
+      sampledFrames,motorTravel,gazeTravel,memoryDisconfirmedTick,
     };
   }finally{w.free();}
 }
 const POLICIES:readonly Policy[]=[
-  'memory','right-sweep','left-sweep','center',
+  'memory','memory-verify-search','right-sweep','left-sweep','center',
 ] as const;
 const SPECS:readonly Spec[]=[
   {side:1,hiddenMoved:false},{side:-1,hiddenMoved:false},
@@ -194,6 +209,7 @@ describe('RB-VISION/L2 same current RGB, different private memory and active gaz
       results:c.trials.map(t=>({
         policy:t.policy,reappeared:t.firstReappearanceTick,
         actorTravel:t.motorTravel,gazeTravel:t.gazeTravel,
+        memoryDisconfirmed:t.memoryDisconfirmedTick,
       })),
     }))));
   },30000);
@@ -210,4 +226,28 @@ describe('RB-VISION/L2 same current RGB, different private memory and active gaz
       expect(correctByChance.firstReappearanceTick).not.toBeNull();
     }
   },30000);
+
+  it('uses PRIVATE failed-reacquisition evidence to redirect gaze in hidden changes',()=>{
+    for(const spec of SPECS){
+      const frozen=freeze(spec);
+      const bounded=branch(frozen,'memory-verify-search');
+      const naive=branch(frozen,'memory');
+      if(spec.hiddenMoved){
+        // Information from the failed remembered look, not from the host
+        // hidden change flag, is the trigger to broaden search.
+        expect(bounded.memoryDisconfirmedTick).not.toBeNull();
+        expect(bounded.firstReappearanceTick).not.toBeNull();
+        expect(naive.firstReappearanceTick).toBeNull();
+        expect(bounded.firstReappearanceTick!).toBeGreaterThan(
+          bounded.memoryDisconfirmedTick!,
+        );
+      }else{
+        expect(bounded.firstReappearanceTick).not.toBeNull();
+        expect(bounded.memoryDisconfirmedTick).toBeNull();
+        expect(bounded.firstReappearanceTick).toBe(naive.firstReappearanceTick);
+      }
+      expect(bounded.motorTravel).toBeLessThan(.001);
+    }
+  },30000);
+
 });
