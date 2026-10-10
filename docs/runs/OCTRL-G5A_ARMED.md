@@ -194,3 +194,21 @@ Do not compress the result into one celebratory PASS.
 No Owner/product claim.
 No learned ReflexBrain claim.
 No semantic meaning claim.
+
+
+---
+
+## Closure
+
+**GATE 1 PASS · GATE 2 PASS · CLOSED.**
+
+See `docs/runs/OCTRL-G5A_RESULT.md`.
+
+Frozen causal ladder:
+- independent hidden process contact: 111
+- same private-age CHECK: 231
+- first lawful DYNAMIC-vs-STATIC private divergence: 313
+- first motor-demand divergence: 314
+- first private body-odometry divergence: 315
+
+No geometry, C01 threshold, sensor law, process law or actor policy was changed after activation.
