@@ -43,8 +43,11 @@ function run(condition:Condition):Result{
     // HOST-controlled independently material collision from an object
     // unrelated to the turquoise target. No label/intent to the actor.
     const a=w.inspect().actor;
-    w.moveObject(other,a.x-.35,
-     a.y+(condition==='unrelated-rear-touch'?.62:-.62));
+    // A collision object is inserted just INSIDE the forward body's
+    // contact envelope while the actor retains a real forward demand.
+    // The previous rear-side placement did not yield a Rapier impulse.
+    w.moveObject(other,a.x+1.45,
+     a.y+(condition==='unrelated-rear-touch'?.32:-.32));
    }
    const frame=w.observe();
    if(frame.tick!==lastSample){
