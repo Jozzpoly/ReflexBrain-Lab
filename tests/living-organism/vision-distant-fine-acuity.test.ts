@@ -200,4 +200,25 @@ describe('RB-VISION/A1 genuine distant detail versus peripheral opportunity',()=
       orangeSeenWhenFocused:targetR.orangeEventFrames,
     }));
   },60000);
+  it('does not mistake finer angular resolution for a longer physical sensor horizon',()=>{
+    const observeAt=(distance:number)=>{
+      const world=new LivingWorld(false);
+      try{
+        const angle=48*RAD;
+        world.addObject(distance*Math.cos(angle),
+          distance*Math.sin(angle),.5,[...red]);
+        let glimpses=0;
+        for(let t=0;t<160;t++){
+          if(matches(world.observe().retina,red).length>0)glimpses++;
+          world.step({...idle,gazeRate:1});
+        }
+        return glimpses;
+      }finally{world.free();}
+    };
+    const inside=observeAt(10),outside=observeAt(14);
+    console.log('RB_VISION_A1_RANGE_CAP '+JSON.stringify({inside,outside}));
+    expect(inside).toBeGreaterThan(0);
+    expect(outside).toBe(0);
+  });
+
 });
