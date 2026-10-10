@@ -25,6 +25,7 @@ type Outcome = {
   variant: Variant;
   source: Uint8Array;
   frame: Frame;
+  actualGaze: number;
   choseDrive: 0 | 1;
   displacement: number;
   impulse: number;
@@ -120,7 +121,13 @@ function run(scene:Scene,variant:Variant):Outcome{
     world.step();
     const initial:Frame={tick:0,gaze:0,range:null};
     let cached=initial;
+    // Commanded private gaze state is independent from rigid-body pose.
+    // Both gaze variants execute the exact same idealized gaze command;
+    // only fresh lawful sensor delivery differs.
+    let actualGaze=0;
+    const commandedGaze=variant==='center-only'?0:ANGLE;
     for(let t=1;t<=SAMPLE_TICK;t++){
+      if(t===SAMPLE_TICK-3)actualGaze=commandedGaze;
       applyE0Demand(body.rb,0,0);
       world.step();
       if(t===SAMPLE_TICK-4){
@@ -131,20 +138,20 @@ function run(scene:Scene,variant:Variant):Outcome{
     // Withheld means the independent optical sensor is not copied into
     // this actor's private frame; the old cached center sight remains.
     const frame=variant==='gaze-fresh'
-      ? {tick:SAMPLE_TICK,gaze:ANGLE,range:rayRange(body.rb.translation(),ANGLE,opticalWalls)}
+      ? {tick:SAMPLE_TICK,gaze:actualGaze,range:rayRange(body.rb.translation(),actualGaze,opticalWalls)}
       : variant==='center-only'
-        ? {tick:SAMPLE_TICK,gaze:0,range:rayRange(body.rb.translation(),0,opticalWalls)}
+        ? {tick:SAMPLE_TICK,gaze:actualGaze,range:rayRange(body.rb.translation(),actualGaze,opticalWalls)}
         : cached;
     const source:Uint8Array=world.takeSnapshot().slice();
     const choseDrive=choose(frame,scene.radius);
     const result=physicalContinuation(source,body.rb.handle,body.co.handle,
       physicalWalls.map(x=>x.handle),choseDrive);
-    return {id:scene.id,variant,source,frame,choseDrive,...result};
+    return {id:scene.id,variant,source,frame,actualGaze,choseDrive,...result};
   }finally{world.free();}
 }
 function summary(o:Outcome){
   return {id:o.id,variant:o.variant,gaze:o.frame.gaze,
-    sampledTick:o.frame.tick,range:o.frame.range,
+    sampledTick:o.frame.tick,range:o.frame.range,actualGaze:o.actualGaze,
     drive:o.choseDrive,displacement:o.displacement,
     impulse:o.impulse,cost:o.cost};
 }
@@ -160,6 +167,9 @@ describe('RB-VISION/V3 authored gaze-only causal-information ablation',()=>{
     for(let i=0;i<outcomes.length;i+=3){
       const trio=outcomes.slice(i,i+3);
       for(const other of trio.slice(1))expect(other.source).toEqual(trio[0].source);
+      expect(trio[0].actualGaze).toBe(0);
+      expect(trio[1].actualGaze).toBe(ANGLE);
+      expect(trio[2].actualGaze).toBe(ANGLE);
     }
     console.log('RB_VISION_V3 ' + JSON.stringify(outcomes.map(summary)));
   });
