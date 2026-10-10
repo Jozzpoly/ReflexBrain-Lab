@@ -32,6 +32,8 @@ type Outcome = {
   orangeSamples:number;purpleSamples:number;
   memoryFollowSamples:number;
   renewedSightings:number;recordedContactEvents:number;
+  contactImpulseTotal:number;touchPositiveFrames:number;
+  separatedTouchEpisodes:number;maxConsecutiveTouchFrames:number;
   modeCounts:Record<string,number>;
   commandedGazeSum:number;distinctGazeBins:number;
   distinctVisitedCells:number;rememberedCount:number;
@@ -121,6 +123,9 @@ function run(policy:GazePolicy,scene:Scene,ticks=RUN_TICKS):Outcome {
     let lastSample=-1,privateSamples=0,visibleSamples=0,
       fovealSamples=0,renewedSightings=0,recordedContactEvents=0;
     let wasVisible=false,actualDistance=0;
+    let contactImpulseTotal=0,touchPositiveFrames=0;
+    let separatedTouchEpisodes=0,maxConsecutiveTouchFrames=0;
+    let consecutiveTouchFrames=0,previousFrameTouch=false;
     let orangeSamples=0,purpleSamples=0;
     const minuteDistances:number[]=[],minuteFovealCounts:number[]=[];
     let previousMinuteDistance=0,previousMinuteFoveal=0;
@@ -156,7 +161,21 @@ function run(policy:GazePolicy,scene:Scene,ticks=RUN_TICKS):Outcome {
         gazeBins.add(Math.floor((frame.proprio.gaze+Math.PI/2)/.12));
         modes[rt.occupant.capture().mode]=(modes[rt.occupant.capture().mode]??0)+1;
         // Host microscope, NOT delivered to the gaze or motor controller.
-        recordedContactEvents+=rt.world.inspectContactSample().contacts.length;
+        const contactSample=rt.world.inspectContactSample();
+        recordedContactEvents+=contactSample.contacts.length;
+        contactImpulseTotal+=contactSample.contacts.reduce(
+          (sum,c)=>sum+c.impulse,0,
+        );
+        const touching=Array.from(frame.touch).some(x=>x>1e-9);
+        if(touching){
+          touchPositiveFrames++;
+          if(!previousFrameTouch)separatedTouchEpisodes++;
+          consecutiveTouchFrames++;
+          maxConsecutiveTouchFrames=Math.max(
+            maxConsecutiveTouchFrames,consecutiveTouchFrames,
+          );
+        }else consecutiveTouchFrames=0;
+        previousFrameTouch=touching;
       }
       commandedGazeSum+=Math.abs(manual.gazeRate)*DT;
       rt.step(manual);
@@ -179,6 +198,8 @@ function run(policy:GazePolicy,scene:Scene,ticks=RUN_TICKS):Outcome {
       orangeSamples,purpleSamples,
       memoryFollowSamples:focus.state.memoryFollowSamples,
       renewedSightings,recordedContactEvents,
+      contactImpulseTotal,touchPositiveFrames,
+      separatedTouchEpisodes,maxConsecutiveTouchFrames,
       modeCounts:modes,commandedGazeSum,
       distinctGazeBins:gazeBins.size,
       distinctVisitedCells:visited.size,
@@ -196,6 +217,10 @@ function summary(x:Outcome){
     orange:x.orangeSamples,purple:x.purpleSamples,
     memoryFollow:x.memoryFollowSamples,
     reacquisitions:x.renewedSightings,contacts:x.recordedContactEvents,
+    impulse:+x.contactImpulseTotal.toFixed(3),
+    touchFrames:x.touchPositiveFrames,
+    touchEpisodes:x.separatedTouchEpisodes,
+    longestTouchRun:x.maxConsecutiveTouchFrames,
     visited:x.distinctVisitedCells,gazeBins:x.distinctGazeBins,
     gazeDemandSum:+x.commandedGazeSum.toFixed(3),
     modes:x.modeCounts,
@@ -245,6 +270,9 @@ describe('RB-VISION/L1 real RGB retina + continuous embodied gaze policies',()=>
     expect(scenarios.every(o=>o.minuteDistances.every(Number.isFinite)))
       .toBe(true);
     expect(scenarios.every(o=>o.minuteFovealCounts.length===3)).toBe(true);
+    expect(scenarios.every(o=>Number.isFinite(o.contactImpulseTotal))).toBe(true);
+    expect(scenarios.every(o=>o.touchPositiveFrames>=o.separatedTouchEpisodes))
+      .toBe(true);
     // No predeclared winner! Detect life/motor stagnation via per-minute
     // distance rather than laundering more foveal frames into autonomy.
     console.log('RB_VISION_L1_3MIN '+JSON.stringify(scenarios.map(summary)));
