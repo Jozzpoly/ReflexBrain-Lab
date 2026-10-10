@@ -162,5 +162,53 @@ What minimal **already continuing, actor-originated activity** would make two le
 
 A scientifically credible negative answer ("we cannot yet ground actor-originated concern") is more valuable than a scripted fake pass. The Vision branch should seek this *qualifying provenance problem* before selecting raster size, network class or visual atlas.
 
+
+## 13. Live cross-lab correction — F3/D0 and the decision-information bound (2026-10-10)
+The canonical line has since merged [RB-F3/D0 #52](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/52). Its source-frozen mirrored contact episodes yield:
+- identical 24-transition F2-private histories and scalar metrics in the two World variants;
+- identical candidate drives M=+0.5 and F=0;
+- opposite model-vs-fallback regret signs, magnitude approximately 0.64608;
+- a **separately measured**, body-local directional contact impulse distinguishing right from left (mean signed impulse +0.30123 / -0.29885). This is a *proposed private tactile donor* and **not part of the F2 actor's input, nor a qualified decision policy**.
+
+**A stronger interpretation, strictly limited to this balanced two-world specimen:** suppose the actor faces either World with probability 1/2, and must choose M or F based only on the aliased F2-private input. The costs in the source report are:
+- right: M 2.01696 / F 1.37088;
+- left: M 0.71937 / F 1.36545.
+
+Any fixed or randomized choice based on only that identical input yields average cost approximately **1.368165**, while a side-informed chooser achieves **1.045125**. Therefore the irreducible average regret of that *aliased representation* against this paired clairvoyant action selector is approximately **0.32304** under equal priors. This is a two-case **information ceiling**, not a general bound on organism intelligence, because policies, priors, horizon, costs, alternative sensor histories and selected actions are all frozen by the experiment. A live sensor's latency/noise/price reduces realizable value.
+
+This makes a useful vision selection principle:
+> Prefer the *cheapest lawful sensor/history representation that preserves distinctions which can change the relative consequences of available actions* — not the largest image, lowest image reconstruction loss, highest novelty score, or most channels.
+
+The direction-sensitive tactile donor may already break this alias more cheaply than any image. **This result does not justify visual perception.**
+
+It also warns against reducing rich channels to one signed mean. Simultaneous opposing contact forces can cancel in an averaged vector even when the body is highly constrained; preserve sign, magnitude, contact distribution and temporal timing where the scientific question requires it. This cancellation failure is a *new proposed falsifier*, **not an observed F3 test**.
+
+Related external methods: [action-bisimulation / long-horizon controllability](https://rlj.cs.umass.edu/2024/papers/Paper39.html) and [self-predictive abstractions for partial observability](https://proceedings.iclr.cc/paper_files/paper/2024/hash/666c1861d709bd84e20b6e0e02a2c223-Abstract-Conference.html). These support the representation framing broadly, **not** the empirical validity of any ReflexBrain organ.
+
+## 14. The first credible way to *earn* visual perception in this program
+The next missing experiment is **PRE-CONTACT ACTOR-RELATIVE LOOKAHEAD**, not another contact-direction classifier.
+
+Find physical paired scenes where:
+- legal **nonvisual** history, body motion, sparse events and even *directional touch* are matched at decision time;
+- a difference ahead in World topology/occlusion/body clearance would reverse the preferred short-horizon physical continuation of a currently ongoing activity;
+- that difference is available through a defined lawful local *visual* observation (or through self-induced viewpoint change);
+- a simpler direct ray/sector or event stream is tested before a dense raster, and a body-scaled spatial sample before multi-scale;
+- any extra sensing/movement has charged energy/time/contact and no invisible analyst oracle in actor input.
+
+Two distinct proofs must not be conflated:
+1. **Opportunity for vision (additional-information):** a legal visual channel exposes a decision-relevant distinction unavailable to the nonvisual controls.
+2. **Advantage of representation (matched-information):** on exactly the same legal visual samples, does a spatial/temporal/multi-scale encoding improve held-out action consequences enough to justify its cost over a simpler ray/event representation?
+
+For active gaze or movement, use a pre-branch matched causal substrate and compare *identical physical movement with/without availability of fresh lawful visual samples*. Post-branch worlds may diverge naturally; exact equivalence after selecting different actions is neither possible nor required. An action can also physically clear/create an obstacle, so measure movement-only advantage separately.
+
+A scripted continuing locomotion activity can test **conditional value of vision** but cannot qualify actor-owned motivation or self-selected curiosity. The latter remains a separate F3/F4 frontier. Reject claiming an organism-originated intention while any crucial concern/goal is experiment-authored.
+
+**Stop condition:** if directional touch + lawful sparse rays/history perform just as well as raster/multiscale across held-out body shapes, obstacle poses and action regimes, no visual atlas is earned. The original idea remains a valuable human-debug and future Feniks/world donor instead of a ReflexBrain learned-organ requirement.
+
+## 15. Reconciliation boundary / next independent run
+As the main control room pursues F3's own causal relevance tests, this Vision branch should independently investigate **when (if ever) pre-contact spatial foresight changes ongoing bodily competence beyond direct sparse sensors**, not duplicate directional-touch F3A.
+
+This is still a **proposed research question**, not an activated qualification protocol. No World/ray code, network, new medium, training corpus or mandatory format is justified at this checkpoint.
+
 ### Status
 **SCOUT established; LIVE empirical advantage of raster/multiscale/learned perception is UNPROVEN.** No runtime, actor, sensor or canonical architecture was changed by this document.
