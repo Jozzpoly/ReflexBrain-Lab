@@ -515,6 +515,12 @@ function runEpisode(spec: F2EpisodeSpec): F2EpisodeResult {
   }
 }
 
+export function runF2P0EpisodeForResearch(
+  spec: F2EpisodeSpec,
+): F2EpisodeResult {
+  return runEpisode({ ...spec });
+}
+
 function auc(
   episodes: F2EpisodeResult[],
   value: (episode: F2EpisodeResult) => number,
