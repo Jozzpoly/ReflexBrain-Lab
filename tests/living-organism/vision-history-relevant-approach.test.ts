@@ -275,12 +275,12 @@ describe('RB-VISION/B1 real continuing approach activity with optional actor-pri
 
 
  it('B3: lawful different visual histories select attention with EXACT same present RGB/body',()=>{
-  const make=(priorSeen:boolean)=>{
+  const make=(priorSeen:boolean,policy:Policy='history-scan')=>{
    const w=new LivingWorld(false);
    const turquoise=w.addObject(priorSeen?7:-3,
     priorSeen?0:5,.62,[.1,.85,.8]);
    const approach=new ApproachEpisode(true,true);
-   const attention=new PrivateAttention('history-scan');
+   const attention=new PrivateAttention(policy);
    const first=w.observe();
    const hadPatch=visibleTurquoisePatches(first.retina)
     .some(p=>!p.clipped);
@@ -292,7 +292,8 @@ describe('RB-VISION/B1 real continuing approach activity with optional actor-pri
    for(let i=0;i<4;i++)w.step({drive:0,turn:0,gazeRate:0});
    return {w,approach,attention,first,demand};
   };
-  const lived=make(true),unrelated=make(false);
+  const lived=make(true),unrelated=make(false),
+   livedNoGaze=make(true,'native'),unrelatedExplores=make(false,'always-sweep');
   try{
    const fA=lived.w.observe(),fB=unrelated.w.observe();
    expect(fA.tick).toBe(fB.tick);
@@ -322,10 +323,20 @@ describe('RB-VISION/B1 real continuing approach activity with optional actor-pri
      return {actor:state(actor),target:state(object)};
     }finally{physics.free();}
    };
-   expect(material(lived.w)).toEqual(material(unrelated.w));
+   const physicalStart=material(lived.w);
+   expect(physicalStart).toEqual(material(unrelated.w));
+   expect(physicalStart).toEqual(material(livedNoGaze.w));
+   expect(physicalStart).toEqual(material(unrelatedExplores.w));
+   for(const other of [livedNoGaze,unrelatedExplores]){
+    const f=other.w.observe();
+    expect(f.retina).toEqual(fA.retina);
+    expect(f.touch).toEqual(fA.touch);
+    expect(f.proprio).toEqual(fA.proprio);
+   }
    // Everything material and presently sensed is equal. Only the lawful
    // actor-private earlier patch/approach history differs.
-   const runs=[lived,unrelated].map((item,index)=>{
+   const runs=[lived,unrelated,livedNoGaze,unrelatedExplores]
+    .map((item,index)=>{
     let reacquired:number|null=null;
     let contact:number|null=null;
     let travel=0;
@@ -354,7 +365,9 @@ describe('RB-VISION/B1 real continuing approach activity with optional actor-pri
      }
     }
     return {
-     priorSeen:index===0,contact,reacquired,travel,
+     priorSeen:index===0||index===2,
+     policy:['history-scan','history-scan','native','always-sweep'][index],
+     contact,reacquired,travel,
      searchFrames:item.attention.searchingFrames,
      finalMode:item.approach.capture().mode,
      final:item.w.inspect().actor,
@@ -367,8 +380,15 @@ describe('RB-VISION/B1 real continuing approach activity with optional actor-pri
    expect(runs[0].reacquired).not.toBeNull();
    expect(runs[0].contact).not.toBeNull();
    expect(runs[1].contact).toBeNull();
+   expect(runs[2].searchFrames).toBe(0);
+   expect(runs[2].contact).toBeNull();
+   // A broad always-sweep alternative can also independently discover
+   // an otherwise unassociated object. History is a VALUE gate,
+   // not a logical prerequisite for any later encounter.
+   expect(runs[3].searchFrames).toBeGreaterThan(0);
   }finally{
    lived.w.free();unrelated.w.free();
+   livedNoGaze.w.free();unrelatedExplores.w.free();
   }
  },120000);
 
