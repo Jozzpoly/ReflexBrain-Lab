@@ -37,6 +37,7 @@ type Outcome = {
   distinctVisitedCells:number;rememberedCount:number;
   firstSeenTick:number|null;lastSeenTick:number|null;
   finalGaze:number;
+  minuteDistances:number[];minuteFovealCounts:number[];
 };
 
 const RUN_TICKS=7200; // 60 s simulated time without reset
@@ -121,6 +122,8 @@ function run(policy:GazePolicy,scene:Scene,ticks=RUN_TICKS):Outcome {
       fovealSamples=0,renewedSightings=0,recordedContactEvents=0;
     let wasVisible=false,actualDistance=0;
     let orangeSamples=0,purpleSamples=0;
+    const minuteDistances:number[]=[],minuteFovealCounts:number[]=[];
+    let previousMinuteDistance=0,previousMinuteFoveal=0;
     let firstSeenTick:number|null=null,lastSeenTick:number|null=null;
     let commandedGazeSum=0;
     const visited=new Set<string>(),gazeBins=new Set<number>();
@@ -161,6 +164,12 @@ function run(policy:GazePolicy,scene:Scene,ticks=RUN_TICKS):Outcome {
       actualDistance+=Math.hypot(now.x-previous.x,now.y-previous.y);
       previous=now;
       if(step%40===0)visited.add(`${Math.floor(now.x)}:${Math.floor(now.y)}`);
+      if((step+1)%7200===0){
+        minuteDistances.push(actualDistance-previousMinuteDistance);
+        minuteFovealCounts.push(fovealSamples-previousMinuteFoveal);
+        previousMinuteDistance=actualDistance;
+        previousMinuteFoveal=fovealSamples;
+      }
     }
     const a=rt.inspect().actor;
     return {
@@ -175,6 +184,7 @@ function run(policy:GazePolicy,scene:Scene,ticks=RUN_TICKS):Outcome {
       distinctVisitedCells:visited.size,
       rememberedCount:focus.state.rememberedCount,
       firstSeenTick,lastSeenTick,finalGaze:rt.inspect().gaze,
+      minuteDistances,minuteFovealCounts,
     };
   }finally{rt.free();}
 }
@@ -190,6 +200,8 @@ function summary(x:Outcome){
     gazeDemandSum:+x.commandedGazeSum.toFixed(3),
     modes:x.modeCounts,
     final:[+x.finalX.toFixed(3),+x.finalY.toFixed(3)],
+    minuteDistances:x.minuteDistances.map(v=>+v.toFixed(3)),
+    minuteFoveal:x.minuteFovealCounts,
   };
 }
 beforeAll(initLivingWorld);
@@ -223,4 +235,19 @@ describe('RB-VISION/L1 real RGB retina + continuous embodied gaze policies',()=>
     const second=run('private-reacquisition','native-world',2400);
     expect(second).toEqual(first);
   },60000);
+
+  it('applies 3-minute without-reset pressure to fixation vs memory vs native',()=>{
+    const p:GazePolicy[]=['native','visible-centering-only',
+      'private-reacquisition'];
+    const scenarios=p.map(policy=>run(policy,'native-world',21600));
+    expect(scenarios.every(o=>o.privateSamples===5400)).toBe(true);
+    expect(scenarios.every(o=>o.minuteDistances.length===3)).toBe(true);
+    expect(scenarios.every(o=>o.minuteDistances.every(Number.isFinite)))
+      .toBe(true);
+    expect(scenarios.every(o=>o.minuteFovealCounts.length===3)).toBe(true);
+    // No predeclared winner! Detect life/motor stagnation via per-minute
+    // distance rather than laundering more foveal frames into autonomy.
+    console.log('RB_VISION_L1_3MIN '+JSON.stringify(scenarios.map(summary)));
+  },120000);
+
 });
