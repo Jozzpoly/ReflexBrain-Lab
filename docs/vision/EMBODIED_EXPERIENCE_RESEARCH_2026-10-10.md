@@ -210,5 +210,34 @@ As the main control room pursues F3's own causal relevance tests, this Vision br
 
 This is still a **proposed research question**, not an activated qualification protocol. No World/ray code, network, new medium, training corpus or mandatory format is justified at this checkpoint.
 
+
+## 16. V1-D0 — Executed optics ≠ mechanics alias (2026-10-10)
+**Status: FROZEN FOUR-CONDITION DISCOVERY · MECHANISM/CI PASS · NO LEARNED COMPETENCE CLAIM.** 
+
+Executable exact source: `tests/vision-optic-mechanical-alias.test.ts` on this Vision branch. Verified PR #53 GitHub Actions workflow [38086297564](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38086297564), source head `0cac42bbe44ed85f1575ba1551c4678fee135392`: full Check PASS, **28/28 files, 44/44 tests**, TypeScript and Vite build PASS. First earlier workflow failed on TypeScript-only implicit-any inference before experiments executed; repaired with typed snapshot bytes without changing scientific fixture or result criterion.
+
+**Experiment.** Reuse actual deterministic E0 Rapier body with 24 matched predecision body-private transitions (zero drive, no contact) and two physical candidate continuations, +1 drive or 0 drive, for 120 simulation ticks. Analyst-only physical cost = -forward displacement / body radius + 2 * contact impulse/(mass * Vmax). Optical sensor is a direct lawful synthetic ray against *declared optical surfaces* only; no collider IDs, mechanical solidity or World labels enter the actor-view ray. Four explicitly authored configurations independently toggle visual surface and physical obstruction:
+- `solid-visible`: visible & mechanically blocking;
+- `phantom-visible`: same visible cuboid geometry but a non-contact sensor collider;
+- `solid-invisible`: mechanically blocking but optically absent;
+- `empty`: neither.
+
+**CI-observed exact results** (cost lower = better; branch hold cost = 0 throughout):
+
+| Case | Actor-facing optical ray distance | Push displacement (m) | Push contact impulse | Push cost | Preferred short action |
+|---|---:|---:|---:|---:|---|
+| solid-visible | 2.900000095 m | 1.90019 | 20.86162 | +6.02722 | hold |
+| phantom-visible | 2.900000095 m | 4.35879 | 0 | -4.35879 | push |
+| solid-invisible | unavailable / null | 1.90019 | 20.86162 | +6.02722 | hold |
+| empty | unavailable / null | 4.35879 | 0 | -4.35879 | push |
+
+All predecision private movement/touch traces match across the four worlds; direct optical ray *also matches within each visible or invisible pair*, yet the physically preferred action reverses within each pair. Source snapshots unchanged by branch evaluation; deterministic repeat PASS.
+
+**Strict information conclusion:** this declared optical sensor cannot decide mechanical passability in these paired worlds, no matter how large the downstream deterministic/raster/learned classifier, because its optical input and prior private observations are equal. In the balanced four-case distribution, optical ray availability provides no information about mechanical blocking and has **zero decision value** under this analyst metric, despite correctly identifying visual surfaces. A visual occupancy channel must not silently masquerade as a physics-passability channel.
+
+**Limitations/anti-claims:** this is a deliberately adversarial authored sensor/physics design, not natural-world frequency evidence; the optic-only signal is one forward ray, not RGB images, stereo or true multi-scale. The two candidate actions and forward-travel/contact tradeoff are **researcher-defined**, not actor-owned goals/rewards. No autonomous visual investigation, learned affordance, memory competence, social norm, curiosity, or Feniks engine capability is established. The negative result does **not** imply vision is useless; it shows that vision alone lacks a necessary physical relation in this chosen family and that higher resolution cannot recover intentionally unobservable material law.
+
+**Next reasoned target, not automatically implemented:** a physically qualified case where cheap tactile/body channels are insufficient *before impact*, and some lawful visual observation resolves the alias; then compete ray/event vs grid vs multi-scale on matched sensory content. Include appearance–collision dissociations as held-out controls so a representation does not learn the shortcut `visible object = solid wall`. Do not automatically promote V1 to production, and do not merge the Vision branch into the canonical control room by inertia.
+
 ### Status
 **SCOUT established; LIVE empirical advantage of raster/multiscale/learned perception is UNPROVEN.** No runtime, actor, sensor or canonical architecture was changed by this document.
