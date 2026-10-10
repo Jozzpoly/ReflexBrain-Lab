@@ -263,4 +263,72 @@ describe('RB-VISION/V2-D0 lawful sparse spatial foresight × body scale', () => 
     expect(smallW.push.impulse).toBe(0);
     expect(smallN.push.displacement).toBeGreaterThan(3);
   });
+
+  it('maps 32 body×gap worlds and compares representation information ceilings', () => {
+    // V2-D2: discovery landscape, not a qualified trained policy.
+    // Exact Bayes decision uses analyst outcomes within this *same* synthetic
+    // uniform distribution. In-sample idealized information ceilings only.
+    const sizes = [0.42, 0.75, 1.0, 1.3];
+    const openings = [0.55, 0.72, 0.9, 1.0, 1.12, 1.3, 1.5, 1.8];
+    const cases = sizes.flatMap(radius => openings.map(gapHalf =>
+      probe({id:`landscape-${radius}-${gapHalf}`,radius,gapHalf}),
+    ));
+    const round = (v:number|null, step:number) =>
+      v===null ? 'none' : String(Math.round(v/step)*step);
+    const binary = (v:number|null) => v===null ? '0' : '1';
+    const exact = (v:number|null) => v===null ? 'none' : v.toFixed(6);
+    const format = (values:(number|null)[], fn:(v:number|null)=>string) =>
+      values.map(fn).join('/');
+    type Eval = {mean:number; mixedGroups:number; groups:number};
+    const decisionCeiling = (key:(s:Result)=>string):Eval => {
+      const grouped=new Map<string,Result[]>();
+      for(const s of cases){
+        const k=key(s);
+        const g=grouped.get(k) ?? [];
+        g.push(s);grouped.set(k,g);
+      }
+      let cost=0,mixedGroups=0;
+      for(const g of grouped.values()){
+        const pushCost=g.reduce((sum,s)=>sum+s.push.cost,0);
+        const holdCost=g.reduce((sum,s)=>sum+s.hold.cost,0);
+        cost+=Math.min(pushCost,holdCost);
+        const different=new Set(g.map(s=>s.preferred));
+        if(different.size>1)mixedGroups++;
+      }
+      return {mean:cost/cases.length,mixedGroups,groups:grouped.size};
+    };
+    const out = {
+      noSensors:decisionCeiling(_=>'same'),
+      bodyOnly:decisionCeiling(s=>String(s.radius)),
+      visualOnly:decisionCeiling(s=>format([s.left,s.right],binary)),
+      bodyPlusCenter:decisionCeiling(s=>String(s.radius)+'/'+binary(s.central)),
+      bodyPlusTwoBinary:decisionCeiling(s=>String(s.radius)+'/'+format([s.left,s.right],binary)),
+      bodyPlusTwoDistance:decisionCeiling(s=>String(s.radius)+'/'+format([s.left,s.right],exact)),
+      bodyPlusFourBinary:decisionCeiling(s=>String(s.radius)+'/'+format([s.left,s.right,s.fartherLeft,s.fartherRight],binary)),
+      bodyPlusFourRangeHalfMeter:decisionCeiling(s=>String(s.radius)+'/'+format(
+        [s.left,s.right,s.fartherLeft,s.fartherRight],v=>round(v,0.5),
+      )),
+      bodyPlusFourRangeExact:decisionCeiling(s=>String(s.radius)+'/'+format(
+        [s.left,s.right,s.fartherLeft,s.fartherRight],exact,
+      )),
+      oracle:decisionCeiling(s=>s.id),
+    };
+
+    console.log('RB_VISION_V2_LANDSCAPE ' + JSON.stringify({
+      cases:cases.length,sizes,openings,evidence:out,
+      outcomeMatrix:sizes.map(radius=>cases.filter(s=>s.radius===radius)
+        .map(s=>s.preferred==='push'?'P':'H').join('')),
+    }));
+
+    expect(cases.length).toBe(32);
+    expect(cases.every(s=>s.sourceRestoredUnchanged)).toBe(true);
+    // Partition refinement with additional lawful channels cannot worsen
+    // the ideal in-sample selector, even though a REAL learner might regress.
+    expect(out.bodyPlusTwoBinary.mean).toBeLessThanOrEqual(out.bodyOnly.mean+1e-9);
+    expect(out.bodyPlusFourBinary.mean).toBeLessThanOrEqual(out.bodyPlusTwoBinary.mean+1e-9);
+    expect(out.oracle.mean).toBeLessThanOrEqual(out.bodyPlusFourRangeExact.mean+1e-9);
+    // A full 2D raster is NOT needed to state or solve this limited problem.
+    // Do not assert a preselected method must improve on this exploratory grid.
+  });
+
 });
