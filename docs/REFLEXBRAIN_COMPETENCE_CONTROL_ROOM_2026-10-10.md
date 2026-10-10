@@ -719,3 +719,44 @@ At campaign start:
 > how actor-owned significance/reasons arise from lived private history and bounded competence, rather than being inserted by fixtures, event labels or a cognition scheduler.
 
 That is currently the best high-level description of the ReflexBrain competence frontier.
+
+
+---
+
+# RB-COMP/R1 Living Organism audit — 2026-10-10
+
+**PASS · EXECUTABLE SCOUT QUALIFIED · NO ARCHITECTURE PROMOTION**
+
+Independent audit evidence:
+- audit PR #47 against the Living Organism source branch itself;
+- workflow `38083838565`;
+- **38/38 test files PASS**;
+- **113/113 tests PASS**;
+- TypeScript + Vite build PASS;
+- zero runtime changes in the audit.
+
+Canonical result:
+`docs/competence-runs/RB-COMP-R1_RESULT.md`
+
+Key correction:
+- default `LivingRuntime` still uses an authored `Occupant`;
+- learned sensory/body models remain offline challengers;
+- Living Organism A is therefore an independently executable **SCOUT**, not a learned-brain qualification.
+
+Strongest transferable finding:
+
+> private temporal history can improve a local self-motion model in ordinary free motion while the same competence becomes materially harmful when contact changes the causal regime.
+
+This promotes **F2 — local competence applicability/failure** from speculative scout idea to a high-confidence organism-frontier question.
+
+Do NOT translate this into:
+> prediction error = meaning.
+
+The next question must remain causal:
+> can privately available evidence that a local competence no longer applies change what the actor does next without World-side CONTACT/BLOCKED semantics or researcher-authored uncertainty?
+
+G5A remains a complementary foundation run.
+F3 owned-reason formation remains a separate high-value frontier.
+
+Next:
+**RB-COMP/R2 — compare G5A, F2 and F3; design the first ReflexBrain-native competence-frontier falsifier.**
