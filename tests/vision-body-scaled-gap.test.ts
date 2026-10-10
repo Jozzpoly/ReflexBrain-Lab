@@ -218,6 +218,37 @@ describe('RB-VISION/V2-D0 lawful sparse spatial foresight × body scale', () => 
     ));
   });
 
+  it('measures conditional value of ONE added lawful ray against strong simple policies', () => {
+    // This is a post-D0 *analyst demonstration* on the SAME four cases.
+    // Policy rules are deliberately authored and evaluated in-sample;
+    // do not promote this to a general or learned competence PASS.
+    const scenes = CASES.map(probe);
+    const cost = (s:Result,drive:'push'|'hold') => s[drive].cost;
+    const choose = {
+      alwaysPush: (s:Result):'push'|'hold' => 'push',
+      bestBodyOnly: (s:Result):'push'|'hold' =>
+        s.radius < 0.7 ? 'push' : 'hold',
+      // Misleading shortcut: treat every observed edge as impassable.
+      visualWithoutBody: (s:Result):'push'|'hold' =>
+        s.left!==null ? 'hold' : 'push',
+      bodyAndSideRay: (s:Result):'push'|'hold' =>
+        s.radius > 0.7 && s.left!==null ? 'hold' : 'push',
+    };
+    const average = (policy:(s:Result)=>'push'|'hold') =>
+      scenes.reduce((sum,s)=>sum+cost(s,policy(s)),0)/scenes.length;
+    const means = Object.fromEntries(Object.entries(choose).map(
+      ([k,fn])=>[k,average(fn)],
+    )) as Record<keyof typeof choose,number>;
+    console.log('RB_VISION_V2_POLICY ' + JSON.stringify(means));
+    expect(means.bodyAndSideRay).toBeLessThan(means.bestBodyOnly);
+    expect(means.visualWithoutBody).toBeGreaterThanOrEqual(means.bodyAndSideRay);
+    // In this particular four-scene set, an extra lawful visual sample
+    // can improve decision value only when interpreted relative to body size.
+    // Information sample cost is NOT in these physics-only figures.
+    const extraValue = means.bestBodyOnly-means.bodyAndSideRay;
+    expect(extraValue).toBeGreaterThan(0);
+  });
+
   it('shows the same narrow image requires a different action for different body dimensions', () => {
     const [bigN,bigW,smallN,smallW] = CASES.map(probe);
     expect(bigN.preferred).toBe('hold');
