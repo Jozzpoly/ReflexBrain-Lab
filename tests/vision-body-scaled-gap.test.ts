@@ -25,6 +25,8 @@ type Result = {
   central: number | null;
   left: number | null;
   right: number | null;
+  fartherLeft: number | null;
+  fartherRight: number | null;
   push: { displacement: number; impulse: number; cost: number };
   hold: { displacement: number; impulse: number; cost: number };
   preferred: 'push' | 'hold';
@@ -131,6 +133,8 @@ function probe(scene: Scene): Result {
     const central = actorRay(p, 0, optical);
     const left = actorRay(p, VISION_ANGLE, optical);
     const right = actorRay(p, -VISION_ANGLE, optical);
+    const fartherLeft = actorRay(p, 0.36, optical);
+    const fartherRight = actorRay(p, -0.36, optical);
     const before: Uint8Array = world.takeSnapshot().slice();
     const wallHandles = optical.map(w => w.handle);
     const push = simulate(before, b.rb.handle, b.co.handle, wallHandles, 1);
@@ -139,7 +143,7 @@ function probe(scene: Scene): Result {
 
     return {
       id: scene.id, radius: scene.radius, gapHalf: scene.gapHalf,
-      privateBefore, central, left, right, push, hold,
+      privateBefore, central, left, right, fartherLeft, fartherRight, push, hold,
       preferred: push.cost < hold.cost ? 'push' : 'hold',
       sourceRestoredUnchanged: before.length === after.length &&
         before.every((v, i) => v === after[i]),
@@ -159,7 +163,7 @@ describe('RB-VISION/V2-D0 lawful sparse spatial foresight × body scale', () => 
     expect(first.every(s => s.sourceRestoredUnchanged)).toBe(true);
     console.log('RB_VISION_V2_D0 ' + JSON.stringify(first.map(s => ({
       id:s.id, radius:s.radius, halfGap:s.gapHalf,
-      center:s.central, left:s.left, right:s.right,
+      center:s.central, left:s.left, right:s.right, fartherLeft:s.fartherLeft, fartherRight:s.fartherRight,
       pushX:s.push.displacement, pushImpulse:s.push.impulse,
       pushCost:s.push.cost, holdCost:s.hold.cost, preferred:s.preferred,
     }))));
@@ -179,6 +183,39 @@ describe('RB-VISION/V2-D0 lawful sparse spatial foresight × body scale', () => 
     expect(bigW.right).toBeNull();
     expect(smallN.left).toBe(bigN.left);
     expect(smallW.left).toBe(bigW.left);
+  });
+
+  it('challenges the two-side-ray success with a held-out just-blocking gap', () => {
+    // V2-D1: Post-D0 ADVERSARIAL stress, not retroactive D0 qualification.
+    const blocked = probe({ id: 'holdout-blocked-092', radius: 1, gapHalf: 0.92 });
+    const passable = probe({ id: 'holdout-passable-112', radius: 1, gapHalf: 1.12 });
+    expect(blocked.privateBefore).toEqual(passable.privateBefore);
+    // The original three-ray retinal sample sees exactly the same void.
+    expect(blocked.central).toBeNull();
+    expect(passable.central).toBeNull();
+    expect(blocked.left).toBeNull();
+    expect(passable.left).toBeNull();
+    expect(blocked.right).toBeNull();
+    expect(passable.right).toBeNull();
+    // A naive larger-FOV binary "any side ray hit = hold" can also alias.
+    expect(blocked.fartherLeft).not.toBeNull();
+    expect(passable.fartherLeft).not.toBeNull();
+    expect(blocked.fartherRight).not.toBeNull();
+    expect(passable.fartherRight).not.toBeNull();
+
+    expect(blocked.preferred).toBe('hold');
+    expect(passable.preferred).toBe('push');
+    expect(blocked.push.impulse).toBeGreaterThan(0);
+    expect(passable.push.impulse).toBe(0);
+    console.log('RB_VISION_V2_D1 ' + JSON.stringify(
+      [blocked,passable].map(s => ({
+        id:s.id, radius:s.radius, halfGap:s.gapHalf,
+        center:s.central, rays028:[s.left,s.right],
+        rays036:[s.fartherLeft,s.fartherRight],
+        pushCost:s.push.cost, pushImpulse:s.push.impulse,
+        preferred:s.preferred,
+      })),
+    ));
   });
 
   it('shows the same narrow image requires a different action for different body dimensions', () => {
