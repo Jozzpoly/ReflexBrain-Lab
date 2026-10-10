@@ -65,10 +65,18 @@ function reposition(
   world:any,walls:ReturnType<typeof createAperture>,
   gap:Aperture,
 ) {
-  const gh=gapHalf(gap),y=(6+gh)/2;
+  // The walls KEEP their original half-height in this specimen.
+  // Move each wall so its INNER EDGE (not its center) equals the new
+  // requested gap boundary. This makes the physical aperture correct.
+  const gh=gapHalf(gap);
+  const y=walls[0].hy+gh;
   walls[0].rb.setTranslation({x:3,y},true);
   walls[1].rb.setTranslation({x:3,y:-y},true);
   world.propagateModifiedBodyPositionsToColliders();
+  // Host-only fixture invariant; never delivered to the actor.
+  const achieved=walls[0].rb.translation().y-walls[0].hy;
+  if(Math.abs(achieved-gh)>1e-5)
+    throw new Error('V4 moving aperture failed real inner-edge geometry invariant');
 }
 
 function focusSamples(
