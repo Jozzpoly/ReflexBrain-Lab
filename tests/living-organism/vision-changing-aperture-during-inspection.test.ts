@@ -393,6 +393,24 @@ describe('RB-VISION/A8 independently changing Rapier aperture during real RGB sa
   };
   const stats={static:compress(r=>!r.spec.change),
    changed:compress(r=>r.spec.change)};
+  // Researcher post-result sensitivity; this does NOT re-qualify a new
+  // "best" threshold. It shows how much the interpretation leans on the
+  // authored discrepancy cutoff in this small, generated specimen.
+  const thresholds=[.04,.08,.12,.16,.24,.35];
+  const sensitivity=thresholds.map(threshold=>{
+   const judgments=results.map(r=>{
+    const flagged=r.difference===null||r.difference>threshold;
+    const chosen=(!flagged&&r.gaps[1]!==null
+      &&r.gaps[1]>E0_RADIUS)?'push':'hold';
+    return {...r,flagged,chosen};
+   });
+   return {threshold,
+    staticFalseAlarm:judgments.filter(r=>!r.spec.change&&r.flagged).length,
+    changesFlagged:judgments.filter(r=>r.spec.change&&r.flagged).length,
+    correct:judgments.filter(r=>r.chosen===r.best).length,
+   };
+  });
+  console.log('RB_VISION_A9_THRESHOLD_SENSITIVITY '+JSON.stringify(sensitivity));
   console.log('RB_VISION_A9_THREE_VIEW '+JSON.stringify(stats));
   console.log('RB_VISION_A9_TRACES '+JSON.stringify(results.map(x=>({
    x:x.spec.x,from:x.spec.from,to:x.spec.to,
@@ -408,5 +426,32 @@ describe('RB-VISION/A8 independently changing Rapier aperture during real RGB sa
   expect(results.some(x=>x.spec.change&&x.impulse>0)).toBe(true);
   // Actual comparison is descriptive; no post-hoc tuned success threshold.
  },120000);
+
+
+ it('A10: identical lawful present RGB cannot reveal a host change AFTER sensing',()=>{
+  const w=build({x:3,initial:.94,final:1.06,when:'between'});
+  try {
+   // Same actor motion and same actual private history until the fork.
+   for(let i=0;i<40;i++)w.step({drive:1,turn:0,gazeRate:0});
+   const original=w.observe(),closed=w.captureCheckpoint();
+   moveAperture(w,1.06); // host-only material intervention, no eye tick
+   const changed=w.observe(),opened=w.captureCheckpoint();
+   expect(changed.tick).toBe(original.tick);
+   expect(changed.retina).toEqual(original.retina);
+   expect(changed.touch).toEqual(original.touch);
+   expect(changed.proprio).toEqual(original.proprio);
+   const blocked=physical(closed,1),free=physical(opened,1);
+   const idleBlocked=physical(closed,0),idleFree=physical(opened,0);
+   expect(blocked.impulse).toBeGreaterThan(0);
+   expect(free.impulse).toBe(0);
+   expect(blocked.cost).toBeGreaterThan(idleBlocked.cost);
+   expect(free.cost).toBeLessThan(idleFree.cost);
+   console.log('RB_VISION_A10_LATE_EVENT_ALIAS '+JSON.stringify({
+    sameLawfulRetina:true,tick:changed.tick,
+    solidPushCost:blocked.cost,phantomPushCost:free.cost,
+    solidHoldCost:idleBlocked.cost,openedHoldCost:idleFree.cost,
+   }));
+  }finally{w.free();}
+ },30000);
 
 });
