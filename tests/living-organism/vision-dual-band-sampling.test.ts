@@ -200,4 +200,25 @@ describe('RB-VISION/A3 dual-band 96 RGB ray allocation: detail + periphery',()=>
   }));
   expect(sameCoarse).toBeGreaterThan(0);
  },90000);
+ it('measures off-grid peripheral blind zones under actual Rapier RGB casts',()=>{
+  const s:Spec={range:9.8,bearingDeg:48,phaseDeg:0,pattern:'red-left'};
+  const observations=[-63,-61,-60,-59,-57,-55,-53,-51,-49,-47]
+   .flatMap(angle=>[.12,.25,.45,.76].map(radius=>{
+    const view=scenario(s,angle,radius);
+    const eye=(mode:Profile)=>bins(readWorld(view.cp,
+      angularProfile(mode,view.focus)),ORANGE).length>0;
+    return {angle,radius,wide:eye('wide-uniform'),
+      split:eye('dual-band-80-16'),native:eye('native-shifted')};
+   }));
+  const missed=observations.filter(o=>o.wide&&!o.split).length;
+  console.log('RB_VISION_A3_BLIND_ZONES '+JSON.stringify({
+    count:observations.length,
+    wide:observations.filter(o=>o.wide).length,
+    split:observations.filter(o=>o.split).length,
+    native:observations.filter(o=>o.native).length,
+    wideOnly:missed,
+  }));
+  expect(missed).toBeGreaterThan(0);
+ },90000);
+
 });
