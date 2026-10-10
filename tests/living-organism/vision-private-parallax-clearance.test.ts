@@ -192,6 +192,31 @@ function summary(rows:Result[]){
   };
  });
 }
+/**
+ * A7 cheap active query from ONLY actor-native coarse RGB.
+ * Seven sequential 1-ray threshold questions per view, all acquired from
+ * a FROZEN physics state. This has lower ray count but serial query latency
+ * is not modelled; not an instantaneous biological fovea.
+ */
+function activeEdge(
+ cp:ReturnType<LivingWorld['captureCheckpoint']>,
+ frame:PrivateFrame,queries:number,
+):number|null {
+ const src:View={angles:nativeAngles(),rgb:frame.retina};
+ const samples=src.angles.map((a,i)=>({a,hit:upper(src,i)}))
+  .filter(x=>x.a>0).sort((p,q)=>p.a-q.a);
+ const first=samples.findIndex(x=>x.hit);
+ if(first<=0)return null;
+ let lo=samples[first-1].a,hi=samples[first].a;
+ if(samples[first-1].hit)throw Error('A7 bad positive edge bracket');
+ for(let q=0;q<queries;q++){
+  const angle=(lo+hi)/2;
+  const hit=upper(rgbAt(cp,[angle]),0);
+  if(hit)hi=angle;else lo=angle;
+ }
+ return (lo+hi)/2;
+}
+
 beforeAll(initLivingWorld);
 describe('RB-VISION/A6 private two-view odometry parallax vs fixed geometry',()=>{
  it('checks lawful optical geometry after self-motion in 24 material scenes',()=>{
@@ -221,4 +246,50 @@ describe('RB-VISION/A6 private two-view odometry parallax vs fixed geometry',()=
   expect(a[0].physical).toBe('hold');
   expect(b[0].physical).toBe('push');
  },30000);
+
+ it('compares low-ray adaptive edge questions after the same private self-motion',()=>{
+  const counts=[2,4,6,8];
+  const outcomes=counts.flatMap(count=>CASES.map(spec=>{
+   const w=worldFor(spec);
+   try{
+    const f0=w.observe(),source0=w.captureCheckpoint();
+    const e0=activeEdge(source0,f0,count);
+    let oldVelocity=f0.proprio.forward,odometry=0;
+    for(let i=1;i<=40;i++){
+     w.step({drive:1,turn:0,gazeRate:0});
+     if(i%4===0){
+      const f=w.observe();
+      odometry+=(oldVelocity+f.proprio.forward)*.5*E0_DT*4;
+      oldVelocity=f.proprio.forward;
+     }
+    }
+    const f1=w.observe(),source1=w.captureCheckpoint();
+    const e1=activeEdge(source1,f1,count);
+    const estimate=gapEstimate(e0,e1,odometry);
+    const push=physical(source1,1),hold=physical(source1,0);
+    const chose=estimate!==null&&estimate>E0_RADIUS?'push':'hold';
+    const physicalBest=push.cost<hold.cost?'push':'hold';
+    const regret=(chose==='push'?push.cost:hold.cost)
+     -Math.min(push.cost,hold.cost);
+    return {count,wallX:spec.wallX,actual:spec.halfGap,
+     estimate,chose,physicalBest,regret,queryRays:2*count};
+   }finally{w.free();}
+  }));
+  const stats=counts.map(count=>{
+   const batch=outcomes.filter(x=>x.count===count);
+   const known=batch.filter(x=>x.estimate!==null);
+   return {count,queryRays:count*2,
+    cases:batch.length,correct:batch.filter(x=>x.chose===x.physicalBest).length,
+    meanAbsGapError:known.reduce((s,x)=>
+     s+Math.abs(x.estimate!-x.actual),0)/known.length,
+    meanRegret:batch.reduce((s,x)=>s+x.regret,0)/batch.length,
+    noEstimate:batch.length-known.length,
+   };
+  });
+  console.log('RB_VISION_A7_ACTIVE_EDGE '+JSON.stringify(stats));
+  expect(stats.every(x=>x.cases===24)).toBe(true);
+  expect(outcomes.every(x=>x.regret>=-1e-6)).toBe(true);
+  expect(stats.every(x=>x.noEstimate===0)).toBe(true);
+ },120000);
+
 });
