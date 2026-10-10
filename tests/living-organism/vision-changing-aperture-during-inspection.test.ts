@@ -272,6 +272,81 @@ function summary(rows:Row[]){
   };
  });
 }
+
+type ThreePhase={x:number;from:number;to:number;change:boolean};
+type ThreeResult={
+ spec:ThreePhase;edges:[number|null,number|null,number|null];
+ privateTravel:[number,number];trueTravel:[number,number];
+ gaps:[number|null,number|null,number|null];
+ difference:number|null;flagged:boolean;
+ best:'push'|'hold';choice:'push'|'hold';twoViewChoice:'push'|'hold';
+ regret:number;twoViewRegret:number;holdRegret:number;
+ rays:number;impulse:number;
+};
+const THREE_CASES:ThreePhase[]=[2.7,3,3.3].flatMap(x=>
+ [{from:.94,to:.94,change:false},
+  {from:1.06,to:1.06,change:false},
+  {from:.94,to:1.06,change:true},
+  {from:1.06,to:.94,change:true}].map(v=>({...v,x})));
+function threeViews(spec:ThreePhase):ThreeResult{
+ const w=build({x:spec.x,initial:spec.from,final:spec.to,
+  when:spec.change?'between':'never'});
+ try{
+  const original=w.observe();
+  const cp0=w.captureCheckpoint();
+  const e0=edge(look(cp0,denseAngles(original)));
+  const hostX0=w.inspect().actor.x;
+  const obtain=(duration:number)=>{
+   let prev=w.observe().proprio.forward,travel=0;
+   const startX=w.inspect().actor.x;
+   for(let i=1;i<=duration;i++){
+    w.step({drive:1,turn:0,gazeRate:0});
+    if(i%4===0){
+     const f=w.observe();
+     travel+=(prev+f.proprio.forward)*.5*DT*4;
+     prev=f.proprio.forward;
+    }
+   }
+   const frame=w.observe(),cp=w.captureCheckpoint();
+   return {edge:edge(look(cp,denseAngles(frame))),
+    privateTravel:travel,trueTravel:w.inspect().actor.x-startX};
+  };
+  const t1=obtain(24);
+  if(spec.change)moveAperture(w,spec.to);
+  const t2=obtain(24);
+  const es:[number|null,number|null,number|null]=[e0,t1.edge,t2.edge];
+  const g01=triangulate(e0,t1.edge,t1.privateTravel);
+  const g12=triangulate(t1.edge,t2.edge,t2.privateTravel);
+  const g02=triangulate(e0,t2.edge,
+   t1.privateTravel+t2.privateTravel);
+  const difference=g01!==null&&g12!==null?
+   Math.abs(g01-g12):null;
+  // This fixed interpretation is authored and deliberately bounded.
+  // Threshold 12cm is not fitted to these scenes after outcomes.
+  const flagged=difference===null||difference>.12;
+  const choice=(!flagged&&g12!==null&&g12>E0_RADIUS)
+   ?'push':'hold';
+  const twoViewChoice=g02!==null&&g02>E0_RADIUS?'push':'hold';
+  const finalCp=w.captureCheckpoint();
+  const drive=physical(finalCp,1),stationary=physical(finalCp,0);
+  const best=drive.cost<stationary.cost?'push':'hold';
+  const chosenCost=(decision:'push'|'hold')=>
+   decision==='push'?drive.cost:stationary.cost;
+  const oracle=Math.min(drive.cost,stationary.cost);
+  if(!Number.isFinite(w.inspect().actor.x-hostX0))
+   throw Error('A9 nonfinite host movement');
+  return {spec,edges:es,
+   privateTravel:[t1.privateTravel,t2.privateTravel],
+   trueTravel:[t1.trueTravel,t2.trueTravel],
+   gaps:[g01,g12,g02],difference,flagged,best,
+   choice,twoViewChoice,
+   regret:chosenCost(choice)-oracle,
+   twoViewRegret:chosenCost(twoViewChoice)-oracle,
+   holdRegret:stationary.cost-oracle,
+   rays:288,impulse:drive.impulse};
+ }finally{w.free();}
+}
+
 beforeAll(initLivingWorld);
 describe('RB-VISION/A8 independently changing Rapier aperture during real RGB sampling',()=>{
  it('compares current lawful evidence and true body action costs under hidden wall changes',()=>{
@@ -299,4 +374,39 @@ describe('RB-VISION/A8 independently changing Rapier aperture during real RGB sa
   expect(results.filter(r=>r.spec.final===1.06)
    .some(r=>r.pushImpulse===0)).toBe(true);
  },120000);
+
+ it('A9: asks if three privately acquired views expose material scene change',()=>{
+  const results=THREE_CASES.map(threeViews);
+  const compress=(filter:(r:ThreeResult)=>boolean)=>{
+   const r=results.filter(filter);
+   return {cases:r.length,
+    flagged:r.filter(v=>v.flagged).length,
+    correct:r.filter(v=>v.choice===v.best).length,
+    twoViewCorrect:r.filter(v=>v.twoViewChoice===v.best).length,
+    meanRegret:r.reduce((s,v)=>s+v.regret,0)/r.length,
+    twoViewMeanRegret:r.reduce((s,v)=>s+v.twoViewRegret,0)/r.length,
+    holdMeanRegret:r.reduce((s,v)=>s+v.holdRegret,0)/r.length,
+    meanDifference:r.filter(v=>v.difference!==null)
+     .reduce((s,v)=>s+v.difference!,0)/
+     Math.max(1,r.filter(v=>v.difference!==null).length),
+   };
+  };
+  const stats={static:compress(r=>!r.spec.change),
+   changed:compress(r=>r.spec.change)};
+  console.log('RB_VISION_A9_THREE_VIEW '+JSON.stringify(stats));
+  console.log('RB_VISION_A9_TRACES '+JSON.stringify(results.map(x=>({
+   x:x.spec.x,from:x.spec.from,to:x.spec.to,
+   changed:x.spec.change,
+   g01:x.gaps[0],g12:x.gaps[1],g02:x.gaps[2],
+   difference:x.difference,flagged:x.flagged,
+   choice:x.choice,twoView:x.twoViewChoice,best:x.best,
+   regret:x.regret,
+  }))));
+  expect(results.every(x=>x.rays===288)).toBe(true);
+  expect(results.every(x=>x.regret>=-1e-6&&x.twoViewRegret>=-1e-6))
+   .toBe(true);
+  expect(results.some(x=>x.spec.change&&x.impulse>0)).toBe(true);
+  // Actual comparison is descriptive; no post-hoc tuned success threshold.
+ },120000);
+
 });
