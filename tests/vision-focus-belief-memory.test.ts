@@ -20,7 +20,8 @@ type Scene = {
 };
 type Focus = 'center' | 'side';
 type Policy = 'center-center' | 'scan-forget' | 'scan-remember'
-  | 'fresh-side' | 'scan-refresh' | 'scan-expire';
+  | 'fresh-side' | 'scan-refresh' | 'scan-expire'
+  | 'private-conditional-focus';
 type RayObservation = {angle:number; distance:number|null; observedAt:number};
 type PrivateLedger = {
   sideSeen:RayObservation|null; // null: genuinely unknown, not observed empty
@@ -44,6 +45,7 @@ const FOVEA_OFFSETS = [-.012,0,.012] as const;
 const ACTOR_POLICY:readonly Policy[] = [
   'center-center','scan-forget','scan-remember',
   'fresh-side','scan-refresh','scan-expire',
+  'private-conditional-focus',
 ];
 const SCENES:readonly Scene[] = [
   {id:'large-narrow-static',start:'narrow',finish:'narrow',radius:1},
@@ -103,6 +105,21 @@ function schedule(policy:Policy):readonly [Focus,Focus] {
   return ['side','center'];
 }
 
+/**
+ * Research-only local focus selection. These signals are all actor-private:
+ * body morphology and its own side-view memory. No scenario identity,
+ * hidden-change flag, World pose, contact handle, or future fork cost.
+ *
+ * The rule is AUTHOR-WRITTEN and does not constitute learned attention or
+ * an organism-owned reason. It only demonstrates actor-side control authority.
+ */
+function chooseNextFocus(ledger:PrivateLedger, radius:number):Focus {
+  if(radius<=.42)return 'center'; // narrow gap is passable in this specimen
+  if(ledger.sideSeen!==null && ledger.sideSeen.distance===null)
+    return 'side'; // previously open → recheck before forward continuation
+  return 'center'; // no fresh recheck on previously blocked/unknown
+}
+
 function physicalOutcome(
   physics:Uint8Array,
   actorHandle:number,
@@ -156,6 +173,7 @@ function run(scene:Scene,policy:Policy):Outcome {
       sideSeen:null,newestFocus:'center',newest:[],
     };
     let sampleCount=0, seen=0;
+    const actualFocusHistory:Focus[]=[];
     world.step(); // initialize
     for(let tick=1;tick<=DECISION_TICK;tick++){
       applyE0Demand(b.rb,0,0);
@@ -164,7 +182,11 @@ function run(scene:Scene,policy:Policy):Outcome {
       }
       world.step();
       if(tick===PRE_SCAN||tick===DECISION_TICK){
-        const focus=planned[seen++];
+        const scheduled=planned[seen++];
+        const focus=policy==='private-conditional-focus' && tick===DECISION_TICK
+          ? chooseNextFocus(ledger,scene.radius)
+          : scheduled;
+        actualFocusHistory.push(focus);
         const obs=focusSamples(b.rb,colliders,focus,tick);
         sampleCount+=obs.length;
         ledger.newestFocus=focus;
@@ -189,7 +211,7 @@ function run(scene:Scene,policy:Policy):Outcome {
     const out=physicalOutcome(
       sourceSnapshot,b.rb.handle,b.co.handle,colliders.map(x=>x.handle),drive,
     );
-    return {scene,policy,sampleCount,gazeHistory:[...planned],
+    return {scene,policy,sampleCount,gazeHistory:actualFocusHistory,
       recordAtDecision:ledger.sideSeen?{...ledger.sideSeen}:null,
       sideAgeAtDecision:ledger.sideSeen
         ? DECISION_TICK-ledger.sideSeen.observedAt:null,
@@ -212,7 +234,7 @@ describe('RB-VISION/V4 controllable sparse focus and private observation ledger'
   it('keeps raycast budgets equal and physical truth identical across focus policies',()=>{
     for(const scene of SCENES){
       const runs=ACTOR_POLICY.map(p=>run(scene,p));
-      expect(runs.map(x=>x.sampleCount)).toEqual([6,6,6,6,6,6]);
+      expect(runs.every(x=>x.sampleCount===6)).toBe(true);
       for(const variant of runs.slice(1)) {
         expect(variant.sourceSnapshot).toEqual(runs[0].sourceSnapshot);
       }
@@ -258,6 +280,29 @@ describe('RB-VISION/V4 controllable sparse focus and private observation ledger'
     expect(freshOpened.drive).toBe(1);
     expect(freshOpened.impulse).toBe(0);
     expect(freshOpened.cost).toBeLessThan(oldBlocked.cost);
+  });
+
+
+  it('has the organism choose its next focus from its own previous sample',()=>{
+    const wide=run(SCENES[1],'private-conditional-focus');
+    const closes=run(SCENES[2],'private-conditional-focus');
+    const narrow=run(SCENES[0],'private-conditional-focus');
+    const opens=run(SCENES[3],'private-conditional-focus');
+    const small=run(SCENES[4],'private-conditional-focus');
+    // The selection sees only same old private observation, so it cannot
+    // anticipate hidden events. This is evidence *against* magic foresight.
+    expect(wide.gazeHistory).toEqual(['side','side']);
+    expect(closes.gazeHistory).toEqual(['side','side']);
+    expect(narrow.gazeHistory).toEqual(['side','center']);
+    expect(opens.gazeHistory).toEqual(['side','center']);
+    expect(small.gazeHistory).toEqual(['side','center']);
+    expect(wide.drive).toBe(1);
+    expect(closes.drive).toBe(0);
+    expect(closes.impulse).toBe(0);
+    expect(opens.drive).toBe(0); // misses a newly opened opportunity
+    expect(small.drive).toBe(1);
+    const changed=run(SCENES[2],'scan-remember');
+    expect(closes.cost).toBeLessThan(changed.cost);
   });
 
   it('reports the tradeoff of a fixed memory expiry versus fresh reinspection',()=>{
