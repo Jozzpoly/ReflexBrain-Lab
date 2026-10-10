@@ -1657,3 +1657,39 @@ F3 owned-reason formation remains a separate high-value frontier.
 
 Next:
 **RB-COMP/R2 — compare G5A, F2 and F3; design the first ReflexBrain-native competence-frontier falsifier.**
+
+
+---
+
+# RB-COMP/R2 frontier selection — 2026-10-10
+
+**CLOSED · TWO-SPEED EXECUTION ORDER SELECTED**
+
+Canonical decision:
+- **ACTIVE foundation:** O-CTRL/G5A
+- **PROPOSED organism frontier:** RB-F2/P0 private competence reliability
+- **QUEUED:** F3 owned-reason formation
+- **DEFERRED:** F4 active information acquisition, F5 local→higher cognition escalation
+
+R2 result:
+`docs/competence-runs/RB-COMP-R2_FRONTIER_SELECTION.md`
+
+Key principle:
+
+> **Foundation first in execution, organism frontier first in design.**
+
+G5A must remain clean:
+- no competence-reliability machinery;
+- no imported Living Organism model;
+- no R6 Matter ontology.
+
+F2/P0 question shape is frozen separately:
+- predict whether trusting local model M will produce worse bounded action consequence than a frozen simpler fallback F;
+- reliability evidence uses only past actor-private action/consequence;
+- host labels evaluate only;
+- contact/blockage semantics forbidden in the actor path;
+- strong simple baselines required;
+- prediction error is not meaning.
+
+Immediate next execution:
+**freeze and run G5A from the qualified G5-D0 composition.**
