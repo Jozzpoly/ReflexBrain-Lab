@@ -20,7 +20,9 @@ type Profile='wide96'|'focus96'|'dual80-16'|'dual80-16-shift'
   |'dual64-32'|'dual48-48';
 const PROFILES:readonly Profile[]=['wide96','focus96',
  'dual80-16','dual80-16-shift','dual64-32','dual48-48'];
-type Setup={eventBearing:number;eventRadius:number;duration:number};
+type Setup={eventBearing:number;eventRadius:number;duration:number;
+ motionPerFrame?:number;detailRange?:number;detailBearing?:number;
+ detailPhase?:number;pattern?:'red-left'|'cyan-left'};
 type Frame={angles:number[];rgb:Float32Array;tick:number};
 type Row={setup:Setup;profile:Profile;raycasts:number;
  firstEventTick:number|null;firstDetailTick:number|null;
@@ -92,12 +94,16 @@ function classify(frame:Frame):'red-left'|'cyan-left'|null {
 }
 function build(spec:Setup){
  const world=new LivingWorld(false);
- const a=48*RAD,range=9.8,near=range-.78;
+ const d=spec.detailBearing??48,range=spec.detailRange??9.8;
+ const phase=spec.detailPhase??0;
+ const a=d*RAD,near=range-.78;
  world.addObject(range*Math.cos(a),range*Math.sin(a),.85,[...GREY]);
- world.addObject(near*Math.cos((48-.79)*RAD),
-  near*Math.sin((48-.79)*RAD),.072,[...RED]);
- world.addObject(near*Math.cos((48+.79)*RAD),
-  near*Math.sin((48+.79)*RAD),.072,[...CYAN]);
+ const leftColor=spec.pattern==='cyan-left'?CYAN:RED;
+ const rightColor=spec.pattern==='cyan-left'?RED:CYAN;
+ world.addObject(near*Math.cos((d+phase-.79)*RAD),
+  near*Math.sin((d+phase-.79)*RAD),.072,[...leftColor]);
+ world.addObject(near*Math.cos((d+phase+.79)*RAD),
+  near*Math.sin((d+phase+.79)*RAD),.072,[...rightColor]);
  const orange=world.addObject(-24,-24,spec.eventRadius,[...ORANGE]);
  return {world,orange};
 }
@@ -119,7 +125,8 @@ function runOne(spec:Setup):Row[]{
   for(let f=0;f<FRAME_COUNT;f++){
    const visible=f>=EVENT_START&&f<EVENT_START+spec.duration;
    if(visible){
-    const bearing=spec.eventBearing*RAD,range=6;
+    const bearing=(spec.eventBearing+(f-EVENT_START)*
+     (spec.motionPerFrame??0))*RAD,range=6;
     w.moveObject(orange,range*Math.cos(bearing),
       range*Math.sin(bearing));
    }else w.moveObject(orange,-24,-24);
@@ -135,7 +142,7 @@ function runOne(spec:Setup):Row[]{
     if(sawEvent&&row.firstEventTick===null)
       row.firstEventTick=frame.tick;
     if(sawEvent)row.eventFrames++;
-    if(result==='red-left'){
+    if(result===(spec.pattern??'red-left')){
       row.detailFrames++;
       if(row.firstDetailTick===null)row.firstDetailTick=frame.tick;
     }else if(result!==null)row.wrongFrames++;
@@ -183,4 +190,25 @@ describe('RB-VISION/A4 moving brief peripheral appearance vs detailed focus',()=
   });
   expect(found).toBe(true);
  },30000);
+
+ it('stress-tests held-out detail bearings and independently moving peripheral flashes',()=>{
+  const trials=[7,10.4].flatMap(detailRange=>
+   [42,55].flatMap(detailBearing=>
+    [-.32,.32].flatMap(detailPhase=>
+     (['red-left','cyan-left'] as const).flatMap(pattern=>
+      [-61,-54].map(eventBearing=>({
+       eventBearing,eventRadius:.18,duration:2,
+       motionPerFrame:eventBearing===-61?2:-2,
+       detailRange,detailBearing,detailPhase,pattern,
+      }))))));
+  const records=trials.flatMap(runOne);
+  const stats=summary(records);
+  expect(trials.length).toBe(32);
+  expect(records.every(x=>x.raycasts===576)).toBe(true);
+  expect(records.every(x=>x.wrongFrames===0)).toBe(true);
+  console.log('RB_VISION_A4_HELDOUT_MOTION '+JSON.stringify(stats));
+  // This is an adversarial characterization, not a fixed winner claim.
+  expect(stats.every(x=>x.n===32)).toBe(true);
+ },120000);
+
 });
