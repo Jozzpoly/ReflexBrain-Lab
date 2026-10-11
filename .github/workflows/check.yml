@@ -93,7 +93,7 @@ jobs:
       - name: Checkout frozen independent D1 World donor
         uses: actions/checkout@v4
         with:
-          ref: 713afbbfce81e50619fd17bf7046a3b6b36abe4d
+          ref: 7ae501483974181b25516dee4c7ffbf273c94811
           path: _d1_source
           persist-credentials: false
       - name: Compile research D1 donor as separate build
