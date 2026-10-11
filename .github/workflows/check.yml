@@ -54,7 +54,7 @@ jobs:
           if-no-files-found: ignore
 
   validate-additive-pages:
-    if: github.event_name == 'pull_request' && github.head_ref == 'docs/pages-additive-s0-preview-2026-10-11'
+    if: github.event_name == 'pull_request' && (github.head_ref == 'docs/pages-additive-s0-preview-2026-10-11' || github.head_ref == 'docs/pages-s0-robustness-pinned-2026-10-11')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -70,7 +70,7 @@ jobs:
       - name: Fetch pinned isolated donor without changing canonical source
         uses: actions/checkout@v4
         with:
-          ref: 2b2d8708804f1f5ce13b8022d5a8d90c203d4dc6
+          ref: 6aa5612c24ecd485829488997b1fcb2ca312a5bb
           path: _s0_source
           persist-credentials: false
       - name: Build independent S0 static bundle
@@ -103,10 +103,16 @@ jobs:
         run: node _s0_source/tests/browser/material-owner-view.e2e.mjs
         env:
           RB_OWNER_URL: http://127.0.0.1:4178/playmat-s0/
+      - name: 'Extended Chromium playability: manual authority, drag bounds, interruption, mobile layouts'
+        run: node _s0_source/tests/browser/material-owner-robustness.e2e.mjs
+        env:
+          RB_OWNER_URL: http://127.0.0.1:4178/playmat-s0/
       - name: Keep independent additive-preview QA artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: reflexbrain-additive-pages-qa
-          path: artifacts/rb-owner
+          path: |
+            artifacts/rb-owner
+            artifacts/rb-robust
           if-no-files-found: ignore
