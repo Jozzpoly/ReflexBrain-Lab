@@ -51,19 +51,30 @@ export type D1TemporalRun={
   last:GateSample;
   samples:GateSample[];
   uniquePrivateFrames:number;
+  visibleGatePrivateFrames:number;
 };
 export function runWorldD1(railEnabled=true,ticks=21600):D1TemporalRun{
   const s=createWorldD1(railEnabled),world=s.world;
   try{
     const samples:GateSample[]=[];
-    let uniquePrivateFrames=0,lastPrivate=-1;
+    let uniquePrivateFrames=0,lastPrivate=-1,visibleGatePrivateFrames=0;
     let prevLoad=false,prevClear=false,prevShut=true;
     const loadedEntryTicks:number[]=[];
     const gateClearEntryTicks:number[]=[];
     const gateShutEntryTicks:number[]=[];
     for(let i=0;i<ticks;i++){
       const p=world.observe();
-      if(p.tick!==lastPrivate){lastPrivate=p.tick;uniquePrivateFrames++;}
+      if(p.tick!==lastPrivate){
+        lastPrivate=p.tick;uniquePrivateFrames++;
+        // Researcher-only audit: does the physical gate ever make a LEGAL
+        // color patch in actor's true 96xRGB retina? No host ID is returned.
+        let visible=false;
+        for(let k=0;k<p.retina.length;k+=3){
+          if(Math.abs(p.retina[k]-.82)<.018&&Math.abs(p.retina[k+1]-.62)<.018
+            &&Math.abs(p.retina[k+2]-.25)<.018){visible=true;break;}
+        }
+        if(visible)visibleGatePrivateFrames++;
+      }
       world.step(EMPTY);
       const g=world.inspectGateLink();
       if(!g)throw Error('D1 link disappeared');
@@ -87,7 +98,7 @@ export function runWorldD1(railEnabled=true,ticks=21600):D1TemporalRun{
     const a=world.inspect().actor;
     return{railEnabled,tick:ticks,transitions:world.inspectGateLink()!.loadTransitions,
       gateClearEntryTicks,gateShutEntryTicks,loadedEntryTicks,
-      samples,last,freeBodyPosition:{x:a.x,y:a.y},uniquePrivateFrames};
+      samples,last,freeBodyPosition:{x:a.x,y:a.y},uniquePrivateFrames,visibleGatePrivateFrames};
   }finally{world.free();}
 }
 
