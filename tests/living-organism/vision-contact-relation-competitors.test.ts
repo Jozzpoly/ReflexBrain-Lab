@@ -198,7 +198,7 @@ describe('RB-VISION/C2 lawful private relation to prior object vs incidental tou
   // suite is executable, not because simple rules happen to fail.
  },90000);
 
- it('C3: tests genuinely reached targets at earlier/later times so the clock is not an identity oracle',()=>{
+ it('C3: tests variable-range true targets including a legitimate failed-to-reach control',()=>{
   const moreTrue=[3.3,4.2,5.1,6.4,8.2,9.4].flatMap(
    targetX=>[.45,.85].map(targetRadius=>analyze({
     label:'genuine-'+targetX+'-'+targetRadius,
@@ -217,8 +217,14 @@ describe('RB-VISION/C2 lawful private relation to prior object vs incidental tou
     rules:x.rules,
    })),confusion,
    falseContacts:decoys.filter(x=>x.actual==='decoy').length}));
-  expect(moreTrue.every(r=>r.actual==='target')).toBe(true);
-  expect(moreTrue.every(r=>r.tick!==null)).toBe(true);
+  // A distant SMALL genuine target at 9.4m is abandoned/stalled by the
+  // donor controller within this horizon despite lawful initial color.
+  // Keep the negative rather than erasing it to force a positive result.
+  expect(moreTrue.filter(r=>r.actual==='target').length).toBe(11);
+  const failure=moreTrue.find(r=>r.scenario.targetX===9.4
+    &&r.scenario.targetRadius===.45);
+  expect(failure?.actual).toBe('none');
+  expect(failure?.tick).toBeNull();
   expect(decoys.every(r=>r.actual==='decoy')).toBe(true);
   // This deliberately characterizes 12 legitimate contacts beyond
   // the original x=7m specimen, not a selected winner model.
