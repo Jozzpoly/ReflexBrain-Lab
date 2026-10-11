@@ -1,5 +1,12 @@
 # Pre-O0 Foundations Campaign — Current State — 2026-10-06
 
+> **CURRENT STATUS UPDATE (2026-10-11) — the 2026-10-06→10-10 chronology below is historical, not pending work.**  
+> **Authoritative recovery/navigation:** [2026-10-11 new-chat handoff](REFLEXBRAIN_NEW_CHAT_HANDOFF_2026-10-11.md) and [Competence Control Room](REFLEXBRAIN_COMPETENCE_CONTROL_ROOM_2026-10-10.md), then verify the live branch/PR checks. G5A both gates **PASS and closed**; RB-COMP/R1 **closed**; R2 **closed**; RB-F2/P0 **scientific FAIL and closed**; RB-F3/D0 **causal private alias discovery closed**. All are already integrated into `research/pre-o0-foundations-campaign`; the earlier instructions “run G5A” or “run RB-COMP/R1” are obsolete.  
+> **Separate unmerged donors:** Living Organism native-RGB Vision draft PR #54 (C2–C7 completed and qualified, D1–D4 design only), early range-ray Vision draft PR #53 and project-wide documentary reconciliation/handoff PR #55. **No canonical learned ReflexBrain, Owner-qualified living organism or general learned reason is established.** New work should choose a consequential project-native falsifier, likely F3A, not automatically another Vision scene. `main` remains historical; do not normalize it on recovery by accident.
+
+---
+
+
 Status: **FOUNDATIONAL CAMPAIGN CONVERGED · O-CTRL CONTRACT FROZEN · ATOMIC EXECUTION IN PROGRESS · NO RUN CURRENTLY ACTIVE**
 
 Active branch:
