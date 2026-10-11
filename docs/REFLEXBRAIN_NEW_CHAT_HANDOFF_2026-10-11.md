@@ -6,7 +6,7 @@
 
 1. Recover Owner intent from this page and the project charter; **then check live GitHub**, rather than treating any embedded SHA as a timeless source of truth.
 2. Verify canonical branch `research/pre-o0-foundations-campaign` / [draft PR #6](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6); check whether any other agent has changed or merged it.
-3. Verify [Vision draft PR #54](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/54), [control-room/handoff draft PR #55](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/55), and [separate early Vision draft PR #53](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/53), their bases, changed files and CI before further writes.
+3. Verify [Vision draft PR #54](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/54), [documentation/handoff PR #55](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/55), and [separate early Vision draft PR #53](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/53), their bases, changed files and CI before further writes.
 4. Re-evaluate the frontier from **G5A PASS; F2/P0 scientific FAIL; F3/D0 material private alias** and negative Vision results. Next move should generate *new useful knowledge/competence*, not simply another pile of tests or prose.
 
 ## SOURCE-OF-TRUTH ROUTES (as observed 2026-10-11)
@@ -17,7 +17,7 @@
 | `research/pre-o0-foundations-campaign` @ `09c17cbf699df5ebab12a7cf60db943b5c0af954` / draft PR #6 | **Canonical experimental foundation** | G5A, F2/P0 and F3/D0 results are ALREADY integrated into this branch |
 | `research/living-organism-runtime-a-2026-10-08` | Independently executable scout/donor, NOT canon | Source of LivingWorld 96 native RGB rays / 30Hz and authored ApproachEpisode/Occupant |
 | `research/vision-lived-retina-loop-2026-10-10` @ `3ed883c3362cc2ae05a8c41fc54f0b005c7065b6` / draft PR #54 | **Narrow executable Vision scout + unexecuted D protocol** | Base = Living Organism donor branch, not canonical; **no `src/` diff** from its base |
-| `research/competence-vision-f3f4-reconciliation-2026-10-11` / draft PR #55 | Documentary stewardship and THIS handoff | Base = canonical pre-O0 branch; should remain distinct from Vision runtime donor |
+| `research/competence-vision-f3f4-reconciliation-2026-10-11` / documentation PR #55 | Stewardship and THIS handoff, eligible for docs-only integration | Base = canonical pre-O0 branch; verify live whether merged; NOT Vision runtime donor |
 | PR #53 (independent `RB-VISION/V1–V7`) | Separate research on ideal range-ray and temporal focus (34/34 files,65/65 tests on earlier exact head) | Some use idealized range rather than native RGB. Do NOT conflate #53 with #54 or close it merely because #54 exists |
 
 GitHub exact-run evidence verified on the last relevant code:
@@ -25,7 +25,7 @@ GitHub exact-run evidence verified on the last relevant code:
 - [F2/P0](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38085177499) 26 files/40 tests, **scientific FAIL**, even though CI PASS: mismatch R detects altered dynamics, but does not prove model M worse than simpler F; R AUC .94118 equals simple touch baseline. [Result](competence-runs/RB-F2-P0_RESULT.md). **Do not repair the frozen failed trial post-hoc.**
 - [F3/D0](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38085574709) 27 files/42 tests, **material private alias DISCOVERED**: identical scalar/binary F2 private histories, opposite sign of M-vs-F action regret (+.64608 / −.64608). Lawful *directional touch relative to own body* separates the two mirrored causal worlds; **no policy/reason qualification**. [Result](competence-runs/RB-F3-D0_RESULT.md).
 - [Vision PR #54 CI on its latest protocol-doc HEAD](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38098650514): **53/53 files,153/153 tests, TS/build PASS**. This verifies C-series and old tests still build; **does NOT execute D1–D4**.
-- [Competence PR #55 prior docs-only CI](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38097736095): 27/27 files,42/42 tests PASS on earlier head. Recheck the final HEAD after handoff edits.
+- [Competence PR #55 earlier docs-only CI](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38097736095): 27/27 files,42/42 tests PASS on earlier head. Recheck final PR and canonical integration CI; docs-only PASS does not upgrade scientific claims.
 
 The prior `docs/CONTINUE_HERE.md`, `docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md` and early sections of `docs/REFLEXBRAIN_COMPETENCE_CONTROL_ROOM_2026-10-10.md` contain valid HISTORICAL run chronology but outdated imperative `next: RB-COMP/R1 / G5A / F2/P0`. This handoff supersedes their outdated scheduling; the old text is not to be deleted as evidence. Current updates should add a top-level current marker, not rewrite immutable result reports.
 
@@ -82,7 +82,7 @@ We spent significant real work on narrow retinal tests; they genuinely improved 
 - [Combat Lab draft #9](https://github.com/Jozzpoly/Combat-Lab/pull/9) 18 authored planar root-traction bodies and local signals create real material reciprocal effects, but not competent animal movement/owned meaning.
 - [LLM Live NPC draft #163](https://github.com/Jozzpoly/Llm-Live-NPC/pull/163) causal manual one-resident reason→model boundary with zero automatic Luna request and mock browser tests; not live Luna judgment or Owner-qualified world; **do not mutate Cloudflare/provider/security in ReflexBrain work**. Earlier R6 #156/#158 show pre-existing owned matters can make the same event relevant; #159 shows mere encounter density does not create reasons. Do not import R6 `Matter` ontology.
 
-**No repo merges/deletions/main normalization by inertia.** PR #54 is a branch off noncanonical living-organism scout, PR #55 is only documentation into canonical base; PR #53 is another independent Vision donor. No files are to be moved from them just to unify folder layout. Canonical G5A/F2/P0/F3/D0 result files are immutable historical evidence and remain separated from future speculative changes.
+**No experimental-code merges/deletions/main normalization by inertia.** PR #54 is a branch off noncanonical living-organism scout, PR #55 is documentation-only for canonical integration; PR #53 is another independent Vision donor. No files are to be moved from them just to unify folder layout. Canonical G5A/F2/P0/F3/D0 result files are immutable historical evidence and remain separated from future speculative changes.
 
 ## CONTINUITY CONTRACT
 
