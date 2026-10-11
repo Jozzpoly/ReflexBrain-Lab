@@ -16,6 +16,7 @@ export default defineConfig({
         ownerFieldLab: "probes/owner-field-lab.html",
         livingOrganism: "probes/living-organism.html",
         openEcologyD0: "probes/world-ecology-d0.html",
+        coupledEcologyD1: "probes/world-ecology-d1.html",
         mediumDR3A: "probes/medium-d-r3a-material-fork.html",
         mediumDR3C: "probes/medium-d-r3c-shadow-fork.html",
         mediumDR3E: "probes/medium-d-r3e-spatial-proxy.html",
