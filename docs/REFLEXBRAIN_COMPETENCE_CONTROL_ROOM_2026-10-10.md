@@ -1,5 +1,16 @@
 # ReflexBrain Competence Control Room — 2026-10-10
 
+> **2026-10-11 VERIFIED UPDATE — THE 2026-10-10 “CURRENT” SECTIONS BELOW ARE HISTORICAL.**  
+> **Agent recovery:** [2026-10-11 clean-chat handoff](REFLEXBRAIN_NEW_CHAT_HANDOFF_2026-10-11.md). **Full new donor audit:** [Vision → F2/F3/F4 reconciliation](competence-runs/RB-COMP_VISION_F3F4_RECONCILIATION_2026-10-11.md). Confirm live refs before every run.  
+> **Already closed on canonical pre-O0 branch:** G5A both causal gates **PASS** (private difference @313 → motor @314 → body odometry @315); R1 Living Organism audit **PASS as executable scout**; R2 frontier selection **CLOSED**; F2/P0 **scientific FAIL** (model mismatch ≠ action regret); F3/D0 **mirrored private-history alias FOUND** (directional touch contains missing lawful relation). None should be restarted as if pending.  
+> **Research drafts/unmerged:** independent Vision [#53](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/53), native-RGB Vision [#54](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/54). **Documentation-only recovery/reconciliation:** [#55](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/55); verify live merge status. #54 last full CI 53/53 files and 153/153 tests PASS; D1–D4 in #54 is a **preregistered experiment only**, not code or success.  
+> **Real remaining frontier:** owned significance/goal formation **OPEN**. Cheap private models and lawful sensing can be causally useful; their usefulness is domain-bound, and a learned private touch reward can prefer *wrong* physical contact. Vision A1–C7 did not close F3/F4 or qualify an Owner-accepted living organism.  
+> **Next-run recommendation (not frozen):** favor a small F3A *actor-relative action-intent × directional-touch → held-out M-vs-fallback material regret* falsifier on the native foundation; compare against D1–D4 physical affordance/focus proposal only after acknowledging existing E0/P01a donor evidence and code-write safeguards. Avoid redundant optics-fixture proliferation.  
+> **Operating boundaries:** source docs and old sections below preserve history, not live task priority; NEVER promote host IDs/semantics, guessed body success or CI into actor authority or Owner verdict. Medium deepening remains paused unless a live organism research need justifies it.
+
+---
+
+
 Status: **ACTIVE · CROSS-LAB STEWARDSHIP LAYER · NO ARCHITECTURE FREEZE**
 
 This document starts a new ReflexBrain campaign whose purpose is not to build another subsystem.
