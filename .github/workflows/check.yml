@@ -124,3 +124,36 @@ jobs:
           name: reflexbrain-world-d1-chromium
           path: artifacts/world-d1
           if-no-files-found: ignore
+
+  browser-world-d1-public:
+    if: github.event_name == 'pull_request' && github.head_ref == 'research/world-ecology-d1-coupled-affordance-2026-10-11'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify both real public Pages D1 HTML and built JS asset
+        run: |
+          URL="https://jozzpoly.github.io/ReflexBrain-Lab/world-d1/"
+          curl -fsS "$URL" -o /tmp/public-d1.html
+          grep -q 'nie ma autonomicznego mózgu' /tmp/public-d1.html
+          JS=$(grep -oE '../assets/[^"]+' /tmp/public-d1.html | head -1)
+          test -n "$JS"
+          curl -fsS "https://jozzpoly.github.io/ReflexBrain-Lab/world-d1/$JS" -o /tmp/public-d1.js
+          test $(wc -c < /tmp/public-d1.js) -gt 10000
+      - name: Install Chrome test driver
+        run: |
+          yarn install --non-interactive
+          yarn add --dev --ignore-scripts playwright-core@1.56.0
+      - name: REAL PUBLIC CHROMIUM three gate states and material Owner intervention
+        run: node tests/browser/world-ecology-d1.e2e.mjs
+        env:
+          RB_WORLD_D1_URL: https://jozzpoly.github.io/ReflexBrain-Lab/world-d1/
+      - name: Keep seven public real Chromium viewport and material screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflexbrain-world-d1-PUBLIC-chromium
+          path: artifacts/world-d1
+          if-no-files-found: ignore
