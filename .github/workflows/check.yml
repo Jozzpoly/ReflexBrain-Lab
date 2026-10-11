@@ -124,7 +124,7 @@ jobs:
         run: node tests/browser/material-owner-view.e2e.mjs
         env:
           RB_OWNER_URL: http://127.0.0.1:4174/
-      - name: Deep browser playability stress: manipulation, cancellation, provenance, mobile-width layout
+      - name: 'Deep browser playability stress: manipulation, cancellation, provenance, mobile-width layout'
         run: node tests/browser/material-owner-robustness.e2e.mjs
         env:
           RB_OWNER_URL: http://127.0.0.1:4174/
