@@ -18,6 +18,13 @@ it('characterizes actual World material displacement through purely RGB/proprio 
   // 120Hz physics/30Hz sensor: repeated cached frames count only once.
   expect(result.results.every(r=>r.visibleTargetFrames<=1800 && r.visibleDockFrames<=1800)).toBe(true);
   expect(result.results.every(r=>r.targetStart && r.targetEnd && r.dockEnd)).toBe(true);
+  // Refactoring the World fixture for the Owner view must not silently
+  // change the already observed S0 material afterstates or stronger rival.
+  expect(result.results.map(r=>r.endCenterDistance)).toEqual([
+    3.477407268873168,
+    2.3860918811475362,
+    3.952861701807312,
+  ]);
   // Deliberately NO success assertion for material restoration: this is a
   // discovery/specimen audit, not a CI rubric that silently makes science pass.
   console.log('RB_MATERIAL_S0_RESULT '+JSON.stringify(result));
