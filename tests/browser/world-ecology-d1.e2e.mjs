@@ -20,7 +20,10 @@ try{
  await page.goto(url,{waitUntil:'networkidle',timeout:30000});
  await wait('Number(document.querySelector("#world")?.dataset.tick)>12');
  const initial=await read();
- assert(initial.gateX<8.2&&initial.actorX===0,'bad D1 physical start');
+ assert(Number.isFinite(initial.gateX)&&initial.gateX>7&&initial.gateX<12.6
+   &&initial.actorX===0&&initial.actorY===0,'bad D1 physical start');
+ // Pages/CI load time may advance the REAL independent rail before first
+ // screenshot. Never require a specific gate phase after navigation.
  await page.screenshot({path:'artifacts/world-d1/01-initial.png',fullPage:true});
  await wait('Number(document.querySelector("#world")?.dataset.gateX)>11.1');
  const open1=await read();
