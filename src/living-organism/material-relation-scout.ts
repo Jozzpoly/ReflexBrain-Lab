@@ -120,7 +120,7 @@ class MaterialConcern {
       mode='reacquire';desired=this.seenTarget?
         Math.atan2(privateToLocal(this.position,this.heading,this.seenTarget.p).y,
           privateToLocal(this.position,this.heading,this.seenTarget.p).x) : .8;
-      drive=this.seenTarget?.1:0;
+      drive=this.seenTarget ? .1 : 0;
     }
     // No touch collider identity; physical touch can only oppose generic drive.
     const touch=Math.max(...f.touch);
