@@ -24,6 +24,7 @@ type Datum={spec:Spec;initialTargetVisible:boolean;
  distanceToOriginal:number;actorPath:number;
  contactedSector:number;contactMagnitudes:number[];
  retinalTurquoiseAtContact:boolean;
+ maxRecentVisualJump:number;cheapSmoothAccept:boolean;
  note:string};
 const SPECS:Spec[]=[-3,-4,-5].flatMap(moverX=>
  (['same','orange'] as const).map(color=>({moverX,color})));
@@ -53,6 +54,7 @@ function run(spec:Spec):Datum{
  let contactTouch:number[]=[];
  let last=w.inspect().actor;
  let retinalTurquoiseAtContact=false;
+ const widths:number[]=[];
  let completed:number|null=null;
  try{
   for(let t=4;t<1200;t++){
@@ -60,6 +62,8 @@ function run(spec:Spec):Datum{
    if(f.tick!==lastFrameTick){
     lastFrameTick=f.tick;
     const turquoise=visibleTurquoisePatches(f.retina);
+    widths.push(turquoise.filter(x=>!x.clipped)
+     .reduce((max,x)=>Math.max(max,x.extent),0));
     if(t===4){
      initialTargetVisible=turquoise.some(p=>!p.clipped);
      // Source-independent host check: the mover begins behind the body,
@@ -95,12 +99,17 @@ function run(spec:Spec):Datum{
   if(!originalBody)throw Error('C7 missing original');
   const distanceToOriginal=Math.hypot(
    a.x-originalBody.x,a.y-originalBody.y);
+  const recent=widths.slice(-4);
+  const maxRecentVisualJump=recent.slice(1).reduce(
+   (v,x,i)=>Math.max(v,Math.abs(x-recent[i])),0);
   return {
    spec,initialTargetVisible,initialMoverVisible,
    contactTick:completed,originalTouched,moverTouched,
    distanceToOriginal,actorPath:bodyPath,
    contactedSector:contactTouch.indexOf(Math.max(...contactTouch)),
    contactMagnitudes:contactTouch,retinalTurquoiseAtContact,
+   maxRecentVisualJump,
+   cheapSmoothAccept:completed!==null&&maxRecentVisualJump<.15,
    note:'World force, not host-triggered teleport',
   };
  }finally{w.free();}
@@ -117,5 +126,10 @@ describe('RB-VISION/C7 natural physical mover contact vs old material concern',(
   expect(result.some(r=>r.moverTouched)).toBe(true);
   expect(result.some(r=>r.contactTick!==null
     &&r.moverTouched&&!r.originalTouched)).toBe(true);
+  // Compare the SAME preselected appearance-discontinuity baseline
+  // from C6 (0.15 radians). Force-driven rear collisions can leave
+  // the forward-looking RGB patch smooth, while physical success is false.
+  expect(result.some(r=>r.moverTouched&&!r.originalTouched
+    &&r.cheapSmoothAccept)).toBe(true);
  },50000);
 });
