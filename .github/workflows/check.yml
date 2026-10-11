@@ -52,3 +52,61 @@ jobs:
           name: medium-d-r3g-browser-evidence
           path: artifacts/r3g
           if-no-files-found: ignore
+
+  validate-additive-pages:
+    if: github.event_name == 'pull_request' && github.head_ref == 'docs/pages-additive-s0-preview-2026-10-11'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build existing published home and archive
+        run: |
+          yarn install --non-interactive
+          yarn run build
+          test -f dist/probes/owner-field-lab.html
+          sha256sum dist/index.html dist/probes/owner-field-lab.html > /tmp/root-hashes
+      - name: Fetch pinned isolated donor without changing canonical source
+        uses: actions/checkout@v4
+        with:
+          ref: 2b2d8708804f1f5ce13b8022d5a8d90c203d4dc6
+          path: _s0_source
+          persist-credentials: false
+      - name: Build independent S0 static bundle
+        working-directory: _s0_source/playmat-lite
+        run: |
+          npm install --ignore-scripts --no-audit --no-fund
+          npm run check
+      - name: Preserve all previous published root bytes and add S0
+        run: |
+          mkdir -p dist/playmat-s0
+          cp -R _s0_source/playmat-lite/dist/. dist/playmat-s0/
+          sha256sum -c /tmp/root-hashes
+          test -f dist/playmat-s0/index.html
+          test -d dist/playmat-s0/assets
+      - name: Start exact additive Pages output as a local static preview
+        run: |
+          yarn vite preview --host 127.0.0.1 --port 4178 > /tmp/rb-pages-additive.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4178/ >/dev/null &&
+               curl -fsS http://127.0.0.1:4178/probes/owner-field-lab.html >/dev/null &&
+               curl -fsS http://127.0.0.1:4178/playmat-s0/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/rb-pages-additive.log
+          exit 1
+      - name: Install browser driver under owner donor for verified browser QA
+        working-directory: _s0_source
+        run: yarn add --dev --ignore-scripts playwright-core@1.56.0
+      - name: Full browser 60s physics parity on the exact new Pages subpath
+        run: node _s0_source/tests/browser/material-owner-view.e2e.mjs
+        env:
+          RB_OWNER_URL: http://127.0.0.1:4178/playmat-s0/
+      - name: Keep independent additive-preview QA artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflexbrain-additive-pages-qa
+          path: artifacts/rb-owner
+          if-no-files-found: ignore
