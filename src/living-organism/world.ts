@@ -8,7 +8,7 @@ type Surface = {handle:number;color:Color;kind:'object'|'wall';hx:number;hy:numb
 export type PrivateFrame = {tick:number;retina:Float32Array;touch:Float32Array;proprio:{forward:number;lateral:number;omega:number;gaze:number}};
 export type HostContactEvent={tick:number;handle:number;impulse:number};
 export type HostContactSample={tick:number;contacts:HostContactEvent[]};
-export type Checkpoint = {version:3;physics:Uint8Array;actorHandle:number;tick:number;gaze:number;surfaces:Surface[];frame:PrivateFrame;pendingTouch:Float32Array;pendingContactEvents:HostContactEvent[];contactSample:HostContactSample;mover:{handle:number;direction:number}|null};
+export type Checkpoint = {version:3;physics:Uint8Array;actorHandle:number;tick:number;gaze:number;surfaces:Surface[];frame:PrivateFrame;pendingTouch:Float32Array;pendingContactEvents:HostContactEvent[];contactSample:HostContactSample;mover:{handle:number;direction:number;left?:number;right?:number;railY?:number;speed?:number}|null};
 const clamp=(x:number)=>Math.max(-1,Math.min(1,x));
 const background:Color=[.025,.04,.06];
 
@@ -23,7 +23,7 @@ export class LivingWorld {
   private pendingTouch=new Float32Array(8);
   private pendingContactEvents:HostContactEvent[]=[];
   private contactSample:HostContactSample={tick:0,contacts:[]};
-  private mover:{handle:number;direction:number}|null=null;
+  private mover:{handle:number;direction:number;left?:number;right?:number;railY?:number;speed?:number}|null=null;
   constructor(scene=true) {
     this.world=createE0World();
     this.actor=createE0Body(this.world,0,0).rb;
@@ -52,6 +52,19 @@ export class LivingWorld {
     if(this.tick===0)this.frame=null;
     return co.handle;
   }
+  /**
+   * Explicit independent material World process. Optional bounds belong
+   * solely to host mechanics. The actor never receives process phase, rail
+   * configuration or collider handles through PrivateFrame.
+   */
+  addRailMover(x:number,y:number,radius:number,color:Color,left:number,right:number,speed=2) {
+    if(this.mover)throw new Error('Only one physical rail mover per World instance');
+    if(![x,y,radius,left,right,speed].every(Number.isFinite)||left>=right||radius<=0||speed<=0)
+      throw new Error('Invalid rail geometry');
+    const handle=this.addObject(x,y,radius,color);
+    this.mover={handle,direction:1,left,right,railY:y,speed};
+    return handle;
+  }
   moveObject(handle:number,x:number,y:number) {
     if(!Number.isFinite(x)||!Number.isFinite(y))throw new Error('Invalid world position');
     const surface=this.surfaces.find(s=>s.handle===handle);
@@ -70,10 +83,12 @@ export class LivingWorld {
     this.actor.addTorque(E0_TMAX*clamp(d.turn),true);
     if(this.mover){
       const rb=this.world.getCollider(this.mover.handle).parent(),p=rb.translation(),v=rb.linvel();
-      if(p.x>=6)this.mover.direction=-1;
-      if(p.x<=-6)this.mover.direction=1;
+      const left=this.mover.left??-6,right=this.mover.right??6;
+      const railY=this.mover.railY??-3,speed=this.mover.speed??2;
+      if(p.x>=right)this.mover.direction=-1;
+      if(p.x<=left)this.mover.direction=1;
       rb.resetForces(true);rb.resetTorques(true);
-      rb.addForce({x:Math.max(-20,Math.min(20,(this.mover.direction*2-v.x)*10)),y:Math.max(-20,Math.min(20,(-3-p.y)*10-v.y*4))},true);
+      rb.addForce({x:Math.max(-20,Math.min(20,(this.mover.direction*speed-v.x)*10)),y:Math.max(-20,Math.min(20,(railY-p.y)*10-v.y*4))},true);
     }
     this.gaze=Math.max(-Math.PI/2,Math.min(Math.PI/2,this.gaze+3*clamp(d.gazeRate)*E0_DT));
     this.world.step();this.tick++;
