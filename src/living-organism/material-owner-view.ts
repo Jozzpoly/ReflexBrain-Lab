@@ -9,6 +9,7 @@ const canvas=get<HTMLCanvasElement>('world'),ctx=canvas.getContext('2d')!;
 const retina=get<HTMLCanvasElement>('retina'),rctx=retina.getContext('2d')!;
 const modeInput=get<HTMLSelectElement>('mode'),speedInput=get<HTMLSelectElement>('speed');
 const pauseButton=get<HTMLButtonElement>('pause');
+const fastButton=get<HTMLButtonElement>('run60');
 const manualButton=get<HTMLButtonElement>('manual');
 const microscopeInput=get<HTMLInputElement>('microscope');
 const keys=new Set<string>();
@@ -58,7 +59,7 @@ function makeSession(mode:MaterialMode):Session{
 }
 await initLivingWorld();
 let s=makeSession(modeInput.value as MaterialMode);
-let paused=false,manual=false,lastTime=0,accumulator=0;
+let paused=false,manual=false,fastForward=false,lastTime=0,accumulator=0;
 let drag:{handle:number;moved:boolean}|null=null;
 
 function reset(mode=s.mode){
@@ -68,6 +69,7 @@ function reset(mode=s.mode){
   lastTime=0;accumulator=0;drag=null;
   keys.clear();
   pauseButton.textContent='Pauza';
+  fastButton.textContent='Przelicz do 60 s';fastButton.disabled=false;
   manualButton.textContent='Przejmij ciało';
   manualButton.setAttribute('aria-pressed','false');
   update();
@@ -82,9 +84,10 @@ manualButton.addEventListener('click',()=>{
   manual=!manual;keys.clear();
   manualButton.textContent=manual?'Oddaj ciało':'Przejmij ciało';
   manualButton.setAttribute('aria-pressed',String(manual));
-  canvas.focus();update();
+  canvas.focus();fastButton.disabled=manual;update();
 });
 speedInput.addEventListener('change',()=>{lastTime=0;accumulator=0;});
+fastButton.addEventListener('click',()=>{void fastForwardTo60();});
 function handleKey(e:KeyboardEvent,pressed:boolean){
   const key=e.key.toLowerCase();
   if(!validKeys.has(key) || e.target!==canvas || !manual)return;
@@ -126,6 +129,29 @@ const release=()=>{
 canvas.addEventListener('pointerup',release);
 canvas.addEventListener('pointercancel',release);
 
+async function fastForwardTo60(){
+  if(fastForward||manual||s.scenario.world.inspect().tick>=7200)return;
+  fastForward=true;paused=true;keys.clear();accumulator=0;lastTime=0;
+  const controls=[fastButton,pauseButton,manualButton,modeInput,speedInput,get<HTMLButtonElement>('reset')];
+  for(const input of controls)input.disabled=true;
+  try{
+    while(s.scenario.world.inspect().tick<7200){
+      const count=Math.min(120,7200-s.scenario.world.inspect().tick);
+      for(let i=0;i<count;i++)step();
+      fastButton.textContent='Przeliczanie… '+Math.round(s.scenario.world.inspect().tick/72)+'%';
+      update();
+      await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
+    }
+  }catch(error){console.error('fast-forward simulation failed',error);}
+  finally{
+    fastForward=false;paused=true;lastTime=0;accumulator=0;
+    for(const input of controls)input.disabled=false;
+    fastButton.disabled=s.scenario.world.inspect().tick>=7200;
+    fastButton.textContent=fastButton.disabled?'60 s przeliczone':'Przelicz do 60 s';
+    pauseButton.textContent='Wznów';
+    update();
+  }
+}
 function step(){
   const w=s.scenario.world;
   const f=w.observe();
@@ -223,7 +249,8 @@ function update(){
     'private state: '+JSON.stringify(state??'no decision process',null,1),
   ].join('\n');
   get<HTMLElement>('private').textContent=privateText;
-  get<HTMLElement>('status').textContent=document.hidden?'Karta ukryta — symulacja stoi':
+  get<HTMLElement>('status').textContent=fastForward?'Przeliczanie wszystkich kroków fizyki':
+    document.hidden?'Karta ukryta — symulacja stoi':
     paused?'Pauza':manual?'Ciało pod kontrolą Ownera':'Działa bez Ownera';
   get<HTMLElement>('phase').textContent=s.intervened>0||manual?
     'Zmieniono warunki — nie porównuj z zamrożonym S0':'Czysty start · bez interwencji Ownera';
@@ -233,7 +260,7 @@ let firstError=false;
 function frame(ts:number){
   try{
     if(!lastTime)lastTime=ts;
-    if(!paused&&!document.hidden){
+    if(!paused&&!fastForward&&!document.hidden){
       const dt=Math.max(0,Math.min(.075,(ts-lastTime)/1000));
       accumulator+=dt*Number(speedInput.value);
       let n=0;
