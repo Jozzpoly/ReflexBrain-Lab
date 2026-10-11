@@ -1,3 +1,8 @@
+> **STATUS TEJ GAŁĘZI — 2026-10-11: DONOR / SCOUT, kampania zaparkowana.**
+> Najpierw przeczytaj [punkt orientacyjny](ORIENTATION_AND_DISPOSITION_2026-10-11.md).
+> Dawne „następne kroki” poniżej są historią, nie poleceniem wznowienia.
+> Nie zamyka to kanonicznego ReflexBrain ani innych laboratoriów.
+
 # Campaign A — continuing authored occupant checkpoint
 
 2026-10-08. Base: 87d94c84288982dd6c150494b24504097ec4474f.
