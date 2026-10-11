@@ -179,3 +179,53 @@ export function runD1UpperRoute(plateHeld:boolean,maxTicks=3600):D1RouteRun {
       finalActor:{x:a.x,y:a.y},finalGateX:w.inspectGateLink()!.gatePosition.x};
   }finally{w.free();}
 }
+
+/**
+ * Research-calibration motor (NOT a Local Brain): can an ordinary E0 actor
+ * actually reach a plate and close the causal loop with its OWN contact?
+ * Global route waypoints are explicitly external oracle truth, not private.
+ * No body teleport or host-side pressPlate/openGate instruction is issued.
+ */
+export function runD1ActorPressureReach(maxSteps=6000){
+  const s=createWorldD1(false),w=s.world;
+  const waypoints:XY[]=[
+    {x:3,y:-6.5},{x:10,y:-6.5},{x:9.7,y:9.5},
+    {x:9.7,y:11.5},{x:12.7,y:11.5},
+  ];
+  let index=0,firstActorLoadTick:number|null=null,firstGateClearTick:number|null=null;
+  let minPlateGap=Number.POSITIVE_INFINITY;
+  const wrap=(v:number)=>Math.atan2(Math.sin(v),Math.cos(v));
+  const clamp=(v:number)=>Math.max(-1,Math.min(1,v));
+  try{
+    for(let i=0;i<maxSteps;i++){
+      const h=w.inspect(),p=h.actor,g=waypoints[index];
+      const distance=Math.hypot(g.x-p.x,g.y-p.y);
+      if(distance<1.1&&index<waypoints.length-1)index++;
+      const target=waypoints[index];
+      const err=wrap(Math.atan2(target.y-p.y,target.x-p.x)-p.angle);
+      const f=w.observe();
+      const goalGap=Math.hypot(target.x-p.x,target.y-p.y);
+      const last=index===waypoints.length-1;
+      const demand:Demand={
+        drive:last&&goalGap<.36?0:
+          Math.abs(err)<.5?.75:.04,
+        turn:clamp(err*2-f.proprio.omega*.75),gazeRate:0,
+      };
+      w.step(demand);
+      const now=w.inspect().actor;
+      minPlateGap=Math.min(minPlateGap,Math.hypot(12.7-now.x,11.5-now.y));
+      const link=w.inspectGateLink()!;
+      if(firstActorLoadTick===null&&link.loaded)firstActorLoadTick=w.inspect().tick;
+      if(firstGateClearTick===null&&link.gatePosition.x>11.1)
+        firstGateClearTick=w.inspect().tick;
+    }
+    const a=w.inspect().actor,gate=w.inspectGateLink()!;
+    return{
+      ticks:w.inspect().tick,
+      firstActorLoadTick,firstGateClearTick,minPlateGap,
+      finalActor:{x:a.x,y:a.y},finalGateX:gate.gatePosition.x,
+      finalLoaded:gate.loaded,
+      note:'researcher-oracle waypoints ONLY, genuine Rapier force actuation',
+    };
+  }finally{w.free();}
+}
