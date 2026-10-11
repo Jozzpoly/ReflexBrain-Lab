@@ -54,7 +54,7 @@ jobs:
           if-no-files-found: ignore
 
   validate-additive-pages:
-    if: github.event_name == 'pull_request' && (github.head_ref == 'docs/pages-additive-s0-preview-2026-10-11' || github.head_ref == 'docs/pages-s0-robustness-pinned-2026-10-11')
+    if: github.event_name == 'pull_request' && (github.head_ref == 'docs/pages-additive-s0-preview-2026-10-11' || github.head_ref == 'docs/pages-s0-robustness-pinned-2026-10-11' || github.head_ref == 'docs/pages-world-d1-additive-2026-10-11')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -85,13 +85,39 @@ jobs:
           sha256sum -c /tmp/root-hashes
           test -f dist/playmat-s0/index.html
           test -d dist/playmat-s0/assets
+      - name: Protect all existing root and S0 static bytes before D1 assembly
+        run: |
+          test -f dist/playmat-s0/index.html
+          test ! -e dist/world-d1
+          find dist -type f -print0 | sort -z | xargs -0 sha256sum > /tmp/before-D1
+      - name: Checkout frozen independent D1 World donor
+        uses: actions/checkout@v4
+        with:
+          ref: 713afbbfce81e50619fd17bf7046a3b6b36abe4d
+          path: _d1_source
+          persist-credentials: false
+      - name: Compile research D1 donor as separate build
+        working-directory: _d1_source
+        run: |
+          yarn install --non-interactive
+          yarn run build
+          test -f dist/probes/world-ecology-d1.html
+      - name: Assemble additive /world-d1 from real built D1 with old-byte protection
+        run: |
+          mkdir -p dist/world-d1
+          cp _d1_source/dist/probes/world-ecology-d1.html dist/world-d1/index.html
+          cp -R _d1_source/dist/assets/. dist/assets/
+          sha256sum -c /tmp/before-D1
+          grep -q '../assets/' dist/world-d1/index.html
+          test -f dist/world-d1/index.html
       - name: Start exact additive Pages output as a local static preview
         run: |
           yarn vite preview --host 127.0.0.1 --port 4178 > /tmp/rb-pages-additive.log 2>&1 &
           for i in {1..30}; do
             if curl -fsS http://127.0.0.1:4178/ >/dev/null &&
                curl -fsS http://127.0.0.1:4178/probes/owner-field-lab.html >/dev/null &&
-               curl -fsS http://127.0.0.1:4178/playmat-s0/ >/dev/null; then exit 0; fi
+               curl -fsS http://127.0.0.1:4178/playmat-s0/ >/dev/null &&
+               curl -fsS http://127.0.0.1:4178/world-d1/ >/dev/null; then exit 0; fi
             sleep 1
           done
           cat /tmp/rb-pages-additive.log
@@ -107,6 +133,13 @@ jobs:
         run: node _s0_source/tests/browser/material-owner-robustness.e2e.mjs
         env:
           RB_OWNER_URL: http://127.0.0.1:4178/playmat-s0/
+      - name: Install D1 browser driver in its own donor tree
+        working-directory: _d1_source
+        run: yarn add --dev --ignore-scripts playwright-core@1.56.0
+      - name: 'Chrome D1: real recurring rail, physical gate, material on/off, 320px'
+        run: node _d1_source/tests/browser/world-ecology-d1.e2e.mjs
+        env:
+          RB_WORLD_D1_URL: http://127.0.0.1:4178/world-d1/
       - name: Keep independent additive-preview QA artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -115,4 +148,5 @@ jobs:
           path: |
             artifacts/rb-owner
             artifacts/rb-robust
+            artifacts/world-d1
           if-no-files-found: ignore
