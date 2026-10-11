@@ -59,13 +59,15 @@ function makeSession(mode:MaterialMode):Session{
 }
 await initLivingWorld();
 let s=makeSession(modeInput.value as MaterialMode);
-let paused=false,manual=false,fastForward=false,lastTime=0,accumulator=0;
+let paused=false,manual=false,fastForward=false,stopFast=false,lastTime=0,accumulator=0;
+let runtimeError:string|null=null;
 let drag:{handle:number;moved:boolean}|null=null;
 
 function reset(mode=s.mode){
   s.scenario.world.free();
   s=makeSession(mode);
-  paused=false;manual=false;
+  firstError=false;
+  paused=false;manual=false;runtimeError=null;stopFast=false;
   lastTime=0;accumulator=0;drag=null;
   keys.clear();
   pauseButton.textContent='Pauza';
@@ -82,12 +84,16 @@ pauseButton.addEventListener('click',()=>{
 });
 manualButton.addEventListener('click',()=>{
   manual=!manual;keys.clear();
+  if(manual)s.intervened++; // Owner takeover permanently invalidates source baseline.
   manualButton.textContent=manual?'Oddaj ciało':'Przejmij ciało';
   manualButton.setAttribute('aria-pressed',String(manual));
   canvas.focus();fastButton.disabled=manual;update();
 });
 speedInput.addEventListener('change',()=>{lastTime=0;accumulator=0;});
-fastButton.addEventListener('click',()=>{void fastForwardTo60();});
+fastButton.addEventListener('click',()=>{
+  if(fastForward){stopFast=true;fastButton.textContent='Zatrzymywanie…';return;}
+  void fastForwardTo60();
+});
 function handleKey(e:KeyboardEvent,pressed:boolean){
   const key=e.key.toLowerCase();
   if(!validKeys.has(key) || e.target!==canvas || !manual)return;
@@ -99,6 +105,7 @@ canvas.addEventListener('keyup',e=>handleKey(e,false));
 canvas.addEventListener('blur',()=>keys.clear());
 document.addEventListener('visibilitychange',()=>{
   keys.clear();accumulator=0;lastTime=0;
+  if(document.hidden&&fastForward)stopFast=true;
 });
 function pointer(e:PointerEvent){
   const r=canvas.getBoundingClientRect();
@@ -107,7 +114,7 @@ function pointer(e:PointerEvent){
 }
 canvas.addEventListener('pointerdown',e=>{
   canvas.focus();
-  if(e.button!==0)return;
+  if(e.button!==0||fastForward)return;
   const p=pointer(e),objects=s.scenario.world.inspect().objects;
   const candidate=objects.filter(o=>o.kind==='object')
     .sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y))
@@ -119,7 +126,13 @@ canvas.addEventListener('pointerdown',e=>{
 canvas.addEventListener('pointermove',e=>{
   if(!drag)return;
   const p=pointer(e);
-  s.scenario.world.moveObject(drag.handle,p.x,p.y);
+  // Owner dragging remains inside the material yard instead of
+  // permanently teleporting a ball outside its visible walls.
+  const object=s.scenario.world.inspect().objects.find(o=>o.handle===drag!.handle);
+  if(!object)return;
+  const px=Math.max(-9.65+object.hx,Math.min(9.65-object.hx,p.x));
+  const py=Math.max(-5.65+object.hy,Math.min(5.65-object.hy,p.y));
+  s.scenario.world.moveObject(drag.handle,px,py);
   drag.moved=true;
 });
 const release=()=>{
@@ -130,21 +143,26 @@ canvas.addEventListener('pointerup',release);
 canvas.addEventListener('pointercancel',release);
 
 async function fastForwardTo60(){
-  if(fastForward||manual||s.scenario.world.inspect().tick>=7200)return;
-  fastForward=true;paused=true;keys.clear();accumulator=0;lastTime=0;
-  const controls=[fastButton,pauseButton,manualButton,modeInput,speedInput,get<HTMLButtonElement>('reset')];
+  if(fastForward||manual||runtimeError||s.scenario.world.inspect().tick>=7200)return;
+  fastForward=true;stopFast=false;paused=true;keys.clear();accumulator=0;lastTime=0;
+  const controls=[pauseButton,manualButton,modeInput,speedInput,get<HTMLButtonElement>('reset')];
   for(const input of controls)input.disabled=true;
+  fastButton.textContent='Przerwij przeliczanie';
   try{
-    while(s.scenario.world.inspect().tick<7200){
+    while(s.scenario.world.inspect().tick<7200&&!stopFast){
       const count=Math.min(120,7200-s.scenario.world.inspect().tick);
       for(let i=0;i<count;i++)step();
-      fastButton.textContent='Przeliczanie… '+Math.round(s.scenario.world.inspect().tick/72)+'%';
+      if(!stopFast)fastButton.textContent='Przerwij · '+Math.round(s.scenario.world.inspect().tick/72)+'%';
       update();
-      await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
+      // A macrotask yield continues reliably even if RAF is temporarily throttled.
+      await new Promise<void>(resolve=>setTimeout(resolve,0));
     }
-  }catch(error){console.error('fast-forward simulation failed',error);}
+  }catch(error){
+    runtimeError='Błąd fizyki podczas przeliczania';
+    console.error('fast-forward simulation failed',error);
+  }
   finally{
-    fastForward=false;paused=true;lastTime=0;accumulator=0;
+    fastForward=false;stopFast=false;paused=true;lastTime=0;accumulator=0;
     for(const input of controls)input.disabled=false;
     fastButton.disabled=s.scenario.world.inspect().tick>=7200;
     fastButton.textContent=fastButton.disabled?'60 s przeliczone':'Przelicz do 60 s';
@@ -202,11 +220,14 @@ function drawWorld(){
     }else{
       ctx.fillRect(-o.hx*unit,-o.hy*unit,2*o.hx*unit,2*o.hy*unit);
     }
+    const amberLookalike=o.kind==='object' && o.handle!==s.scenario.targetHandle &&
+      o.color[0]>.75&&o.color[1]>.45&&o.color[1]<.8&&o.color[2]<.35;
     if(microscopeInput.checked&&(o.handle===s.scenario.targetHandle ||
-      o.handle===s.scenario.dockHandle)){
+      o.handle===s.scenario.dockHandle || amberLookalike)){
       ctx.fillStyle='#f3f7f9';ctx.textAlign='center';
       ctx.font='600 15px system-ui';
-      ctx.fillText(o.handle===s.scenario.targetHandle?'RZECZ':'DOK',0,-o.hy*unit-12);
+      ctx.fillText(o.handle===s.scenario.targetHandle?'RZECZ':
+        o.handle===s.scenario.dockHandle?'DOK':'PODOBNY KOLOR',0,-o.hy*unit-12);
     }
     ctx.restore();
   }
@@ -249,11 +270,13 @@ function update(){
     'private state: '+JSON.stringify(state??'no decision process',null,1),
   ].join('\n');
   get<HTMLElement>('private').textContent=privateText;
-  get<HTMLElement>('status').textContent=fastForward?'Przeliczanie wszystkich kroków fizyki':
+  get<HTMLElement>('status').textContent=runtimeError??(fastForward?'Przeliczanie wszystkich kroków fizyki':
     document.hidden?'Karta ukryta — symulacja stoi':
-    paused?'Pauza':manual?'Ciało pod kontrolą Ownera':'Działa bez Ownera';
-  get<HTMLElement>('phase').textContent=s.intervened>0||manual?
-    'Zmieniono warunki — nie porównuj z zamrożonym S0':'Czysty start · bez interwencji Ownera';
+    paused?'Pauza':manual?'Ciało pod kontrolą Ownera':'Działa bez Ownera');
+  get<HTMLElement>('phase').textContent=s.intervened>0?
+    'Interwencje Ownera: wynik NIE jest porównywalny z S0':
+    host.tick>7200?'Poza zamrożonym oknem 60 s · swobodna kontynuacja':
+    'Czysty start · bez interwencji Ownera';
   drawWorld();drawRetina();
 }
 let firstError=false;
@@ -270,7 +293,7 @@ function frame(ts:number){
     update();
   }catch(error){
     if(!firstError){
-      firstError=true;get<HTMLElement>('status').textContent='Błąd symulacji — zobacz konsolę';
+      firstError=true;runtimeError='Błąd symulacji — użyj „Nowy identyczny świat”';
       console.error(error);
     }
     paused=true;
