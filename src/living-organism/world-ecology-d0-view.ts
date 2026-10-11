@@ -65,10 +65,13 @@ canvas.addEventListener('pointerdown',e=>{
   if(e.button!==0)return;
   canvas.focus();
   const p=worldPoint(e.clientX,e.clientY);
+  canvas.dataset.pointerWorldX=String(p.x);
+  canvas.dataset.pointerWorldY=String(p.y);
   const s=scene.world.inspect();
   const candidate=s.objects.filter(o=>o.kind==='object')
     .sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y))
     .find(o=>Math.hypot(o.x-p.x,o.y-p.y)<=o.hx);
+  canvas.dataset.selectedHandle=candidate?String(candidate.handle):'none';
   if(candidate){dragging=candidate.handle;canvas.setPointerCapture(e.pointerId);}
 });
 canvas.addEventListener('pointermove',e=>{
