@@ -51,7 +51,7 @@ jobs:
           sha256sum -c /tmp/rb-original-page-hashes
           test -f dist/playmat-s0/index.html
           test -n "$(find dist/playmat-s0/assets -type f -name '*.js' -print -quit)"
-          if grep -E 'src/living-organism|\\.\\./evidence|/probes/material-organism.html' dist/playmat-s0/index.html; then
+          if grep -E 'src/living-organism|\.\./evidence|/probes/material-organism.html' dist/playmat-s0/index.html; then
             echo "Static bundle still depends on the source corpus"; exit 1
           fi
           echo "Existing root SHA preserved; additive S0 static bundle is ready."
@@ -72,8 +72,7 @@ jobs:
         uses: actions/deploy-pages@v4
       - name: Verify public S0 path without conflating it with runtime quality
         run: |
-          URL="\${{ steps.deployment.outputs.page_url }}"
-          URL="\${URL%/}/playmat-s0/"
+          URL="https://jozzpoly.github.io/ReflexBrain-Lab/playmat-s0/"
           echo "Checking public Pages route: $URL"
           for i in {1..30}; do
             if curl --fail --silent --show-error "$URL" -o /tmp/rb-s0-public-index.html &&
