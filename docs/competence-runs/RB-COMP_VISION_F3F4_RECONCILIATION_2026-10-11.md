@@ -1,6 +1,6 @@
 # RB-COMP/VISION B1–B5 + C1 — Competence reconciliation (2026-10-11)
 
-**Status: PROPOSED CROSS-LAB EVIDENCE RECONCILIATION · NO ARCHITECTURE PROMOTION · NO MERGE**
+**Status: CROSS-LAB EVIDENCE RECONCILIATION · DOCUMENTATION ONLY · NO ARCHITECTURE OR SCIENTIFIC CLAIM PROMOTION**
 
 **Purpose:** keep ReflexBrain's native competence frontier coherent with the fast independent active-retina laboratory without importing its eye code, learned bandit or authored target/reward ontology wholesale.
 
@@ -125,7 +125,7 @@ This is a research *question*, not an implementation specification or permission
 
 ## 7. Ownership, source truth, limits
 
-This document is a **cross-lab stewardship addendum** proposing how to interpret PR #54. It changes **no executable main code or canonical contracts**. Vision PR #54 remains draft/SCOUT with test-only changes and its own reports. This reconciliation PR should also remain DRAFT pending proper review; do not auto-merge it into `research/pre-o0-foundations-campaign`.
+This document is a **cross-lab stewardship addendum** proposing how to interpret PR #54. It changes **no executable main code or canonical contracts**. Vision PR #54 remains draft/SCOUT with test-only changes and its own reports. This reconciliation was prepared as a separate documentation-only PR to the canonical branch; its merge status is repository metadata, not scientific qualification. Any eventual documentation merge does **not** authorize importing the Vision runtime or changing scientific claims.
 
 Owner-observed organism life/game quality remains unqualified and cannot be overwritten by green unit tests. Stronger simple baselines and falsifiers are binding counterevidence, not reasons to hunt for another hand-picked favorable setup.
 
@@ -173,4 +173,4 @@ These results sharpen the original C1 claim rather than proposing a new ontology
 
 **Do not freeze** a `.15` image-jump constant, a universal directional touch heuristic, a physical identity tracker, a replacement reward scalar or another actor `Matter` record solely from these fixtures.
 
-PR #55 remains a **documentary draft**. Owner experiential judgement and real autonomous organism continuity, not GitHub CI, determine if any donated competence materially improves the living organism.
+PR #55 is **documentation-only**; whether merged or under review, Owner experiential judgement and real autonomous organism continuity—not GitHub CI—determine whether any donated competence improves the living organism.
