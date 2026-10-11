@@ -9,7 +9,7 @@ describe('RB-WORLD/D0 open material ecology / pre-occupant feasibility',()=>{
     const s=createWorldD0();
     try{
       const host=s.world.inspect();
-      expect(s.walls.length).toBe(11);
+      expect(s.walls.length).toBe(12); // six dividers + three west + three east
       expect(s.looseHandles.length).toBe(5);
       const xWalls=host.objects.filter(o=>o.kind==='wall'&&Math.abs(Math.abs(o.x)-8)<.01);
       expect(xWalls).toHaveLength(6);
