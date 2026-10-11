@@ -61,7 +61,7 @@ function privateToLocal(body:Point,heading:number,p:Point):Point{
   return{x:Math.cos(heading)*x+Math.sin(heading)*y,
     y:-Math.sin(heading)*x+Math.cos(heading)*y};
 }
-class MaterialConcern {
+export class MaterialConcern {
   private tick:number|null=null;
   private heading=0;
   private position:Point={x:0,y:0};
@@ -139,7 +139,7 @@ class MaterialConcern {
     seenDockAge:this.seenDock?this.tick!-this.seenDock.tick:null,modes:this.modes,
     valid:[this.heading,this.position.x,this.position.y].every(Number.isFinite)};}
 }
-class CheapChase{
+export class CheapChase{
   private lastTick:number|null=null;
   private demand:Demand={drive:0,turn:0,gazeRate:0};
   decide(f:PrivateFrame):Demand{
@@ -153,18 +153,26 @@ class CheapChase{
   }
   state(){return{lastTick:this.lastTick,demand:this.demand};}
 }
-function simulate(mode:MaterialMode):MaterialRun {
+/** Host-owned scene assembly: handles never supplied to either local controller. */
+export function createMaterialScenario():{
+  world:LivingWorld;targetHandle:number;dockHandle:number;
+}{
   const world=new LivingWorld(true);
-  try{
-    // Same physical seed for each arm. Existing two turquoise lookalikes
-    // removed before the autonomous run starts, not during actor life.
+  try {
+    // Exact initial S0 fixture. No after-tick repositioning.
     const originalCyan=world.inspect().objects.filter(o=>o.kind==='object' &&
       o.color[0]<.3&&o.color[1]>.65&&o.color[2]>.6);
     for(let i=0;i<originalCyan.length;i++){
       world.moveObject(originalCyan[i].handle,50+2*i,50);
     }
-    const target=world.addObject(2,-3,.55,[.1,.85,.8]);
-    const dock=world.addWall(5.5,-4,.5,.25,[.95,.65,.15]);
+    const targetHandle=world.addObject(2,-3,.55,[.1,.85,.8]);
+    const dockHandle=world.addWall(5.5,-4,.5,.25,[.95,.65,.15]);
+    return {world,targetHandle,dockHandle};
+  }catch(error){world.free();throw error;}
+}
+function simulate(mode:MaterialMode):MaterialRun {
+  const {world,targetHandle:target,dockHandle:dock}=createMaterialScenario();
+  try{
     const get=(id:number)=>world.inspect().objects.find(o=>o.handle===id)!;
     const initialT=get(target),initialD=get(dock);
     const startCenterDistance=Math.hypot(initialT.x-initialD.x,initialT.y-initialD.y);
