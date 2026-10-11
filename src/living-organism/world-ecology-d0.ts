@@ -45,7 +45,7 @@ export function createWorldD0(independentRail=true):D0Scenario{
     addWall(-20,3,.3,4);
     addWall(-15,-7,5,.3);
     // East workshop silhouettes, not a prescriptive quest-graph.
-    addWall(15,7,4,.3);
+    addWall(15,10,4,.3);
     addWall(20,4,.3,3);
     addWall(17,-1,3,.3);
 
