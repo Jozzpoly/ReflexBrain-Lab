@@ -94,6 +94,24 @@ describe('WORLD-D1: reversible coupled material affordance / discovery',()=>{
     expect(staticW.gateClearEntryTicks).toHaveLength(0);
     expect(staticW.transitions).toBe(0);
   },180000);
+  it('exploratory holdout: rail tempo changes how often real loaded passages are physically achieved, without retuning gate',()=>{
+    const slow=runWorldD1(true,3600,1.6),fast=runWorldD1(true,3600,4.0);
+    const read=(r:typeof slow)=>({
+      railSpeed:r===slow?1.6:4.0,loadEpisodes:r.loadedEntryTicks.length,
+      actualGateClearEpisodes:r.gateClearEntryTicks.length,
+      actualShutEpisodes:r.gateShutEntryTicks.length,
+      privateGateVisible:r.visibleGatePrivateFrames,
+      frames:r.uniquePrivateFrames,firstClear:r.gateClearEntryTicks[0]??null,
+    });
+    console.log('RB_WORLD_D1_RATE_HOLDOUT '+JSON.stringify({
+      slow:read(slow),fast:read(fast),
+      rule:'same authored coupled law, changed only lawful rail motor speed',
+    }));
+    expect(slow.tick).toBe(3600);
+    expect(fast.tick).toBe(3600);
+    expect(slow.uniquePrivateFrames).toBe(900);
+    expect(fast.uniquePrivateFrames).toBe(900);
+  },180000);
   it('same bounded-force actuator can physically cross upper divider when mechanically open but not when unloaded',()=>{
     const open=runD1UpperRoute(true);
     const closed=runD1UpperRoute(false);
