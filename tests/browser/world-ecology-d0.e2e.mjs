@@ -34,6 +34,10 @@ try{
   check(autonomous.x>15.2,'autonomous rail did not displace material in browser');
   check(Math.abs(autonomous.actorX)<.001,'focal actor moved without commands');
   await page.screenshot({path:'artifacts/world-d0/02-world-alone.png',fullPage:true});
+  // Inspect one truthful real-Chromium frame in the research review; no synthetic render.
+  const frameJpeg=await page.screenshot({type:'jpeg',quality:45,fullPage:false});
+  console.log('RB_WORLD_D0_SCREEN_JPEG '+frameJpeg.toString('base64'));
+  await fs.writeFile('artifacts/world-d0/02-world-alone.jpg',frameJpeg);
 
   await page.locator('#pause').click();
   await page.waitForTimeout(90);
