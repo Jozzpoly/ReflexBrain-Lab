@@ -19,6 +19,40 @@ describe('WORLD-D1: reversible coupled material affordance / discovery',()=>{
       expect(s.world.inspect().objects.find(x=>x.handle===s.gateHandle)?.kind).toBe('block');
     }finally{s.world.free();}
   });
+  it('material plate has no privileged key: an unrelated cyan body activates and releases the same gate',()=>{
+    const s=createWorldD1(false);
+    try{
+      const w=s.world;
+      const other=w.inspect().objects.find(o=>o.kind==='object'&&
+        o.handle!==s.loadMaterialHandle);
+      if(!other)throw Error('Missing unrelated loose material');
+      w.moveObject(other.handle,12.7,11.5);
+      for(let i=0;i<360;i++)w.step({drive:0,turn:0,gazeRate:0});
+      expect(w.inspectGateLink()!.loaded).toBe(true);
+      expect(w.inspectGateLink()!.gatePosition.x).toBeGreaterThan(11.1);
+      w.moveObject(other.handle,other.x,other.y);
+      for(let i=0;i<360;i++)w.step({drive:0,turn:0,gazeRate:0});
+      expect(w.inspectGateLink()!.loaded).toBe(false);
+      expect(w.inspectGateLink()!.gatePosition.x).toBeLessThan(8.8);
+    }finally{s.world.free();}
+  },60000);
+  it('physical gate/process and actor-private frame reproduce exactly after snapshot restore',()=>{
+    const s=createWorldD1(true);
+    try{
+      const w=s.world,empty={drive:0,turn:0,gazeRate:0};
+      for(let i=0;i<701;i++)w.step(empty);
+      const cp=w.captureCheckpoint();
+      for(let i=0;i<560;i++)w.step(empty);
+      const truth=JSON.stringify(w.inspect());
+      const machine=JSON.stringify(w.inspectGateLink());
+      const sensory=w.observe();
+      w.restoreCheckpoint(cp);
+      for(let i=0;i<560;i++)w.step(empty);
+      expect(JSON.stringify(w.inspect())).toBe(truth);
+      expect(JSON.stringify(w.inspectGateLink())).toBe(machine);
+      expect(w.observe()).toEqual(sensory);
+    }finally{s.world.free();}
+  },60000);
   it('physical mass placed then removed from the same sensor repeatedly opens and closes the actual dynamic gate',()=>{
     const r=runD1MaterialIntervention();
     console.log('RB_WORLD_D1_MATERIAL_INTERVENTIONS '+JSON.stringify(r));
