@@ -65,7 +65,7 @@ jobs:
       - name: Checkout pinned isolated WORLD D1 research donor
         uses: actions/checkout@v4
         with:
-          ref: 713afbbfce81e50619fd17bf7046a3b6b36abe4d
+          ref: 7ae501483974181b25516dee4c7ffbf273c94811
           path: _d1_source
           persist-credentials: false
       - name: Build D1 research donor independently, with existing S0 untouched
