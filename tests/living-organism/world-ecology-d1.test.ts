@@ -74,12 +74,13 @@ describe('WORLD-D1: reversible coupled material affordance / discovery',()=>{
       dynamic:{transitions:dynamic.transitions,loadTimes:dynamic.loadedEntryTicks,
         clearTimes:dynamic.gateClearEntryTicks,
         closedTimes:dynamic.gateShutEntryTicks,
-        last:dynamic.last,frames:dynamic.uniquePrivateFrames},
+        last:dynamic.last,frames:dynamic.uniquePrivateFrames,
+        privateGateSeenFrames:dynamic.visibleGatePrivateFrames},
       static:{transitions:staticW.transitions,
         loadTimes:staticW.loadedEntryTicks,
         clearTimes:staticW.gateClearEntryTicks,
         closedTimes:staticW.gateShutEntryTicks,
-        last:staticW.last},
+        last:staticW.last,privateGateSeenFrames:staticW.visibleGatePrivateFrames},
     };
     console.log('RB_WORLD_D1_RECURRENT '+JSON.stringify(summary));
     expect(dynamic).toEqual(repeat);
