@@ -37,19 +37,19 @@ try{
 
   await page.locator('#pause').click();
   await page.waitForTimeout(90);
-  const frozen=(await snap()).tick;
+  const frozenPhysical=await snap(),frozen=frozenPhysical.tick;
   await page.waitForTimeout(150);
   check((await snap()).tick===frozen,'pause failed on real World');
   const rect=await page.locator('#world').boundingBox();
   check(rect,'missing World canvas');
   // Material pointer drag: Owner-only, no hidden semantic World message.
-  const x=rect.x+(autonomous.x+26)/52*rect.width;
-  const y=rect.y+(16.25-autonomous.y)/32.5*rect.height;
+  const x=rect.x+(frozenPhysical.x+26)/52*rect.width;
+  const y=rect.y+(16.25-frozenPhysical.y)/32.5*rect.height;
   await page.mouse.move(x,y);await page.mouse.down();
   await page.mouse.move(x+rect.width/52,y-rect.height/32.5,{steps:8});
   await page.mouse.up();
   const moved=await snap();
-  check(Math.hypot(moved.x-autonomous.x,moved.y-autonomous.y)>.35,
+  check(Math.hypot(moved.x-frozenPhysical.x,moved.y-frozenPhysical.y)>.35,
     'true physical material cannot be manually moved in World D0');
   check((await page.locator('#private').textContent()).includes('Interwencje badacza: '),
     'Owner intervention is not visible in specimen');
