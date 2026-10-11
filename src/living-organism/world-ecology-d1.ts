@@ -186,13 +186,14 @@ export function runD1UpperRoute(plateHeld:boolean,maxTicks=3600):D1RouteRun {
  * Global route waypoints are explicitly external oracle truth, not private.
  * No body teleport or host-side pressPlate/openGate instruction is issued.
  */
-export function runD1ActorPressureReach(maxSteps=6000){
+export function runD1ActorPressureReach(maxSteps=6000,releaseAfterPress=false){
   const s=createWorldD1(false),w=s.world;
   const waypoints:XY[]=[
     {x:3,y:-6.5},{x:10,y:-6.5},{x:9.7,y:9.5},
     {x:9.7,y:11.5},{x:12.7,y:11.5},
   ];
   let index=0,firstActorLoadTick:number|null=null,firstGateClearTick:number|null=null;
+  let exitStartedTick:number|null=null,gateReclosedAfterExitTick:number|null=null;
   let minPlateGap=Number.POSITIVE_INFINITY;
   const wrap=(v:number)=>Math.atan2(Math.sin(v),Math.cos(v));
   const clamp=(v:number)=>Math.max(-1,Math.min(1,v));
@@ -218,12 +219,20 @@ export function runD1ActorPressureReach(maxSteps=6000){
       if(firstActorLoadTick===null&&link.loaded)firstActorLoadTick=w.inspect().tick;
       if(firstGateClearTick===null&&link.gatePosition.x>11.1)
         firstGateClearTick=w.inspect().tick;
+      if(releaseAfterPress&&exitStartedTick===null&&firstGateClearTick!==null
+        &&w.inspect().tick>=firstGateClearTick+100){
+        waypoints.push({x:13,y:16});
+        index=waypoints.length-1;
+        exitStartedTick=w.inspect().tick;
+      }
+      if(exitStartedTick!==null&&gateReclosedAfterExitTick===null&&!link.loaded
+        &&link.gatePosition.x<8.8)gateReclosedAfterExitTick=w.inspect().tick;
     }
     const a=w.inspect().actor,gate=w.inspectGateLink()!;
     return{
       ticks:w.inspect().tick,
-      firstActorLoadTick,firstGateClearTick,minPlateGap,
-      finalActor:{x:a.x,y:a.y},finalGateX:gate.gatePosition.x,
+      firstActorLoadTick,firstGateClearTick,exitStartedTick,gateReclosedAfterExitTick,
+      minPlateGap,finalActor:{x:a.x,y:a.y},finalGateX:gate.gatePosition.x,
       finalLoaded:gate.loaded,
       note:'researcher-oracle waypoints ONLY, genuine Rapier force actuation',
     };
