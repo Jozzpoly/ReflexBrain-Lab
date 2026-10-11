@@ -1,5 +1,14 @@
 # CONTINUE HERE — ReflexBrain Pre-O0 — 2026-10-06
 
+> **CURRENT ROUTER — 2026-10-11 (supersedes old run-next instructions below).**  
+> **Start here:** [REFLEXBRAIN_NEW_CHAT_HANDOFF_2026-10-11.md](REFLEXBRAIN_NEW_CHAT_HANDOFF_2026-10-11.md). Verify live [canonical draft #6](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6), [Vision draft #54](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/54), [Control Room/handoff draft #55](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/55), and independent [Vision draft #53](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/53).  
+> G5A **BOTH GATES PASS and merged into canonical branch**; RB-COMP/R1 and R2 **completed**; F2/P0 **scientific FAIL but executable and merged**; F3/D0 **material private alias discovered and merged**. These are NOT pending next runs.  
+> Vision L1–C7 = **executable noncanonical scout**; D1–D4 = **plan only, no runnable implementation**. Project-wide significance and learned brain remain OPEN; Owner-product/life FAIL has not been overturned.  
+> The historical Pre-O0 stages and old “next R1/G5A” text below are retained as chronology **not current instructions**. The original `main` is old R0/README-only and NOT the active research tree. **Do not merge or reset branches during recovery by inertia.**
+
+---
+
+
 Status: **RECOVERY ANCHOR · READ THIS FIRST AFTER SESSION LOSS**
 
 Active branch:
