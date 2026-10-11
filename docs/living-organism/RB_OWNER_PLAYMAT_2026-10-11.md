@@ -1,5 +1,33 @@
 # RB Owner Material Playmat — isolated executable Owner-facing research surface (2026-10-11)
 
+
+> **STABILIZATION / CHROMIUM RED-TEAM · 2026-10-11.** The original owner playmat became public without StackBlitz at [GitHub Pages /playmat-s0/](https://jozzpoly.github.io/ReflexBrain-Lab/playmat-s0/) after [canonical publication PR #66](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/66), with real public-Chrome QA. A separate UI/source stabilization on **this research draft PR #64** has passed [exact-source GitHub CI #38111558699](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38111558699). The public static package is pinned to an older source commit until the additive Pages builder's fixed source ref is updated and redeployed; **do not call these newer UI fixes live before readback verification**.
+
+## Stabilization audit: what was found and defended
+
+**No control law, reward, World dynamics, material controller, S0 scene, evaluation gate or 120/30Hz physics clock was changed.** All 6 research-source / static mirror pairs were re-read from GitHub and compared byte-for-byte (entry HTML only differs in module path). Full original 3× 60-second actual Rapier endpoint: **material actor 2.90m, cheap cyan 1.34m, ecology only 2.43m**.
+
+**Concrete interface defects fixed:**
+
+1. Owner manually taking over the body was NOT permanently reflected in `interventions` after releasing control. This falsely suggested a frozen S0-comparable run. Entering manual control now taints provenance even after release; ordinary microscope/tempo/pause operations do not. Fresh reset/controller selection clears the provenance.
+2. Physical pointer dragging permitted throwing a body outside the visible wall yard permanently. The host pointer interface now clamps movable object centers within the wall geometry with collider radius margin. This is a **new Owner-only manipulation limit**, not a controller/world change.
+3. A 7200-step accelerated replay was not cancelable; it awaited browser animation frames and could stall when tab visibility changed. It can now be interrupted while preserving genuine intermediate world/brain state and resumed **without loss of exact frozen 60-second physical afterstate**. Background tab stops acceleration instead of silently running an unobservable heavy batch.
+4. A simulation error status could be overwritten by subsequent paused frame updates. It is now persistent and can be recovered by a new world/reset.
+5. Researcher microscope previously failed to distinguish the **second amber movable body** from the actual **fixed amber dock**. Both can match the controller's amber filter. Viewer-only `PODOBNY KOLOR` annotation and explicit epistemic warning were added. This is **not** fixed by removing or renaming the physical distractor because that would change the frozen S0 scene and its science.
+6. Actual Chromium 320px layout overflow by ~35px was found in new red-team QA; fixed status badge wrapping and narrow-column rules. **320px,390px,900px viewport no-horizontal-overflow now PASS.** This does not claim full-touch mobile-body input support; keyboard controls remain desktop-first.
+
+**Expanded Chromium suite** `tests/browser/material-owner-robustness.e2e.mjs`: real WASM boot, native RGB, ordinary pause preserving scientific comparability, true pointer capture/clamping while paused, persistent Owner takeover provenance, clean reset, cancel at physical tick ~1344 and resume through actual tick7200 to original material endpoint, continuation beyond frozen 60 seconds with explicit UI boundary, repeated controller resets (7 cycles), and 900/390/320px layouts. All PASS, zero browser page errors at exact-source [CI #38111558699](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38111558699). [Raw browser QA/screenshot evidence](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38111558699).
+
+**What is not defended:** the actor's private range reconstruction is authored size-based approximation; recognizing a golden-colored patch as a *specific real dock* is unfounded in the presence of the second amber movable object; camera reacquisition remains poor (original dock visible 150/1800 distinct frames). The lab is still authored, physically real and scientifically negative. More debugging UI, synthetic training, or code PASS cannot promote actual livingness or learned significance.
+
+**Public rollout gate:** after pinning the newer stable source SHA in canonical Pages workflow, require:
+- additive SHA-preservation of old Pages root and existing Field Lab;
+- real Chrome smoke+robustness on assembled `/playmat-s0/` subpath;
+- successful Pages deployment AND independent public readback;
+- final Chromium run on the actual public URL;
+- preserve all existing labs and keep original research PRs DRAFT.
+
+
 **Status:** source implemented and visually exercised in real Chromium/WASM. **NOT yet Owner-observed/approved**; no canonical code/main changes; separate research PR #64 based on **S0 research PR #62** (both remain isolated, draft).
 
 ## What it deliberately shows
