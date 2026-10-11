@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReflexBrain OCTRL-B01b — B0-Scale Passage Calibration</title>
+<style>
+html,body{margin:0;height:100%;background:#0d1117;color:#d8e0e8;font:14px/1.4 system-ui,sans-serif}
+body{display:grid;grid-template-columns:minmax(0,1fr) 390px;overflow:hidden}
+main{min-width:0;display:grid;place-items:center;background:#090d12}
+canvas{width:100%;height:100%;display:block}
+aside{padding:16px;background:#141a21;border-left:1px solid #2a333e;overflow:auto}
+h1{font-size:16px;margin:0 0 10px} h2{font-size:13px;margin:18px 0 8px;color:#a9bbcc}
+.good{color:#89e39f}.bad{color:#ff8f8f}.muted{color:#8494a5}
+pre{white-space:pre-wrap;background:#0b1015;border:1px solid #28323c;padding:10px;border-radius:6px;font-size:12px}
+button{background:#26313c;color:#e5edf4;border:1px solid #40505f;border-radius:5px;padding:7px 10px;margin-right:5px;cursor:pointer}
+</style>
+</head>
+<body>
+<main><canvas id="c"></canvas></main>
+<aside>
+<h1>OCTRL-B01b — B0-Scale Passage Calibration</h1>
+<div id="boot" class="muted">Loading…</div>
+<p class="muted">Research clearance radius = frozen B0 physical radius 1.0. No actor is present.</p>
+<h2>Automated evidence</h2>
+<pre id="evidence">pending</pre>
+<button id="pause">Pause</button><button id="reset">Reset pair</button>
+<h2>Live comparison</h2>
+<pre id="live"></pre>
+</aside>
+<script type="module">
+import { initE02aRapier } from '../src/e02a-passage.ts';
+import { E01_DT } from '../src/e01-mechanical.ts';
+import {
+  B01B_CLEARANCE_RADIUS,
+  B01B_CORRIDOR_INNER_HALF_HEIGHT,
+  B01B_DOOR_GAP_HALF_HEIGHT,
+  B01B_WALL_HALF_THICKNESS,
+  createB01bScenario,
+  stepB01bScenario,
+  destroyB01bScenario,
+  isB01bPassageOpen,
+  runB01bCampaign
+} from '../src/b01b-b0-scale-passage.ts';
+
+await initE02aRapier();
+document.querySelector('#boot').textContent='Rapier deterministic-compat loaded';
+document.querySelector('#boot').className='good';
+
+const campaign=runB01bCampaign();
+const evidence=document.querySelector('#evidence');
+evidence.className=campaign.pass?'good':'bad';
+evidence.textContent=[
+  'B01b '+(campaign.pass?'PASS':'FAIL'),
+  'clearance radius: '+B01B_CLEARANCE_RADIUS.toFixed(2),
+  'corridor inner half-height: '+B01B_CORRIDOR_INNER_HALF_HEIGHT.toFixed(2),
+  'door gap half-height: '+B01B_DOOR_GAP_HALF_HEIGHT.toFixed(2),
+  'deterministic repeat: '+campaign.deterministic,
+  'control initial: '+(campaign.control.initialOpen?'OPEN':'BLOCKED'),
+  'control first open: '+campaign.control.firstOpenTick,
+  'interaction initial: '+(campaign.interaction.initialOpen?'OPEN':'BLOCKED'),
+  'first contact: '+campaign.interaction.firstContactTick,
+  'first open: '+campaign.interaction.firstOpenTick,
+  'post-contact no-contact: '+campaign.interaction.postContactNoContactTicks,
+  'persistence OPEN: '+campaign.interaction.persistenceOpen,
+  'blocker displacement: '+(campaign.blockerDisplacementAtPersistence??NaN).toFixed(3),
+  campaign.reasons.length?'FAIL reasons:\n- '+campaign.reasons.join('\n- '):''
+].join('\n');
+
+const canvas=document.querySelector('#c'),ctx=canvas.getContext('2d');
+function resize(){const r=canvas.getBoundingClientRect(),d=Math.max(1,devicePixelRatio||1);canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0)}
+addEventListener('resize',resize);resize();
+
+let control,interaction,paused=false,acc=0,last=performance.now();
+function rebuild(){
+  if(control)destroyB01bScenario(control);
+  if(interaction)destroyB01bScenario(interaction);
+  control=createB01bScenario(false);
+  interaction=createB01bScenario(true);
+  acc=0;last=performance.now();
+}
+rebuild();
+document.querySelector('#pause').onclick=()=>{paused=!paused;document.querySelector('#pause').textContent=paused?'Run':'Pause'};
+document.querySelector('#reset').onclick=rebuild;
+
+const PX=48;
+function map(x,y,cx,cy){return [cx+x*PX,cy+y*PX]}
+function draw(state,cx,cy,title){
+  const w=11*PX,h=4*PX;
+  ctx.fillStyle='#0c1218';ctx.fillRect(cx-w/2,cy-h/2,w,h);
+  ctx.strokeStyle='#27313a';ctx.strokeRect(cx-w/2,cy-h/2,w,h);
+
+  const open=isB01bPassageOpen(state);
+  ctx.fillStyle='#c6d2dc';ctx.font='600 13px system-ui';ctx.textAlign='left';
+  ctx.fillText(title+' — '+(open?'OPEN':'BLOCKED'),cx-w/2,cy-h/2-8);
+
+  ctx.fillStyle='#56616c';
+  const outer=B01B_CORRIDOR_INNER_HALF_HEIGHT+B01B_WALL_HALF_THICKNESS;
+  for(const y of [-outer,outer]){
+    const [x0,ys]=map(0,y,cx,cy);
+    ctx.fillRect(x0-5.4*PX,ys-B01B_WALL_HALF_THICKNESS*PX,10.8*PX,B01B_WALL_HALF_THICKNESS*2*PX);
+  }
+  const segHalf=(B01B_CORRIDOR_INNER_HALF_HEIGHT-B01B_DOOR_GAP_HALF_HEIGHT)/2;
+  const segCy=B01B_DOOR_GAP_HALF_HEIGHT+segHalf;
+  for(const y of [-segCy,segCy]){
+    const [xs,ys]=map(0,y,cx,cy);
+    ctx.fillRect(xs-B01B_WALL_HALF_THICKNESS*PX,ys-segHalf*PX,B01B_WALL_HALF_THICKNESS*2*PX,segHalf*2*PX);
+  }
+
+  const [dx,dy]=map(0,0,cx,cy);
+  ctx.strokeStyle=open?'#4d9460':'#8a4d4d';ctx.lineWidth=3;
+  ctx.strokeRect(dx-.18*PX,dy-B01B_DOOR_GAP_HALF_HEIGHT*PX,.36*PX,B01B_DOOR_GAP_HALF_HEIGHT*2*PX);
+
+  const sp=state.e02.base.shuttle.rb.translation();
+  const [sx,sy]=map(sp.x,sp.y,cx,cy);
+  ctx.fillStyle='#95a7b8';ctx.beginPath();ctx.arc(sx,sy,.55*PX,0,Math.PI*2);ctx.fill();
+
+  const bp=state.e02.blocker.rb.translation();
+  const [bx,by]=map(bp.x,bp.y,cx,cy);
+  ctx.fillStyle='#d8b86d';ctx.beginPath();ctx.arc(bx,by,.50*PX,0,Math.PI*2);ctx.fill();
+
+  // Research-only B0-sized clearance disc shown at doorway, not part of physics.
+  ctx.strokeStyle='#62a8df';ctx.lineWidth=2;ctx.setLineDash([6,5]);
+  ctx.beginPath();ctx.arc(dx,dy,B01B_CLEARANCE_RADIUS*PX,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+}
+function render(){
+  const w=canvas.clientWidth,h=canvas.clientHeight;ctx.clearRect(0,0,w,h);ctx.fillStyle='#090d12';ctx.fillRect(0,0,w,h);
+  draw(control,w/2,h*.31,'CONTROL — process disabled');
+  draw(interaction,w/2,h*.72,'INTERACTION — frozen process');
+  const bp=interaction.e02.blocker.rb.translation(),sp=interaction.e02.base.shuttle.rb.translation();
+  document.querySelector('#live').textContent=[
+    'tick '+interaction.e02.base.tick+(paused?' [PAUSED]':''),
+    'control='+(isB01bPassageOpen(control)?'OPEN':'BLOCKED'),
+    'interaction='+(isB01bPassageOpen(interaction)?'OPEN':'BLOCKED'),
+    'shuttle x='+sp.x.toFixed(3)+' y='+sp.y.toFixed(3),
+    'blocker x='+bp.x.toFixed(3)+' y='+bp.y.toFixed(3),
+    'first contact='+interaction.firstContactTick,
+    'first open='+interaction.firstOpenTick,
+    'contact ticks='+interaction.contactTicks,
+    'post-contact no-contact='+interaction.postContactNoContactTicks,
+    'persistence OPEN='+interaction.persistenceOpen
+  ].join('\n');
+}
+function frame(now){
+  const elapsed=Math.min(.08,(now-last)/1000);last=now;
+  if(!paused){acc+=elapsed;let guard=0;while(acc>=E01_DT&&guard++<20){stepB01bScenario(control);stepB01bScenario(interaction);acc-=E01_DT}}
+  render();requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

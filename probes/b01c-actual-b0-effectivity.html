@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReflexBrain OCTRL-B01c — Actual B0 Effectivity Falsifier</title>
+<style>
+html,body{margin:0;min-height:100%;background:#0d1117;color:#d8e0e8;font:14px/1.45 system-ui,sans-serif}
+main{max-width:1000px;margin:0 auto;padding:28px}
+.good{color:#89e39f}.bad{color:#ff8f8f}.muted{color:#8494a5}
+table{width:100%;border-collapse:collapse;margin-top:18px;background:#111820}
+th,td{padding:9px 10px;border:1px solid #2a333e;text-align:right;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+pre{white-space:pre-wrap;background:#0b1015;border:1px solid #28323c;padding:12px;border-radius:6px}
+</style>
+</head>
+<body>
+<main>
+<h1>OCTRL-B01c — Actual B0 Passage Effectivity Falsifier</h1>
+<p class="muted">Actual frozen B0 body. Same fixed protocol in OPEN and BLOCKED fixtures. No planner, steering correction, perception, or geometry query.</p>
+<div id="status">Running…</div>
+<table>
+<thead><tr>
+<th>fixture</th><th>crossed</th><th>cross tick</th><th>actor final x</th><th>actor final y</th><th>actor-blocker contact ticks</th><th>blocker displacement</th>
+</tr></thead>
+<tbody id="rows"></tbody>
+</table>
+<h2>Campaign</h2>
+<pre id="summary"></pre>
+<script type="module">
+import { initE0Rapier } from '../src/e0-body-seam.ts';
+import { runB01cCampaign } from '../src/b01c-actual-b0-effectivity.ts';
+
+await initE0Rapier();
+const result=runB01cCampaign();
+const status=document.querySelector('#status');
+status.className=result.outcome==='PASS'?'good':(result.outcome==='FAIL'?'bad':'muted');
+status.textContent='B01c '+result.outcome+' — deterministic='+result.deterministic;
+
+const rows=document.querySelector('#rows');
+for(const r of [result.open,result.blocked]){
+  const tr=document.createElement('tr');
+  tr.innerHTML=[
+    '<td>'+r.fixture+'</td>',
+    '<td>'+(r.crossed?'yes':'no')+'</td>',
+    '<td>'+r.crossedTick+'</td>',
+    '<td>'+r.actorFinal.x.toFixed(3)+'</td>',
+    '<td>'+r.actorFinal.y.toFixed(3)+'</td>',
+    '<td>'+r.actorBlockerContactTicks+'</td>',
+    '<td>'+r.blockerDisplacement.toFixed(3)+'</td>'
+  ].join('');
+  rows.appendChild(tr);
+}
+
+document.querySelector('#summary').textContent=[
+  'outcome='+result.outcome,
+  'deterministic='+result.deterministic,
+  'OPEN crossed='+result.open.crossed,
+  'BLOCKED crossed='+result.blocked.crossed,
+  'reasons='+(result.reasons.length?result.reasons.join(' | '):'none')
+].join('\n');
+</script>
+</main>
+</body>
+</html>
