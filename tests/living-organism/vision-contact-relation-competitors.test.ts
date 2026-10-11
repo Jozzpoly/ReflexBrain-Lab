@@ -21,6 +21,7 @@ type Scenario={
  intervention:null|number;
  color:'orange'|'same-turquoise';
  lateral:number;targetX?:number;targetRadius?:number;
+ historyEnabled?:boolean;
 };
 type PrivateSummary={
  tick:number;touch:number;touchSector:number;
@@ -73,7 +74,7 @@ function analyze(s:Scenario):Row{
   s.targetRadius??.62,[...colors.turquoise]);
  const decoy=w.addObject(-30,-30,.65,
   [...(s.color==='orange'?colors.orange:colors.turquoise)]);
- const actor=new ApproachEpisode(true,true);
+ const actor=new ApproachEpisode(s.historyEnabled??true,true);
  let cmd:Demand=STILL,lastTick=-1,lastSeen=-1,lastPatch=0,
   prevDrive=0,travel=0,earlyVisible=false;
  let firstSeen=-1,maximumExtent=0;
@@ -229,5 +230,30 @@ describe('RB-VISION/C2 lawful private relation to prior object vs incidental tou
   // This deliberately characterizes 12 legitimate contacts beyond
   // the original x=7m specimen, not a selected winner model.
  },90000);
+
+
+ it('C5: challenges optical progress-history failure on a distant small true target with the simpler no-history motor',()=>{
+  const basis={
+   intervention:null,color:'orange' as const,lateral:0,
+   targetX:9.4,targetRadius:.45,
+  };
+  const tracked=analyze({...basis,label:'long-small-visual-history',
+   historyEnabled:true});
+  const basic=analyze({...basis,label:'long-small-simple-follow',
+   historyEnabled:false});
+  console.log('RB_VISION_C5_FAR_SMALL_PROGRESS_APPLICABILITY '+
+   JSON.stringify([tracked,basic].map(x=>({
+    id:x.scenario.label,
+    actual:x.actual,tick:x.tick,
+    gapToTarget:x.distanceTarget,
+    bodyTravel:x.bodyTravel,
+    lastVisualExtent:x.lastPatchExtent,
+    maxPreviousExtent:x.maxPriorExtent,
+   }))));
+  expect(tracked.actual).toBe('none');
+  expect(tracked.tick).toBeNull();
+  // Whether removing the learned-looking visual progress heuristic
+  // saves actual completion is a new empirical question.
+ },30000);
 
 });
