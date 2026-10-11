@@ -71,7 +71,8 @@ function digest(f:PrivateFrame):number{
 function analyze(s:Scenario):Row{
  const w=new LivingWorld(false);
  const target=w.addObject(7,0,.62,[...colors.turquoise]);
- const decoy=w.addObject(-30,-30,.65,[...colors[s.color]]);
+ const decoy=w.addObject(-30,-30,.65,
+  [...(s.color==='orange'?colors.orange:colors.turquoise)]);
  const actor=new ApproachEpisode(true,true);
  let cmd:Demand=STILL,lastTick=-1,lastSeen=-1,lastPatch=0,
   prevDrive=0,travel=0,earlyVisible=false;
