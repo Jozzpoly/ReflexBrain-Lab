@@ -10,6 +10,9 @@ export type MaterialRun={
   initialSurfaceGap:number;
   finalSurfaceGap:number;
   targetDisplacement:number;
+  targetStart:Point;
+  targetEnd:Point;
+  dockEnd:Point;
   actorPath:number;
   targetContactWindows:number;
   visibleTargetFrames:number;
@@ -20,7 +23,8 @@ export type MaterialRun={
 export type MaterialSurvey={
   status:'ENGINEERING_DISCOVERY_ONLY';
   deterministic:boolean;
-  actorCausalDisplacement:Record<MaterialMode,number>;
+  displacementMagnitudeDifferenceVsWorldOnly:Record<MaterialMode,number>;
+  finalTargetSeparationVsWorldOnly:Record<MaterialMode,number>;
   results:MaterialRun[];
   notes:string[];
 };
@@ -172,10 +176,12 @@ function simulate(mode:MaterialMode):MaterialRun {
     let visibleTargetFrames=0,visibleDockFrames=0;
     let targetContactWindows=0,actorPath=0;
     let last=world.inspect().actor;
+    let lastObservedFrameTick=-1;
     let finite=true;
     for(let tick=0;tick<MAX_TICKS;tick++){
       const f=world.observe();
-      if(f.tick%4===0){
+      if(f.tick!==lastObservedFrameTick){
+        lastObservedFrameTick=f.tick;
         if(visibleTurquoisePatches(f.retina).length)visibleTargetFrames++;
         if(amberPatches(f.retina).length)visibleDockFrames++;
         issued=brain?brain.decide(f):{drive:0,turn:0,gazeRate:0};
@@ -194,6 +200,9 @@ function simulate(mode:MaterialMode):MaterialRun {
     return{mode,ticks:MAX_TICKS,startCenterDistance,endCenterDistance,
       initialSurfaceGap,finalSurfaceGap:Math.max(0,endCenterDistance-radius-.5),
       targetDisplacement:Math.hypot(finalT.x-initialT.x,finalT.y-initialT.y),
+      targetStart:{x:initialT.x,y:initialT.y},
+      targetEnd:{x:finalT.x,y:finalT.y},
+      dockEnd:{x:finalD.x,y:finalD.y},
       actorPath,targetContactWindows,visibleTargetFrames,visibleDockFrames,
       finalPrivateState:brain?.state()??null,finite};
   }finally{world.free();}
@@ -204,8 +213,11 @@ export function runMaterialRelationSlice():MaterialSurvey {
   const results=runOnce(),repeat=runOnce();
   const deterministic=JSON.stringify(results)===JSON.stringify(repeat);
   const worldOnly=results[0].targetDisplacement;
-  const actorCausalDisplacement=Object.fromEntries(results.map(r=>
+  const displacementMagnitudeDifferenceVsWorldOnly=Object.fromEntries(results.map(r=>
     [r.mode,r.targetDisplacement-worldOnly])) as Record<MaterialMode,number>;
+  const finalTargetSeparationVsWorldOnly=Object.fromEntries(results.map(r=>
+    [r.mode,Math.hypot(r.targetEnd.x-results[0].targetEnd.x,
+      r.targetEnd.y-results[0].targetEnd.y)])) as Record<MaterialMode,number>;
   const notes:string[]=[];
   if(results.some(r=>!r.finite))notes.push('Nonfinite World state');
   if(results.some(r=>r.visibleTargetFrames===0||r.visibleDockFrames===0))
@@ -216,7 +228,7 @@ export function runMaterialRelationSlice():MaterialSurvey {
     notes.push('Material relation did not improve over strongest cheap World control');
   if(!deterministic)notes.push('Non-deterministic replay');
   return{status:'ENGINEERING_DISCOVERY_ONLY',deterministic,
-    actorCausalDisplacement,results,notes};
+    displacementMagnitudeDifferenceVsWorldOnly,finalTargetSeparationVsWorldOnly,results,notes};
 }
 export const MATERIAL_SLICE={ticks:MAX_TICKS,modes:
   ['world-only','cheap-cyan-chase','private-material-concern'] as const};
