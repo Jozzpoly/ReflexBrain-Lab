@@ -1,7 +1,7 @@
 import {beforeAll,describe,expect,it} from 'vitest';
 import {initLivingWorld} from '../../src/living-organism/world';
 import {
-  createWorldD1,runWorldD1,runD1MaterialIntervention,runD1UpperRoute,
+  createWorldD1,runWorldD1,runD1MaterialIntervention,runD1UpperRoute,runD1ActorPressureReach,
 } from '../../src/living-organism/world-ecology-d1';
 beforeAll(initLivingWorld);
 describe('WORLD-D1: reversible coupled material affordance / discovery',()=>{
@@ -94,6 +94,13 @@ describe('WORLD-D1: reversible coupled material affordance / discovery',()=>{
     expect(staticW.gateClearEntryTicks).toHaveLength(0);
     expect(staticW.transitions).toBe(0);
   },180000);
+  it('exploratory actor→World: can real motor force alone reach and load the plate without a host teleport?',()=>{
+    const r=runD1ActorPressureReach();
+    console.log('RB_WORLD_D1_ACTOR_PRESSURE_ORACLE '+JSON.stringify(r));
+    expect(r.ticks).toBe(6000);
+    expect(Number.isFinite(r.minPlateGap)).toBe(true);
+    expect(Number.isFinite(r.finalActor.x)).toBe(true);
+  },120000);
   it('exploratory holdout: rail tempo changes how often real loaded passages are physically achieved, without retuning gate',()=>{
     const slow=runWorldD1(true,3600,1.6),fast=runWorldD1(true,3600,4.0);
     const read=(r:typeof slow)=>({
