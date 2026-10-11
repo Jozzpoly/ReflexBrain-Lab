@@ -4,11 +4,12 @@ import { E0_RAPIER as R, E0_DT, E0_FMAX, E0_TMAX, createE0World, createE0Body } 
 export const initLivingWorld = async () => { await R.init(); };
 export type Demand = {drive:number;turn:number;gazeRate:number};
 type Color = [number,number,number];
-type Surface = {handle:number;color:Color;kind:'object'|'wall';hx:number;hy:number};
+type Surface = {handle:number;color:Color;kind:'object'|'wall'|'block';hx:number;hy:number};
 export type PrivateFrame = {tick:number;retina:Float32Array;touch:Float32Array;proprio:{forward:number;lateral:number;omega:number;gaze:number}};
 export type HostContactEvent={tick:number;handle:number;impulse:number};
 export type HostContactSample={tick:number;contacts:HostContactEvent[]};
-export type Checkpoint = {version:3;physics:Uint8Array;actorHandle:number;tick:number;gaze:number;surfaces:Surface[];frame:PrivateFrame;pendingTouch:Float32Array;pendingContactEvents:HostContactEvent[];contactSample:HostContactSample;mover:{handle:number;direction:number;left?:number;right?:number;railY?:number;speed?:number}|null};
+export type GateLink={plateHandle:number;gateHandle:number;closedX:number;closedY:number;travelX:number;loaded:boolean;lastLoadCount:number;loadTransitions:number};
+export type Checkpoint = {version:3;physics:Uint8Array;actorHandle:number;tick:number;gaze:number;surfaces:Surface[];frame:PrivateFrame;pendingTouch:Float32Array;pendingContactEvents:HostContactEvent[];contactSample:HostContactSample;mover:{handle:number;direction:number;left?:number;right?:number;railY?:number;speed?:number}|null;gateLink?:GateLink|null};
 const clamp=(x:number)=>Math.max(-1,Math.min(1,x));
 const background:Color=[.025,.04,.06];
 
@@ -24,6 +25,7 @@ export class LivingWorld {
   private pendingContactEvents:HostContactEvent[]=[];
   private contactSample:HostContactSample={tick:0,contacts:[]};
   private mover:{handle:number;direction:number;left?:number;right?:number;railY?:number;speed?:number}|null=null;
+  private gateLink:GateLink|null=null;
   constructor(scene=true) {
     this.world=createE0World();
     this.actor=createE0Body(this.world,0,0).rb;
@@ -65,6 +67,44 @@ export class LivingWorld {
     this.mover={handle,direction:1,left,right,railY:y,speed};
     return handle;
   }
+  /**
+   * D1 optional powered mechanism. A fixed overlap plate senses the *actual*
+   * physics state of ANY dynamic body and drives a rectangular gate by bounded
+   * Rapier force. No global timer, special-key label, direct teleport of gate,
+   * or plate/load/handle field exposed by PrivateFrame.
+   *
+   * The plate itself is a non-occluding floor sensor, deliberately omitted
+   * from the two-dimensional retina, while the moving gate has real geometry
+   * and is hit by the unchanged physical rays and contacts.
+   */
+  addLoadCoupledGate(
+    plateX:number,plateY:number,plateHx:number,plateHy:number,
+    closedX:number,closedY:number,gateHx:number,gateHy:number,travelX:number,
+    color:Color,
+  ){
+    if(this.gateLink)throw new Error('Only one experimental load-gate link');
+    if(![plateX,plateY,plateHx,plateHy,closedX,closedY,gateHx,gateHy,travelX].every(Number.isFinite)
+      ||plateHx<=0||plateHy<=0||gateHx<=0||gateHy<=0||travelX<=0)
+      throw new Error('Bad load-gate geometry');
+    const plateBody=this.world.createRigidBody(R.RigidBodyDesc.fixed().setTranslation(plateX,plateY));
+    const plate=this.world.createCollider(R.ColliderDesc.cuboid(plateHx,plateHy).setSensor(true),plateBody);
+    const gateBody=this.world.createRigidBody(R.RigidBodyDesc.dynamic()
+      .setTranslation(closedX,closedY).setLinearDamping(8).setAngularDamping(20).lockRotations());
+    const gate=this.world.createCollider(R.ColliderDesc.cuboid(gateHx,gateHy)
+      .setMass(12).setFriction(0).setRestitution(0),gateBody);
+    this.surfaces.push({handle:gate.handle,color:[...color],kind:'block',hx:gateHx,hy:gateHy});
+    this.gateLink={plateHandle:plate.handle,gateHandle:gate.handle,
+      closedX,closedY,travelX,loaded:false,lastLoadCount:0,loadTransitions:0};
+    if(this.tick===0)this.frame=null;
+    return{plateHandle:plate.handle,gateHandle:gate.handle};
+  }
+  /** Host microscope only; never part of observe(). */
+  inspectGateLink(){
+    if(!this.gateLink)return null;
+    const p=this.world.getCollider(this.gateLink.plateHandle).parent().translation();
+    const g=this.world.getCollider(this.gateLink.gateHandle).parent().translation();
+    return{...this.gateLink,platePosition:{x:p.x,y:p.y},gatePosition:{x:g.x,y:g.y}};
+  }
   moveObject(handle:number,x:number,y:number) {
     if(!Number.isFinite(x)||!Number.isFinite(y))throw new Error('Invalid world position');
     const surface=this.surfaces.find(s=>s.handle===handle);
@@ -90,8 +130,30 @@ export class LivingWorld {
       rb.resetForces(true);rb.resetTorques(true);
       rb.addForce({x:Math.max(-20,Math.min(20,(this.mover.direction*speed-v.x)*10)),y:Math.max(-20,Math.min(20,(railY-p.y)*10-v.y*4))},true);
     }
+    if(this.gateLink){
+      const gate=this.world.getCollider(this.gateLink.gateHandle).parent();
+      const pos=gate.translation(),vel=gate.linvel();
+      const goalX=this.gateLink.closedX+(this.gateLink.loaded?this.gateLink.travelX:0);
+      gate.resetForces(true);gate.resetTorques(true);
+      const fx=Math.max(-2500,Math.min(2500,(goalX-pos.x)*1050-vel.x*300));
+      const fy=Math.max(-2500,Math.min(2500,(this.gateLink.closedY-pos.y)*1050-vel.y*300));
+      gate.addForce({x:fx,y:fy},true);
+    }
     this.gaze=Math.max(-Math.PI/2,Math.min(Math.PI/2,this.gaze+3*clamp(d.gazeRate)*E0_DT));
     this.world.step();this.tick++;
+    if(this.gateLink){
+      const plate=this.world.getCollider(this.gateLink.plateHandle);
+      let loadCount=Number(!!this.world.intersectionPair(plate,this.actor.collider(0)));
+      for(const surface of this.surfaces){
+        if(surface.kind!=='object')continue;
+        const other=this.world.getCollider(surface.handle);
+        if(this.world.intersectionPair(plate,other))loadCount++;
+      }
+      const loaded=loadCount>0;
+      if(loaded!==this.gateLink.loaded)this.gateLink.loadTransitions++;
+      this.gateLink.loaded=loaded;
+      this.gateLink.lastLoadCount=loadCount;
+    }
     const touch=this.sampleTouch();
     for(const s of this.surfaces){
       let impulse=0;
@@ -157,7 +219,7 @@ export class LivingWorld {
   inspectContactSample():HostContactSample{return structuredClone(this.contactSample);}
   captureCheckpoint():Checkpoint {
     const frame=this.observe();
-    return {version:3,physics:this.world.takeSnapshot(),actorHandle:this.actor.handle,tick:this.tick,gaze:this.gaze,surfaces:this.surfaces.map(s=>({...s,color:[...s.color]})),frame,pendingTouch:this.pendingTouch.slice(),pendingContactEvents:structuredClone(this.pendingContactEvents),contactSample:this.inspectContactSample(),mover:this.mover?{...this.mover}:null};
+    return {version:3,physics:this.world.takeSnapshot(),actorHandle:this.actor.handle,tick:this.tick,gaze:this.gaze,surfaces:this.surfaces.map(s=>({...s,color:[...s.color]})),frame,pendingTouch:this.pendingTouch.slice(),pendingContactEvents:structuredClone(this.pendingContactEvents),contactSample:this.inspectContactSample(),mover:this.mover?{...this.mover}:null,gateLink:this.gateLink?{...this.gateLink}:null};
   }
   restoreCheckpoint(cp:Checkpoint) {
     if(cp.version!==3)throw new Error('Unsupported checkpoint');
@@ -166,6 +228,7 @@ export class LivingWorld {
     this.tick=cp.tick;this.gaze=cp.gaze;this.surfaces=cp.surfaces.map(s=>({...s,color:[...s.color]}));
     this.frame=this.copyFrame(cp.frame);this.pendingTouch=cp.pendingTouch.slice();this.mover=cp.mover?{...cp.mover}:null;
     this.pendingContactEvents=structuredClone(cp.pendingContactEvents);this.contactSample=structuredClone(cp.contactSample);
+    this.gateLink=cp.gateLink?{...cp.gateLink}:null;
   }
   free(){this.world.free();}
 }
