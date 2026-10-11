@@ -58,7 +58,10 @@ try{
   }catch(e){
     console.log('RB_WORLD_D0_DRAG_DIAG '+JSON.stringify({
       rect,cursorStart:{x,y},pausedActor:frozenPhysical,
-      measuredAfter:await snap(),status:await page.locator('#private').textContent(),
+      measuredAfter:await snap(),pointerHit:await page.locator('#world').evaluate(el=>({
+        x:el.dataset.pointerWorldX,y:el.dataset.pointerWorldY,
+        selectedHandle:el.dataset.selectedHandle,
+      })),status:await page.locator('#private').textContent(),
     }));
     throw Error('True host material drag did not move tracked physical target');
   }
