@@ -101,6 +101,16 @@ describe('WORLD-D1: reversible coupled material affordance / discovery',()=>{
     expect(Number.isFinite(r.minPlateGap)).toBe(true);
     expect(Number.isFinite(r.finalActor.x)).toBe(true);
   },120000);
+  it('actor→World→actor scenario: can genuine force-driven body press and later release the plate?',()=>{
+    const r=runD1ActorPressureReach(6000,true);
+    console.log('RB_WORLD_D1_ACTOR_RELEASE_ORACLE '+JSON.stringify(r));
+    expect(r.ticks).toBe(6000);
+    expect(r.firstActorLoadTick).not.toBeNull();
+    expect(r.firstGateClearTick).not.toBeNull();
+    expect(r.exitStartedTick).not.toBeNull();
+    // A missing reclosure is a material finding to report, NOT a green
+    // organism competence claim or a license to alter the actor's motor law.
+  },120000);
   it('exploratory holdout: rail tempo changes how often real loaded passages are physically achieved, without retuning gate',()=>{
     const slow=runWorldD1(true,3600,1.6),fast=runWorldD1(true,3600,4.0);
     const read=(r:typeof slow)=>({
