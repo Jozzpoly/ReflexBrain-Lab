@@ -36,6 +36,12 @@ const gap=(s:Session):number=>{
   const snapshot=s.scenario.world.inspect();
   const target=snapshot.objects.find(o=>o.handle===s.scenario.targetHandle)!;
   const dock=snapshot.objects.find(o=>o.handle===s.scenario.dockHandle)!;
+  // Host-only trace for browser evidence; never passed as local brain input.
+  canvas.dataset.targetX=String(target.x);
+  canvas.dataset.targetY=String(target.y);
+  canvas.dataset.actorX=String(snapshot.actor.x);
+  canvas.dataset.actorY=String(snapshot.actor.y);
+  canvas.dataset.worldTick=String(snapshot.tick);
   // Researcher-only *coarse* surface proxy, not actual collider-to-collider separation.
   return Math.max(0,Math.hypot(target.x-dock.x,target.y-dock.y)-.55-.5);
 };
