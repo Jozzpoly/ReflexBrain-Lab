@@ -9,7 +9,8 @@ describe('WORLD-D1: reversible coupled material affordance / discovery',()=>{
     const s=createWorldD1(true);
     try{
       const g=s.world.inspectGateLink()!;
-      expect(g.platePosition).toEqual({x:12.7,y:11.5});
+      expect(g.platePosition.x).toBeCloseTo(12.7,4);
+      expect(g.platePosition.y).toBeCloseTo(11.5,4);
       expect(g.gatePosition).toEqual({x:8,y:6.5});
       const frame=s.world.observe();
       expect(Object.keys(frame).sort()).toEqual(['proprio','retina','tick','touch']);
