@@ -141,3 +141,36 @@ One-sentence current truth:
 4. Previous F2/P0 and F3/D0 canonical negative experiments: generic prediction error is not competence, and body-relative directional touch may break a *particular* alias but not confer universal meaning.
 
 Decide project work based on the live frontier and Owner intent, not the number of passing test files.
+
+
+---
+
+## 8. Independent C2–C7 falsification update (2026-10-11)
+
+**Origin:** Vision [draft PR #54](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/54), full source report `docs/vision/CONTACT_IDENTITY_F2_F3_C2_C7_2026-10-11.md`.  
+**Exact-source CI:** [38097582954](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38097582954), 53/53 files and 153/153 tests, TypeScript/Vite PASS, source `110a010311a9cbccd6b88d1533799eb8bfd7310e`. Test code only; no production organism modification.
+
+These results sharpen the original C1 claim rather than proposing a new ontology:
+
+**C2 and C3 · More private cues are not automatically material meaning.** On 20 actual unintended Rapier contacts spanning five event times, two sides and orange / same-turquoise appearance, the actor had really observed and approached an earlier turquoise object. Every elementary researcher-authored private success rule falsely accepted some decoys: generic touch 20/20, forward touch 10/20, visible familiar-color 14/20, persistent color 20/20, large familiar patch 10/20, 4m accumulated travel 8/20. Eleven additional genuine contacts across varying physical target distances and sizes reject an easy `contactTime` explanation. A twelfth genuine distant-small target was never reached by the progress-history motor and remains an explicit *not contacted* case.
+
+**C4 · Exact legal-historical identity alias, not a model-capacity problem.** Two fully physical branches began with the same lawfully seen target, then experienced an unobserved adversarial exchange of two physically/visually identical turquoise bodies. The actor's *entire* native RGB, eight-sector touch, tick, gaze and proprio history was **22/22 samples exactly identical**, actual contact time tick84 identical, but the host knew it contacted its previous individual in only one World (in the other, a lookalike while original remained 6.344m away). A model cannot infer a hidden, unobserved individual identity from exact identical lawful inputs.
+
+**Anti-claim for C4:** this is a hidden host-defined *identity distinction*, not automatically a material difference to an actor if the two bodies are functionally indistinguishable in all further consequences. Therefore it proves an epistemic limit, not the intrinsic meaning of target attachment or the need to solve unobservable identity. The setup swaps colliders by host intervention; natural material motion is a separate falsifier.
+
+**C5 · Strong simple motor beats unreliable visual-progress history in an adverse sensor regime.** For a genuine target center 9.4m away, radius0.45m, authored image-size-progress reconsideration made the existing ApproachEpisode stall ~4.936m short despite actual body travel ~4.464m. Disabling the progress-history complication in otherwise identical World and sensor allowed **real target touch at tick732**. This is **material negative F2 evidence** of a competence rule outside its angular-quantization domain; not proof that body history never helps.
+
+**C6 → C7 · Why passing a hand-engineered world distribution is not semantics.** A cheap lawful recent-retinal-patch smoothness test correctly accepted 5/5 true contacts and rejected 20/20 off-target contacts, mainly by detecting sudden **host teleports**. The same frozen .15rad criterion falsely accepted two off-target collisions when an independent, force-driven **World mover** caught the actor from behind at tick312, with original goal still 3.777m away. The native turquoise visual patch was present and its recent angular extent jump was **exactly zero**. This is **domain-specific failure of a superficially perfect rule**, not an arbitrary stricter threshold problem. C7's rear contact is legally direction-distinguishable; C2/C1's frontal contacts make direction alone insufficient overall.
+
+### Updated prioritization for canonical Control Room
+
+- **F2 (competence applicability) rises:** direct executable material counterexample to learned-looking progress inference based on a limited retina; simple rival actual-contact PASS.
+- **F3 (owned reason and success) remains crucial:** the actual activity's object relation and its desirable future consequences are not conferred by scalar tactile activation, identical color, hidden handle ID, or pre-authored familiar-object labels. The C4 alias means some identity questions cannot be answered without distinct lawful evidence, or may not even be materially worth answering.
+- **F4 (active scrutiny) gains a stronger selection criterion:** *what lawful distinguishing information could another glance/body motion obtain, and could it change a personal material outcome?* Variable-density foveal features, temporal private correspondence and tactile causality are competing hypotheses, not earned canon.
+- **G5A and other foundational truth stay unchanged**, no source/contract/production merge.
+
+**Recommended next high-value experiment:** two materially consequential objects with *otherwise similar cheap appearance* but **subtle legally resolvable differences** whose relevance must be acquired from prior actual interaction, not provided by World target IDs or a hand-coded `rewardForMarkedColor`. A future sensorimotor activity should have the option of investing in costly inspection, proceeding on partial evidence or declining to act; evaluate against strong no-look/always-look/learned simple baselines and an explicitly unknowable identical-token control.
+
+**Do not freeze** a `.15` image-jump constant, a universal directional touch heuristic, a physical identity tracker, a replacement reward scalar or another actor `Matter` record solely from these fixtures.
+
+PR #55 remains a **documentary draft**. Owner experiential judgement and real autonomous organism continuity, not GitHub CI, determine if any donated competence materially improves the living organism.
