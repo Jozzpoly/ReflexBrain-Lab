@@ -15,6 +15,9 @@ it('characterizes actual World material displacement through purely RGB/proprio 
   expect(result.deterministic).toBe(true);
   expect(result.results).toHaveLength(3);
   expect(result.results.every(r=>r.ticks===7200&&r.finite)).toBe(true);
+  // 120Hz physics/30Hz sensor: repeated cached frames count only once.
+  expect(result.results.every(r=>r.visibleTargetFrames<=1800 && r.visibleDockFrames<=1800)).toBe(true);
+  expect(result.results.every(r=>r.targetStart && r.targetEnd && r.dockEnd)).toBe(true);
   // Deliberately NO success assertion for material restoration: this is a
   // discovery/specimen audit, not a CI rubric that silently makes science pass.
   console.log('RB_MATERIAL_S0_RESULT '+JSON.stringify(result));
