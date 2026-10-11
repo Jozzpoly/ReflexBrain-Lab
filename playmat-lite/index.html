@@ -12,7 +12,7 @@ h1{font-size:clamp(24px,2.7vw,34px);letter-spacing:-.035em;margin:7px 0 5px}h2{f
 p{margin:5px 0 12px;color:#afc1d0}a{color:#88d7e9}
 .eyebrow{font:700 11px/1.4 system-ui;letter-spacing:.17em;color:#80cfd7}
 .top{display:flex;gap:24px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
-.verdict{border:1px solid #8f623a;border-radius:20px;color:#f6cb96;padding:6px 12px;white-space:nowrap;font-size:12px}
+.verdict{border:1px solid #8f623a;border-radius:20px;color:#f6cb96;padding:6px 12px;white-space:normal;overflow-wrap:anywhere;max-width:100%;font-size:12px}
 .controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:17px 0}
 button,select{background:#183143;color:#e9f1f8;border:1px solid #4e697c;border-radius:8px;padding:9px 12px;font:inherit;cursor:pointer}
 button:hover,select:hover{background:#234659}
@@ -36,7 +36,7 @@ canvas{display:block;width:100%;background:#091721;border-radius:7px}
 #status{font-weight:600;color:#a9dee0}
 #change{color:#f4cf9a}#phase{color:#b0cbdb}
 @media(max-width:930px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}
-@media(max-width:520px){main{padding:13px}.controls{gap:6px}button,select{padding:9px}.stats{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){main{padding:13px}.controls{gap:6px}button,select{padding:9px;max-width:100%}.stats{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.metric{overflow-wrap:anywhere}.top{gap:10px}}
 </style>
 </head>
 <body>
