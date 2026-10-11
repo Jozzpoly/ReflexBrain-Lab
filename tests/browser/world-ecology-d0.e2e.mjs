@@ -48,9 +48,21 @@ try{
   await page.mouse.move(x,y);await page.mouse.down();
   await page.mouse.move(x+rect.width/52,y-rect.height/32.5,{steps:8});
   await page.mouse.up();
+  try{
+    await page.waitForFunction(
+      ({x,y})=>{
+        const c=document.querySelector('#world');
+        const nx=Number(c?.dataset.trackedX),ny=Number(c?.dataset.trackedY);
+        return Math.hypot(nx-x,ny-y)>.35;
+      },{x:frozenPhysical.x,y:frozenPhysical.y},{timeout:1700});
+  }catch(e){
+    console.log('RB_WORLD_D0_DRAG_DIAG '+JSON.stringify({
+      rect,cursorStart:{x,y},pausedActor:frozenPhysical,
+      measuredAfter:await snap(),status:await page.locator('#private').textContent(),
+    }));
+    throw Error('True host material drag did not move tracked physical target');
+  }
   const moved=await snap();
-  check(Math.hypot(moved.x-frozenPhysical.x,moved.y-frozenPhysical.y)>.35,
-    'true physical material cannot be manually moved in World D0');
   check((await page.locator('#private').textContent()).includes('Interwencje badacza: '),
     'Owner intervention is not visible in specimen');
   await page.screenshot({path:'artifacts/world-d0/03-owner-world-change.png',fullPage:true});
