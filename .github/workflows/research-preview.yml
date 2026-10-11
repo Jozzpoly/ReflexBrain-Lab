@@ -55,6 +55,34 @@ jobs:
             echo "Static bundle still depends on the source corpus"; exit 1
           fi
           echo "Existing root SHA preserved; additive S0 static bundle is ready."
+      - name: Protect all existing published files before adding a separate WORLD-only D1 demo
+        run: |
+          test -f dist/index.html
+          test -f dist/playmat-s0/index.html
+          test -f dist/probes/owner-field-lab.html
+          test ! -e dist/world-d1
+          find dist -type f -print0 | sort -z | xargs -0 sha256sum > /tmp/old-public-files
+      - name: Checkout pinned isolated WORLD D1 research donor
+        uses: actions/checkout@v4
+        with:
+          ref: 713afbbfce81e50619fd17bf7046a3b6b36abe4d
+          path: _d1_source
+          persist-credentials: false
+      - name: Build D1 research donor independently, with existing S0 untouched
+        working-directory: _d1_source
+        run: |
+          yarn install --non-interactive
+          yarn run build
+          test -f dist/probes/world-ecology-d1.html
+      - name: Add WORLD D1 under its own public route and enforce existing file checksum parity
+        run: |
+          mkdir -p dist/world-d1
+          cp _d1_source/dist/probes/world-ecology-d1.html dist/world-d1/index.html
+          cp -R _d1_source/dist/assets/. dist/assets/
+          sha256sum -c /tmp/old-public-files
+          test -f dist/world-d1/index.html
+          test -n "$(grep -oE '../assets/[^"]+\\.js' dist/world-d1/index.html | head -1)"
+          echo "All pre-existing Pages bytes unchanged; D1 is purely additive."
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
@@ -82,4 +110,16 @@ jobs:
             sleep 4
           done
           echo "Pages published but independent public readback did not qualify."
+          exit 1
+      - name: Check separate public WORLD D1 mechanics-only preview readback
+        run: |
+          URL="https://jozzpoly.github.io/ReflexBrain-Lab/world-d1/"
+          for i in {1..30}; do
+            if curl --fail --silent --show-error "$URL" -o /tmp/rb-d1-public-index.html &&
+               grep -q 'WORLD D1' /tmp/rb-d1-public-index.html; then
+              echo "Public mechanics-only D1 HTML readback PASS"; exit 0
+            fi
+            sleep 4
+          done
+          echo "Cannot validate public D1 HTML readback"
           exit 1
