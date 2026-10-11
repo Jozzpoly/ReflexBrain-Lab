@@ -124,6 +124,10 @@ jobs:
         run: node tests/browser/material-owner-view.e2e.mjs
         env:
           RB_OWNER_URL: http://127.0.0.1:4174/
+      - name: Deep browser playability stress: manipulation, cancellation, provenance, mobile-width layout
+        run: node tests/browser/material-owner-robustness.e2e.mjs
+        env:
+          RB_OWNER_URL: http://127.0.0.1:4174/
       - name: Retain static single-purpose preview as downloadable artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -137,6 +141,13 @@ jobs:
         with:
           name: reflexbrain-s0-lite-browser-evidence
           path: artifacts/rb-owner
+          if-no-files-found: ignore
+      - name: Retain robust Chrome interaction/red-team screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflexbrain-s0-lite-robustness-evidence
+          path: artifacts/rb-robust
           if-no-files-found: ignore
 
   browser-material-public-pages:
