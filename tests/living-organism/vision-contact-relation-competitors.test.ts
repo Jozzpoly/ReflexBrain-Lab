@@ -34,13 +34,14 @@ type Row={
  hostTarget:boolean;hostDecoy:boolean;tick:number|null;
  distanceTarget:number;contactSectors:number[];
  lastPatchExtent:number;lastPatchAge:number;
+ maxRecentExtentJump:number;
  maxPriorExtent:number;earlyVisible:boolean;
  sightGapBeforeContact:number;targetBearingAtContact:number|null;
  forwardSpeed:number;driveBefore:number;bodyTravel:number;
  summaries:PrivateSummary[];
  rules:{touch:boolean;forwardTouch:boolean;
    turquoiseVisible:boolean;continuity:boolean;
-   nearPatch:boolean;progress:boolean};
+   nearPatch:boolean;progress:boolean;recentSmooth:boolean};
 };
 const colors={turquoise:[.1,.85,.8] as [number,number,number],
  orange:[.9,.55,.13] as [number,number,number]};
@@ -135,6 +136,9 @@ function analyze(s:Scenario):Row{
   const visible=last?.visible===1;
   const nearPatch=visible&&last.maxExtent>.4;
   const gap=lastSeen<0?Infinity:(exitTick??w.observe().tick)-lastSeen;
+  const recent=samples.slice(-4).map(x=>x.maxExtent);
+  const maxRecentExtentJump=recent.slice(1).reduce((v,x,i)=>
+   Math.max(v,Math.abs(x-recent[i])),0);
   // Entire 'rules' object is computed solely from participant's
   // PrivateFrame sequence and the issued motor command.
   const rules={
@@ -145,6 +149,7 @@ function analyze(s:Scenario):Row{
     samples.slice(-4).filter(x=>x.visible).length>=3,
    nearPatch:!!exitTick&&nearPatch,
    progress:!!exitTick&&travel>4,
+   recentSmooth:!!exitTick&&maxRecentExtentJump<.15,
   };
   return {
    scenario:s,
@@ -152,7 +157,7 @@ function analyze(s:Scenario):Row{
    hostTarget:collisionTarget,hostDecoy:collisionDecoy,tick:exitTick,
    distanceTarget,
    contactSectors:lastContactTouch,
-   lastPatchExtent:last?.maxExtent??0,
+   lastPatchExtent:last?.maxExtent??0,maxRecentExtentJump,
    lastPatchAge:gap,maxPriorExtent:maximumExtent,
    earlyVisible,sightGapBeforeContact:gap,
    targetBearingAtContact:maxPatch(w.observe())?.bearing??null,
@@ -164,7 +169,7 @@ function analyze(s:Scenario):Row{
 }
 function scores(rows:Row[]){
  const keys=['touch','forwardTouch','turquoiseVisible',
-  'continuity','nearPatch','progress'] as const;
+  'continuity','nearPatch','progress','recentSmooth'] as const;
  return keys.map(key=>{
   const tp=rows.filter(r=>r.actual==='target'&&r.rules[key]).length,
    fp=rows.filter(r=>r.actual==='decoy'&&r.rules[key]).length,
@@ -184,6 +189,7 @@ describe('RB-VISION/C2 lawful private relation to prior object vs incidental tou
    lastVisualExtent:+r.lastPatchExtent.toFixed(3),
    age:r.lastPatchAge,
    maxVisualExtent:+r.maxPriorExtent.toFixed(3),
+   recentJump:+r.maxRecentExtentJump.toFixed(3),
    bodyTravel:+r.bodyTravel.toFixed(3),
    sector:r.contactSectors.indexOf(Math.max(...r.contactSectors)),
    rules:r.rules,
@@ -255,5 +261,37 @@ describe('RB-VISION/C2 lawful private relation to prior object vs incidental tou
   // Whether removing the learned-looking visual progress heuristic
   // saves actual completion is a new empirical question.
  },30000);
+
+
+ it('C6: expose apparent visual-continuity win as a host-teleport artifact, not object identity',()=>{
+  const rows=[...CASES.slice(1),...([3.3,4.2,5.1,6.4,8.2]
+   .map(targetX=>({
+    label:'true-smooth-'+targetX,intervention:null,
+    color:'orange' as const,lateral:0,targetX,targetRadius:.62,
+   })))].map(analyze);
+  const thresholds=[.07,.1,.15,.25,.4,.7];
+  const challenge=thresholds.map(threshold=>{
+   const valid=rows.filter(r=>r.actual!=='none');
+   return {threshold,
+    trueAccepted:valid.filter(r=>r.actual==='target'
+      &&r.maxRecentExtentJump<threshold).length,
+    falseAccepted:valid.filter(r=>r.actual==='decoy'
+      &&r.maxRecentExtentJump<threshold).length,
+    trueTotal:valid.filter(r=>r.actual==='target').length,
+    falseTotal:valid.filter(r=>r.actual==='decoy').length,
+   };
+  });
+  console.log('RB_VISION_C6_RETINA_CHANGE_HEURISTIC '+JSON.stringify({
+   challenge,
+   samples:rows.map(r=>({id:r.scenario.label,
+    host:r.actual,tick:r.tick,
+    maxRecentJump:+r.maxRecentExtentJump.toFixed(4)})),
+  }));
+  expect(rows.some(r=>r.actual==='target')).toBe(true);
+  expect(rows.some(r=>r.actual==='decoy')).toBe(true);
+  // The C4 lookalike-swap result on the SAME PR proves that if a physical
+  // permutation creates identical complete private traces, no detector
+  // based on such recent jumps can tell which handle was touched.
+ },60000);
 
 });
