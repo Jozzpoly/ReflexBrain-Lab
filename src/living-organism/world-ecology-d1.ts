@@ -22,7 +22,7 @@ const GATE:[number,number,number]=[.82,.62,.25];
  * The lone loose mass is a separate way of sustaining pressure for as long
  * as it physically remains on the plate; its identity is not privileged.
  */
-export function createWorldD1(railEnabled=true):D1Scenario{
+export function createWorldD1(railEnabled=true,railSpeed=2.6):D1Scenario{
   const s=createWorldD0(false),world=s.world;
   try{
     const {plateHandle,gateHandle}=world.addLoadCoupledGate(
@@ -31,7 +31,7 @@ export function createWorldD1(railEnabled=true):D1Scenario{
     );
     const loadMaterialHandle=world.addObject(18,13,.85,OCHRE);
     const railHandle=railEnabled?
-      world.addRailMover(10,11.5,.7,INDIGO,10,16,2.6):null;
+      world.addRailMover(10,11.5,.7,INDIGO,10,16,railSpeed):null;
     return{world,plateHandle,gateHandle,loadMaterialHandle,railHandle};
   }catch(e){world.free();throw e;}
 }
@@ -53,8 +53,8 @@ export type D1TemporalRun={
   uniquePrivateFrames:number;
   visibleGatePrivateFrames:number;
 };
-export function runWorldD1(railEnabled=true,ticks=21600):D1TemporalRun{
-  const s=createWorldD1(railEnabled),world=s.world;
+export function runWorldD1(railEnabled=true,ticks=21600,railSpeed=2.6):D1TemporalRun{
+  const s=createWorldD1(railEnabled,railSpeed),world=s.world;
   try{
     const samples:GateSample[]=[];
     let uniquePrivateFrames=0,lastPrivate=-1,visibleGatePrivateFrames=0;
