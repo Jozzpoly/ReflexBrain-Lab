@@ -110,7 +110,7 @@ jobs:
       - name: Confirm Chrome
         run: google-chrome --version
       - name: Install browser driver for smoke only
-        run: npm install --no-save --ignore-scripts playwright-core@1.56.0
+        run: yarn add --dev --ignore-scripts playwright-core@1.56.0
       - name: Start standalone static preview
         run: |
           (cd playmat-lite && ./node_modules/.bin/vite preview --host 127.0.0.1 --port 4174) > /tmp/rb-lite-vite.log 2>&1 &
