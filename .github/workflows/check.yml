@@ -54,7 +54,7 @@ jobs:
           if-no-files-found: ignore
 
   validate-additive-pages:
-    if: github.event_name == 'pull_request' && github.head_ref == 'docs/pages-additive-s0-preview-2026-10-11'
+    if: github.event_name == 'pull_request' && (github.head_ref == 'docs/pages-additive-s0-preview-2026-10-11' || github.head_ref == 'docs/pages-s0-robustness-pinned-2026-10-11')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
