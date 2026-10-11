@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08111c">
+<title>ReflexBrain Field Lab</title>
+<style>
+:root{
+  color-scheme:dark;--bg:#07101a;--panel:#101b2a;--panel2:#0d1724;--edge:#26384c;
+  --text:#e7f0fb;--sub:#9cafc4;--muted:#7489a2;--cyan:#72e3de;--blue:#8fb9ff;
+  --green:#8fe3a5;--amber:#f4c978;--pink:#ee9eae;--purple:#b7a6ef;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+body{background:radial-gradient(900px 480px at 50% -12%,#17324a 0%,transparent 68%),var(--bg)}
+a{color:var(--cyan);text-underline-offset:3px}
+header,main,footer{max-width:1420px;margin:auto;padding-inline:clamp(14px,2.5vw,32px)}
+header{padding-top:20px;padding-bottom:14px}
+.top{display:flex;justify-content:space-between;gap:16px;align-items:center}
+.brand{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);font-weight:800}
+.toplinks{display:flex;gap:14px;flex-wrap:wrap;font-size:12px}
+h1{font-size:clamp(27px,3.1vw,43px);line-height:1.12;letter-spacing:-.04em;margin:11px 0 8px}
+.lead{max-width:850px;color:var(--sub);font-size:15px;margin:0}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.badge{border:1px solid var(--edge);background:#132033;color:var(--sub);border-radius:999px;padding:5px 10px;font-size:11px;font-weight:750;letter-spacing:.04em}
+.badge.live{color:var(--green);border-color:#355c4b}.badge.warn{color:var(--amber);border-color:#665039;background:#2a211a}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;border:1px solid var(--edge);background:#0e1a28;border-radius:12px;padding:10px;margin:8px 0 12px}
+button,select{font:inherit;color:var(--text);background:#17263a;border:1px solid #344b65;border-radius:8px;padding:8px 11px;min-height:38px;cursor:pointer}
+button:hover{background:#20354f}button:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+button.primary{background:#1c5864;border-color:#327b88;font-weight:750}
+button[aria-pressed=true]{border-color:#4f8f97;background:#173b46;color:#c9fffa}
+button.danger{border-color:#654450;color:#f6b3c0}
+.lab{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(310px,.75fr);gap:12px;align-items:start}
+.stage{border:1px solid var(--edge);background:#0b1522;border-radius:14px;padding:9px;min-width:0}
+canvas{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#08121f;border-radius:9px;touch-action:none}
+.stage-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:8px 4px 2px;color:var(--muted);font-size:11px}
+.sidebar{display:grid;gap:10px}
+.card{border:1px solid var(--edge);background:var(--panel);border-radius:12px;padding:13px}
+.card h2{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--cyan);margin:0 0 9px}
+.card h2.world{color:var(--amber)}
+.readout{display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-variant-numeric:tabular-nums;color:var(--sub);font-size:12px}
+.readout b{color:var(--text);font-weight:700;text-align:right;overflow-wrap:anywhere}
+.state{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.mode{font-size:18px;font-weight:800;letter-spacing:.02em}
+.mode.CHECK{color:var(--amber)}.mode.YIELD{color:var(--pink)}.mode.BOUNCE{color:var(--purple)}.mode.ROAM{color:var(--green)}.mode.PAUSED{color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;background:var(--green)}
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.controls button{min-width:0;padding-inline:8px;font-size:12px}
+.controls .wide{grid-column:1/-1}
+.shove{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:210px;margin:8px auto 0}
+.shove .up{grid-column:2}.shove .left{grid-column:1}.shove .right{grid-column:3}.shove .down{grid-column:2}
+.events{max-height:240px;overflow:auto;border-top:1px solid #223448;margin-top:7px;padding-top:4px}
+.event{display:grid;grid-template-columns:42px 62px 1fr;gap:7px;padding:6px 1px;border-bottom:1px solid #1b2b3d;font-size:11px;color:var(--sub)}
+.event:last-child{border-bottom:0}.event .tick{color:#7790ab;font-variant-numeric:tabular-nums}.event .kind{font-weight:800;letter-spacing:.04em}
+.event .kind.owner{color:var(--pink)}.event .kind.private{color:var(--cyan)}.event .kind.process{color:var(--purple)}.event .kind.world{color:var(--amber)}
+.quick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.quick button{font-size:12px;padding:8px 6px}
+.notice{border-left:3px solid #7c6240;padding:8px 11px;color:var(--sub);font-size:12px;background:#171710;border-radius:0 8px 8px 0}
+footer{padding-top:18px;padding-bottom:30px;color:var(--muted);font-size:11px}
+#bootError{display:none;border:1px solid #714c58;background:#24171d;color:#f4b6c2;padding:12px;border-radius:9px;margin-bottom:12px}
+@media(max-width:980px){.lab{grid-template-columns:1fr}.sidebar{grid-template-columns:repeat(2,minmax(0,1fr))}.sidebar .events-card{grid-column:1/-1}}
+@media(max-width:620px){.sidebar{grid-template-columns:1fr}.sidebar .events-card{grid-column:auto}.quick{grid-template-columns:1fr}.toolbar{gap:6px}.top{align-items:flex-start;flex-direction:column}.controls button{min-height:44px}}
+</style>
+</head>
+<body>
+<header>
+<div class="top"><div class="brand">◈ ReflexBrain / Owner Field Lab</div><div class="toplinks"><a href="../index.html">Project home</a><a href="./c01-continuous-monitor.html">C01 evidence replay</a><a href="https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6">Research PR ↗</a></div></div>
+<h1>Nie oglądaj eksperymentu. Zrób coś światu.</h1>
+<p class="lead">To jest otwarty, ciągły specimen do Owner-play. Świat i prosty authored actor działają bez Twojego heartbeat. Przesuwaj obiekt, wrzucaj materię pod eksperymentalny sweeper, odcinaj pamięć albo zmysł i patrz, co naprawdę zmienia późniejszą trajektorię.</p>
+<div class="badges"><span class="badge live">● LIVE FIELD</span><span class="badge warn">UNQUALIFIED · Owner exploration</span><span class="badge">E0 body + P02a-style P0</span><span class="badge warn">sweeper donor · long-run FAIL known</span></div>
+</header>
+<main>
+<div id="bootError"></div>
+<div class="toolbar" aria-label="Sterowanie światem">
+<button id="run" class="primary" type="button">Ⅱ Pause world</button>
+<button id="reset" type="button">↺ Reset specimen</button>
+<label for="speed">speed</label>
+<select id="speed"><option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select>
+<button id="lens" type="button" aria-pressed="false">◎ Actor lens</button>
+<span id="tick" style="margin-left:auto;color:var(--cyan);font-variant-numeric:tabular-nums;font-weight:800">tick 0</span>
+</div>
+
+<div class="lab">
+<section class="stage" aria-label="Live physical field">
+<canvas id="field" aria-label="Interaktywny świat ReflexBrain Field Lab. Możesz przeciągać turkusowy obiekt."></canvas>
+<div class="stage-foot"><span>✋ Drag cyan target directly · world keeps running</span><span id="lensNote">Microscope view: hidden World truth visible</span></div>
+</section>
+
+<aside class="sidebar">
+<section class="card">
+<h2>Actor private</h2>
+<div class="state"><span id="mode" class="mode ROAM">ROAM</span><span id="p0"><span class="dot"></span>P0 live</span></div>
+<div class="readout">
+<span>last legal blob</span><b id="lastSeen">—</b>
+<span>evidence age</span><b id="age">—</b>
+<span>private odometry</span><b id="odom">0.00</b>
+<span>CHECK ticks</span><b id="checkTicks">0</b>
+</div>
+</section>
+
+<section class="card">
+<h2 class="world">Microscope / world</h2>
+<div class="readout">
+<span>target</span><b id="targetPos">—</b>
+<span>sweeper</span><b id="sweeperPos">—</b>
+<span>loose bodies</span><b id="looseCount">0</b>
+<span>world tick</span><b id="worldTick">0</b>
+</div>
+</section>
+
+<section class="card">
+<h2>Fast interventions</h2>
+<div class="quick">
+<button id="reveal" type="button">◌ Reveal</button>
+<button id="hide" type="button">◐ Hide</button>
+<button id="lane" type="button">⇄ Sweeper lane</button>
+</div>
+<div class="shove" aria-label="Shove target">
+<button class="up" id="up" type="button">↑</button>
+<button class="left" id="left" type="button">←</button>
+<button class="right" id="right" type="button">→</button>
+<button class="down" id="down" type="button">↓</button>
+</div>
+</section>
+
+<section class="card">
+<h2>Cut causal channels</h2>
+<div class="controls">
+<button id="memory" type="button" aria-pressed="true">Memory ON</button>
+<button id="sensor" type="button" aria-pressed="true">P0 gate ON</button>
+<button id="actor" type="button" aria-pressed="true">Actor control ON</button>
+<button id="sweeper" type="button" aria-pressed="true">Sweeper ON</button>
+<button id="occluder" type="button" aria-pressed="true">Occluder ON</button>
+<button id="clearMemory" class="danger" type="button">Clear memory</button>
+</div>
+</section>
+
+<section class="card">
+<h2>Material playground</h2>
+<div class="controls">
+<button id="addLoose" type="button">＋ loose body</button>
+<button id="clearLoose" type="button">Clear loose</button>
+<button id="pokeActor" type="button" class="wide">✦ shove actor</button>
+</div>
+<p style="margin:9px 0 0;color:var(--muted);font-size:11px">Loose bodies are not actor concepts. They are just material. Put the cyan target into the lower lane and let the independent process touch it.</p>
+</section>
+
+<section class="card events-card">
+<h2>Event history</h2>
+<div id="events" class="events" aria-live="polite"></div>
+</section>
+</aside>
+</div>
+
+<p class="notice"><strong>Granica:</strong> ten Field Lab jest celowo niekwalifikowany. Łączy wcześniejsze donory w otwarty playground, więc jego zachowanie jest materiałem do Owner-observation, nowych pytań i FAIL-ów — nie dowodem G1–G5, życia ani learned ReflexBrain.</p>
+</main>
+<footer>Owner Field Lab v0 · live experimental medium · known long-run sweeper FAIL. The C01 page remains the frozen explanatory replay; this page is the place to break assumptions.</footer>
+
+<script type="module">
+import { initE0Rapier } from '../src/e0-body-seam.ts';
+import { FIELD_BOUNDS, OwnerFieldLab } from '../src/owner-field-lab.ts';
+
+const canvas=document.querySelector('#field'),ctx=canvas.getContext('2d');
+const runBtn=document.querySelector('#run'),resetBtn=document.querySelector('#reset'),speedSel=document.querySelector('#speed'),lensBtn=document.querySelector('#lens');
+const bootError=document.querySelector('#bootError');
+let lab=null, running=true, actorLens=false, lastTs=0, accumulator=0, dragging=false, dragMoved=false;
+const DT=1/120;
+const controls={memory:true,sensor:true,actor:true,sweeper:true,occluder:true};
+
+function fitCanvas(){
+ const rect=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);
+ const w=Math.max(320,rect.width),h=Math.max(180,rect.height);
+ if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){
+   canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
+ }
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ return {w,h};
+}
+function transforms(w,h){
+ const pad=24,sx=(w-pad*2)/(FIELD_BOUNDS.x*2+0.7),sy=(h-pad*2)/(FIELD_BOUNDS.y*2+0.7),s=Math.min(sx,sy);
+ return {
+  s,
+  X:x=>w/2+x*s,
+  Y:y=>h/2-y*s,
+  from:(px,py)=>({x:(px-w/2)/s,y:-(py-h/2)/s})
+ };
+}
+function circle(x,y,r,fill,stroke,X,Y,s,line=2){
+ ctx.beginPath();ctx.arc(X(x),Y(y),Math.max(2,r*s),0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();
+ ctx.strokeStyle=stroke;ctx.lineWidth=line;ctx.stroke();
+}
+function draw(){
+ if(!lab)return;
+ const snap=lab.snapshot(),{w,h}=fitCanvas(),t=transforms(w,h),{X,Y,s}=t;
+ ctx.clearRect(0,0,w,h);
+ ctx.fillStyle='#08121f';ctx.fillRect(0,0,w,h);
+
+ ctx.strokeStyle='#14283c';ctx.lineWidth=1;
+ for(let x=-7;x<=7;x++){ctx.beginPath();ctx.moveTo(X(x),Y(-4.2));ctx.lineTo(X(x),Y(4.2));ctx.stroke();}
+ for(let y=-4;y<=4;y++){ctx.beginPath();ctx.moveTo(X(-7.2),Y(y));ctx.lineTo(X(7.2),Y(y));ctx.stroke();}
+
+ ctx.strokeStyle='#334a62';ctx.lineWidth=2;
+ ctx.strokeRect(X(-7.2),Y(4.2),14.4*s,8.4*s);
+
+ // lower independent-process lane
+ ctx.strokeStyle='rgba(183,166,239,.28)';ctx.setLineDash([7,6]);ctx.lineWidth=1.5;
+ ctx.beginPath();ctx.moveTo(X(-5.7),Y(-2.65));ctx.lineTo(X(5.7),Y(-2.65));ctx.stroke();ctx.setLineDash([]);
+ ctx.fillStyle='#8a77c1';ctx.font='10px system-ui';ctx.fillText('experimental process lane',X(-5.5),Y(-2.65)-10);
+
+ if(snap.flags.occluderEnabled){
+   ctx.fillStyle='#334a62';ctx.fillRect(X(-.18),Y(2.15),.36*s,4.3*s);
+   ctx.strokeStyle='#698097';ctx.strokeRect(X(-.18),Y(2.15),.36*s,4.3*s);
+ }
+
+ for(const b of snap.loose)circle(b.x,b.y,b.radius,'#718094','#9eacba',X,Y,s,1.5);
+
+ circle(snap.sweeper.x,snap.sweeper.y,.55,'#574b7a','#b7a6ef',X,Y,s,2);
+ ctx.fillStyle='#d8cef8';ctx.font='bold 10px system-ui';ctx.fillText('S',X(snap.sweeper.x)-3,Y(snap.sweeper.y)+3);
+
+ const blob=snap.privateFrame.blobs[0]||null;
+ const targetVisible=!!blob;
+ if(!actorLens||targetVisible){
+   circle(snap.target.x,snap.target.y,.38,'#55d6d1','#b1fffa',X,Y,s,2.2);
+ }
+ if(targetVisible){
+   ctx.beginPath();ctx.moveTo(X(snap.actor.x),Y(snap.actor.y));ctx.lineTo(X(snap.target.x),Y(snap.target.y));
+   ctx.strokeStyle='#f4c978';ctx.lineWidth=2;ctx.setLineDash([7,5]);ctx.stroke();ctx.setLineDash([]);
+ }
+
+ circle(snap.actor.x,snap.actor.y,1,'#25466f','#8fb9ff',X,Y,s,2.5);
+ ctx.beginPath();ctx.moveTo(X(snap.actor.x),Y(snap.actor.y));
+ ctx.lineTo(X(snap.actor.x+Math.cos(snap.actor.rotation)*.9),Y(snap.actor.y+Math.sin(snap.actor.rotation)*.9));
+ ctx.strokeStyle='#f0f6ff';ctx.lineWidth=3;ctx.stroke();
+ ctx.fillStyle='#e8f0ff';ctx.font='bold 10px system-ui';ctx.fillText('B0',X(snap.actor.x)-7,Y(snap.actor.y)+3);
+
+ ctx.fillStyle=actorLens?'#72e3de':'#f4c978';ctx.font='bold 10px system-ui';
+ ctx.fillText(actorLens?'ACTOR LENS · hidden World objects withheld':'MICROSCOPE · World truth visible',14,18);
+
+ updateUI(snap);
+}
+function updateUI(s){
+ document.querySelector('#tick').textContent='tick '+s.tick.toLocaleString();
+ document.querySelector('#worldTick').textContent=s.tick.toLocaleString();
+ const mode=document.querySelector('#mode');mode.textContent=s.privateState.mode;mode.className='mode '+s.privateState.mode;
+ const visible=s.privateFrame.blobs.length>0;
+ document.querySelector('#p0').innerHTML=visible?'<span class="dot"></span>P0 live':'<span class="dot" style="background:var(--muted)"></span>P0 empty';
+ document.querySelector('#lastSeen').textContent=s.privateState.lastSeen?'tick '+s.privateState.lastSeen.privateTick:'—';
+ document.querySelector('#age').textContent=s.privateState.evidenceAge??'—';
+ document.querySelector('#odom').textContent=s.privateState.bodyOdom.toFixed(2);
+ document.querySelector('#checkTicks').textContent=s.privateState.checkTicks;
+ document.querySelector('#targetPos').textContent='('+s.target.x.toFixed(2)+', '+s.target.y.toFixed(2)+')';
+ document.querySelector('#sweeperPos').textContent=s.sweeper.x.toFixed(2)+' · '+(s.sweeper.direction>0?'→':'←');
+ document.querySelector('#looseCount').textContent=s.loose.length;
+ const events=document.querySelector('#events');
+ events.innerHTML=s.events.slice().reverse().map(e=>'<div class="event"><span class="tick">'+e.tick+'</span><span class="kind '+e.kind+'">'+e.kind.toUpperCase()+'</span><span>'+escapeHtml(e.text)+'</span></div>').join('')||'<div class="event"><span></span><span></span><span>No events yet.</span></div>';
+}
+function escapeHtml(x){return x.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function setToggle(id,key,value,apply){
+ controls[key]=value;const b=document.querySelector('#'+id);b.setAttribute('aria-pressed',String(value));b.textContent=(id==='sensor'?'P0 gate':id==='actor'?'Actor control':id.charAt(0).toUpperCase()+id.slice(1))+' '+(value?'ON':'OFF');apply(value);
+}
+function stepFrame(ts){
+ if(lastTs===0)lastTs=ts;
+ const delta=Math.min(80,ts-lastTs);lastTs=ts;
+ if(running&&lab){
+  accumulator+=delta/1000*Number(speedSel.value);
+  let steps=0;
+  while(accumulator>=DT&&steps<18){lab.step();accumulator-=DT;steps++;}
+ }
+ draw();requestAnimationFrame(stepFrame);
+}
+function resetLab(){
+ if(lab)lab.destroy();
+ lab=new OwnerFieldLab();running=true;runBtn.textContent='Ⅱ Pause world';lastTs=0;accumulator=0;
+ for(const k of Object.keys(controls))controls[k]=true;
+ for(const id of ['memory','sensor','actor','sweeper','occluder']){const b=document.querySelector('#'+id);b.setAttribute('aria-pressed','true');}
+ document.querySelector('#memory').textContent='Memory ON';document.querySelector('#sensor').textContent='P0 gate ON';document.querySelector('#actor').textContent='Actor control ON';document.querySelector('#sweeper').textContent='Sweeper ON';document.querySelector('#occluder').textContent='Occluder ON';
+ draw();
+}
+runBtn.addEventListener('click',()=>{running=!running;runBtn.textContent=running?'Ⅱ Pause world':'▶ Run world';});
+resetBtn.addEventListener('click',resetLab);
+lensBtn.addEventListener('click',()=>{actorLens=!actorLens;lensBtn.setAttribute('aria-pressed',String(actorLens));lensBtn.textContent=actorLens?'◉ Microscope lens':'◎ Actor lens';document.querySelector('#lensNote').textContent=actorLens?'Actor lens: hidden target is not rendered':'Microscope view: hidden World truth visible';draw();});
+
+document.querySelector('#reveal').addEventListener('click',()=>lab.setTargetPosition(-1.8,1.8));
+document.querySelector('#hide').addEventListener('click',()=>lab.setTargetPosition(2.2,1.8));
+document.querySelector('#lane').addEventListener('click',()=>lab.setTargetPosition(.8,-2.65));
+document.querySelector('#left').addEventListener('click',()=>lab.shoveTarget(-1.3,0));
+document.querySelector('#right').addEventListener('click',()=>lab.shoveTarget(1.3,0));
+document.querySelector('#up').addEventListener('click',()=>lab.shoveTarget(0,1.3));
+document.querySelector('#down').addEventListener('click',()=>lab.shoveTarget(0,-1.3));
+document.querySelector('#memory').addEventListener('click',()=>setToggle('memory','memory',!controls.memory,v=>lab.setMemoryEnabled(v)));
+document.querySelector('#sensor').addEventListener('click',()=>setToggle('sensor','sensor',!controls.sensor,v=>lab.setSensorEnabled(v)));
+document.querySelector('#actor').addEventListener('click',()=>setToggle('actor','actor',!controls.actor,v=>lab.setActorEnabled(v)));
+document.querySelector('#sweeper').addEventListener('click',()=>setToggle('sweeper','sweeper',!controls.sweeper,v=>lab.setSweeperEnabled(v)));
+document.querySelector('#occluder').addEventListener('click',()=>setToggle('occluder','occluder',!controls.occluder,v=>lab.setOccluderEnabled(v)));
+document.querySelector('#clearMemory').addEventListener('click',()=>lab.clearActorMemory());
+document.querySelector('#addLoose').addEventListener('click',()=>lab.spawnLoose());
+document.querySelector('#clearLoose').addEventListener('click',()=>lab.clearLoose());
+document.querySelector('#pokeActor').addEventListener('click',()=>lab.shoveActor(0.7,-.5));
+
+function pointerWorld(ev){
+ const rect=canvas.getBoundingClientRect(),{w,h}=fitCanvas(),t=transforms(w,h);
+ return t.from(ev.clientX-rect.left,ev.clientY-rect.top);
+}
+canvas.addEventListener('pointerdown',ev=>{
+ if(!lab)return;const p=pointerWorld(ev),s=lab.snapshot();
+ if(Math.hypot(p.x-s.target.x,p.y-s.target.y)<=.75){
+  dragging=true;dragMoved=false;canvas.setPointerCapture(ev.pointerId);
+ }
+});
+canvas.addEventListener('pointermove',ev=>{
+ if(!dragging||!lab)return;const p=pointerWorld(ev);lab.setTargetPosition(p.x,p.y,false);dragMoved=true;
+});
+function endDrag(ev){
+ if(!dragging||!lab)return;const p=pointerWorld(ev);dragging=false;if(canvas.hasPointerCapture(ev.pointerId))canvas.releasePointerCapture(ev.pointerId);
+ if(dragMoved)lab.setTargetPosition(p.x,p.y,true);
+}
+canvas.addEventListener('pointerup',endDrag);canvas.addEventListener('pointercancel',()=>{dragging=false;});
+window.addEventListener('resize',draw);
+
+try{
+ await initE0Rapier();resetLab();requestAnimationFrame(stepFrame);
+}catch(e){
+ bootError.style.display='block';bootError.textContent='Field Lab boot failed: '+String(e);
+ runBtn.disabled=true;resetBtn.disabled=true;
+}
+</script>
+</body>
+</html>

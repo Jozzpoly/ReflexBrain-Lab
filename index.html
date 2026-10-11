@@ -1,28 +1,99 @@
 <!doctype html>
-<html lang="en">
+<html lang="pl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ReflexBrain Lab — Organism Recovery</title>
-  <style>
-    html,body{margin:0;min-height:100%;background:#0d1117;color:#d8e0e8;font:15px/1.55 system-ui,sans-serif}
-    main{max-width:760px;margin:0 auto;padding:56px 24px}
-    h1{font-size:28px;margin:0 0 8px} h2{font-size:17px;margin:32px 0 8px}
-    p{color:#b6c2cf} code{background:#171d25;padding:2px 5px;border-radius:4px}
-    a{color:#9bc8ff}.status{border:1px solid #2c3743;background:#121820;padding:18px;border-radius:8px}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b121d">
+<title>ReflexBrain · Living-Substrate Research</title>
+<style>
+:root{color-scheme:dark;--bg:#080f18;--panel:#122033;--ink:#e7f0fa;--sub:#a3b4c9;--edge:#2b3e52;--cyan:#72e2da;--green:#9de7ac;--amber:#f4cb84;--purple:#b5a5f4}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse 850px 520px at 75% -15%,#1a3b50 0%,transparent 65%),var(--bg);color:var(--ink);font:15px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1050px;margin:auto;padding:29px clamp(18px,4vw,36px) 60px}
+a{color:var(--cyan);text-underline-offset:3px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:0 0 66px}
+.logo{font-size:13px;letter-spacing:.14em;font-weight:820;color:var(--cyan);text-transform:uppercase}
+.top a{font-size:13px;color:var(--sub)}
+.eyebrow{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--cyan);font-weight:700}
+h1{max-width:850px;margin:12px 0 18px;font-size:clamp(31px,5.4vw,64px);font-weight:750;line-height:1.12;letter-spacing:-.055em}
+.lead{max-width:740px;color:var(--sub);font-size:17px;line-height:1.7;margin:0 0 23px}
+.hero{margin-bottom:55px}
+.pills{display:flex;flex-wrap:wrap;gap:10px}
+.pill{border:1px solid #33516a;background:#13283a;padding:5px 12px;border-radius:99px;font-size:12px;color:#a8d7d6;font-weight:650}
+.pill.warn{color:var(--amber);border-color:#6b513a;background:#2b231d}
+h2{font-size:20px;letter-spacing:-.025em;margin:37px 0 13px}
+.feature{display:block;text-decoration:none;color:inherit;border:1px solid #355268;border-radius:18px;background:linear-gradient(125deg,#1c4051,#162839 55%,#151f32);padding:23px 25px;transition:transform .15s,border-color .15s}
+.feature:hover{transform:translateY(-2px);border-color:var(--cyan)}
+.feature-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.tag{font-size:11px;color:var(--green);letter-spacing:.07em;font-weight:800}
+.goto{font-size:24px;color:var(--cyan)}
+.feature h3{font-size:26px;letter-spacing:-.04em;margin:10px 0}
+.feature p{font-size:15px;max-width:800px;color:#bcd3db;margin:0}
+.stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px}
+.stat{font-size:12px;color:#a4bfd1;border-left:2px solid #4b8491;padding-left:11px}
+.stat strong{display:block;color:#e8f4f7;font-size:17px}
+.chain{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:17px 0 3px;color:#b2c5d8;font-size:13px}
+.chain span{display:inline-block;padding:6px 9px;border:1px solid var(--edge);border-radius:7px;background:#141f30}
+.chain b{color:#49647d}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:17px}
+.block{border:1px solid var(--edge);background:var(--panel);border-radius:13px;padding:19px 19px 21px}
+.block h3{font-size:15px;margin:0 0 8px}
+.block p{font-size:13px;color:var(--sub);margin:0 0 11px}
+.block a{font-size:13px}
+.archive{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.archive a{color:var(--sub);padding:11px 13px;border-radius:9px;border:1px solid var(--edge);text-decoration:none;background:#101b2b;font-size:13px}
+.archive a:hover{color:var(--cyan);border-color:#41657c}
+.warning{border-left:3px solid #866849;padding:8px 0 8px 18px;margin-top:30px;color:var(--sub);font-size:13px}
+footer{border-top:1px solid var(--edge);margin-top:44px;padding-top:20px;font-size:12px;color:#8fa3b8}
+@media(max-width:650px){.top{margin-bottom:40px}.split,.archive{grid-template-columns:1fr}.feature h3{font-size:22px}.feature{padding:19px}}
+</style>
 </head>
 <body>
 <main>
-  <h1>ReflexBrain Lab — Organism Recovery</h1>
-  <div class="status">
-    <strong>Active frontier:</strong> O0 Persistent Organism Recovery is being redesigned and is not implemented yet.
-    <p>E0.0 remains a frozen, qualified body/microscope donor. Its organism-level promotion was rejected after Owner review.</p>
-  </div>
-  <h2>Frozen specimen</h2>
-  <p><a href="./probes/e0-authoritative-body.html?view=owner">Open E0.0 Owner surface</a></p>
-  <h2>Canonical repository truth</h2>
-  <p>See <code>docs/ORGANISM_RECOVERY_CURRENT_TRUTH_2026-10-06.md</code> and <code>docs/REFLEXBRAIN_SALVAGE_MAP_2026-10-06.md</code>.</p>
+<nav class="top"><span class="logo">◈ ReflexBrain / Lab</span><a href="https://github.com/Jozzpoly/ReflexBrain-Lab">Repository ↗</a></nav>
+<section class="hero">
+<div class="eyebrow">Embodied-agent research · living substrate</div>
+<h1>Od materialnego świata do prywatnego znaczenia.</h1>
+<p class="lead">ReflexBrain bada, czy tani, lokalny, uczony organ może kiedyś wydobywać actor-relative meaning z doświadczenia naprawdę kontynuującego życie aktora. Zanim spróbujemy go zbudować, sprawdzamy, czy ciało, zmysły, pamięć i świat mają rzeczywiste konsekwencje.</p>
+<div class="pills"><span class="pill">World ≠ private evidence</span><span class="pill">History → physical action</span><span class="pill warn">No organism claim</span></div>
+</section>
+<section aria-labelledby="observe">
+<h2 id="observe">Wejdź do świata</h2>
+<a class="feature" href="./probes/owner-field-lab.html">
+<div class="feature-head"><span class="tag">● OWNER FIELD LAB · LIVE / UNQUALIFIED</span><span class="goto">↗</span></div>
+<h3>Zrób coś światu i zobacz, co zostanie.</h3>
+<p>Jeden ciągły fizyczny specimen zamiast nagranego przebiegu. Przeciągaj materialny obiekt, wrzucaj go pod niezależny proces, odcinaj aktorowi pamięć albo P0, zatrzymuj jego control przy nadal żyjącym świecie i przełączaj Actor Lens / Microscope.</p>
+<div class="stats"><div class="stat"><strong>∞</strong>live run</div><div class="stat"><strong>✋</strong>bezpośrednie interwencje</div><div class="stat"><strong>◎</strong>actor-private lens</div></div>
+</a>
+<div class="chain" aria-label="Sposób pracy medium"><span>Intervene</span><b>→</b><span>Watch</span><b>→</b><span>Break assumption</span><b>→</b><span>Reset</span><b>→</b><span>Try again</span></div>
+
+<h2 style="margin-top:28px">Evidence microscope</h2>
+<a class="feature" href="./probes/c01-continuous-monitor.html" style="background:linear-gradient(125deg,#16283a,#121d2c 60%,#121a28)">
+<div class="feature-head"><span class="tag" style="color:var(--amber)">C01 · QUALIFIED MECHANISTIC REPLAY</span><span class="goto">↗</span></div>
+<h3 style="font-size:21px">Private time, real consequences</h3>
+<p>Kontrolowany czteroświatowy replay pozostaje jako evidence: dobry do sprawdzania jednego konkretnego causal claimu, ale nie jako główne laboratorium Ownera.</p>
+</a>
+</section>
+<section>
+<h2>Źródła prawdy</h2>
+<div class="split">
+<div class="block"><h3>Odzyskanie aktualnego stanu</h3><p>Strona jest wejściem do doświadczeń, nie dziennikiem najnowszego HEAD. Aktualne decyzje, zamknięte runy i następne pytania są prowadzone w repo.</p><a href="https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/pre-o0-foundations-campaign/docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md">Otwórz jedyny bieżący execution state ↗</a></div>
+<div class="block"><h3>Falsyfikacja zamiast dekoracji</h3><p>PASS dotyczy zamrożonego pytania. Prawidłowy ruch, zapis pamięci i niewyciekający sensor nie dowodzą motywacji, uczenia, tożsamości ani życia.</p><a href="https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/pre-o0-foundations-campaign/docs/CONTINUE_HERE.md">Zasady i recovery entrypoint ↗</a></div>
+</div>
+</section>
+<section>
+<h2>Archiwum prób fizycznych</h2>
+<div class="archive">
+<a href="./probes/e0-authoritative-body.html?view=owner">E0.0 · ręcznie sterowane ciało</a>
+<a href="./probes/b01c-actual-b0-effectivity.html">B01c · faktyczna przepustowość i opór</a>
+<a href="./probes/b01b-b0-scale-passage.html">B01b · dopasowanie geometrii do ciała</a>
+<a href="./probes/e02b-robustness.html">E02b · różnorodność przeszkody</a>
+<a href="./probes/e02a-passage-composition.html">E02a · kompozycja materiału</a>
+<a href="./probes/e01-independent-mechanical-process.html">E01 · niezależny proces mechaniczny</a>
+</div>
+</section>
+<p class="warning">Ważna granica: C01 jest odtwarzalnym eksperymentem z <strong>authored local control</strong>. Własne potrzeby, zachowanie w bogatszej ekologii i wyuczone znaczenie pozostają nieudowodnione. Dawny Persistent Playground jest materiałem badawczym, nie obowiązkową architekturą.</p>
+<footer>Jozzpoly / ReflexBrain Lab · Evidence-rich backward, clean forward · <a href="https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6">Active research PR #6</a></footer>
 </main>
 </body>
 </html>

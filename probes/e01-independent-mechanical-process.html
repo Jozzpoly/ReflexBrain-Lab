@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReflexBrain OCTRL-E01 — Independent Mechanical Process</title>
+<style>
+html,body{margin:0;height:100%;background:#0d1117;color:#d8e0e8;font:14px/1.4 system-ui,sans-serif}
+body{display:grid;grid-template-columns:minmax(0,1fr) 360px;overflow:hidden}
+main{min-width:0;display:grid;place-items:center;background:#090d12}
+canvas{width:100%;height:100%;display:block}
+aside{padding:16px;background:#141a21;border-left:1px solid #2a333e;overflow:auto}
+h1{font-size:16px;margin:0 0 10px} h2{font-size:13px;margin:18px 0 8px;color:#a9bbcc}
+.good{color:#89e39f}.bad{color:#ff8f8f}.muted{color:#8494a5}
+pre{white-space:pre-wrap;background:#0b1015;border:1px solid #28323c;padding:10px;border-radius:6px;font-size:12px}
+button{background:#26313c;color:#e5edf4;border:1px solid #40505f;border-radius:5px;padding:7px 10px;margin-right:5px;cursor:pointer}
+.legend{display:grid;grid-template-columns:14px 1fr;gap:6px 8px;align-items:center;color:#aebbc8}
+.sw{width:12px;height:12px;border-radius:3px}
+</style>
+</head>
+<body>
+<main><canvas id="c"></canvas></main>
+<aside>
+<h1>OCTRL-E01 — Independent Mechanical Process Null</h1>
+<div id="boot" class="muted">Loading deterministic Rapier…</div>
+<p class="muted">No actor brain, concern, memory, perception, chokepoint or gate. Direction changes only on physical end-stop contact.</p>
+<h2>Automated evidence</h2>
+<pre id="evidence">pending</pre>
+<div>
+<button id="pause">Pause</button>
+<button id="reset">Reset pair</button>
+</div>
+<h2>Live comparison</h2>
+<pre id="live"></pre>
+<h2>Legend</h2>
+<div class="legend">
+<div class="sw" style="background:#95a7b8"></div><div>shuttle</div>
+<div class="sw" style="background:#d8b86d"></div><div>loose body (interaction only)</div>
+<div class="sw" style="background:#56616c"></div><div>physical end-stops / corridor</div>
+</div>
+</aside>
+<script type="module">
+import {
+  initE01Rapier,
+  createE01Scenario,
+  stepE01Scenario,
+  destroyE01Scenario,
+  snapshotE01Scenario,
+  runE01Campaign,
+  E01_DT
+} from '../src/e01-mechanical.ts';
+
+const canvas=document.querySelector('#c');
+const ctx=canvas.getContext('2d');
+const boot=document.querySelector('#boot');
+const evidence=document.querySelector('#evidence');
+const live=document.querySelector('#live');
+const pause=document.querySelector('#pause');
+const reset=document.querySelector('#reset');
+
+function resize(){
+  const r=canvas.getBoundingClientRect(),d=Math.max(1,devicePixelRatio||1);
+  canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);
+  ctx.setTransform(d,0,0,d,0,0);
+}
+addEventListener('resize',resize);resize();
+
+await initE01Rapier();
+boot.textContent='Rapier deterministic-compat 0.20.0 loaded';
+boot.className='good';
+
+const campaign=runE01Campaign();
+evidence.className=campaign.pass?'good':'bad';
+evidence.textContent=[
+  'E01 '+(campaign.pass?'PASS':'FAIL'),
+  'deterministic repeat: '+(campaign.deterministic?'PASS':'FAIL'),
+  'control right reversal tick: '+campaign.control.rightReversalTick,
+  'interaction right reversal tick: '+campaign.interaction.rightReversalTick,
+  'reversal timing delta: '+campaign.reversalDelayTicks+' ticks',
+  'first loose contact tick: '+campaign.interaction.firstLooseContactTick,
+  'loose contact ticks: '+campaign.interaction.looseContactTicks,
+  'persistent loose displacement: '+(campaign.persistentDisplacement??NaN).toFixed(3),
+  'reversal causes: '+campaign.interaction.directionEvents.map(e=>e.cause+'@'+e.tick).join(', '),
+  campaign.reasons.length ? '\nFAIL reasons:\n- '+campaign.reasons.join('\n- ') : ''
+].join('\n');
+
+let control,interaction,paused=false,acc=0,last=performance.now();
+function rebuild(){
+  if(control) destroyE01Scenario(control);
+  if(interaction) destroyE01Scenario(interaction);
+  control=createE01Scenario(false);
+  interaction=createE01Scenario(true);
+  acc=0;last=performance.now();
+}
+rebuild();
+
+pause.onclick=()=>{paused=!paused;pause.textContent=paused?'Run':'Pause'};
+reset.onclick=()=>rebuild();
+
+const PX=58;
+function map(x,y,cx,cy){return [cx+x*PX,cy+y*PX]}
+function drawScenario(state,cx,cy,title){
+  const w=10.7*PX,h=3.1*PX;
+  ctx.save();
+  ctx.translate(cx-w/2,cy-h/2);
+  ctx.fillStyle='#0c1218';ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle='#27313a';ctx.strokeRect(0,0,w,h);
+  ctx.restore();
+
+  ctx.fillStyle='#b9c6d2';ctx.font='600 13px system-ui';ctx.textAlign='left';
+  ctx.fillText(title,cx-w/2,cy-h/2-9);
+
+  const snap=snapshotE01Scenario(state);
+  const originX=cx,originY=cy;
+
+  ctx.fillStyle='#56616c';
+  for(const x of [-4.35,4.35]){
+    const [sx,sy]=map(x,0,originX,originY);
+    ctx.beginPath();ctx.arc(sx,sy,.28*PX,0,Math.PI*2);ctx.fill();
+  }
+  for(const y of [-1.2,1.2]){
+    const [sx,sy]=map(0,y,originX,originY);
+    ctx.fillRect(sx-5.4*PX,sy-.12*PX,10.8*PX,.24*PX);
+  }
+
+  const [sx,sy]=map(snap.shuttle.x,snap.shuttle.y,originX,originY);
+  ctx.fillStyle='#95a7b8';ctx.beginPath();ctx.arc(sx,sy,.55*PX,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#d9e2ea';ctx.lineWidth=2;ctx.stroke();
+
+  if(snap.loose){
+    const [lx,ly]=map(snap.loose.x,snap.loose.y,originX,originY);
+    ctx.fillStyle='#d8b86d';ctx.beginPath();ctx.arc(lx,ly,.32*PX,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='#f2dfaa';ctx.stroke();
+  }
+}
+
+function render(){
+  const w=canvas.clientWidth,h=canvas.clientHeight;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle='#090d12';ctx.fillRect(0,0,w,h);
+  drawScenario(control,w/2,h*.31,'CONTROL — no loose body');
+  drawScenario(interaction,w/2,h*.70,'INTERACTION — loose body on path');
+
+  const a=snapshotE01Scenario(control),b=snapshotE01Scenario(interaction);
+  live.textContent=[
+    'tick '+a.tick+(paused?' [PAUSED]':''),
+    'control x='+a.shuttle.x.toFixed(3)+' dir='+a.direction+' rightEnd='+a.rightReversalTick,
+    'interact x='+b.shuttle.x.toFixed(3)+' dir='+b.direction+' rightEnd='+b.rightReversalTick,
+    b.loose ? 'loose x='+b.loose.x.toFixed(3)+' y='+b.loose.y.toFixed(3)+' speed='+b.loose.speed.toFixed(3) : '',
+    'loose contact ticks='+b.looseContactTicks,
+    'direction events='+interaction.directionEvents.map(e=>e.cause+'@'+e.tick).join(', ')
+  ].filter(Boolean).join('\n');
+}
+
+function frame(now){
+  const elapsed=Math.min(.08,(now-last)/1000);last=now;
+  if(!paused){
+    acc+=elapsed;
+    let guard=0;
+    while(acc>=E01_DT && guard++<20){
+      stepE01Scenario(control);
+      stepE01Scenario(interaction);
+      acc-=E01_DT;
+    }
+  }
+  render();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

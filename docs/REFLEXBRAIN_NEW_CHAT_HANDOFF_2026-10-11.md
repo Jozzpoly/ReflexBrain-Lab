@@ -1,0 +1,98 @@
+# ReflexBrain — agent-only new-conversation recovery, 2026-10-11
+
+
+> **LATER LIVE DELTA · 2026-10-11 · read BEFORE the older recovery snapshot below.**  
+> **F3A is no longer merely a proposed next experiment.** An existing frozen `run/rb-f3a-action-touch-relation` protocol was executed on [research draft PR #56](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/56). [Exact-source GitHub CI 38103402752](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38103402752) at `bd0b95bddc97df3392001aba0e1b47309adf5a96`: 28/28 test files, 45/45 tests, TS/build PASS. Frozen scientific **F3A PASS (bounded)**: 12/12 informative contact episodes, 6 M_WORSE / 6 M_BETTER, actor-private `Q = body-local signed touch × own M-drive` AUC 1.00, sign 12/12, R and binary-touch AUC 0.50, signed-touch-alone AUC 0.222, six free controls zero, deterministic exact private-history parity. Full [F3A result](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/run/rb-f3a-action-touch-relation/docs/competence-runs/RB-F3A_RESULT.md) includes the no-wall-ID sensor audit, known limits and next falsifiers. Latest docs-attached research-head CI [38103501072](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38103501072) also PASS.  
+> **No promotion:** Q is handwritten; action comparison and 1D world / immediate speed+impulse cost are researcher-authored. Zero-drive fallback and symmetric rigid walls make this a small physically interpretable qualification, **not** learned meaning, new ontology, general policy or Owner-approved living organism. PR #56 stays DRAFT and unmerged; no experimental code transferred to canonical. **Do not relaunch/retune F3A.** Next significant pressure: changed alternative actions, non-collinear/multi-actor contacts and actual continuing activity against cheap physical baselines; or reconsider whether that pressure is more useful than direct actor-owned-significance research.  
+> **GitHub reconciliation:** documentation PR #55 **MERGED** into canonical `research/pre-o0-foundations-campaign` at `e36d3ae03ce198b49616977d5f5b3c79df9ca255` before this delta. Verify live branch/PR refs again on recovery; these SHAs are only evidence anchors.
+
+
+**Status: CROSS-CONVERSATION HANDOFF / LIVE-VERIFIED RESEARCH MAP.** This is not a new project, a product release, or an authorization to merge code. Intended reading time ~5 min; follow evidence references selectively. The long underlying thread reached a natural clean-chat boundary after L1–C7 retinal/body research, two draft PRs and a critical project-wide audit.
+
+## FIRST ACTION IN A NEW CHAT
+
+1. Recover Owner intent from this page and the project charter; **then check live GitHub**, rather than treating any embedded SHA as a timeless source of truth.
+2. Verify canonical branch `research/pre-o0-foundations-campaign` / [draft PR #6](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6); check whether any other agent has changed or merged it.
+3. Verify [Vision draft PR #54](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/54), [documentation/handoff PR #55](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/55), and [separate early Vision draft PR #53](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/53), their bases, changed files and CI before further writes.
+4. Re-evaluate the frontier from **G5A PASS; F2/P0 scientific FAIL; F3/D0 material private alias** and negative Vision results. Next move should generate *new useful knowledge/competence*, not simply another pile of tests or prose.
+
+## SOURCE-OF-TRUTH ROUTES (as observed 2026-10-11)
+
+| Route | State | Why it matters |
+|---|---|---|
+| `main` @ `75b95725292fb73d9c8e322bce05bd285aeec237` | **Historical R0 README-only**, NOT current working project | Never implement against it merely because GitHub says default; repository normalization is a separate controlled operation |
+| `research/pre-o0-foundations-campaign` @ `09c17cbf699df5ebab12a7cf60db943b5c0af954` / draft PR #6 | **Canonical experimental foundation** | G5A, F2/P0 and F3/D0 results are ALREADY integrated into this branch |
+| `research/living-organism-runtime-a-2026-10-08` | Independently executable scout/donor, NOT canon | Source of LivingWorld 96 native RGB rays / 30Hz and authored ApproachEpisode/Occupant |
+| `research/vision-lived-retina-loop-2026-10-10` @ `3ed883c3362cc2ae05a8c41fc54f0b005c7065b6` / draft PR #54 | **Narrow executable Vision scout + unexecuted D protocol** | Base = Living Organism donor branch, not canonical; **no `src/` diff** from its base |
+| `research/competence-vision-f3f4-reconciliation-2026-10-11` / documentation PR #55 | Stewardship and THIS handoff, eligible for docs-only integration | Base = canonical pre-O0 branch; verify live whether merged; NOT Vision runtime donor |
+| PR #53 (independent `RB-VISION/V1–V7`) | Separate research on ideal range-ray and temporal focus (34/34 files,65/65 tests on earlier exact head) | Some use idealized range rather than native RGB. Do NOT conflate #53 with #54 or close it merely because #54 exists |
+
+GitHub exact-run evidence verified on the last relevant code:
+- [G5A source](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38084563875) 25 files/37 tests, **Gate 1 PASS + Gate 2 PASS**: World-side independent process touches hidden target tick111, actor CHECK from legal history at231, first PRIVATE divergence313, MOTOR divergence314, body-odometry divergence315. No hidden leak, memory ablation prevents CHECK. Authored C01, not living intelligence. [Result](runs/OCTRL-G5A_RESULT.md).
+- [F2/P0](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38085177499) 26 files/40 tests, **scientific FAIL**, even though CI PASS: mismatch R detects altered dynamics, but does not prove model M worse than simpler F; R AUC .94118 equals simple touch baseline. [Result](competence-runs/RB-F2-P0_RESULT.md). **Do not repair the frozen failed trial post-hoc.**
+- [F3/D0](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38085574709) 27 files/42 tests, **material private alias DISCOVERED**: identical scalar/binary F2 private histories, opposite sign of M-vs-F action regret (+.64608 / −.64608). Lawful *directional touch relative to own body* separates the two mirrored causal worlds; **no policy/reason qualification**. [Result](competence-runs/RB-F3-D0_RESULT.md).
+- [Vision PR #54 CI on its latest protocol-doc HEAD](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38098650514): **53/53 files,153/153 tests, TS/build PASS**. This verifies C-series and old tests still build; **does NOT execute D1–D4**.
+- [Competence PR #55 earlier docs-only CI](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/38097736095): 27/27 files,42/42 tests PASS on earlier head. Recheck final PR and canonical integration CI; docs-only PASS does not upgrade scientific claims.
+
+The prior `docs/CONTINUE_HERE.md`, `docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md` and early sections of `docs/REFLEXBRAIN_COMPETENCE_CONTROL_ROOM_2026-10-10.md` contain valid HISTORICAL run chronology but outdated imperative `next: RB-COMP/R1 / G5A / F2/P0`. This handoff supersedes their outdated scheduling; the old text is not to be deleted as evidence. Current updates should add a top-level current marker, not rewrite immutable result reports.
+
+## THE ACTUAL PROJECT AND OWNER INTENT
+
+ReflexBrain is NOT just one candidate neural learned organ. **It is the steward of local embodied actor-private intelligence competence** across related labs, with its own physical/epistemic research. The eventual cheap learned ReflexBrain organ should extract **actor-relative meaning from its own lawful temporal experience** inside an already viable local organism. It must NOT become omniscient World authority, a global memory, complete planner, motor controller, narrator or disguised mini-LLM. Local live brain and material world have their own responsibilities.
+
+Owner specifically demanded that ReflexBrain not stand still while relevant work happens only in Combat Lab / LLM Live NPC / Feniks; its Control Room independently scans, classifies, falsifies and selects donor work without imposing a shared architecture.
+
+Early R0–R3 and Persistent Playground were material research, not designs to replay by inertia. Owner-rejected R2 click-driven intervention and earlier weak organism specimens remain **product FAIL**, regardless of machine CI. Persistent embodied world is worth pursuing; specific old organisms/heuristics are not automatically worth preserving. The Owner prefers genuine lengthy autonomous project work and extremely concise status, with robust interruption/handoff, rather than repeated five-minute requests to say `kontynuuj`. **Research must improve what organisms can actually do**, not merely the volume of logs, tests, commits or labels.
+
+Important more recent Owner vision: perception for NPC need not literally be PNG, full RGB raster or high-cost eye. It could be multi-scale and designed for private agent-readable temporal evidence. Focus's corrected role is **to recover fine/distant detail that broad vision cannot resolve**, accepting cost in time/periphery; more time centered on a turquoise object is NOT the scientific target. Keep representation open, avoid freezing `96 rays` or `80+16` as product architecture. Feniks/LOD's World is an inspiration, not an implementation target here.
+
+Non-negotiable epistemic boundary: physical World truth != private percept != belief/history != host microscope; relevant absence/change cannot reach the actor before lawful observation. Same sensory novelty/mismatch is not itself a reason, goal, threat or contact-success label. Machine PASS cannot nullify Owner FAIL.
+
+## RECONCILED L1–C7 VISION FINDINGS: EVIDENCE, FAILURES, LIMITS
+
+Full reports exist on PR #54 under `docs/vision/`. Control-room reconciliation on PR #55 is `docs/competence-runs/RB-COMP_VISION_F3F4_RECONCILIATION_2026-10-11.md`.
+
+- **A1–A10 detail/acquisition:** legal native 96 RGB rays with finite gaze can acquire small two-color distant details while losing small/peripheral information; fake 96-ray spatial redistribution is a *research transducer*, not native reallocatable retina. A3 dual-band 80/16 does NOT dominate across tiny peripheral events; static parallax predictions become stale when matter moves; no learned identity or motivation.
+- **B1–B3 history → inquiry → material action:** exact matched-current physical/private fork showed different previous visual history can cause gaze recovery and real Rapier touch through authored ApproachEpisode. But unconditional cheap sweep can reach target *sooner*; previous target interest is authored, not learned.
+- **B4–B5 actual experience-updated attention:** a test-only contextual bandit learns eye choice from private touch, time and gaze demand. On 7 held-out scenes **learned 3/7 = authored history-gate 3/7; always-sweep 5/7**. With 36 novelty-prevalent new trials, greedy no-exploration **0/36**, researcher-forced exploratory learner **22/36**, always-sweep **30/36**; on later 12 empty trials the learner wastes 12/12 scans. Legal learning of action values is narrow; **not self-born interest, general policy or living brain**.
+- **C1–C3 false success:** pre-existing authored controller stops on ANY positive touch; an unrelated physical collider at tick84 stops it while real target is 6.35m away, yielding *higher* authored reward than true target contact at tick504. Twenty real off-target contacts (five event times, two sides, two colors) defeat any single cheap touch/sector/familiar-color/elapsed-travel success rule. Eleven additional real target contacts provide varied positive controls.
+- **C4 exact identity alias:** **22/22 full private frame samples exactly equal** in two Worlds after an unseen swap between physically/visually identical materials. Host knows original touched in one and copy in the other. Full lawful history cannot recover the *hidden individual ID*. **Do not mistake host-only token identity for something intrinsically valuable to the actor**; materially indistinguishable things may not be worth distinguishing.
+- **C5 competence applicability:** for x=9.4m small genuine target, vision size-progress/history heuristic stalled **4.94m short**, whereas simpler no-history movement genuinely reached target at tick732. A more detailed private model may be *worse* at the edge of optical resolution.
+- **C6/C7 shortcut falsification:** cheap recent retinal patch-extent continuity accepted 5/5 real and rejected 20/20 inserted decoys (detecting teleport discontinuity), but it falsely accepted **two force-driven independent World-mover contacts** where old target remained ~3.78m away and visual patch width was unchanged. The rear mover's touch direction *can* disambiguate that scene; C1/C2 frontal distractors show direction-only is not universally enough.
+
+**Most material correction:** a learner can efficiently optimize a private outcome scalar **which itself encodes false success**. F2 model mismatch ≠ action incompetence; F3 personal success/relevance ≠ color, hidden handle or generic touch; F4 active inspection is useful only relative to lawful uncertainty affecting *continuing action*.
+
+## D1–D4: PROTOCOL ONLY, IMPLEMENTATION NOT STARTED
+
+Existing [D proposal](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/vision-lived-retina-loop-2026-10-10/docs/vision/MATERIAL_AFFORDANCE_D1_PROBE_2026-10-11.md) is a **pre-registration, not a tested mechanism**. Two attempted GitHub TypeScript test-file writes in the previous chat were refused by platform safeguards; no D code or tests exist. Documentation updates were permitted. **Do not bypass a refused code write by covertly republishing equivalent code through some other tool.** If a legitimate future path becomes available, use its own permissions; until then do source audit/planning rather than claiming execution.
+
+1. **D1:** two physically different but initially same-native-RGB objects; actor may receive own action/proprio/touch and legal history, host alone sees mass/fixed class and object displacement. Canonical E0 already proves under unchanged actor drive that mass1 vs mass4 has different post-push actor velocity (.114299 vs .045720), and P01a proves clean private consequence timing exists (but its **overall scientific claim FAILED** its contact+1 timing gate). Do not rerun those as if new.
+2. **D2:** learn appearance cue ↔ *later own action consequences* only from earlier physically experienced pushes, without a host `red=good` or handle-label reward. Initial coarse optical equivalence and no train/test leakage mandatory.
+3. **D3:** after lawful private learning, compare costly detailed LOOK with immediate ACT and tactile PROBE, cheap always-push/always-stop/always-look/always-probe rivals; measure real body action improvement, peripheral opportunity cost and physical time.
+4. **D4:** held-out cue reversal, truly uncorrelated mark, physically indistinguishable optical/material alias, natural World mover, long-distance angular quantization, new geometry, no-choice-divergence and negative task-utility arms.
+
+**Implementation trap:** native `LivingWorld` encodes one RGB color *per collider*; a drawn mark on a moving object is NOT already supported. Tiny color colliders from A1/A2 are themselves *physical*. Any non-interacting visual marker requires a demonstrably faithful optics/physics transducer and mass/inertia equivalence, not silent magic annotations. Do not promote the frozen A3 sidecar into a native sensor or treat one extra ray as free computing/attention.
+
+D is a **candidate**, not automatically the best next project move. The library already has many visually clever fixture studies with no qualified personally meaningful action.
+
+## RED TEAM / PROJECT-LEVEL DECISION FOR NEXT CHAT
+
+We spent significant real work on narrow retinal tests; they genuinely improved understanding but left the central actor-owned significance problem unresolved. **Stop accumulating A/B/C/D test suffixes by inertia.** The right question is which experiment has a plausible causal route to useful competence inside an organism, and which merely rewards our own instrumentation.
+
+**Preferred next scientific fork to independently evaluate:**
+- **F3A project-native candidate** (short, canonical substrate): under held-out mirrored/changed material contacts, test whether a lawful private *relation between own intended action and directional touch* predicts sign of M-vs-fallback **actual physical regret**, where F2's scalar mismatch and binary touch cannot. Keep right/left/family, force magnitude, sensor timing and tests disjoint from F3/D0 discovery. Do not convert it to a pre-labeled semantic `BLOCKED`/goal bit. F3/D0 already specifies this falsifier. This could establish a transferable relational *action-value* primitive (not F3 owned reasons) without Vision's yet unexecuted marker substrate.
+- **D1–D4 exploratory donor**, only if the next question specifically values learned material affordances/costly focus and lawful code execution becomes available. Don't use optics to substitute for learning a personally meaningful reason; stronger cheap body/probing baselines are mandatory.
+- Reassess **Owner-facing organism time** sooner than another large fixtures-only campaign. Existing default LivingRuntime still has authored Occupant, not a learned brain. Build an actual human-inspectable causal experiment/Owner moment only if it can expose something materially new, not because a screenshot would look pretty.
+
+**Sibling donor snapshot (verify live if used):**
+- [Combat Lab draft #10](https://github.com/Jozzpoly/Combat-Lab/pull/10) actual articulated fold/morph vs cheap rigid-width rival; cheap edit fails under obstructed expansion with extreme impulses. Material feasibility/morphology applicability DONOR, *no legs, no Owner body PASS*.
+- [Combat Lab draft #9](https://github.com/Jozzpoly/Combat-Lab/pull/9) 18 authored planar root-traction bodies and local signals create real material reciprocal effects, but not competent animal movement/owned meaning.
+- [LLM Live NPC draft #163](https://github.com/Jozzpoly/Llm-Live-NPC/pull/163) causal manual one-resident reason→model boundary with zero automatic Luna request and mock browser tests; not live Luna judgment or Owner-qualified world; **do not mutate Cloudflare/provider/security in ReflexBrain work**. Earlier R6 #156/#158 show pre-existing owned matters can make the same event relevant; #159 shows mere encounter density does not create reasons. Do not import R6 `Matter` ontology.
+
+**No experimental-code merges/deletions/main normalization by inertia.** PR #54 is a branch off noncanonical living-organism scout, PR #55 is documentation-only for canonical integration; PR #53 is another independent Vision donor. No files are to be moved from them just to unify folder layout. Canonical G5A/F2/P0/F3/D0 result files are immutable historical evidence and remain separated from future speculative changes.
+
+## CONTINUITY CONTRACT
+
+The next agent should **read this, verify live, choose one material experiment and execute a coherent long run** with high self-direction. Use evidence / falsifier / risk / next action in brief Polish Owner-facing updates. A single successful test or prepared report should not automatically terminate the run. Respect actual tool safeguards, long-run delivery boundaries and real memory/handoff; don't make the Owner rebuild the context, answer unnecessary tooling questions or repeatedly type `kontynuuj`.
+
+**This is an agent recovery substrate**, not a new architecture and not a demand for a fixed sequence. If Owner gave an updated vision after this snapshot, that outranks older proposals.

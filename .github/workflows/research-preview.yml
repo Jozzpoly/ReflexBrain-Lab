@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - experiment/organism-recovery-v0
+      - research/pre-o0-foundations-campaign
   workflow_dispatch:
 
 permissions:
