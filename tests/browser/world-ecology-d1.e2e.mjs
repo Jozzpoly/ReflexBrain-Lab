@@ -49,6 +49,9 @@ try{
  const held=await read();
  assert(held.loaded,'mass pressure did not load plate');
  await page.screenshot({path:'artifacts/world-d1/03-material-holds.png',fullPage:true});
+ const jpeg=await page.screenshot({type:'jpeg',quality:44,fullPage:false});
+ console.log('RB_WORLD_D1_SCREEN_JPEG '+jpeg.toString('base64'));
+ await fs.writeFile('artifacts/world-d1/03-material-holds.jpg',jpeg);
  await page.locator('#pause').click();
  await page.locator('#world').scrollIntoViewIfNeeded();
  rect=await page.locator('#world').boundingBox();assert(rect,'no canvas after pause');
