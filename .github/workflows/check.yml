@@ -138,3 +138,36 @@ jobs:
           name: reflexbrain-s0-lite-browser-evidence
           path: artifacts/rb-owner
           if-no-files-found: ignore
+
+  browser-material-public-pages:
+    if: github.event_name == 'pull_request' && github.head_ref == 'research/material-organism-owner-view-2026-10-11'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check public page and independent JS asset availability
+        run: |
+          URL="https://jozzpoly.github.io/ReflexBrain-Lab/playmat-s0/"
+          curl --fail --silent --show-error "$URL" -o /tmp/rb-public.html
+          grep -q 'Czy ta istota naprawdę potrafi' /tmp/rb-public.html
+          JS=$(grep -oE 'src="./assets/[^"]+\\.js"' /tmp/rb-public.html | head -1 | sed -e 's/^src="//' -e 's/"$//')
+          if [ -z "$JS" ]; then echo "Missing built static JS asset path"; exit 1; fi
+          curl --fail --silent --show-error "$URL${JS#./}" -o /tmp/rb-public.js
+          test $(wc -c < /tmp/rb-public.js) -gt 1000000
+      - name: Install pinned browser driver
+        run: |
+          yarn install --non-interactive
+          yarn add --dev --ignore-scripts playwright-core@1.56.0
+      - name: Exercise REAL deployed Pages via Chrome including all physical endpoints
+        run: node tests/browser/material-owner-view.e2e.mjs
+        env:
+          RB_OWNER_URL: https://jozzpoly.github.io/ReflexBrain-Lab/playmat-s0/
+      - name: Preserve public-site browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflexbrain-s0-public-pages-browser-qa
+          path: artifacts/rb-owner
+          if-no-files-found: ignore
