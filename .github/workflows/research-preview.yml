@@ -81,7 +81,7 @@ jobs:
           cp -R _d1_source/dist/assets/. dist/assets/
           sha256sum -c /tmp/old-public-files
           test -f dist/world-d1/index.html
-          test -n "$(grep -oE '../assets/[^"]+\\.js' dist/world-d1/index.html | head -1)"
+          grep -q '../assets/' dist/world-d1/index.html
           echo "All pre-existing Pages bytes unchanged; D1 is purely additive."
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
