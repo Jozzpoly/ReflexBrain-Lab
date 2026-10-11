@@ -63,6 +63,7 @@ canvas.addEventListener('blur',()=>keys.clear());
 document.addEventListener('visibilitychange',()=>{keys.clear();last=0;acc=0;});
 canvas.addEventListener('pointerdown',e=>{
   if(e.button!==0)return;
+  e.preventDefault(); // avoid native pointer focus/scroll before hit testing
   // Focusing a mostly-below-fold canvas may scroll the document between
   // pointerdown and coordinate conversion. Keep the original geometry.
   const p=worldPoint(e.clientX,e.clientY);
