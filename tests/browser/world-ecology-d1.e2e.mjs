@@ -32,6 +32,10 @@ try{
  assert(Math.abs(open2.actorX)<.001,'actor moved without demand');
  await page.screenshot({path:'artifacts/world-d1/02-independent-second-opening.png',fullPage:true});
  await page.locator('#rail').selectOption('off');
+ // A mode change starts a fresh World. A previously published DOM tick may
+ // still be visible for one RAF; first prove the clock restarted.
+ await page.waitForFunction(old=>Number(document.querySelector('#world')?.dataset.tick)<old,
+   open2.tick,{timeout:12000});
  await wait('Number(document.querySelector("#world")?.dataset.tick)>12');
  const staticW=await read();
  assert(staticW.gateX<8.2,'no-rail World opens the gate');
