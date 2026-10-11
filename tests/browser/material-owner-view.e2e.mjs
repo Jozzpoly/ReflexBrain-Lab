@@ -97,6 +97,32 @@ try{
     throw Error('manual release did not return body to local policy');
   if(!/Działa bez Ownera/.test(await page.locator('#status').textContent()))
     throw Error('body failed to return to autonomous baseline');
+  // All three 60-second browser worlds must reproduce the exact original
+  // S0 scientific afterstates, not merely a moving screenshot.
+  const fullWorldResults={};
+  const frozenEndpoints=[
+    ['private-material-concern',2.90,9.2500,'05-material-60s.png'],
+    ['cheap-cyan-chase',1.34,7.5325,'06-cheap-60s.png'],
+    ['world-only',2.43,8.8305,'07-world-only-60s.png'],
+  ];
+  for(const [mode,expectedGap,expectedX,screenshot] of frozenEndpoints){
+    await page.locator('#mode').selectOption(mode);
+    await page.locator('#run60').click();
+    await page.waitForFunction(
+      ()=>Number(document.getElementById('world')?.dataset.worldTick)===7200,
+      null,{timeout:120000});
+    const physics=await pos();
+    const shownGap=Number((await page.locator('#gap').textContent())
+      ?.replace('m','').trim());
+    if(!Number.isFinite(shownGap) || Math.abs(shownGap-expectedGap)>.015)
+      throw Error('browser gap mismatch for '+mode+': '+shownGap+' vs '+expectedGap);
+    if(Math.abs(physics.targetX-expectedX)>.02)
+      throw Error('browser physical afterstate mismatch for '+mode+': '+physics.targetX);
+    if((await page.locator('#interventions').textContent())?.trim()!=='0')
+      throw Error('host intervention leaked across browser-control scenes');
+    await page.screenshot({path:'artifacts/rb-owner/'+screenshot,fullPage:true});
+    fullWorldResults[mode]={gap:shownGap,targetX:physics.targetX,tick:physics.tick};
+  }
   if(errors.length)throw Error(JSON.stringify(errors));
   const result={
     verdict:'BROWSER_ENGINEERING_PASS',initialTick:first.tick,
@@ -104,7 +130,7 @@ try{
     targetDrag:{before:{x:beforeDrag.targetX,y:beforeDrag.targetY},
       after:{x:afterDrag.targetX,y:afterDrag.targetY}},
     competitorReset:true,manualBodyDeltaX:afterManual.actorX-beforeManual.actorX,
-    releasedToLocalControl:true,consoleErrors:errors,screenshots:4,
+    releasedToLocalControl:true,fullWorldResults,consoleErrors:errors,screenshots:7,
   };
   await fs.writeFile('artifacts/rb-owner/browser-result.json',
     JSON.stringify(result,null,2)+'\n');
