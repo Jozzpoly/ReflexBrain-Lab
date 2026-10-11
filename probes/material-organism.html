@@ -17,7 +17,7 @@ p{margin:5px 0 12px;color:#afc1d0}a{color:#88d7e9}
 button,select{background:#183143;color:#e9f1f8;border:1px solid #4e697c;border-radius:8px;padding:9px 12px;font:inherit;cursor:pointer}
 button:hover,select:hover{background:#234659}
 button:focus-visible,select:focus-visible,canvas:focus-visible{outline:2px solid #8bdadd;outline-offset:2px}
-button[aria-pressed=true]{background:#225a62;border-color:#77ccca}
+button[aria-pressed=true]{background:#225a62;border-color:#77ccca}button:disabled,select:disabled{opacity:.6;cursor:wait}
 label{display:inline-flex;gap:7px;align-items:center}
 .control-label{color:#b1c4d3;font-size:13px}
 .layout{display:grid;grid-template-columns:minmax(0,2.15fr) minmax(300px,1fr);gap:15px}
@@ -57,6 +57,7 @@ canvas{display:block;width:100%;background:#091721;border-radius:7px}
 <label class="control-label" for="speed">Tempo</label>
 <select id="speed"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select>
 <button id="pause">Pauza</button>
+<button id="run60" title="Symuluje wszystkie brakujące kroki fizyki do 60 s — bez pomijania zdarzeń">Przelicz do 60 s</button>
 <button id="manual" aria-pressed="false">Przejmij ciało</button>
 <button id="reset">Nowy identyczny świat</button>
 <label class="control-label" for="microscope"><input type="checkbox" id="microscope" checked/> Pokaż mikroskop badacza</label>
@@ -71,7 +72,7 @@ canvas{display:block;width:100%;background:#091721;border-radius:7px}
 <span><i class="dot" style="background:#f5a83c"></i>fizyczny dok</span>
 <span><i class="dot" style="background:#aa6bdb"></i>niezależny mechanizm</span>
 </div>
-<p class="note">Przeciągaj ruchome obiekty bez wysyłania aktorowi żadnej wiadomości. „Przejmij ciało” → kliknij obszar świata → WASD, Q/E. „Oddaj ciało” przywraca lokalne sterowanie bez resetowania historii. Zmiana wariantu tworzy osobny, identyczny świat. Podczas ukrycia karty symulacja pauzuje.</p>
+<p class="note">„Przelicz do 60 s” wykonuje faktyczne kroki fizyki bez pomijania zdarzeń. Przeciągaj ruchome obiekty bez wysyłania aktorowi żadnej wiadomości. „Przejmij ciało” → kliknij obszar świata → WASD, Q/E. „Oddaj ciało” przywraca lokalne sterowanie bez resetowania historii. Zmiana wariantu tworzy osobny, identyczny świat. Podczas ukrycia karty symulacja pauzuje.</p>
 </section>
 <aside>
 <section class="panel">
