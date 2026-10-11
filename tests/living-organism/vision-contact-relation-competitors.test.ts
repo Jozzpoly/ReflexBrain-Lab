@@ -20,15 +20,14 @@ type Scenario={
  label:string;
  intervention:null|number;
  color:'orange'|'same-turquoise';
- lateral:number;
+ lateral:number;targetX?:number;targetRadius?:number;
 };
 type PrivateSummary={
  tick:number;touch:number;touchSector:number;
  visible:number;maxExtent:number;forward:number;drive:number;
  lastSeenTick:number;maxPreEventExtent:number;recentGaps:number;
  displacementSinceFirst:number;retinaDigest:number;
- targetAtContact:boolean;
-};
+ };
 type Row={
  scenario:Scenario;actual:'target'|'decoy'|'none';
  hostTarget:boolean;hostDecoy:boolean;tick:number|null;
@@ -70,7 +69,8 @@ function digest(f:PrivateFrame):number{
 }
 function analyze(s:Scenario):Row{
  const w=new LivingWorld(false);
- const target=w.addObject(7,0,.62,[...colors.turquoise]);
+ const target=w.addObject(s.targetX??7,0,
+  s.targetRadius??.62,[...colors.turquoise]);
  const decoy=w.addObject(-30,-30,.65,
   [...(s.color==='orange'?colors.orange:colors.turquoise)]);
  const actor=new ApproachEpisode(true,true);
@@ -107,8 +107,7 @@ function analyze(s:Scenario):Row{
      lastSeenTick:lastSeen,maxPreEventExtent:maximumExtent,
      recentGaps:lastSeen<0?Infinity:f.tick-lastSeen,
      displacementSinceFirst:travel,retinaDigest:digest(f),
-     targetAtContact:false, // host later attribution, not classifier input
-    });
+     });
     prevDrive=cmd.drive;
     cmd=actor.decide(f);
    }
@@ -198,4 +197,31 @@ describe('RB-VISION/C2 lawful private relation to prior object vs incidental tou
   // Learned classifiers will be tested only if this adversarial physical
   // suite is executable, not because simple rules happen to fail.
  },90000);
+
+ it('C3: tests genuinely reached targets at earlier/later times so the clock is not an identity oracle',()=>{
+  const moreTrue=[3.3,4.2,5.1,6.4,8.2,9.4].flatMap(
+   targetX=>[.45,.85].map(targetRadius=>analyze({
+    label:'genuine-'+targetX+'-'+targetRadius,
+    intervention:null,color:'orange',lateral:0,
+    targetX,targetRadius,
+   })));
+  const decoys=CASES.slice(1).map(analyze);
+  const controls=[...moreTrue,...decoys];
+  const confusion=scores(controls);
+  console.log('RB_VISION_C3_DISTANCE_RADIUS_HOLDOUT '+
+   JSON.stringify({truth:moreTrue.map(x=>({
+    id:x.scenario.label,actual:x.actual,tick:x.tick,
+    targetGap:+x.distanceTarget.toFixed(3),
+    extent:+x.lastPatchExtent.toFixed(3),
+    travel:+x.bodyTravel.toFixed(3),
+    rules:x.rules,
+   })),confusion,
+   falseContacts:decoys.filter(x=>x.actual==='decoy').length}));
+  expect(moreTrue.every(r=>r.actual==='target')).toBe(true);
+  expect(moreTrue.every(r=>r.tick!==null)).toBe(true);
+  expect(decoys.every(r=>r.actual==='decoy')).toBe(true);
+  // This deliberately characterizes 12 legitimate contacts beyond
+  // the original x=7m specimen, not a selected winner model.
+ },90000);
+
 });
