@@ -57,7 +57,7 @@ canvas{display:block;width:100%;background:#091721;border-radius:7px}
 <label class="control-label" for="speed">Tempo</label>
 <select id="speed"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select>
 <button id="pause">Pauza</button>
-<button id="run60" title="Symuluje wszystkie brakujące kroki fizyki do 60 s — bez pomijania zdarzeń">Przelicz do 60 s</button>
+<button id="run60" title="Symuluje wszystkie brakujące kroki fizyki do 60 s — bez pomijania zdarzeń. Ponowne kliknięcie zatrzymuje obliczenia.">Przelicz do 60 s</button>
 <button id="manual" aria-pressed="false">Przejmij ciało</button>
 <button id="reset">Nowy identyczny świat</button>
 <label class="control-label" for="microscope"><input type="checkbox" id="microscope" checked/> Pokaż mikroskop badacza</label>
@@ -72,7 +72,7 @@ canvas{display:block;width:100%;background:#091721;border-radius:7px}
 <span><i class="dot" style="background:#f5a83c"></i>fizyczny dok</span>
 <span><i class="dot" style="background:#aa6bdb"></i>niezależny mechanizm</span>
 </div>
-<p class="note">„Przelicz do 60 s” wykonuje faktyczne kroki fizyki bez pomijania zdarzeń. Przeciągaj ruchome obiekty bez wysyłania aktorowi żadnej wiadomości. „Przejmij ciało” → kliknij obszar świata → WASD, Q/E. „Oddaj ciało” przywraca lokalne sterowanie bez resetowania historii. Zmiana wariantu tworzy osobny, identyczny świat. Podczas ukrycia karty symulacja pauzuje.</p>
+<p class="note">„Przelicz do 60 s” wykonuje faktyczne kroki fizyki bez pomijania zdarzeń; możesz przerwać i później kontynuować. Przeciągaj ruchome obiekty wewnątrz fizycznego podwórka bez wysyłania aktorowi żadnej wiadomości. „Przejmij ciało” → kliknij obszar świata → WASD, Q/E. „Oddaj ciało” przywraca lokalne sterowanie bez resetowania historii. Zmiana wariantu tworzy osobny, identyczny świat. Podczas ukrycia karty symulacja pauzuje.</p>
 </section>
 <aside>
 <section class="panel">
@@ -84,12 +84,12 @@ canvas{display:block;width:100%;background:#091721;border-radius:7px}
 <div class="metric"><div class="caption">Czas symulacji</div><strong id="tick">0.0 s</strong></div>
 <div class="metric"><div class="caption">Zmiana względem startu</div><strong id="change">—</strong></div>
 <div class="metric"><div class="caption">Fizyczny kontakt z przedmiotem</div><strong id="contacts">0 próbek</strong></div>
-<div class="metric"><div class="caption">Interwencje obserwatora</div><strong id="interventions">0</strong></div>
+<div class="metric"><div class="caption">Interwencje: przeciąganie / przejęcie ciała</div><strong id="interventions">0</strong></div>
 </div>
 <div class="line"></div>
 <div class="caption">Stan symulacji</div>
-<div id="status">Uruchamianie</div>
-<div class="caption" id="phase"></div>
+<div id="status" role="status" aria-live="polite">Uruchamianie</div>
+<div class="caption" id="phase" aria-live="polite"></div>
 </section>
 <section class="panel" style="margin-top:15px">
 <h2>Wzrok aktora · 96 RGB, 30 Hz</h2>
@@ -99,6 +99,7 @@ canvas{display:block;width:100%;background:#091721;border-radius:7px}
 </section>
 </aside>
 </div>
+<p class="note"><strong>Pułapka percepcji:</strong> poza bursztynowym dokiem w świecie jest drugi bursztynowy, ruchomy obiekt. Oba mogą przejść ten sam autorski filtr koloru w mózgu. Etykietę „PODOBNY KOLOR” ujawnia tylko mikroskop badacza. Nie została po cichu usunięta, ponieważ zmieniłoby to zamrożony eksperyment S0.</p>
 <p class="note">Granica interpretacji: wartości „cel”, „dok”, linia relacji i prawdziwa odległość istnieją <strong>wyłącznie w widoku badacza</strong>. Sam aktor nie widzi tych podpisów. Ten prototyp używa autorskich, przybliżonych założeń o wielkości plam obrazu; nie demonstruje wyuczonego rozpoznawania rzeczy ani autonomicznych potrzeb. Ręczne przeciąganie przedmiotów zmienia warunki eksperymentu, więc nie należy później porównywać jego wyniku z zamrożonym benchmarkiem.</p>
 </main>
 <script type="module" src="../src/living-organism/material-owner-view.ts"></script>
