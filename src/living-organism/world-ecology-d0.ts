@@ -119,3 +119,64 @@ export function runWorldD0(railEnabled:boolean,ticks=7200):D0WorldRun {
       deterministicWorldFingerprint};
   }finally{w.free();}
 }
+
+export type D0TransitResult={
+  route:'upper'|'lower';
+  goalReached:boolean;
+  firstDividerCrossTick:number|null;
+  crossingY:number|null;
+  finalActorPosition:Point;
+  finite:boolean;
+  steps:number;
+  distinctPrivateFrames:number;
+};
+/**
+ * RESEARCHER-ORACLE CONTROL ONLY: global waypoints are known to the test
+ * harness, not to a Local Brain. This verifies whether real Rapier force
+ * actuation can carry the existing disc body through the two passages.
+ * No teleportation, ghost collisions, or hidden actor navigation claims.
+ */
+export function runD0Transit(route:'upper'|'lower',ticks=4800):D0TransitResult {
+  const s=createWorldD0(false),w=s.world;
+  const side=route==='upper'?1:-1;
+  const goals:Point[]=[
+    {x:3,y:side*6.5},
+    {x:10,y:side*6.5},
+    {x:13.5,y:side*6.5},
+  ];
+  let index=0,crossingY:number|null=null,firstDividerCrossTick:number|null=null;
+  let distinctPrivateFrames=0,lastFrame=-1,finite=true,goalReached=false;
+  const wrap=(a:number)=>Math.atan2(Math.sin(a),Math.cos(a));
+  const clamp=(v:number)=>Math.max(-1,Math.min(1,v));
+  try{
+    for(let tick=0;tick<ticks;tick++){
+      const h=w.inspect(),a=h.actor,goal=goals[Math.min(index,goals.length-1)];
+      const frame=w.observe();
+      if(frame.tick!==lastFrame){lastFrame=frame.tick;distinctPrivateFrames++;}
+      const dx=goal.x-a.x,dy=goal.y-a.y;
+      if(Math.hypot(dx,dy)<1.25&&index<goals.length-1)index++;
+      const target=goals[Math.min(index,goals.length-1)];
+      const error=wrap(Math.atan2(target.y-a.y,target.x-a.x)-a.angle);
+      const desired=clamp(error*2.0-frame.proprio.omega*.75);
+      const remaining=Math.hypot(target.x-a.x,target.y-a.y);
+      const d:Demand={
+        drive:index===goals.length-1&&remaining<1.25?0:
+          Math.abs(error)<.5?.78:.05,
+        turn:desired,gazeRate:0,
+      };
+      w.step(d);
+      const now=w.inspect().actor;
+      finite&&=[now.x,now.y,now.vx,now.vy].every(Number.isFinite);
+      if(firstDividerCrossTick===null&&now.x>9.45){
+        firstDividerCrossTick=tick+1;crossingY=now.y;
+      }
+      if(Math.hypot(now.x-13.5,now.y-side*6.5)<1.5){
+        goalReached=true;break;
+      }
+    }
+    const end=w.inspect();
+    return{route,goalReached,firstDividerCrossTick,crossingY,
+      finalActorPosition:{x:end.actor.x,y:end.actor.y},finite,
+      steps:end.tick,distinctPrivateFrames};
+  }finally{w.free();}
+}
