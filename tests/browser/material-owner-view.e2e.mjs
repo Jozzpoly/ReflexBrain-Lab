@@ -32,6 +32,11 @@ try{
   const first=await pos();
   const initialGap=await page.locator('#gap').textContent();
   await page.screenshot({path:'artifacts/rb-owner/01-material-live.png',fullPage:true});
+  // A small, genuine browser frame can be inspected without treating a
+  // machine screenshot as Owner experiential approval.
+  const quickFrame=await page.screenshot({type:'jpeg',quality:52,fullPage:false});
+  console.log('RB_OWNER_REAL_CHROMIUM_FRAME_JPEG '+quickFrame.toString('base64'));
+  await fs.writeFile('artifacts/rb-owner/01-material-live.jpg',quickFrame);
 
   // Pause must freeze real physics/world tick, not merely the status label.
   await page.locator('#pause').click();
