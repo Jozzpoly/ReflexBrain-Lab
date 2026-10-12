@@ -52,3 +52,39 @@ jobs:
           name: medium-d-r3g-browser-evidence
           path: artifacts/r3g
           if-no-files-found: ignore
+
+  browser-world-d0:
+    if: github.event_name == 'pull_request' && github.head_ref == 'research/world-ecology-d0-2026-10-11'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build real World D0 entry
+        run: |
+          yarn install --non-interactive
+          yarn run build
+          test -f dist/probes/world-ecology-d0.html
+      - name: Verify system Chrome
+        run: google-chrome --version
+      - name: Install isolated browser QA driver
+        run: yarn add --dev --ignore-scripts playwright-core@1.56.0
+      - name: Serve real compiled multi-entry Vite app
+        run: |
+          yarn vite preview --host 127.0.0.1 --port 4173 > /tmp/rb-d0-vite.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/probes/world-ecology-d0.html >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/rb-d0-vite.log
+          exit 1
+      - name: Real Chromium evidence for independent World and manual exploration
+        run: node tests/browser/world-ecology-d0.e2e.mjs
+      - name: Preserve actual D0 World and responsive screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflexbrain-world-d0-chromium
+          path: artifacts/world-d0
+          if-no-files-found: ignore

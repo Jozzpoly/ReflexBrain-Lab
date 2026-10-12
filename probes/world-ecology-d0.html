@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>ReflexBrain — Otwarty świat D0 (badanie podłoża)</title>
+<style>
+*{box-sizing:border-box}html{background:#07111a;color:#e5eff4;font:15px/1.5 system-ui,sans-serif}
+body{margin:0}main{max-width:1480px;padding:20px;margin:auto}
+h1{font-size:clamp(25px,3vw,40px);line-height:1.13;letter-spacing:-.035em;margin:4px 0 12px}
+h2{font-size:16px;margin:0 0 11px}p{color:#a5bac9;margin:7px 0 12px}
+.eyebrow{font:700 11px system-ui;letter-spacing:.18em;color:#8bd9b8}
+.notice{border-left:3px solid #b99367;background:#1d2931;padding:9px 13px;border-radius:4px;color:#d6c9b1;margin:14px 0}
+.controls{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:15px 0}
+button,select{color:#eaf3f8;background:#203744;border:1px solid #446173;border-radius:8px;padding:10px 14px;font:inherit;cursor:pointer}
+button:hover{background:#2a5057}button:focus-visible,select:focus-visible,#world:focus-visible{outline:2px solid #72dab5;outline-offset:2px}
+.layout{display:grid;grid-template-columns:minmax(0,2.3fr) minmax(265px,1fr);gap:16px}
+.panel{background:#112330;border:1px solid #2d4555;padding:15px;border-radius:12px;min-width:0}
+canvas{display:block;background:#0b1822;width:100%;border-radius:8px}
+#world{aspect-ratio:16/10;touch-action:none;cursor:crosshair}#retina{height:78px;image-rendering:pixelated}
+.key{border:1px solid #577082;border-radius:5px;padding:2px 6px;color:#d4e7f1;font-size:12px}
+.metric{font-size:26px;font-weight:700;line-height:1.25}pre{white-space:pre-wrap;overflow-wrap:anywhere;color:#b7d1df;font:12px/1.7 ui-monospace,monospace}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;color:#bdd0dc;font-size:12px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px}
+.small{font-size:12px;color:#8ea7b8}#status{color:#91d6b7;font-weight:700}
+@media(max-width:890px){.layout{grid-template-columns:1fr}}
+@media(max-width:420px){main{padding:12px}.controls{gap:6px}button,select{max-width:100%}}
+</style></head><body>
+<main>
+<div class="eyebrow">REFLEXBRAIN / WORLD D0 · FIZYCZNY SUBSTRAT · NIE ORGANIZM</div>
+<h1>Nie kolejna klatka. Sprawdźmy, co świat potrafi sam.</h1>
+<p>Eksperymentalna mapa otwarta na zewnątrz: trzy rejony, dwa przejścia i prawdziwie poruszający się mechanizm transportujący luźną materię. Wszystkie ściany i przedmioty to ciała Rapier. Kamera nie wyznacza fizycznych granic świata.</p>
+<div class="notice"><strong>To nie jest demonstracja inteligencji.</strong> W tej wersji ciało nie ma autonomicznego mózgu. Świat działa bez Twoich komend; możesz sam kierować ciałem, badać przejścia i przemieszczać materię. Przyszły aktor musi dopiero nauczyć się użytecznie żyć w takim środowisku.</div>
+<div class="controls">
+<button id="pause">Pauza</button>
+<button id="reset">Nowy świat</button>
+<button id="camera">Kamera: całość</button>
+<label for="rail">Mechanizm:</label><select id="rail"><option value="on">Aktywny</option><option value="off">Wyłączony (kontrola)</option></select>
+<label for="speed">Tempo:</label><select id="speed"><option value="1">1×</option><option value="3">3×</option></select>
+<span id="status" role="status">Uruchamianie…</span>
+</div>
+<div class="layout">
+<section class="panel"><h2>Żywy świat — widok badacza</h2>
+<canvas id="world" width="1100" height="688" tabindex="0" aria-label="Fizyczna mapa otwarta, sterowanie WASD Q/E, przeciągaj ruchome obiekty"></canvas>
+<div class="legend">
+<span><i class="dot" style="background:#66a6dd"></i>ciało</span>
+<span><i class="dot" style="background:#b07adb"></i>ruchomy mechanizm</span>
+<span><i class="dot" style="background:#34cbbb"></i>luźna materia</span>
+<span><i class="dot" style="background:#6b7a85"></i>realne przeszkody</span>
+</div>
+<p class="small">Kliknij świat i użyj <span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> do sterowania ciałem, <span class="key">Q</span>/<span class="key">E</span> do zmiany kierunku wzroku. Możesz też przeciągać luźne przedmioty; to zewnętrzna interwencja badacza, nie działanie aktora. Zmień kamerę na śledzącą, aby wyjechać poza mapę. Nic nie teleportuje Cię z powrotem.</p>
+</section>
+<aside>
+<section class="panel"><h2>World truth — tylko badacz</h2>
+<div class="small">Czas fizyczny</div><div class="metric" id="time">—</div>
+<div class="small">Przesunięcie materiału na torze od startu</div><div class="metric" id="material">—</div>
+<p class="small">Wariant z wyłączonym mechanizmem jest kontrolą. Te wartości nie trafiają do żadnego autonomicznego mózgu.</p>
+<hr style="border:0;border-top:1px solid #375061;margin:17px 0">
+<h2>Rzeczywista prywatna siatkówka</h2>
+<canvas id="retina" width="96" height="15" aria-label="Surowe 96 RGB promieni aktora"></canvas>
+<p class="small">96 kierunków, fizyczne zasłonięcia i maksymalny zasięg pomiaru 12 jednostek. Brak prawdziwych ID, mapy, nazw rejonów i przyczyny poruszenia przedmiotu.</p>
+<pre id="private">Uruchamianie fizyki…</pre>
+</section></aside>
+</div>
+<p class="small">Świat D0 to hipoteza testowa po Owner FAIL poprzedniego Playmatu. To jeszcze nie jest mapa docelowa ani wygrany eksperyment na inteligencję.</p>
+</main>
+<script type="module" src="../src/living-organism/world-ecology-d0-view.ts"></script>
+</body></html>
