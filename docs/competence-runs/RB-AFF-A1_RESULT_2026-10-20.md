@@ -25,13 +25,13 @@ Identical initial private frame was verified in both conditions.
 | Final turquoise object X | 26.29595 | 4.10018 |
 | Frames with turquoise appearance out of 180 | 180 | 180 |
 | Windows with any physical actor contact | 167 | 167 |
-| First private RGB channel difference | **none** | **none** |
-| First lawful touch / proprioception difference | tick **96** | tick **96** |
+| First private RGB channel difference above 1e-4 | **none** | **none** |
+| First lawful touch / proprioception difference above 1e-4 | tick **96** | tick **96** |
 | First host-only physical position difference | tick **96** | tick **96** |
 
 Without actor motor action, body remains X=0 and disk remains X=3 in BOTH worlds; no difference in any private sensory channel during all 180 poststep frames.
 
-Thus, under this exact pairing, **96RGB is observationally equivalent over six seconds despite enormous differences in physical effectivity**. Normal bodily touch and proprioception DO separate the worlds after the prescribed physical action; actor/world physical position itself diverges at the same sampled time tick96.
+Thus, under this exact pairing, **96RGB is observationally equivalent within the test's predeclared comparison tolerance `EPS=1e-4` over six seconds despite enormous differences in physical effectivity**. Normal bodily touch and proprioception DO separate the worlds after the prescribed physical action; actor/world physical position itself diverges at the same sampled time tick96.
 
 The equality of contact-window counts is deceptive: contact **presence** alone carries insufficient information here, while lawful *magnitudes/body motion* do change. We did not test a learned classifier, nor publish a scalar success/regret criterion.
 
@@ -47,3 +47,5 @@ The equality of contact-window counts is deceptive: contact **presence** alone c
 
 **Close A1 — do NOT add an A1b threshold tuned to these coordinates.**
 Before a learned mechanism, compare what private touch magnitude and body response reveal about material action outcomes across *held-out* physical relations, and establish that a chosen downstream action is materially relevant in an actor's real continuing activity. No weight scaling or GPU demand follows from A1. Keep research-only draft branch; no promotion to canonical, no release, no changes to World or Occupant.
+
+**Numerical evidence bound:** Channel comparators use absolute threshold \`1e-4\` on Float32 values; \`null\` means *no detected component exceeding that threshold*, not independently proven bit-for-bit retinal identity or mathematical equivalence of all possible real-valued observations. No sensor ray source was changed during the test.
