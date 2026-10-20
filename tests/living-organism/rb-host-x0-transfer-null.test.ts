@@ -78,7 +78,7 @@ function run(scene:Scene,arm:Arm) {
       maxRadius:rounded(maxRadius),
       finalActor:{x:rounded(after.actor.x),y:rounded(after.actor.y)},
       visited2mCells:cells.size,
-      cyanFramesBy15s,contactWindowsBy15s:contactBy15s,
+      cyanFramesBy15s:cyanBy15s,contactWindowsBy15s:contactBy15s,
       positiveDriveFramesBy15s:driveBy15s,
       movableContactWindows:materialTouches,firstCyanTick:firstCyan,
       firstPhysicalMaterialContactTick:firstMaterialTouch,
