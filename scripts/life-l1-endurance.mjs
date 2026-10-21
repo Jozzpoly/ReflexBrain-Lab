@@ -26,6 +26,21 @@ if(first.simulatedEndTick!==432000||second.simulatedStartTick!==432000||
  a.lifeId!==b.lifeId||a.createdAt!==b.createdAt||
  b.snapshot.checkpoint.resident.learnedTrials<a.snapshot.checkpoint.resident.learnedTrials||
  bytes2.size>bytes1.size*1.5)throw Error('LIFE two-hour continuity/storage assertion failed');
+const aggregateMinuteAudit=segment=>{
+ const bins=segment.hostOneSecondAudit?.bins??[];
+ return {
+  sampledMinutes:bins.length,
+  sampledLooseBodyPath:bins.reduce((s,b)=>s+b.looseSampledPath,0),
+  minutesWithDetectedLooseMotion:bins.filter(b=>b.looseMovingSamples>0).length,
+  oneSecondSamplesWithLooseMotion:bins.reduce((s,b)=>s+b.looseMovingSamples,0),
+  sampledActorPath:bins.reduce((s,b)=>s+b.actorSampledPath,0),
+  lastTenMinutes:bins.slice(-10).map(b=>({
+   minute:b.simMinuteIndex,loosePath:b.looseSampledPath,
+   sampledMovementSeconds:b.looseMovingSamples,
+   actorPath:b.actorSampledPath,chosen:b.chosen,
+  })),
+ };
+};
 const summary={
  scope:'engineering lifespan endurance of known mechanical ODEV V0, not life quality',
  simulatedHours:2,physicsSteps:864000,distinctProcesses:2,
@@ -38,17 +53,20 @@ const summary={
   hostOnlyActorNetMovement:first.hostOnlyActorNetMovement,
   hostOnlyMovedLooseBodies:first.hostOnlyLooseObjectsMovedBeyond10cm,
   sampledRssBytes:first.sampledMaxRssBytes,chosen:first.chosenActions,
-  coarse4mPositionSamples:first.coarse4mPositionSamples},
+  coarse4mPositionSamples:first.coarse4mPositionSamples,
+  minuteAudit:aggregateMinuteAudit(first)},
  secondHour:{learnedTrials:second.learnedTrials,
   hostOnlyLooseNetDisplacement:second.hostOnlyLooseNetDisplacementExcludingMover,
   hostOnlyActorNetMovement:second.hostOnlyActorNetMovement,
   hostOnlyMovedLooseBodies:second.hostOnlyLooseObjectsMovedBeyond10cm,
   sampledRssBytes:second.sampledMaxRssBytes,chosen:second.chosenActions,
-  coarse4mPositionSamples:second.coarse4mPositionSamples},
+  coarse4mPositionSamples:second.coarse4mPositionSamples,
+  minuteAudit:aggregateMinuteAudit(second)},
  caveats:[
   'Process STOP did not simulate experiences while no physics was executing.',
   'Old V0 is an authored mobility probe, not a qualified living organism.',
   'Segment loose-matter movement means net movement since each hour start, NOT cumulative interaction volume.',
+  'The supplementary 1-second microscope sums detected changes and may miss motion that returns inside each second.',
   'Long simulation time does not imply rich material biography or meaningful autonomously acquired concerns.',
   'This is one deterministic biography; no population statistic or general stability guarantee.'],
 };
