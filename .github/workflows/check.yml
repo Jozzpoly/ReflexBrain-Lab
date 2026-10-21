@@ -1,5 +1,10 @@
 name: Check
 
+# Cancel superseded multi-hour tests on the same PR revision.
+concurrency:
+  group: check-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
@@ -223,4 +228,72 @@ jobs:
         with:
           name: reflexbrain-odev-v0-chrome
           path: artifacts/odev-v0
+          if-no-files-found: ignore
+
+  life-l1-ten-minute:
+    if: github.event_name == 'pull_request' && github.head_ref == 'research/rb-life-l1-durable-process-2026-10-21'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: yarn install --non-interactive
+      - name: Real LIFE/L1 physical 10-minute time & disk experiment
+        run: node scripts/life-l1-benchmark.mjs
+      - name: Preserve exact process-resumable specimen and metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflexbrain-life-l1-ten-minute
+          path: artifacts/life-l1
+          if-no-files-found: ignore
+
+  life-l1-two-hour:
+    if: github.event_name == 'pull_request' && github.head_ref == 'research/rb-life-l1-durable-process-2026-10-21'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: yarn install --non-interactive
+      - name: Execute 2 hours of native Rapier biography, 2 real OS processes
+        run: node scripts/life-l1-endurance.mjs
+      - name: Preserve replayable 1h and 2h life snapshots and physical audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflexbrain-life-l1-two-hour
+          path: artifacts/life-l1-endurance
+          if-no-files-found: ignore
+
+  life-l1-browser-return:
+    if: github.event_name == 'pull_request' && github.head_ref == 'research/rb-life-l1-durable-process-2026-10-21'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: yarn install --non-interactive
+      - run: yarn run build
+      - name: Confirm real system Chrome
+        run: google-chrome --version
+      - name: Isolated browser driver
+        run: yarn add --dev --ignore-scripts playwright-core@1.56.0
+      - name: Import real persistent life file in Chrome, verify identity and intervention
+        run: |
+          yarn vite preview --host 127.0.0.1 --port 4182 > /tmp/life-l1-preview.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4182/probes/dev-resident-v0.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tests/browser/life-l1-return.e2e.mjs
+      - name: Preserve actual screenshots and returned life diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflexbrain-life-l1-browser-return
+          path: artifacts/life-l1-return
           if-no-files-found: ignore

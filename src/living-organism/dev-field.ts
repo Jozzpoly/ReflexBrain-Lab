@@ -2,6 +2,7 @@ import {initLivingWorld,type Demand,type BodyShape} from './world';
 import {DevRuntime,type DevCheckpoint,type DevLayout} from './dev-runtime';
 import type {DevMode} from './dev-resident';
 import {E0_DT} from '../e0-body-seam';
+import {importLifeL1,exportLifeL1} from './life-l1-browser-import';
 
 const el=<T extends HTMLElement>(id:string)=>{const x=document.getElementById(id);if(!x)throw Error('Missing '+id);return x as T};
 const canvas=el<HTMLCanvasElement>('world'),eye=el<HTMLCanvasElement>('eye');
@@ -11,10 +12,13 @@ const restoreButton=el<HTMLButtonElement>('restore');
 const modeSelect=el<HTMLSelectElement>('mode'),bodySelect=el<HTMLSelectElement>('body'),layoutSelect=el<HTMLSelectElement>('layout');
 const driveSlider=el<HTMLInputElement>('drive'),turnSlider=el<HTMLInputElement>('turn');
 const details=el<HTMLDivElement>('details'),status=el<HTMLSpanElement>('status');
+const lifeFile=el<HTMLInputElement>('life-file'),lifeMessage=el<HTMLElement>('life-message');
+const exportLifeButton=el<HTMLButtonElement>('export-life');
 const keys=new Set<string>();
 let runtime:DevRuntime|null=null,manual=false,paused=false,lastTime=0,acc=0;
 let saved:null|{cp:DevCheckpoint;manual:boolean;paused:boolean;drive:string;turn:string;retinaEditTick:number|null}=null;
 let retinaEditTick:number|null=null,dragHandle:number|null=null,dragPointer:number|null=null;
+let importedLifeId:string|null=null,lifeCreatedAt:string|null=null;
 const color=(rgb:number[])=>'rgb('+rgb.map(v=>Math.round(v*255)).join(',')+')';
 const fmt=(n:number)=>n.toFixed(2);
 const span=()=>window.innerWidth<600?18:30;
@@ -39,6 +43,8 @@ function reset(){
  runtime=new DevRuntime(modeSelect.value as DevMode,bodySelect.value as BodyShape,layoutSelect.value as DevLayout);
  manual=false;paused=false;acc=0;lastTime=0;keys.clear();
  dragHandle=null;dragPointer=null;retinaEditTick=null;
+ importedLifeId=crypto.randomUUID();lifeCreatedAt=new Date().toISOString();
+ lifeMessage.textContent='Nowe życie lokalne — bez zewnętrznego zapisu.';
  driveSlider.value='0';turnSlider.value='0';saved=null;restoreButton.disabled=true;
  pauseButton.textContent='Pauza';takeButton.textContent='Przejmij';
  draw();
@@ -97,6 +103,7 @@ const draw=()=>{
  canvas.dataset.authority=manual?'manual':'auto';
  canvas.dataset.retinaStatus=retinaEditTick===null?'delivered':'pre-intervention';
  canvas.dataset.learned=String(s.learnedTrials);
+ canvas.dataset.lifeId=importedLifeId??'';
 };
 function loop(now:number){
  if(!lastTime)lastTime=now;
@@ -125,6 +132,68 @@ canvas.addEventListener('pointermove',e=>{
 for(const event of ['pointercancel','pointerup','lostpointercapture'])canvas.addEventListener(event,()=>{
  dragHandle=null;dragPointer=null;
 });
+/** A paused, researcher-owned import; actor never sees host timestamps, hashes or life ID. */
+lifeFile.addEventListener('change',async()=>{
+ const file=lifeFile.files?.[0];if(!file)return;
+ const beforePause=paused;
+ paused=true;acc=0;lastTime=0;
+ pauseButton.textContent='Wznów';
+ lifeMessage.textContent='Sprawdzam integralność biografii…';
+ try{
+  if(file.size>28_000_000)throw Error('Plik jest za duży');
+  const loaded=await importLifeL1(await file.text());
+  const cp=loaded.checkpoint;
+  const next=new DevRuntime(cp.mode,cp.shape,cp.layout);
+  try{next.restore(cp);}catch(e){next.free();throw e;}
+  runtime?.free();runtime=next;
+  modeSelect.value=cp.mode;bodySelect.value=cp.shape;layoutSelect.value=cp.layout;
+  importedLifeId=loaded.lifeId;lifeCreatedAt=loaded.createdAt;
+  manual=false;pressedReset();
+  retinaEditTick=null;dragHandle=null;dragPointer=null;
+  saved=null;restoreButton.disabled=true;
+  lifeMessage.textContent='Wczytano to samo życie · '+(loaded.simulatedSeconds/3600).toFixed(2)+
+   ' h symulacji · ID '+loaded.lifeId.slice(0,8)+
+   ' · teraz PAUZA. Wznów lub przejmij ciało.';
+  draw();
+ }catch(e){
+  paused=beforePause;
+  pauseButton.textContent=paused?'Wznów':'Pauza';
+  lifeMessage.textContent='Nie wczytano pliku: '+(e instanceof Error?e.message:String(e));
+ }finally{lifeFile.value='';}
+});
+function pressedReset(){
+ keys.clear();driveSlider.value='0';turnSlider.value='0';
+ takeButton.textContent='Przejmij';
+}
+
+/** Full biographical round trip: Node file → interactive body/world → Node again.
+ * Export the complete real checkpoint; NEVER silently reinterpret manual control
+ * as the actor's self-authored demand. */
+exportLifeButton.addEventListener('click',async()=>{
+ if(!runtime||!importedLifeId||!lifeCreatedAt)return;
+ if(manual){
+  lifeMessage.textContent='Oddaj ciało (AUTO) przed zapisem. Nie przypisuję ręcznych komend mieszkańcowi.';
+  return;
+ }
+ paused=true;acc=0;lastTime=0;
+ pauseButton.textContent='Wznów';
+ const cp=runtime.capture();
+ exportLifeButton.disabled=true;
+ try{
+  const raw=await exportLifeL1(cp,importedLifeId,lifeCreatedAt);
+  const url=URL.createObjectURL(new Blob([raw],{type:'application/json;charset=utf-8'}));
+  try{
+   const anchor=document.createElement('a');
+   anchor.href=url;anchor.download='life-'+importedLifeId.slice(0,8)+'-tick-'+cp.world.tick+'.json';
+   document.body.append(anchor);anchor.click();anchor.remove();
+  }finally{setTimeout(()=>URL.revokeObjectURL(url),10000);}
+  lifeMessage.textContent='Zapis życia pobrany do pliku · tick '+cp.world.tick+
+   ' · ID '+importedLifeId.slice(0,8)+' · symulacja zatrzymana.';
+ }catch(e){
+  lifeMessage.textContent='Nie udało się zapisać życia: '+(e instanceof Error?e.message:String(e));
+ }finally{exportLifeButton.disabled=false;draw();}
+});
+
 el<HTMLButtonElement>('restart').addEventListener('click',reset);
 pauseButton.addEventListener('click',()=>{paused=!paused;lastTime=0;acc=0;pauseButton.textContent=paused?'Wznów':'Pauza';});
 takeButton.addEventListener('click',()=>{
