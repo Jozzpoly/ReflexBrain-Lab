@@ -142,10 +142,13 @@ describe('O-DEV/V0 — first continuing non-cyan resident in actual material eco
  },240000);
  it('transfers ONLY learned private parameters to unseen material arrangement; no positive transfer target assumed',()=>{
   const rows=[];
-  for(const shape of ['B0','B1'] as const)for(const seed of [1183,8291]){
-   const previous=new DevRuntime('adaptive',shape,'yard',seed);
-   const transferred=new DevRuntime('adaptive',shape,'shifted',seed);
-   const fresh=new DevRuntime('adaptive',shape,'shifted',seed);
+  // A different xorshift seed does NOTHING for this deterministic adaptive policy.
+  // Use genuinely different training/transfer arrangements instead of fake repeats.
+  for(const shape of ['B0','B1'] as const)
+   for(const [trainingLayout,targetLayout] of [['yard','shifted'],['shifted','yard']] as const){
+   const previous=new DevRuntime('adaptive',shape,trainingLayout,1183);
+   const transferred=new DevRuntime('adaptive',shape,targetLayout,1183);
+   const fresh=new DevRuntime('adaptive',shape,targetLayout,1183);
    try{
     for(let i=0;i<3600;i++)previous.step();
     const acquired=previous.resident.capture();
@@ -176,7 +179,7 @@ describe('O-DEV/V0 — first continuing non-cyan resident in actual material eco
      .filter(o=>firstObjects.has(o.handle))
      .reduce((sum,o)=>{const p=firstObjects.get(o.handle)!;return sum+Math.hypot(o.x-p.x,o.y-p.y);},0);
     const ta=transferred.world.inspect().actor,fa=fresh.world.inspect().actor;
-    rows.push({shape,seed,pretrainedTrials:acquired.learnedTrials,
+    rows.push({shape,trainingLayout,targetLayout,pretrainedTrials:acquired.learnedTrials,
       firstDivergence,matchedPrivateFrames,
       transferredLooseMaterial:loose(transferred),
       freshLooseMaterial:loose(fresh),
@@ -187,7 +190,7 @@ describe('O-DEV/V0 — first continuing non-cyan resident in actual material eco
   expect(rows.every(x=>x.pretrainedTrials>0&&x.matchedPrivateFrames>0&&
    [x.transferredLooseMaterial,x.freshLooseMaterial,x.finalActorGap].every(Number.isFinite))).toBe(true);
   console.log('RB_ODEV_V0_TRANSFER '+JSON.stringify({rows,
-   caution:'4 seed/body contexts, same layout transfer is not general learned-meaning or normalized opportunity metric; both recipients continue online learning'}));
+   caution:'4 morphology × training/target-layout arms, no random seed pseudoreplication; same physical target per pair but post-divergence worlds differ. Recipients continue online learning; not a transferable-skill qualification'}));
  },240000);
 
 });
