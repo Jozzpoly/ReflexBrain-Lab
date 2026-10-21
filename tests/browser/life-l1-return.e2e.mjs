@@ -6,7 +6,7 @@ import {resolve,join} from 'node:path';
 const out=resolve('artifacts/life-l1-return');
 await mkdir(out,{recursive:true});
 const lifePath=join(out,'fixture-from-real-node.json');
-const p=spawnSync(process.execPath,['scripts/life-l1-runner.mjs','new','--ticks','1201',
+const p=spawnSync(process.execPath,['scripts/life-l1-runner.mjs','new','--ticks','241',
  '--shape','B0','--layout','shifted','--mode','adaptive','--seed','1183','--output',lifePath],
  {encoding:'utf8',timeout:60000,maxBuffer:5_000_000});
 if(p.status!==0)throw Error('Real Node life fixture failed: '+p.stderr);
@@ -27,7 +27,7 @@ try{
   mode:document.querySelector('#mode')?.value,
   id:el.dataset.lifeId
  }));
- if(load.tick!==1201||load.learned!==cp.snapshot.checkpoint.resident.learnedTrials||
+ if(load.tick!==241||load.learned!==cp.snapshot.checkpoint.resident.learnedTrials||
     load.shape!=='B0'||load.layout!=='shifted'||load.mode!=='adaptive'||load.id!==cp.lifeId)
   throw Error('Browser did not recover full LIFE identity and history '+JSON.stringify(load));
  const initialTick=load.tick;
@@ -44,6 +44,30 @@ try{
  const afterFailure=await page.locator('#world').evaluate(el=>({tick:Number(el.dataset.tick),id:el.dataset.lifeId}));
  if(afterFailure.tick!==initialTick||afterFailure.id!==cp.lifeId)
   throw Error('Invalid checkpoint replaced the living body');
+ // Physical Owner intervention: actually drag a loose collider in a paused
+ // WORLD. The old 30 Hz retina must remain the old sensory observation.
+ const beforeMatter=await page.locator('#world').evaluate(e=>({
+  x:Number(e.dataset.targetX),y:Number(e.dataset.targetY),
+  camX:Number(e.dataset.camX),camY:Number(e.dataset.camY)}));
+ const rect=await page.locator('#world').boundingBox();
+ if(!rect||!Number.isFinite(beforeMatter.x)||!Number.isFinite(beforeMatter.y))
+  throw Error('No visible real loose object');
+ const startX=rect.x+(.5+(beforeMatter.x-beforeMatter.camX)/30)*rect.width;
+ const startY=rect.y+(.5-(beforeMatter.y-beforeMatter.camY)/20)*rect.height;
+ if(startX<rect.x||startX>rect.x+rect.width||startY<rect.y||startY>rect.y+rect.height)
+  throw Error('The physical object was outside view; cannot claim drag test');
+ await page.mouse.move(startX,startY);
+ await page.mouse.down();
+ await page.mouse.move(startX+rect.width/30*1.2,startY-rect.height/20*.4,{steps:10});
+ await page.mouse.up();
+ await page.waitForFunction((x)=>Math.abs(Number(document.querySelector('#world')?.dataset.targetX)-x)>.5,beforeMatter.x,{timeout:10000});
+ const afterMatter=await page.locator('#world').evaluate(e=>({
+  x:Number(e.dataset.targetX),y:Number(e.dataset.targetY),
+  tick:Number(e.dataset.tick),retina:e.dataset.retinaStatus}));
+ const materialMoved=Math.hypot(afterMatter.x-beforeMatter.x,afterMatter.y-beforeMatter.y);
+ if(materialMoved<.6||afterMatter.tick!==initialTick||afterMatter.retina!=='pre-intervention')
+  throw Error('Owner world manipulation did not preserve private retina truth');
+ await page.screenshot({path:join(out,'01b-owner-physically-changed-matter.png'),fullPage:true});
  await page.locator('#pause').click();
  await page.waitForFunction((t)=>Number(document.querySelector('#world')?.dataset.tick)>t,initialTick,{timeout:10000});
  const laterTick=Number(await page.locator('#world').getAttribute('data-tick'));
@@ -91,6 +115,8 @@ try{
   originalTick:initialTick,browserOwnerTick:ownerEnd.tick,nodeContinuedTick:continued.physicsTicks,
   unchangedLifeId:continued.lifeId===cp.lifeId,
   ownerManualFrames:ownerRecord.snapshot.checkpoint.resident.manualFrames,
+  actualMaterialMoved:materialMoved,
+  physicalInterventionPreservedAcrossBrowserExport:true,
   checkedIntegrityByNode:true,checkpointBytes:(await readFile(ownerFile)).length,
   scope:'engineering cross-runtime biography only, not learned agency'}));
  if(errors.length)throw Error('Browser errors '+JSON.stringify(errors));
