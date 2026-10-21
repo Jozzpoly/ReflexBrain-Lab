@@ -1,0 +1,52 @@
+<!doctype html><html lang="pl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,"><title>ReflexBrain — L2/R3 · życie w próbie</title>
+<style>
+:root{font:15px/1.45 system-ui,Segoe UI,sans-serif;color-scheme:dark;color:#dfebe9;background:#07151c}
+*{box-sizing:border-box}body{margin:0}main{max-width:1200px;margin:auto;padding:14px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap}
+h1{margin:5px 0;font-size:clamp(21px,3.5vw,33px)}p{font-size:13px;color:#abc3cb;margin:4px 0 12px;max-width:900px}
+small{color:#93b4bf}.mark{font-size:11px;letter-spacing:.10em;color:#79d7d0;font-weight:800}
+.controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:12px 0}
+button,select{font:inherit;color:#e6f4f1;background:#17333f;border:1px solid #436372;border-radius:9px;padding:10px;min-height:43px}
+button{cursor:pointer}button:disabled{opacity:.5}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #95e8d8}
+main>canvas{display:block;width:100%;aspect-ratio:3/2;height:auto;background:#061824;border:1px solid #2e5362;border-radius:10px;touch-action:none}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0}
+.stats div{padding:9px;border:1px solid #34515a;border-radius:8px;background:#112934}
+.stats strong{font:600 18px ui-monospace,Consolas,monospace;color:#b8e6d6;display:block}
+.senses{border:1px solid #304e57;border-radius:9px;background:#102833;padding:10px;margin-top:8px}
+.senses canvas{width:100%;height:27px;image-rendering:pixelated}
+#readout{font:12px/1.6 ui-monospace,Consolas,monospace;white-space:pre-wrap;color:#b7c9cc}
+input[type=range]{width:140px;accent-color:#69dfd0}
+footer{font-size:12px;color:#adc2c8;margin:12px 0 25px}
+@media(max-width:580px){main{padding:9px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}button,select{padding:9px 11px}.controls{gap:5px}}
+</style></head><body><main>
+<header><div><div class="mark">REFLEXBRAIN / LIFE L2-R3 · NIEZAKWALIFIKOWANY MIESZKANIEC</div>
+<h1>Zobacz, co robi, kiedy nie wydajemy mu poleceń</h1>
+<p>Jeden prawdziwy organizm-kandydat w Rapierze 2D. Reaguje na prywatne oko i ciało; ma tylko bardzo prostą pamięć kontaktową. Nie posiada wyuczonego celu ani dowiedzionej autonomii w biologicznym sensie. Możesz zmienić materię lub przejąć ruch.</p></div>
+<a href="../index.html" style="color:#a3dfd0;font-size:13px">← Laboratorium</a></header>
+<div class="controls">
+<button id="pause">Pauza</button><button id="takeover">Przejmij ciało</button>
+<button id="snapshot">Zachowaj chwilę</button><button id="restore" disabled>Wróć do chwili</button>
+<label>Wariant <select id="mode">
+<option value="adaptive">Pamięć kontaktowa</option><option value="frozen">Bez zapisywania nawyku</option><option value="blind">Ślepy odruch</option>
+</select></label><button id="restart">Nowe życie</button>
+</div>
+<div class="stats">
+<div><small>Czas fizyczny</small><strong id="clock">0 s</strong></div>
+<div><small>Zmiany nawyku</small><strong id="learned">0</strong></div>
+<div><small>Kontakty</small><strong id="contacts">0</strong></div>
+<div><small>Sterowanie</small><strong id="authority">AUTO</strong></div>
+</div>
+<div class="controls" aria-label="Ręczne sterowanie">
+<small>Po przejęciu:</small>
+<label>Napęd <input id="drive" type="range" min="-100" max="100" value="0"></label>
+<label>Obrót <input id="turn" type="range" min="-100" max="100" value="0"></label>
+<small>W/S i A/D na klawiaturze. Okrągłe przedmioty przeciągaj myszą/palcem.</small>
+</div>
+<canvas id="world" width="900" height="600" aria-label="Prawdziwy fizyczny świat do bezpośrednich eksperymentów"></canvas>
+<div class="senses"><small>Prywatne 96 próbek RGB — widok mieszkańca, nie wszechwiedza badacza</small>
+<canvas id="eye" width="96" height="8"></canvas><div id="readout"></div></div>
+<footer>Zmiana materii podczas pauzy nie odświeża magicznie prywatnej siatkówki; następny krok fizyki musi dostarczyć nowe doświadczenie. Zachowana chwila pozostaje tylko w tej karcie. Wyjście z karty zatrzymuje świat. Żadne wyniki ani oceny jakości nie są sugerowane przez sam licznik dotknięć lub pamięci.</footer>
+<script type="module" src="../src/living-organism/life-l2-situated-field.ts"></script>
+</main></body></html>
