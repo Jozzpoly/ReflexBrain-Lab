@@ -135,16 +135,33 @@ async function run(){
   const restoreMs=performance.now()-tLoad;
   const first=organism.capture();
   if(first.world.tick!==baseTick)throw Error('LIFE resumed with altered tick');
+  // Host-only physical evidence; never given to the actor or its learner.
+  const firstHost=organism.world.inspect();
+  const originalObjects=new Map(firstHost.objects
+   .filter(x=>x.kind==='object'&&x.handle!==organism.hostMoverHandle)
+   .map(x=>[x.handle,{x:x.x,y:x.y}]));
+  const coarseVisitedCells=new Set();
   const tStart=performance.now();
   let sampledRss=process.memoryUsage().rss;
   for(let i=0;i<o.ticks;i++){
    organism.step();
-   if(i%3600===0)sampledRss=Math.max(sampledRss,process.memoryUsage().rss);
+   if(i%3600===0){
+    sampledRss=Math.max(sampledRss,process.memoryUsage().rss);
+    const a=organism.world.inspect().actor;
+    coarseVisitedCells.add(Math.floor(a.x/4)+':'+Math.floor(a.y/4));
+   }
   }
   sampledRss=Math.max(sampledRss,process.memoryUsage().rss);
   const runtimeMs=performance.now()-tStart;
   const snap=organism.capture();
   if(snap.world.tick!==baseTick+o.ticks)throw Error('LIFE tick conservation failed');
+  const hostAfter=organism.world.inspect();
+  const looseChanges=hostAfter.objects
+   .filter(o=>originalObjects.has(o.handle))
+   .map(o=>{const p=originalObjects.get(o.handle);return Math.hypot(o.x-p.x,o.y-p.y);});
+  const netLooseDisplacement=looseChanges.reduce((sum,v)=>sum+v,0);
+  const actorNetMovement=Math.hypot(hostAfter.actor.x-firstHost.actor.x,
+   hostAfter.actor.y-firstHost.actor.y);
   const tEncode=performance.now();
   const encoded=JSON.parse(encodeLifeL1(snap));
   const output=pack({lifeId,createdAt,recordedAt:new Date().toISOString(),snapshot:encoded});
@@ -161,6 +178,12 @@ async function run(){
    wallRunMs:runtimeMs,restoreMs,encodeMs,saveMs,
    physicsStepsPerWallSecond:runtimeMs>0?o.ticks/(runtimeMs/1000):null,
    sampledMaxRssBytes:sampledRss,checkpointBytes:Buffer.byteLength(output),
+   hostOnlyActorNetMovement:actorNetMovement,
+   hostOnlyLooseNetDisplacementExcludingMover:netLooseDisplacement,
+   hostOnlyLooseObjectsMovedBeyond10cm:looseChanges.filter(v=>v>.1).length,
+   coarse4mPositionSamples:coarseVisitedCells.size,
+   additionalLearnerTrials:snap.resident.learnedTrials-first.resident.learnedTrials,
+   chosenActions:snap.resident.chosen,
    output:o.output,simulatedDowntimeSeconds:0,
    conclusion:'research continuity only; NOT organism or life quality PASS'
   };
