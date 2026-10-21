@@ -35,6 +35,19 @@ At B1 yard adaptive, each of the final two 30-second windows traveled ~51.1 unit
 
 All sampled 96RGB views had at least one ray different from background (0 background-only windows), so the result does not establish complete retinal deprivation or prove what could be inferred from frames. The current `DevResident` still *ignores retina entirely* for action decisions, a major causal reason that appearance does not guide new opportunities. The audit did not compare temporal/revisit neural features or show loop recognition.
 
+## Mechanism: the learned policy collapses into a few repetitive actions
+
+The recorded **actor-private action-choice counts** make the movement plateau causally interpretable, without inferring any high-level motive:
+
+- B1 yard adaptive: chosen maneuver counts over 120s `[41,5,5,29]`. Counts at 60s `[21,5,5,9]` and 90s `[31,5,5,19]`: in the **last 60 seconds**, the learner selected ONLY index 0 (forward drive) and index 3 (reverse drive), with no additional turning probes. This coincides with ~51.1 units path per late 30s bin and zero later loose-object displacement.
+- B1 shifted adaptive: `[41,4,2,33]`, likewise dominant forward/reverse in later intervals even while there are no new contact windows.
+- B0 yard adaptive: `[9,2,63,6]`, and it chose maneuver index **2** exactly 20 times every 30s interval after the first. Under the fixed maneuver table this is a forward-left/right turn combination (index2 is forward with negative turn). It covers ~62.7 distance per late quarter, with no new contacts or material effects.
+- Frozen comparator always selects each of four probes exactly 20 times. Its repeatability is authored, not developed.
+
+`DevResident.choose()` has only a binary touch/stall context and four fixed candidate demands, chooses best historical mobility/contact score after early coverage; its uncertainty bonus is too small to prevent selection saturation when scores stabilize. This behavior demonstrates an expected **optimization attractor**: improved internal score can select a repeatable motor loop which produces little new causal experience. Calling this '79 learned trials' is internally true but misleading as an indicator of ongoing cognitive development. There is still no actor-owned purpose or use of legal 96RGB in motor selection.
+
+This is **not** a proof the observed position literally returns to an identical point each cycle (that would require separate state-trace validation). It is evidence of an action-choice collapse and repeated low-diversity activity; do not overclaim geometric loop closure.
+
 ## Verdict
 **Ordinary-life host H6 UNQUALIFIED**, exactly the Owner's persistent criticism: adding a bigger bounded field and a more autonomous-looking local learner did not produce intrinsically diverse, continuing material work. Current 1.5s four-probe activity agenda can generate travel and 79 private model updates with almost no additional consequences for 90s. This does NOT prove life is impossible, and this descriptive sample is not statistical proof about all worlds, but it is strong local evidence against treating #81 as sufficient host for actor-relative semantic learning or adding a curiosity wrapper to #82's predictor.
 
