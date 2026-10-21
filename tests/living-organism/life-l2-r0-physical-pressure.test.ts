@@ -1,7 +1,7 @@
 import {beforeAll,describe,expect,it} from 'vitest';
 import {initLivingWorld} from '../../src/living-organism/world';
 import {
- createL2R0World,runL2R0Pressure,runL2R0MotorProbe,
+ createL2R0World,runL2R0Pressure,runL2R0MotorProbe,runL2BlindMotor,
 } from '../../src/living-organism/life-l2-pressure';
 
 beforeAll(initLivingWorld);
@@ -56,6 +56,22 @@ describe('L2/R0: recurring physical opportunity and lawful experience (NOT organ
   expect(held.physicallyLoaded).toBe(true);
   expect(shut.privateFrames).toBeGreaterThan(400);
   expect(held.privateFrames).toBeGreaterThan(400);
+ },120000);
+
+ it('R1a: frozen blind forward tape alone can or cannot exploit the recurrent material passage',()=>{
+  const dynamic=runL2BlindMotor(true);
+  const staticWorld=runL2BlindMotor(false);
+  console.log('RB_L2_R1A_BLIND '+JSON.stringify({dynamic,staticWorld}));
+  expect(dynamic.motorPolicy).toBe('fixed-forward');
+  expect(staticWorld.motorPolicy).toBe('fixed-forward');
+  expect(dynamic.ticks).toBe(14400);
+  expect(staticWorld.ticks).toBe(14400);
+  expect(dynamic.actualGateLoadedTransitions).toBeGreaterThan(1);
+  expect(staticWorld.actualGateLoadedTransitions).toBe(0);
+  expect(dynamic.firstCrossTick).not.toBeNull();
+  expect(staticWorld.firstCrossTick).toBeNull();
+  expect(dynamic.privateFrames).toBeGreaterThan(3000);
+  expect(staticWorld.privateFrames).toBeGreaterThan(3000);
  },120000);
 
  it('restores actual gate, rail, touch/retina and solver state under a dynamic fork',()=>{
