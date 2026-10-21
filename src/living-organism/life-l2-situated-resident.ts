@@ -59,7 +59,7 @@ export class SituatedResident{
   const surprised=contact||motorStall;
   // A turn away from the more visually occupied side. If symmetric,
   // maintain a tiny initial rightwards practice; it is authored, not learned.
-  const visualTurn=clamp((visual.right-visual.left)*1.5,-.85,.85);
+  const visualTurn=clamp((visual.left-visual.right)*1.5,-.85,.85);
   const gap=visual.middle;
   let turn=visualTurn;
   if(Math.abs(turn)<.08&&gap>.13)turn=.27;
