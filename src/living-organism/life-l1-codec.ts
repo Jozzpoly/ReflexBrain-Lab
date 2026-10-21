@@ -17,6 +17,10 @@ const integer=(v:unknown,label:string):number=>{
  const n=number(v,label);if(!Number.isSafeInteger(n))throw Error('Invalid '+label);
  return n;
 };
+// Rapier handles are opaque numeric keys; they need not be JS safe integers.
+const handle=(v:unknown,label:string):number=>{
+ const n=number(v,label);if(n<0)throw Error('Invalid '+label);return n;
+};
 const arr=(v:unknown,length:number,label:string):number[]=>{
  if(!Array.isArray(v)||v.length!==length)throw Error('Invalid '+label);
  return v.map((x,i)=>number(x,label+'['+i+']'));
@@ -39,7 +43,7 @@ const demand=(v:unknown,label:string)=>{
 };
 const contactEvents=(v:unknown,label:string)=>{
  if(!Array.isArray(v)||v.length>1_000_000)throw Error('Invalid '+label);
- for(const e of v){const z=object(e,label+' event');integer(z.tick,'event.tick');integer(z.handle,'event.handle');number(z.impulse,'event.impulse');}
+ for(const e of v){const z=object(e,label+' event');integer(z.tick,'event.tick');handle(z.handle,'event.handle');number(z.impulse,'event.impulse');}
 };
 function validate(cp:DevCheckpoint):void{
  const c=object(cp,'checkpoint');
@@ -51,7 +55,7 @@ function validate(cp:DevCheckpoint):void{
    w.physics.length<100||w.physics.length>16_777_216)throw Error('Invalid World identity/physics');
  const tick=integer(w.tick,'World tick');
  if(tick<0||tick>Number.MAX_SAFE_INTEGER-100000)throw Error('Invalid World tick');
- integer(w.actorHandle,'actorHandle');
+ handle(w.actorHandle,'actorHandle');
  number(w.gaze,'World gaze');
  const f=object(w.frame,'private sensor');
  const frameTick=integer(f.tick,'private sensor tick');
@@ -68,7 +72,7 @@ function validate(cp:DevCheckpoint):void{
  if(!Array.isArray(w.surfaces)||w.surfaces.length>100000)throw Error('Invalid surfaces');
  for(const surface of w.surfaces){
   const x=object(surface,'surface');
-  integer(x.handle,'surface.handle');
+  handle(x.handle,'surface.handle');
   if(!['object','wall','block'].includes(String(x.kind)))throw Error('Invalid surface kind');
   arr(x.color,3,'surface color');
   number(x.hx,'surface hx');number(x.hy,'surface hy');
@@ -78,12 +82,13 @@ function validate(cp:DevCheckpoint):void{
  const sampleTick=integer(sample.tick,'contact sample tick');
  if(sampleTick<0||sampleTick>tick)throw Error('Invalid contact sample tick');
  contactEvents(sample.contacts,'sample contacts');
- if(w.mover!==null){const m=object(w.mover,'mover');integer(m.handle,'mover.handle');
+ if(w.mover!==null){const m=object(w.mover,'mover');handle(m.handle,'mover.handle');
   for(const k of ['direction','left','right','railY','speed'])if(m[k]!==undefined)number(m[k],'mover '+k);
  }
  if(w.gateLink!==null&&w.gateLink!==undefined){
   const g=object(w.gateLink,'gateLink');
-  for(const k of ['plateHandle','gateHandle','lastLoadCount','loadTransitions'])integer(g[k],'gate '+k);
+  for(const k of ['plateHandle','gateHandle'])handle(g[k],'gate '+k);
+  for(const k of ['lastLoadCount','loadTransitions'])integer(g[k],'gate '+k);
   for(const k of ['closedX','closedY','travelX'])number(g[k],'gate '+k);
   if(typeof g.loaded!=='boolean')throw Error('Invalid gate loaded');
  }
