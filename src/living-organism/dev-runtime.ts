@@ -19,6 +19,8 @@ export class DevRuntime {
  readonly world:LivingWorld;
  readonly resident:DevResident;
  readonly shape:BodyShape;
+ /** Researcher-only handle, never sent to the resident. */
+ readonly hostMoverHandle:number;
  readonly mode:DevMode;
  readonly layout:DevLayout;
  constructor(mode:DevMode='adaptive',shape:BodyShape='B1',layout:DevLayout='yard',seed=0x51babe){
@@ -36,7 +38,7 @@ export class DevRuntime {
    w.addObject(4,5,1.1,amber);
    w.addObject(-7,6,.85,cyan);
    w.addObject(-1,-8,.6,amber);
-   w.addRailMover(-8,-4,.7,violet,-12,3,1.4);
+   this.hostMoverHandle=w.addRailMover(-8,-4,.7,violet,-12,3,1.4);
   }else{
    w.addWall(9,-3,1.2,10,rock);w.addWall(-8,8,8,.75,rock);
    w.addWall(0,-12,7,.6,rock);
@@ -44,7 +46,7 @@ export class DevRuntime {
    w.addObject(2,-4,.6,cyan);
    w.addObject(-8,-5,.9,cyan);
    w.addObject(12,5,.8,amber);
-   w.addRailMover(-5,5,.8,violet,-10,7,1.2);
+   this.hostMoverHandle=w.addRailMover(-5,5,.8,violet,-10,7,1.2);
   }
  }
  step(manual:Demand|null=null) {
