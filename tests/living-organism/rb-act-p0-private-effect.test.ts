@@ -98,9 +98,26 @@ describe('RB-ACT/P0 — source-executed action-conditioned private effect vs che
      scores.fixedContact.push(privateMAE(model.fixedContactRule(w.before,w.demand),actual));
     }
     const mae=Object.fromEntries(Object.entries(scores).map(([k,v])=>[k,sum(v)/v.length]));
+    // Post-result diagnostic only; these partitions do NOT change the frozen
+    // aggregate hypothesis or select a new winner after viewing outcomes.
+    const byIndex=(indices:number[])=>Object.fromEntries(
+     Object.entries(scores).map(([key,v])=>[key,
+       indices.length?sum(indices.map(i=>v[i]))/indices.length:null]));
+    const contactIdx=windows.map((w,i)=>w.firstTouch||w.lastTouch?i:-1).filter(i=>i>=0);
+    const noContactIdx=windows.map((w,i)=>!w.firstTouch&&!w.lastTouch?i:-1).filter(i=>i>=0);
+    const movingIdx=windows.map((w,i)=>Math.abs(w.after.proprio.forward)>.5?i:-1).filter(i=>i>=0);
+    const lowMotionIdx=windows.map((w,i)=>Math.abs(w.after.proprio.forward)<=.5?i:-1).filter(i=>i>=0);
     result.push({shape,scene,mae,
+     descriptiveStrata:{
+      contact:{n:contactIdx.length,mae:byIndex(contactIdx)},
+      noContact:{n:noContactIdx.length,mae:byIndex(noContactIdx)},
+      moving:{n:movingIdx.length,mae:byIndex(movingIdx)},
+      lowMotion:{n:lowMotionIdx.length,mae:byIndex(lowMotionIdx)},
+     },
+     meanAbsFinalForward:sum(windows.map(w=>Math.abs(w.after.proprio.forward)))/windows.length,
+     meanFinalTouch:sum(windows.map(w=>observedEffect(w.after).touch))/windows.length,
      frames:windows.length,
-     contactRelevantWindows:windows.filter(w=>w.firstTouch||w.lastTouch).length,
+     contactRelevantWindows:contactIdx.length,
      initialRetinaContrast:windows[0].before.retina.some(v=>v>.4),
      finite:Object.values(mae).every(Number.isFinite)});
    }
