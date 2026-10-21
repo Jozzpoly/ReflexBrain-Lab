@@ -1,5 +1,5 @@
-import {initLivingWorld,LivingWorld,type BodyShape,type Demand} from './world';
-import {Occupant} from './occupant';
+import {initLivingWorld,LivingWorld,type BodyShape,type Demand,type Checkpoint} from './world';
+import {Occupant,type OccupantState} from './occupant';
 import {E0_DT} from '../e0-body-seam';
 
 type Unit={
@@ -18,6 +18,7 @@ const create=<T extends Element>(selector:string):T=>{
 const runButton=create<HTMLButtonElement>('#run');
 const pilotButton=create<HTMLButtonElement>('#pilot');
 const time=create<HTMLElement>('#time');
+const restoreButton=create<HTMLButtonElement>('#restore');
 const drive=create<HTMLInputElement>('#drive');
 const turn=create<HTMLInputElement>('#turn');
 const pressed=new Set<string>();
@@ -27,6 +28,10 @@ const worldSpan=30;
 const heightSpan=20;
 const col=(rgb:number[])=>'rgb('+rgb.map(v=>Math.round(v*255)).join(',')+')';
 
+type SavedUnit={world:Checkpoint;brain:OccupantState;motor:Demand;path:number;
+  before:{x:number;y:number};touchWindows:number;materialTouched:number;
+  visited:string[];cameraCenter:number};
+let saved:SavedUnit[]|null=null;
 let units:Unit[]=[];
 let paused=false,manual=false,clock=0,acc=0;
 function makeWorld(shape:BodyShape){
@@ -58,6 +63,7 @@ function reset(){
   for(const u of units)u.world.free();
   units=[make(0,'B0'),make(1,'B1')];
   acc=0;clock=0;pressed.clear();drive.value='0';turn.value='0';
+  saved=null;restoreButton.disabled=true;
   installPointerHandlers();
   paint();
 }
@@ -196,6 +202,29 @@ runButton.addEventListener('click',()=>{
 pilotButton.addEventListener('click',()=>{
   manual=!manual;pressed.clear();drive.value='0';turn.value='0';
   pilotButton.textContent=manual?'Oddaj oba ciała':'Przejmij oba ciała';
+});
+create<HTMLButtonElement>('#save').addEventListener('click',()=>{
+  saved=units.map(u=>({
+    world:u.world.captureCheckpoint(),brain:u.brain.capture(),
+    motor:{...u.motor},path:u.path,before:{...u.before},
+    touchWindows:u.touchWindows,materialTouched:u.materialTouched,
+    visited:[...u.visited],cameraCenter:u.cameraCenter,
+  }));
+  restoreButton.disabled=false;
+});
+restoreButton.addEventListener('click',()=>{
+  if(!saved)return;
+  for(let i=0;i<units.length;i++){
+    const u=units[i],s=saved[i];
+    u.world.restoreCheckpoint(s.world);
+    u.brain.restore(s.brain);u.motor={...s.motor};
+    u.path=s.path;u.before={...s.before};
+    u.touchWindows=s.touchWindows;u.materialTouched=s.materialTouched;
+    u.visited=new Set(s.visited);u.cameraCenter=s.cameraCenter;
+    u.dragHandle=null;u.dragPointer=null;
+  }
+  pressed.clear();drive.value='0';turn.value='0';acc=0;clock=0;
+  paint();
 });
 create<HTMLButtonElement>('#reset').addEventListener('click',reset);
 document.addEventListener('keydown',e=>{
