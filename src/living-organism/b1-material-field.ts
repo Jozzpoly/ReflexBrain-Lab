@@ -34,7 +34,9 @@ const col=(rgb:number[])=>'rgb('+rgb.map(v=>Math.round(v*255)).join(',')+')';
 type SavedUnit={world:Checkpoint;brain:OccupantState;motor:Demand;path:number;
   before:{x:number;y:number};touchWindows:number;materialTouched:number;
   visited:string[];cameraCenter:number;lastEditTick:number|null};
+type SavedViewControl={manual:boolean;paused:boolean;drive:string;turn:string};
 let saved:SavedUnit[]|null=null;
+let savedViewControl:SavedViewControl|null=null;
 let units:Unit[]=[];
 let paused=false,manual=false,clock=0,acc=0;
 function makeWorld(shape:BodyShape){
@@ -66,7 +68,7 @@ function reset(){
   for(const u of units)u.world.free();
   units=[make(0,'B0'),make(1,'B1')];
   acc=0;clock=0;pressed.clear();drive.value='0';turn.value='0';
-  saved=null;restoreButton.disabled=true;
+  saved=null;savedViewControl=null;restoreButton.disabled=true;
   installPointerHandlers();
   paint();
 }
@@ -221,10 +223,11 @@ create<HTMLButtonElement>('#save').addEventListener('click',()=>{
     touchWindows:u.touchWindows,materialTouched:u.materialTouched,
     visited:[...u.visited],cameraCenter:u.cameraCenter,lastEditTick:u.lastEditTick,
   }));
+  savedViewControl={manual,paused,drive:drive.value,turn:turn.value};
   restoreButton.disabled=false;
 });
 restoreButton.addEventListener('click',()=>{
-  if(!saved)return;
+  if(!saved||!savedViewControl)return;
   for(let i=0;i<units.length;i++){
     const u=units[i],s=saved[i];
     u.world.restoreCheckpoint(s.world);
@@ -235,7 +238,13 @@ restoreButton.addEventListener('click',()=>{
     u.lastEditTick=s.lastEditTick;
     u.dragHandle=null;u.dragPointer=null;
   }
-  pressed.clear();drive.value='0';turn.value='0';acc=0;clock=0;
+  // Recover actual actor authority and paused-time state alongside physics.
+  // Physical held keys are deliberately never invented on restore.
+  manual=savedViewControl.manual;paused=savedViewControl.paused;
+  drive.value=savedViewControl.drive;turn.value=savedViewControl.turn;
+  runButton.textContent=paused?'Wznów':'Pauza';
+  pilotButton.textContent=manual?'Oddaj oba ciała':'Przejmij oba ciała';
+  pressed.clear();acc=0;clock=0;
   paint();
 });
 create<HTMLButtonElement>('#reset').addEventListener('click',reset);
