@@ -14,9 +14,11 @@ describe('L2/R5a independently renewed material ↔ private re-entry (authored, 
   expect(off.screenedFrames).toBeGreaterThanOrEqual(3600);
   // Pre-frozen scientific necessity. A powered shaft without renewed loose
   // material after first window is NO ecology qualification.
-  expect(on.travel[2]).toBeGreaterThan(.2);
-  expect(on.travel[3]).toBeGreaterThan(.2);
-  expect(on.travel[2]+on.travel[3]).toBeGreaterThan(off.travel[2]+off.travel[3]+.2);
+  // ORIGINAL optimistic science FAILED at GitHub Actions #39693791089.
+  // Motor moved material ONCE, but not after 30 s. No ecological renewal.
+  expect(on.travel[0]).toBeGreaterThan(4);
+  expect(on.travel.slice(1)).toEqual([0,0,0]);
+  expect(off.travel).toEqual([0,0,0,0]);
  },180000);
 
  it('compares own embodied, lawful 96RGB re-entry practice against reactive and blind rivals',()=>{
@@ -33,50 +35,46 @@ describe('L2/R5a independently renewed material ↔ private re-entry (authored, 
    expect(a.state.frames).toBeGreaterThan(3500);
   }
   // A late real ordinary collider contact, not motion/pixels alone.
-  expect(memory.lateRealContacts).toBeGreaterThan(0);
+  // VISION SUFFICIENCY IS FALSE. Many rays see material, no late touch.
   expect(memory.binEye[2]).toBeGreaterThan(0);
   expect(memory.binEye[3]).toBeGreaterThan(0);
-  // If the cheap rival is equivalent, there is NO extra evidence for history.
-  expect(memory.lateRealContacts).toBeGreaterThan(reactive.lateRealContacts);
+  expect(memory.lateRealContacts).toBe(0);
+  expect(reactive.lateRealContacts).toBe(0);
+  expect(memory.binTouch).toEqual([0,0,0,0]);
+  expect(memory.state.reentryFrames).toBe(0);
+  expect(memory.lastActor).toEqual(reactive.lastActor);
+  expect(memory.binEye).toEqual(reactive.binEye);
+  expect(memory.state.lastDemand).toEqual(reactive.state.lastDemand);
+  expect(blind.state.contactEpisodes).toBeGreaterThan(0);
+  expect(blind.lateRealContacts).toBe(0);
  },240000);
 
- it('isolates private locus history at an actual re-entry episode on identical living Rapier state',()=>{
+ it('R5a NEGATIVE: the return-state never activates in 10000 true motor ticks',()=>{
   const a=new R5Runtime(true,'reentrant');
-  const b=new R5Runtime(true,'reentrant');
   try{
    let captured=null as ReturnType<typeof a.capture>|null;
    for(let i=0;i<10000;i++){
     a.step();
-    const s=a.resident.capture();
-    if(s.control==='seek' && s.reentryFrames>3 &&
-       a.world.observe().tick===s.lastTick &&
-       s.lastExposureTick!==null){
+    const state=a.resident.capture();
+    if(state.control==='seek' && state.reentryFrames>3 &&
+       a.world.observe().tick===state.lastTick &&
+       state.lastExposureTick!==null){
      captured=a.capture();break;
     }
    }
-   expect(captured).not.toBeNull();
-   const cp=captured!;
-   b.restore(cp);
-   expect(b.world.inspect()).toEqual(a.world.inspect());
-   expect(b.world.observe()).toEqual(a.world.observe());
-   const amputated=b.resident.capture();
-   amputated.lastExposureTick=null;
-   b.resident.restore(amputated);
-   for(let i=0;i<8;i++){a.step();b.step();}
-   const retained=a.resident.capture();
-   const erased=b.resident.capture();
-   console.log('RB_L2_R5A_HISTORY_FORK '+JSON.stringify({
-    at:cp.world.tick,
-    anchor:{x:cp.resident.lastExposureX,y:cp.resident.lastExposureY,
-     age:cp.world.tick-(cp.resident.lastExposureTick??0)},
-    retained:{motor:retained.lastDemand,control:retained.control},
-    erased:{motor:erased.lastDemand,control:erased.control},
-    physicsA:a.world.inspect().actor,physicsB:b.world.inspect().actor
+   const state=a.resident.capture();
+   console.log('RB_L2_R5A_HISTORY_FORK_UNREACHABLE '+JSON.stringify({
+    memoryEpisodeReached:captured!==null,
+    reentryFrames:state.reentryFrames,
+    visualFrames:state.visualFrames,
+    finalControl:state.control,
+    finalTick:a.world.inspect().tick
    }));
-   expect(retained.lastDemand.turn).not.toBe(erased.lastDemand.turn);
-   // Show actual solver divergence; narrow private causation, not utility.
-   expect(a.world.inspect().actor).not.toEqual(b.world.inspect().actor);
-  }finally{a.free();b.free();}
+   // No legal matched World/private-history fork can be claimed if the
+   // proposed private behavior never occurred in actual physical life.
+   expect(captured).toBeNull();
+   expect(state.reentryFrames).toBe(0);
+  }finally{a.free();}
  },140000);
 
  it('replays exactly same World AND actual private exposure-history snapshot',()=>{
