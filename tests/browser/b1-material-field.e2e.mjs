@@ -38,7 +38,12 @@ try{
   await page.screenshot({path:out+'/01-dual-world.png',fullPage:true});
   // Real manual authority uses the same command to both different bodies.
   await page.locator('#pilot').click();
+  // A previous autonomous dwell could have reached a wall before we grabbed
+  // authority. Start the manual actuator comparison from a reproducible body
+  // state without weakening the requirement that BOTH motors move.
+  await page.locator('#reset').click(); // reset preserves manual authority
   const before0=await snap(0),before1=await snap(1);
+  check(before0.manual&&before1.manual,'manual takeover lost on world reset');
   await page.locator('#drive').evaluate(el=>{el.value='75';el.dispatchEvent(new Event('input',{bubbles:true}));});
   await page.waitForTimeout(520);
   await page.locator('#drive').evaluate(el=>{el.value='0';el.dispatchEvent(new Event('input',{bubbles:true}));});
