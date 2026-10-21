@@ -49,6 +49,7 @@ try{
  const beforeMatter=await page.locator('#world').evaluate(e=>({
   x:Number(e.dataset.targetX),y:Number(e.dataset.targetY),
   camX:Number(e.dataset.camX),camY:Number(e.dataset.camY)}));
+ await page.locator('#world').scrollIntoViewIfNeeded();
  const rect=await page.locator('#world').boundingBox();
  if(!rect||!Number.isFinite(beforeMatter.x)||!Number.isFinite(beforeMatter.y))
   throw Error('No visible real loose object');
