@@ -160,6 +160,16 @@ function paint(){
       const rgb=Array.from(f.retina.slice(3*k,3*k+3));
       retinaCtx.fillStyle=col(rgb);retinaCtx.fillRect(k,0,1,retina.height);
     }
+    // Research-only host microscope exports, never consumed by Occupant.
+    const target=s.objects.find(o=>o.kind==='object'&&o.color[1]>.8&&o.color[2]>.6);
+    u.canvas.dataset.tick=String(s.tick);
+    u.canvas.dataset.actorX=String(a.x);
+    u.canvas.dataset.actorY=String(a.y);
+    u.canvas.dataset.cameraCenter=String(u.cameraCenter);
+    u.canvas.dataset.targetX=String(target?.x??NaN);
+    u.canvas.dataset.targetY=String(target?.y??NaN);
+    u.canvas.dataset.dragHandle=String(u.dragHandle??'');
+    u.canvas.dataset.manual=String(manual);
     const mode=u.brain.capture().mode;
     const touches=Array.from(f.touch).reduce((p,x)=>p+x,0);
     u.info.textContent=
