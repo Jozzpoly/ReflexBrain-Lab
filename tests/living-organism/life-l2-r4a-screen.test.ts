@@ -3,7 +3,7 @@ import {initLivingWorld} from '../../src/living-organism/world';
 import {runR4aScreen} from '../../src/living-organism/life-l2-r4a-screen';
 beforeAll(initLivingWorld);
 describe('R4a OPEN shell: does independent ordinary material preserve late resident exposure?',()=>{
- it('freezes a four-arm factual comparison of true private exposure and physical contact',()=>{
+ it('preserves R4a negative result: richer physical ecology alone does not sustain actor-relative activity',()=>{
   const baseline=runR4aScreen('r3-original','adaptive');
   const shell=runR4aScreen('shell-dynamic','adaptive');
   const nullWorld=runR4aScreen('shell-static','adaptive');
@@ -20,8 +20,19 @@ describe('R4a OPEN shell: does independent ordinary material preserve late resid
   const lateContacts=last.reduce((s,w)=>s+w.privateTouchFrames,0);
   // This was pre-armed as a SCIENTIFIC pressure gate. If failing, archive
   // exact evidence and convert later to a NEGATIVE regression, no retuning.
-  expect(last.every(w=>w.nonemptyRetinaFrames>=30)).toBe(true);
-  expect(lateContacts).toBeGreaterThanOrEqual(1);
+  // Exact R4a SCIENTIFIC FAIL was originally executed (not silently fixed)
+  // in Actions #39691414618. Preserve this as a source-negative regression.
+  expect(last.every(w=>w.nonemptyRetinaFrames===0)).toBe(true);
+  expect(lateContacts).toBe(0);
+  expect(shell.windows.slice(1).every(w=>w.netOrdinaryMaterialMotion===0)).toBe(true);
+  expect(shell.touchEpisodes).toBe(1);
+  expect(shell.habitUpdates).toBe(2);
+  expect(shell.finalHabit).toBeCloseTo(-.051,5);
+  expect(shell.finalDistance).toBeGreaterThan(100);
+  // The independent shaft displaced objects, but not the resident's path.
+  expect(shell.windows.map(w=>[w.endActorX,w.endActorY])).toEqual(
+   nullWorld.windows.map(w=>[w.endActorX,w.endActorY]));
+  expect(blind.windows.slice(1).every(w=>w.nonemptyRetinaFrames===0)).toBe(true);
   // An autonomous world process must do more than change its own shaft.
   expect(shell.worldMaterialMovement).toBeGreaterThan(nullWorld.worldMaterialMovement);
  },240000);
