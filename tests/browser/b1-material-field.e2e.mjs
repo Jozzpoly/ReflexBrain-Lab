@@ -13,7 +13,7 @@ const snap=i=>page.locator('#world'+i).evaluate(el=>({
   tick:Number(el.dataset.tick),actorX:Number(el.dataset.actorX),actorY:Number(el.dataset.actorY),
   targetX:Number(el.dataset.targetX),targetY:Number(el.dataset.targetY),
   cameraCenter:Number(el.dataset.cameraCenter),dragHandle:el.dataset.dragHandle,
-  manual:el.dataset.manual==='true'
+  manual:el.dataset.manual==='true',retinaStatus:el.dataset.retinaStatus??''
 }));
 await fs.mkdir(out,{recursive:true});
 try{
@@ -68,6 +68,8 @@ try{
   const dragged=await snap(1);
   check(Math.hypot(dragged.targetX-start.targetX,dragged.targetY-start.targetY)>.5,
     'Owner physical object drag did not change actual B1 world');
+  check(dragged.retinaStatus==='pre-intervention',
+    'paused host world changed while UI falsely presents previous retina as newly sensed');
   const unperturbed=await snap(0);
   check(Math.abs(unperturbed.targetX-initial0.targetX)<.1,
     'independent B0 World was changed by B1-only intervention');
@@ -77,6 +79,8 @@ try{
   check(Math.hypot(restored.targetX-start.targetX,restored.targetY-start.targetY)<.001 &&
     restored.tick===start.tick,
     'B1 checkpoint failed to restore exact prior material state');
+  check(restored.retinaStatus==='delivered',
+    'restore must also restore retina provenance from the saved sensory snapshot');
   const bothRestored=await snap(0);
   check(bothRestored.tick===start.tick,'counterfactual restored only one World');
   await page.screenshot({path:out+'/04-full-world-counterfactual-restore.png',fullPage:true});
@@ -100,6 +104,8 @@ try{
     dragged.tick,{timeout:18000});
   const autonomic=await snap(1);
   check(!autonomic.manual,'old authored autonomous controller failed to regain authority');
+  check(autonomic.retinaStatus==='delivered',
+    'autonomous sensing after resumption did not acknowledge new physical World');
   await page.screenshot({path:out+'/04-after-return-to-auto.png',fullPage:true});
 
   for(const [width,height] of [[900,900],[390,844],[320,720]]){
