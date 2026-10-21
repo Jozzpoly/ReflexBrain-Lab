@@ -41,6 +41,9 @@ try{
  check(restored.tick===begin.tick&&Math.hypot(restored.targetX-begin.targetX,restored.targetY-begin.targetY)<.001,'body/matter checkpoint failed');
  check(restored.retina==='delivered','actor retinal history not restored');
  await page.locator('#takeover').click();
+ // UI microscope metadata updates on the next render frame, not synchronously
+ // with button dispatch. Await the actual state instead of racing requestAnimationFrame.
+ await page.waitForFunction(()=>document.querySelector('#world')?.dataset.authority==='manual');
  check((await read()).manual,'manual authority unavailable');
  await page.locator('#drive').evaluate(e=>{e.value='80';e.dispatchEvent(new Event('input',{bubbles:true}));});
  await page.locator('#pause').click();
@@ -50,6 +53,7 @@ try{
  check(afterMotor.x>beforeMotor.x+.05,'manual self motor did not move real actor');
  await page.locator('#drive').evaluate(e=>{e.value='0';e.dispatchEvent(new Event('input',{bubbles:true}));});
  await page.locator('#takeover').click();
+ await page.waitForFunction(()=>document.querySelector('#world')?.dataset.authority==='auto');
  check(!(await read()).manual,'autonomy not restored');
  await page.screenshot({path:out+'/03-owner-takeover-release.png',fullPage:true});
  await page.locator('#pause').click();
