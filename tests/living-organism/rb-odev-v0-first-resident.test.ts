@@ -140,4 +140,54 @@ describe('O-DEV/V0 — first continuing non-cyan resident in actual material eco
    expect(Number.isFinite(afterGap)).toBe(true);
   }finally{trained.free();ablated.free();}
  },240000);
+ it('transfers ONLY learned private parameters to unseen material arrangement; no positive transfer target assumed',()=>{
+  const rows=[];
+  for(const shape of ['B0','B1'] as const)for(const seed of [1183,8291]){
+   const previous=new DevRuntime('adaptive',shape,'yard',seed);
+   const transferred=new DevRuntime('adaptive',shape,'shifted',seed);
+   const fresh=new DevRuntime('adaptive',shape,'shifted',seed);
+   try{
+    for(let i=0;i<3600;i++)previous.step();
+    const acquired=previous.resident.capture();
+    const clean=transferred.resident.capture();
+    expect(clean.stats.every(row=>row.every(x=>x.count===0))).toBe(true);
+    // The two recipients start with exactly identical physics and sensory history;
+    // transfer ONLY private learned action efficacy parameters.
+    clean.stats=structuredClone(acquired.stats);
+    clean.learnedTrials=acquired.learnedTrials;
+    transferred.resident.restore(clean);
+    expect(transferred.world.captureCheckpoint().physics)
+      .toEqual(fresh.world.captureCheckpoint().physics);
+    let firstDivergence:null|number=null;
+    let matchedPrivateFrames=0;
+    const before=transferred.world.inspect();
+    const firstObjects=new Map(before.objects.filter(o=>o.kind==='object'&&o.handle!==transferred.hostMoverHandle)
+      .map(o=>[o.handle,{x:o.x,y:o.y}]));
+    for(let i=0;i<3600;i++){
+     const f1=transferred.world.observe(),f2=fresh.world.observe();
+     if(firstDivergence===null){expect(f1).toEqual(f2);matchedPrivateFrames++;}
+     const d1=transferred.resident.decide(f1),d2=fresh.resident.decide(f2);
+     if(firstDivergence===null&&(Math.abs(d1.drive-d2.drive)+Math.abs(d1.turn-d2.turn)+
+       Math.abs(d1.gazeRate-d2.gazeRate)>1e-9))
+       firstDivergence=f1.tick;
+     transferred.world.step(d1);fresh.world.step(d2);
+    }
+    const loose=(r:DevRuntime)=>r.world.inspect().objects
+     .filter(o=>firstObjects.has(o.handle))
+     .reduce((sum,o)=>{const p=firstObjects.get(o.handle)!;return sum+Math.hypot(o.x-p.x,o.y-p.y);},0);
+    const ta=transferred.world.inspect().actor,fa=fresh.world.inspect().actor;
+    rows.push({shape,seed,pretrainedTrials:acquired.learnedTrials,
+      firstDivergence,matchedPrivateFrames,
+      transferredLooseMaterial:loose(transferred),
+      freshLooseMaterial:loose(fresh),
+      finalActorGap:Math.hypot(ta.x-fa.x,ta.y-fa.y)});
+   }finally{previous.free();transferred.free();fresh.free();}
+  }
+  expect(rows).toHaveLength(4);
+  expect(rows.every(x=>x.pretrainedTrials>0&&x.matchedPrivateFrames>0&&
+   [x.transferredLooseMaterial,x.freshLooseMaterial,x.finalActorGap].every(Number.isFinite))).toBe(true);
+  console.log('RB_ODEV_V0_TRANSFER '+JSON.stringify({rows,
+   caution:'4 seed/body contexts, same layout transfer is not general learned-meaning or normalized opportunity metric; both recipients continue online learning'}));
+ },240000);
+
 });
