@@ -224,3 +224,22 @@ jobs:
           name: reflexbrain-odev-v0-chrome
           path: artifacts/odev-v0
           if-no-files-found: ignore
+
+  life-l1-ten-minute:
+    if: github.event_name == 'pull_request' && github.head_ref == 'research/rb-life-l1-durable-process-2026-10-21'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: yarn install --non-interactive
+      - name: Real LIFE/L1 physical 10-minute time & disk experiment
+        run: node scripts/life-l1-benchmark.mjs
+      - name: Preserve exact process-resumable specimen and metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflexbrain-life-l1-ten-minute
+          path: artifacts/life-l1
+          if-no-files-found: ignore
