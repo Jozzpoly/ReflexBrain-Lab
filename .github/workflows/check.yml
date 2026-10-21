@@ -158,3 +158,36 @@ jobs:
           name: reflexbrain-world-d1-PUBLIC-chromium
           path: artifacts/world-d1
           if-no-files-found: ignore
+
+  browser-b1-material:
+    if: github.event_name == 'pull_request' && github.head_ref == 'research/rb-body-b1-material-affordance-2026-10-21'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build isolated B0/B1 physical comparison
+        run: |
+          yarn install --non-interactive
+          yarn run build
+          test -f dist/probes/b1-material-field.html
+      - name: System Chrome availability
+        run: google-chrome --version
+      - name: Install standalone browser driver
+        run: yarn add --dev --ignore-scripts playwright-core@1.56.0
+      - name: Run true Chrome material/manual/mobile test
+        run: |
+          yarn vite preview --host 127.0.0.1 --port 4177 > /tmp/b1-vite.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4177/probes/b1-material-field.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tests/browser/b1-material-field.e2e.mjs
+      - name: Archive actual Chrome screenshots and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflexbrain-b1-material-browser
+          path: artifacts/b1-material-field
+          if-no-files-found: ignore

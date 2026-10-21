@@ -1,15 +1,17 @@
 import {retinalAngle} from './retina-geometry';
-import { E0_RAPIER as R, E0_DT, E0_FMAX, E0_TMAX, createE0World, createE0Body } from '../e0-body-seam';
+import { E0_RAPIER as R, E0_DT, E0_FMAX, E0_TMAX, E0_LINEAR_DAMPING, E0_ANGULAR_DAMPING, createE0World, createE0Body } from '../e0-body-seam';
 
 export const initLivingWorld = async () => { await R.init(); };
 export type Demand = {drive:number;turn:number;gazeRate:number};
+/** Optional experimental shape, default B0 remains unchanged. */
+export type BodyShape = 'B0'|'B1';
 type Color = [number,number,number];
 type Surface = {handle:number;color:Color;kind:'object'|'wall'|'block';hx:number;hy:number};
 export type PrivateFrame = {tick:number;retina:Float32Array;touch:Float32Array;proprio:{forward:number;lateral:number;omega:number;gaze:number}};
 export type HostContactEvent={tick:number;handle:number;impulse:number};
 export type HostContactSample={tick:number;contacts:HostContactEvent[]};
 export type GateLink={plateHandle:number;gateHandle:number;closedX:number;closedY:number;travelX:number;loaded:boolean;lastLoadCount:number;loadTransitions:number};
-export type Checkpoint = {version:3;physics:Uint8Array;actorHandle:number;tick:number;gaze:number;surfaces:Surface[];frame:PrivateFrame;pendingTouch:Float32Array;pendingContactEvents:HostContactEvent[];contactSample:HostContactSample;mover:{handle:number;direction:number;left?:number;right?:number;railY?:number;speed?:number}|null;gateLink?:GateLink|null};
+export type Checkpoint = {version:3;bodyShape?:BodyShape;physics:Uint8Array;actorHandle:number;tick:number;gaze:number;surfaces:Surface[];frame:PrivateFrame;pendingTouch:Float32Array;pendingContactEvents:HostContactEvent[];contactSample:HostContactSample;mover:{handle:number;direction:number;left?:number;right?:number;railY?:number;speed?:number}|null;gateLink?:GateLink|null};
 const clamp=(x:number)=>Math.max(-1,Math.min(1,x));
 const background:Color=[.025,.04,.06];
 
@@ -26,9 +28,23 @@ export class LivingWorld {
   private contactSample:HostContactSample={tick:0,contacts:[]};
   private mover:{handle:number;direction:number;left?:number;right?:number;railY?:number;speed?:number}|null=null;
   private gateLink:GateLink|null=null;
-  constructor(scene=true) {
+  constructor(scene=true,readonly bodyShape:BodyShape='B0',initialHeading=0) {
     this.world=createE0World();
-    this.actor=createE0Body(this.world,0,0).rb;
+    if(bodyShape==='B0'){
+      this.actor=createE0Body(this.world,0,0).rb;
+      if(initialHeading)this.actor.setRotation(initialHeading,true);
+    }else{
+      // B1 Oct-6 hypothesis: single rounded asymmetric body.
+      // Capsule is oriented along local X; dimensions 2.60 x 1.30.
+      // Keep B0 mass/damping and E0 motor law; this changes inertia,
+      // and is NOT a claim of equivalent angular motor response.
+      const rb=this.world.createRigidBody(R.RigidBodyDesc.dynamic()
+        .setTranslation(0,0).setRotation(initialHeading)
+        .setLinearDamping(E0_LINEAR_DAMPING).setAngularDamping(E0_ANGULAR_DAMPING));
+      this.world.createCollider(R.ColliderDesc.capsule(.65,.65)
+        .setRotation(Math.PI/2).setMass(1).setFriction(0).setRestitution(0),rb);
+      this.actor=rb;
+    }
     if(scene) {
       this.addWall(0,-6,10,.2,[.3,.35,.4]);
       this.addWall(0,6,10,.2,[.3,.35,.4]);
@@ -219,10 +235,11 @@ export class LivingWorld {
   inspectContactSample():HostContactSample{return structuredClone(this.contactSample);}
   captureCheckpoint():Checkpoint {
     const frame=this.observe();
-    return {version:3,physics:this.world.takeSnapshot(),actorHandle:this.actor.handle,tick:this.tick,gaze:this.gaze,surfaces:this.surfaces.map(s=>({...s,color:[...s.color]})),frame,pendingTouch:this.pendingTouch.slice(),pendingContactEvents:structuredClone(this.pendingContactEvents),contactSample:this.inspectContactSample(),mover:this.mover?{...this.mover}:null,gateLink:this.gateLink?{...this.gateLink}:null};
+    return {version:3,bodyShape:this.bodyShape,physics:this.world.takeSnapshot(),actorHandle:this.actor.handle,tick:this.tick,gaze:this.gaze,surfaces:this.surfaces.map(s=>({...s,color:[...s.color]})),frame,pendingTouch:this.pendingTouch.slice(),pendingContactEvents:structuredClone(this.pendingContactEvents),contactSample:this.inspectContactSample(),mover:this.mover?{...this.mover}:null,gateLink:this.gateLink?{...this.gateLink}:null};
   }
   restoreCheckpoint(cp:Checkpoint) {
     if(cp.version!==3)throw new Error('Unsupported checkpoint');
+    if(cp.bodyShape && cp.bodyShape!==this.bodyShape)throw new Error('Body morphology mismatch on restore');
     const restored=R.World.restoreSnapshot(cp.physics);
     this.world.free();this.world=restored;this.actor=restored.getRigidBody(cp.actorHandle);
     this.tick=cp.tick;this.gaze=cp.gaze;this.surfaces=cp.surfaces.map(s=>({...s,color:[...s.color]}));
