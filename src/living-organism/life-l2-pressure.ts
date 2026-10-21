@@ -15,7 +15,7 @@ const OCHRE:[number,number,number]=[.86,.55,.18];
 export type L2R0World={
  world:LivingWorld;railHandle:number|null;materialHandle:number;gateHandle:number;plateHandle:number;
 };
-export function createL2R0World(railEnabled:boolean,shape:BodyShape='B0'):L2R0World{
+export function createL2R0World(railEnabled:boolean,shape:BodyShape='B0',excursion:'R0'|'R0b'='R0'):L2R0World{
  const world=new LivingWorld(false,shape);
  try{
   // Physically open elsewhere; no all-enclosing prison.
@@ -27,7 +27,8 @@ export function createL2R0World(railEnabled:boolean,shape:BodyShape='B0'):L2R0Wo
   );
   const materialHandle=world.addObject(-2,8,.7,OCHRE);
   const railHandle=railEnabled?
-   world.addRailMover(-4,5,.7,VIOLET,-4,0,2.4):null;
+   (excursion==='R0b'?world.addRailMover(-5,5,.7,VIOLET,-6,2,2.4):
+    world.addRailMover(-4,5,.7,VIOLET,-4,0,2.4)):null;
   return {world,railHandle,materialHandle,gateHandle,plateHandle};
  }catch(e){world.free();throw e;}
 }
@@ -48,7 +49,7 @@ const retinalDiff=(a:Float32Array,b:Float32Array):number=>{
 };
 
 export type L2R0Pressure={
- railEnabled:boolean;ticks:number;privateFrames:number;
+ railEnabled:boolean;excursion:'R0'|'R0b';ticks:number;privateFrames:number;
  lateOpenEntries:number;lateClosedEntries:number;
  totalOpenEntries:number;totalClosedEntries:number;
  loadedTransitions:number;gateX:number;actorX:number;
@@ -58,8 +59,8 @@ export type L2R0Pressure={
 };
 /** Strictly host-side microscope. The local actor does not receive gate state,
  * handles, WORLD x/y, 'open' labels or the researcher's objective. */
-export function runL2R0Pressure(railEnabled:boolean,ticks=21600):L2R0Pressure{
- const scene=createL2R0World(railEnabled);
+export function runL2R0Pressure(railEnabled:boolean,ticks=21600,excursion:'R0'|'R0b'='R0'):L2R0Pressure{
+ const scene=createL2R0World(railEnabled,'B0',excursion);
  const w=scene.world;
  let privateFrames=0,lastPrivate=-1;
  let firstOpen:Float32Array|null=null;
@@ -93,7 +94,7 @@ export function runL2R0Pressure(railEnabled:boolean,ticks=21600):L2R0Pressure{
   }
   const last=w.inspectGateLink()!;
   const actor=w.inspect().actor;
-  return {railEnabled,ticks,privateFrames,lateOpenEntries:lateOpen,
+  return {railEnabled,excursion,ticks,privateFrames,lateOpenEntries:lateOpen,
    lateClosedEntries:lateClosed,totalOpenEntries:openEntries,
    totalClosedEntries:closedEntries,loadedTransitions:last.loadTransitions,
    gateX:last.gatePosition.x,actorX:actor.x,
