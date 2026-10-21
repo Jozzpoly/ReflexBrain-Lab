@@ -239,7 +239,9 @@ export class LivingWorld {
   }
   restoreCheckpoint(cp:Checkpoint) {
     if(cp.version!==3)throw new Error('Unsupported checkpoint');
-    if(cp.bodyShape && cp.bodyShape!==this.bodyShape)throw new Error('Body morphology mismatch on restore');
+    // Untagged v3 snapshots predate B1 and can only be B0 snapshots.
+    // Never accept an old circular collider under the B1 runtime identity.
+    if((cp.bodyShape??'B0')!==this.bodyShape)throw new Error('Body morphology mismatch on restore');
     const restored=R.World.restoreSnapshot(cp.physics);
     this.world.free();this.world=restored;this.actor=restored.getRigidBody(cp.actorHandle);
     this.tick=cp.tick;this.gaze=cp.gaze;this.surfaces=cp.surfaces.map(s=>({...s,color:[...s.color]}));
