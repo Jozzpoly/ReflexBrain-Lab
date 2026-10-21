@@ -74,20 +74,24 @@ export class DevResident {
   }
   s.trials++;s.active=null;
  }
- /** Called once on each *distinct* actor-private frame, at most 30 Hz.
-  * `manual` changes motor authority; it is not a learned 'owner' sensation.
-  * Such windows must not be misattributed as own chosen trial evidence.
+ /**
+  * Host research harness withholds our motor authority. This is researcher
+  * sample-provenance gating, NOT an agent-private recognition of who acted.
+  * The resident remains exposed to later legal sensor observations; this
+  * specific action-credit learner deliberately cannot train on these windows.
   */
- decide(frame:PrivateFrame,manual=false):Demand {
+ onAuthorityWithheld(frame:PrivateFrame):void {
+  if(this.s.lastTick!==null&&frame.tick<=this.s.lastTick)return;
+  this.s.active=null;this.s.manualFrames++;this.s.lastTick=frame.tick;
+  this.s.lastDemand=copy(ZERO);
+ }
+ /** Actor-facing decisions accept ONLY the available private sensory frame.
+  * Call once per distinct 30Hz sample; repeated frames reuse motor command.
+  */
+ decide(frame:PrivateFrame):Demand {
   const s=this.s;
-  if(s.lastTick!==null && frame.tick<=s.lastTick)
-   return manual?copy(ZERO):copy(s.lastDemand);
+  if(s.lastTick!==null && frame.tick<=s.lastTick)return copy(s.lastDemand);
   const delta=s.lastTick===null?0:(frame.tick-s.lastTick)/120;
-  if(manual){
-   // Close without committing a possibly contaminated action-effect episode.
-   s.active=null;s.manualFrames++;s.lastTick=frame.tick;
-   s.lastDemand=copy(ZERO);return copy(ZERO);
-  }
   if(s.active&&delta>0){
    const v=frame.proprio;
    s.active.distance+=Math.hypot(v.forward,v.lateral)*delta;
