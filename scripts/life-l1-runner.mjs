@@ -141,10 +141,51 @@ async function run(){
    .filter(x=>x.kind==='object'&&x.handle!==organism.hostMoverHandle)
    .map(x=>[x.handle,{x:x.x,y:x.y}]));
   const coarseVisitedCells=new Set();
+  // Researcher-only 1-second microscope (not given to private brain).
+  // Sum of sampled 1s object paths is a LOWER BOUND, not exact movement.
+  const hostMinuteBins=[];
+  let priorActor=firstHost.actor;
+  let priorObjectPos=new Map(originalObjects);
+  let priorChoices=[...first.resident.chosen];
   const tStart=performance.now();
   let sampledRss=process.memoryUsage().rss;
   for(let i=0;i<o.ticks;i++){
    organism.step();
+   if((i+1)%120===0){
+    const h=organism.world.inspect();
+    const s=organism.resident.capture();
+    const f=organism.world.observe();
+    const absoluteTick=baseTick+i+1;
+    const minuteNumber=Math.floor((absoluteTick-1)/7200);
+    let bin=hostMinuteBins.at(-1);
+    if(!bin||bin.simMinuteIndex!==minuteNumber){
+     bin={simMinuteIndex:minuteNumber,sampledSeconds:0,
+      actorSampledPath:0,looseSampledPath:0,looseMovingSamples:0,
+      privateTouchAtSamples:0,nonBackgroundRetinaAtSamples:0,
+      newTrials:0,chosen:[0,0,0,0]};
+     hostMinuteBins.push(bin);
+    }
+    bin.sampledSeconds++;
+    bin.actorSampledPath+=Math.hypot(h.actor.x-priorActor.x,h.actor.y-priorActor.y);
+    priorActor=h.actor;
+    let moved=0;
+    for(const obj of h.objects){
+     if(!originalObjects.has(obj.handle))continue;
+     const previous=priorObjectPos.get(obj.handle);
+     if(!previous)throw Error('Unexpected missing physical body in microscope');
+     moved+=Math.hypot(obj.x-previous.x,obj.y-previous.y);
+     priorObjectPos.set(obj.handle,{x:obj.x,y:obj.y});
+    }
+    bin.looseSampledPath+=moved;
+    if(moved>.02)bin.looseMovingSamples++;
+    if(Array.from(f.touch).some(x=>Math.abs(x)>.005))bin.privateTouchAtSamples++;
+    if(f.retina.some((v,i)=>Math.abs(v-[.025,.04,.06][i%3])>1e-4))
+     bin.nonBackgroundRetinaAtSamples++;
+    for(let k=0;k<4;k++){
+     bin.chosen[k]+=s.chosen[k]-priorChoices[k];
+     priorChoices[k]=s.chosen[k];
+    }
+   }
    if(i%3600===0){
     sampledRss=Math.max(sampledRss,process.memoryUsage().rss);
     const a=organism.world.inspect().actor;
@@ -184,6 +225,10 @@ async function run(){
    coarse4mPositionSamples:coarseVisitedCells.size,
    additionalLearnerTrials:snap.resident.learnedTrials-first.resident.learnedTrials,
    chosenActions:snap.resident.chosen,
+   hostOneSecondAudit:{
+    cadencePhysicsTicks:120,withinBinSimulatedSeconds:60,
+    samplingLimit:'lower bound; any material motion and return within 1s can be invisible',
+    bins:hostMinuteBins},
    output:o.output,simulatedDowntimeSeconds:0,
    conclusion:'research continuity only; NOT organism or life quality PASS'
   };
