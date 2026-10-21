@@ -26,7 +26,7 @@ export async function importLifeL1(raw:string):Promise<ImportedLife>{
   body.controllerAuthority!=='auto'||body.paused!==false||
   body.simHz!==120||body.sensorHz!==30||
   typeof body.lifeId!=='string'||!/^[0-9a-f-]{36}$/i.test(body.lifeId)||
-  !Number.isSafeInteger(body.physicsTicks)||body.physicsTicks as number<0)
+  typeof body.physicsTicks!=='number'||!Number.isSafeInteger(body.physicsTicks)||body.physicsTicks<0)
   throw Error('Incompatible LIFE identity/version/clock');
  const cp=decodeLifeL1(JSON.stringify(body.snapshot));
  if(cp.world.tick!==body.physicsTicks||body.simulatedSeconds!==cp.world.tick/120)
