@@ -34,7 +34,7 @@ try{
  const draggedD=Math.hypot(dragged.targetX-begin.targetX,dragged.targetY-begin.targetY);
  check(draggedD>.5,'drag did not change actual Rapier body');
  check(dragged.tick===begin.tick,'paused World advanced physics while drag');
- check(dragged.retina==='pre-intervention','actor's old retina improperly presented as current World');
+ check(dragged.retina==='pre-intervention',"actor retina improperly presented as the current World view");
  await page.screenshot({path:out+'/02-host-intervention-while-paused.png',fullPage:true});
  await page.locator('#restore').click();
  const restored=await read();
