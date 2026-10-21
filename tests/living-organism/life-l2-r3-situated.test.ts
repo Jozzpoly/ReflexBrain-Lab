@@ -68,7 +68,7 @@ describe('L2/R3 new continuous situated resident, narrow sensorimotor history',(
   }finally{w.free();}
  },90000);
 
- it('actual material and private frames exert pressure; compare learning to blind and frozen controls',()=>{
+ it('R3 NEGATIVE REGRESSION: open-World visual avoidance leaves contact history blank, despite real motor/eye activity',()=>{
   const a=run('adaptive',9600),f=run('frozen',9600),b=run('blind',9600);
   console.log('RB_L2_R3_CONTINUING '+JSON.stringify({
    adaptive:{actor:a.w.actor,habit:a.s.habit,updates:a.s.habitUpdates,
@@ -88,11 +88,16 @@ describe('L2/R3 new continuous situated resident, narrow sensorimotor history',(
   expect(b.s.habit).toBe(0);
   expect(f.s.habit).toBe(0);
   expect(f.s.habitUpdates).toBe(0);
-  expect(a.s.touchEpisodes).toBeGreaterThan(0);
-  expect(a.s.habitUpdates).toBeGreaterThan(0);
+  // ORIGINAL R3 scientific test failed here (Actions #39687600715).
+  // Preserve observed absence, not a fake successful learning claim.
+  expect(a.s.touchEpisodes).toBe(0);
+  expect(a.s.habitUpdates).toBe(0);
+  expect(a.s.habit).toBe(0);
+  expect(a.w.actor).toEqual(f.w.actor);
+  expect(Math.hypot(a.w.actor.x,a.w.actor.y)).toBeGreaterThan(100);
  },180000);
 
- it('isolate private memory on precisely matched Rapier World checkpoint, not divergent trajectories',()=>{
+ it('R3 NEGATIVE REGRESSION: history ablation has no effect when no physical history formed',()=>{
   const worldA=new SituatedRuntime('adaptive'),worldB=new SituatedRuntime('adaptive');
   try{
    for(let i=0;i<9600;i++)worldA.step();
@@ -113,8 +118,11 @@ describe('L2/R3 new continuous situated resident, narrow sensorimotor history',(
     learned,removed,difference:{drive:learned.drive-removed.drive,
      turn:learned.turn-removed.turn},
     endPositions:{a:worldA.world.inspect().actor,b:worldB.world.inspect().actor}}));
-   expect(Math.abs(before.habit)).toBeGreaterThan(.0001);
-   expect(learned.turn).not.toBe(removed.turn);
+   // Ablation did NOT separate commands because there was no habit to ablate.
+   // The original positive claim failed at Actions #39687600715.
+   expect(before.habit).toBe(0);
+   expect(before.habitUpdates).toBe(0);
+   expect(learned).toEqual(removed);
   }finally{worldA.free();worldB.free();}
  },180000);
 
