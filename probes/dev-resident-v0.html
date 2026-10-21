@@ -18,6 +18,9 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 .details{color:#abbec7;font:12px/1.6 ui-monospace,Consolas,monospace;white-space:pre-wrap}
 .keys{margin-top:11px;display:flex;gap:15px;flex-wrap:wrap;font-size:12px;color:#bed1d9}
 input[type=range]{accent-color:#65dfc8;width:165px}
+.life-import{display:flex;align-items:center;flex-wrap:wrap;gap:9px;padding:9px 10px;margin:8px 0;background:#0c2c32;border:1px solid #31695f;border-radius:8px}
+.life-import label{font-weight:650;font-size:12px;color:#bcf1df}.life-import input{max-width:min(290px,100%);font-size:12px}
+.life-import span{font-size:12px;color:#aaccc9}
 details.settings{margin:10px 0 2px;border:1px solid #315465;border-radius:8px;padding:8px 12px;background:#102936}details.settings summary{cursor:pointer;color:#afd9d2;font-size:13px;user-select:none}details.settings .controls{margin-bottom:1px}.keys{margin:9px 0}footer{color:#90aeb9;font-size:12px;margin:14px 0 25px}
 kbd{background:#193b49;padding:2px 5px;border-radius:4px}
 @media(max-width:600px){p{display:none}.controls{margin:6px 0}.keys{margin:6px 0;gap:9px}main{padding:10px}.stat{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{gap:5px}button,select{padding:9px 10px}p{font-size:12px}}
@@ -35,6 +38,11 @@ kbd{background:#193b49;padding:2px 5px;border-radius:4px}
 <button id="pause">Pauza</button><button id="takeover">Przejmij</button>
 <button id="save">Zapisz chwilę</button><button id="restore" disabled>Wróć do zapisu</button>
 </div>
+<div class="life-import">
+<label for="life-file">Powrót do zapisanej biografii</label>
+<input id="life-file" type="file" accept=".json,application/json" aria-label="Wczytaj plik LIFE/L1 z symulacji"/>
+<span id="life-message" role="status" aria-live="polite">Nowe życie lokalne — bez zewnętrznego zapisu.</span>
+</div>
 <div class="stat">
 <div class="tile"><small>Fizyka</small><div class="n" id="time">0 s</div></div>
 <div class="tile"><small>Własne próby</small><div class="n" id="trials">0</div></div>
@@ -49,5 +57,5 @@ kbd{background:#193b49;padding:2px 5px;border-radius:4px}
 <canvas id="world" width="900" height="600" class="world" aria-label="Świat fizyczny. Możesz przeciągać okrągłe obiekty"></canvas>
 <div class="sense"><div style="color:#9fc0c8;font-size:12px;margin-bottom:8px">Ostatnia prawnie otrzymana klatka 96 RGB (nie wszechwiedza hosta)</div><canvas class="eye" id="eye" width="96" height="12" aria-label="Oryginalna prywatna siatkówka"></canvas><div class="details" id="details"></div></div>
 
-<footer>Podczas pauzy ingerencja w materię NIE tworzy magicznej nowej klatki siatkówki. Zapis jest ulotny (w tej karcie), a obserwacja hosta nie jest informacją mózgu. Mapa kamery pokazuje prawdziwą fizykę dla Ciebie, nie dla aktora. Kontakty i liczba prób nie są miarą inteligencji.</footer>
+<footer>Podczas pauzy ingerencja w materię NIE tworzy magicznej nowej klatki siatkówki. Przycisk „Zapisz chwilę” pozostaje ulotny (w tej karcie). Zewnętrzny zapis LIFE/L1 możesz ponownie wczytać z pliku, ale karta nie symuluje życia, gdy jest zamknięta. Obserwacja hosta nie jest informacją mózgu. Mapa kamery pokazuje prawdziwą fizykę dla Ciebie, nie dla aktora. Kontakty i liczba prób nie są miarą inteligencji.</footer>
 </main><script type="module" src="../src/living-organism/dev-field.ts"></script></body></html>
