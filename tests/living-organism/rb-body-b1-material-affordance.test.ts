@@ -99,4 +99,21 @@ describe('RB-BODY/B1 — oriented actual Rapier contact morphology feasibility',
       expect(()=>c.restoreCheckpoint(a.captureCheckpoint())).toThrow('mismatch');
     }finally{a.free();b.free();c.free();}
   },120000);
+  it('rejects historical B0 checkpoint without bodyShape when the destination claims B1',()=>{
+    const original=new LivingWorld(false,'B0');
+    const b0=new LivingWorld(false,'B0');
+    const b1=new LivingWorld(false,'B1');
+    try{
+      original.addObject(3,0,.55,[.1,.85,.8]);
+      for(let i=0;i<8;i++)original.step({drive:.4,turn:.2,gazeRate:0});
+      const historical=original.captureCheckpoint();
+      delete historical.bodyShape; // version:3 produced before morphology existed
+      expect(historical.version).toBe(3);
+      expect(()=>b1.restoreCheckpoint(historical)).toThrow(/morphology mismatch/i);
+      expect(()=>b0.restoreCheckpoint(historical)).not.toThrow();
+      expect(b0.inspect()).toEqual(original.inspect());
+      // A valid B1 checkpoint still remains valid on B1; no destructive migration.
+    }finally{original.free();b0.free();b1.free();}
+  },120000);
+
 });
