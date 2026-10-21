@@ -107,3 +107,77 @@ export function runR2aReplay():R2aReplay{
    checkpointTick:cp.tick,physicsBytes:cp.physics.length};
  }finally{w.free();}
 }
+
+const REVERSE:Demand={drive:-.55,turn:0,gazeRate:0};
+export type R2bRevisit={
+ firstDemand:'forward'|'zero';worldTick:number;
+ afterWaitActor:XY;afterWaitMaterial:XY;
+ afterReturnActor:XY;afterReturnMaterial:XY;
+ afterRevisitActor:XY;afterRevisitMaterial:XY;
+ firstRevisitMaterialContactTick:number|null;
+ firstRevisitPrivateTouchTick:number|null;
+ firstRevisitFrame:PrivateFrame;replayedExactly:boolean;
+};
+/** Same exact living physics body stays in its World throughout the entire
+ * action→30s pause→reverse→forward protocol. Fixed schedule does not use
+ * retina, goal IDs, or host World positions to decide commands. */
+export function runR2bRevisit(firstDemand:'forward'|'zero'):R2bRevisit{
+ const s=createR2aScene(),w=s.world;
+ try{
+  for(let i=0;i<480;i++)w.step(firstDemand==='forward'?FORWARD:ZERO);
+  for(let i=0;i<3600;i++)w.step(ZERO);
+  const afterWaitHost=w.inspect().actor;
+  const afterWaitActor={x:afterWaitHost.x,y:afterWaitHost.y};
+  const afterWaitMaterial=material(s);
+  const cp=w.captureCheckpoint(); // at tick 4080, same body after its actual history
+
+  const continueSame=()=>{
+   for(let i=0;i<900;i++)w.step(REVERSE);
+   const reverseActor=w.inspect().actor;
+   const afterReturnActor={x:reverseActor.x,y:reverseActor.y};
+   const afterReturnMaterial=material(s);
+   let firstRevisitMaterialContactTick:number|null=null;
+   let firstRevisitPrivateTouchTick:number|null=null;
+   let lastContactSample=w.inspectContactSample().tick;
+   let lastPrivateTick=w.observe().tick;
+   const firstRevisitFrame=w.observe();
+   for(let i=0;i<1200;i++){
+    w.step(FORWARD);
+    const contact=w.inspectContactSample();
+    if(contact.tick!==lastContactSample){
+     lastContactSample=contact.tick;
+     if(firstRevisitMaterialContactTick===null &&
+       contact.contacts.some(c=>c.handle===s.materialHandle))
+      firstRevisitMaterialContactTick=contact.tick;
+    }
+    const f=w.observe();
+    if(f.tick!==lastPrivateTick){
+     lastPrivateTick=f.tick;
+     if(firstRevisitPrivateTouchTick===null&&f.touch.some(x=>x>.001))
+      firstRevisitPrivateTouchTick=f.tick;
+    }
+   }
+   const actor=w.inspect().actor;
+   return {afterReturnActor,afterReturnMaterial,
+    afterRevisitActor:{x:actor.x,y:actor.y},
+    afterRevisitMaterial:material(s),
+    firstRevisitMaterialContactTick,firstRevisitPrivateTouchTick,
+    firstRevisitFrame,
+    fullPhysics:Array.from(w.captureCheckpoint().physics),
+    fullPrivate:w.observe(),fullWorld:w.inspect()};
+  };
+
+  const first=continueSame();
+  w.restoreCheckpoint(cp);
+  const second=continueSame();
+  const replayedExactly=JSON.stringify(first)===JSON.stringify(second);
+  return {firstDemand,worldTick:w.inspect().tick,afterWaitActor,afterWaitMaterial,
+   afterReturnActor:second.afterReturnActor,
+   afterReturnMaterial:second.afterReturnMaterial,
+   afterRevisitActor:second.afterRevisitActor,
+   afterRevisitMaterial:second.afterRevisitMaterial,
+   firstRevisitMaterialContactTick:second.firstRevisitMaterialContactTick,
+   firstRevisitPrivateTouchTick:second.firstRevisitPrivateTouchTick,
+   firstRevisitFrame:second.firstRevisitFrame,replayedExactly};
+ }finally{w.free();}
+}
