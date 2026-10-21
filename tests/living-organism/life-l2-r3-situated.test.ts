@@ -73,7 +73,7 @@ describe('L2/R3 new continuous situated resident, narrow sensorimotor history',(
   console.log('RB_L2_R3_CONTINUING '+JSON.stringify({
    adaptive:{actor:a.w.actor,habit:a.s.habit,updates:a.s.habitUpdates,
     contacts:a.s.touchEpisodes,retinal:a.s.retinalModulations,frames:a.s.frames,
-    physicalMaterial:max(a.firstMaterialMotion),range:[a.minActor,a.maxActor]},
+    physicalMaterial:a.firstMaterialMotion,range:[a.minActor,a.maxActor]},
    frozen:{actor:f.w.actor,habit:f.s.habit,updates:f.s.habitUpdates,
     contacts:f.s.touchEpisodes,retinal:f.s.retinalModulations,frames:f.s.frames,
     physicalMaterial:f.firstMaterialMotion,range:[f.minActor,f.maxActor]},
@@ -138,4 +138,3 @@ describe('L2/R3 new continuous situated resident, narrow sensorimotor history',(
  },180000);
 });
 
-const max=(n:number)=>n;
