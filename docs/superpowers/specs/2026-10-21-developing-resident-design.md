@@ -2,6 +2,17 @@
 **2026-10-21 · Owner-approved direction, written design pending Owner review · ReflexBrain Lab**
 **Status:** DESIGN FOR REVIEW. **No implementation of the new resident is authorized by this document alone.** Existing E0/B0, B1, M1, S0, OL0, P0/P1 and D0/D1 sources remain donor evidence rather than canonical learned/living systems.
 
+## Decision in 60 seconds — Owner-readable layer
+
+**Direction:** one continuing physically embodied resident on an existing, explicitly selected runnable donor; learn actor-private action–consequence regularities in normal life, check whether those actually change later physical action against very cheap baselines; preserve a clear return route to **ReflexBrain proper** as soon as genuinely ambiguous actor-relative event significance has a real consumer. This is **not** the old cyan `Occupant` with a bigger map.
+
+**Current evidence:** E0/D1, optional B1 and scoped #80 observation/checkpoint fixes are executable; **no developing resident or learned semantic competence is qualified**. B1's moved disk is a researcher-world effect, not yet a demonstrated actor-private understood outcome.
+
+**Three vetoes:** (1) no legal evidence that an effect can be observed → do not train on hidden ground truth; (2) simple reactive/action-tape control matches the alleged new competence → do not promote learned skill; (3) recurrent natural relevance questions appear → stop polishing host and investigate the semantic consumer.
+
+**Execution architecture status:** THIS SPEC IS A REVIEWABLE CANDIDATE, not permission to merge or implement a new subsystem; the scoped G0 research repair #80 has independently passed actual CI. The later plan must specify an explicitly selected source branch and individually chosen donors.
+
+---
 ## 0. Source authority and the actual human request
 Owner explicitly endorsed moving beyond the existing `Occupant` into a **single, continuously developing embodied resident** on already available real physics, and asked for serious, multi-stage, multi-layer, iterative, unconventional autonomous work. This is not approval to merge research PRs, publish, claim intelligence/life, or freeze a final architecture. Owner repeatedly rejected the previous wall-hugging cyan-chase in a tiny boxed playmat. Observed Owner FAIL outranks passing CI and metrics.
 
@@ -104,6 +115,8 @@ For each future positive claim, identify which of these was actively challenged 
 
 ## 9. Research UI, recovery, delivery
 Keep ReflexBrain as one independent lab with clean research donors. The default interactive experience is **one organism**; the dual-world B0/B1 panel is optional microscopy. Research logs must distinguish actor-private sensory timeline and host true afterstate; replay and branching are tools, not proof of counterfactual completeness. Exact source SHA, CI, negative result and boundary warnings travel with every promoted donor.
+
+**Verified Git ancestry (2026-10-21):** current Pre-O0 foundations `35ff7365288d1ab7041fc0889f3985e963648630` and executable #80 `9ec81204abfb4e8fc651cb644264be2923481e9a` **DIVERGED** from common ancestor `87d94c84288982dd6c150494b24504097ec4474f`; GitHub compare reported 88 ahead / 68 behind / 124 differing paths. #79 is 20 commits ahead of D1 source `7caa9e89...`; #80 is 8 commits ahead of #79. **Neither `main`, #6, nor #80 is the automatic integration base.** The implementation plan must intentionally choose a runnable starting SHA and a narrow donor transplant/stacking strategy with explicit delta and regression coverage. Never merge a branch because it holds the latest document or view. A clean source branch is a deployment/reproducibility choice, not evidence of cognitive quality.
 
 **Persistence and branch equivalence must be honest.** Current #79 `Zapisz chwilę` is an in-memory checkpoint of the active tab; closing/reloading the tab loses it. Do not call that durable personal memory or world persistence. The developing resident must eventually have an explicit export/import or otherwise crash-resilient scoped checkpoint including both World-independent process state and actor/private learning state; protect against accidental shared-localStorage overwrite across unrelated runs/branches. Declare exact compared causal channels and what remains UNKNOWN; identical retinal trace or camera crop is not proof of whole-world counterfactual identity. Under interventions, preserve the original copy and record which channel changed rather than quietly pretending they share a complete past.
 
