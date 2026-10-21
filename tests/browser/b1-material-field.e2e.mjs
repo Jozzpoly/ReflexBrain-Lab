@@ -56,6 +56,8 @@ try{
   await canvas.scrollIntoViewIfNeeded();
   const rect=await canvas.boundingBox();
   check(rect,'B1 canvas missing');
+  await page.locator('#save').click();
+  check(!(await page.locator('#restore').isDisabled()),'reversible fork unavailable');
   const start=await snap(1);
   const sx=rect.x+(start.targetX-(start.cameraCenter-15))/30*rect.width;
   const sy=rect.y+(10-start.targetY)/20*rect.height;
@@ -70,6 +72,27 @@ try{
   check(Math.abs(unperturbed.targetX-initial0.targetX)<.1,
     'independent B0 World was changed by B1-only intervention');
   await page.screenshot({path:out+'/03-after-one-world-intervention.png',fullPage:true});
+  await page.locator('#restore').click();
+  const restored=await snap(1);
+  check(Math.hypot(restored.targetX-start.targetX,restored.targetY-start.targetY)<.001 &&
+    restored.tick===start.tick,
+    'B1 checkpoint failed to restore exact prior material state');
+  const bothRestored=await snap(0);
+  check(bothRestored.tick===start.tick,'counterfactual restored only one World');
+  await page.screenshot({path:out+'/04-full-world-counterfactual-restore.png',fullPage:true});
+  // Repeat the same isolated intervention after restoration, so the
+  // remaining autonomy test still examines a world actually changed by Owner.
+  await canvas.scrollIntoViewIfNeeded();
+  const repeat=await canvas.boundingBox();
+  check(repeat,'canvas missing after restore');
+  const ox=repeat.x+(restored.targetX-(restored.cameraCenter-15))/30*repeat.width;
+  const oy=repeat.y+(10-restored.targetY)/20*repeat.height;
+  await page.mouse.move(ox,oy);await page.mouse.down();
+  await page.mouse.move(ox-repeat.width/30*1.5,oy-repeat.height/20*1.2,{steps:8});
+  await page.mouse.up();
+  const repeated=await snap(1);
+  check(Math.hypot(repeated.targetX-start.targetX,repeated.targetY-start.targetY)>.5,
+    'repeat intervention after checkpoint failed');
 
   await page.locator('#run').click();
   await page.locator('#pilot').click(); // autonomous scripted old Occupant returns
@@ -96,7 +119,7 @@ try{
     identicalManualInputBoth:true,isolatedMaterialIntervention:true,
     materialDragDistance:Math.hypot(dragged.targetX-start.targetX,dragged.targetY-start.targetY),
     manualDeltas:{B0:driven0.actorX-before0.actorX,B1:driven1.actorX-before1.actorX},
-    beforeAndAfter:{initial0,initial1,dragged,autonomic},
+    beforeAndAfter:{initial0,initial1,dragged,restored,autonomic},
     mobileWidths:[900,390,320],errors,
   };
   await fs.writeFile(out+'/result.json',JSON.stringify(result,null,2)+'\n');
