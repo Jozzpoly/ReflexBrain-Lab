@@ -52,8 +52,11 @@ export class DevRuntime {
  step(manual:Demand|null=null) {
   // The actor sees only PrivateFrame, not host authority or object descriptors.
   const f=this.world.observe();
-  const autonomous=this.resident.decide(f,manual!==null);
-  this.world.step(manual??autonomous);
+  // Supervisor knows who controls the actual motor. That private-false
+  // provenance is a HOST training-data gate, never a sensory label.
+  const autonomous=manual===null?this.resident.decide(f):null;
+  if(manual!==null)this.resident.onAuthorityWithheld(f);
+  this.world.step(manual??autonomous!);
  }
  capture():DevCheckpoint {
   return {version:1,shape:this.shape,mode:this.mode,layout:this.layout,
