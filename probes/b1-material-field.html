@@ -10,7 +10,7 @@ h1{font-size:clamp(23px,3.1vw,38px);letter-spacing:-.04em;margin:8px 0}
 .lead{max-width:1100px;color:#aabfce;line-height:1.55;margin:0 0 18px}
 .controls{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:14px 0 20px}
 button{background:#1b3748;color:#e3f3fb;border:1px solid #426176;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer}
-button:hover{background:#27516a}button:focus-visible,input:focus-visible{outline:2px solid #62dfcd}
+button:hover{background:#27516a}button:disabled{opacity:.45;cursor:default}button:focus-visible,input:focus-visible{outline:2px solid #62dfcd}
 .status{font-size:13px;color:#8cbbb9}.panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .panel{background:#0f2230;border:1px solid #2e4d60;border-radius:13px;padding:14px;min-width:0}
 .panel h2{font-size:20px;margin:0 0 3px}.description{font-size:12px;color:#a2b7c7;margin:0 0 13px}
@@ -22,11 +22,12 @@ button:hover{background:#27516a}button:focus-visible,input:focus-visible{outline
 footer{margin-top:21px;color:#8babbf;font-size:12px;line-height:1.6}
 kbd{background:#223b4c;padding:2px 5px;border-radius:4px;border:1px solid #3f5e70}
 @media(max-width:950px){.panels{grid-template-columns:1fr}.panel{padding:11px}}
+@media(max-width:600px){main{padding-top:13px}.headerline{font-size:10px;line-height:1.35}h1{margin:6px 0;font-size:24px}.lead{font-size:13px;line-height:1.35;margin-bottom:10px}.controls{margin:10px 0 14px}.panel h2{font-size:18px}}
 </style></head><body>
 <main>
 <div class="headerline">REFLEXBRAIN / BADAWCZY PODGLĄD B0 ↔ B1 · NIEZAKWALIFIKOWANY ORGANIZM</div>
 <h1>Ten sam świat. Inne możliwości ciała.</h1>
-<p class="lead">Dwa prawdziwe światy fizyczne Rapiera działają równolegle. B0 ma okrągłe ciało; B1 jest wydłużony i jego obrót zmienia możliwość przejścia. W trybie auto oba korzystają z <strong>tego samego starego, zaprogramowanego sterownika</strong>. To nie jest nauka ani nowy ReflexBrain. Przestawiaj przedmioty, obserwuj, przejmuj sterowanie i porównuj materialne skutki.</p>
+<p class="lead">Dwa prawdziwe światy fizyczne. B0 — dysk, B1 — wydłużone ciało. <strong>Ten sam stary sterownik</strong>, inne możliwości kontaktu. Przejmij sterowanie, przesuwaj przedmioty i cofnij czas zapisem. To jeszcze nie jest uczący się organizm.</p>
 <div class="controls">
 <button id="run">Pauza</button>
 <button id="pilot">Przejmij oba ciała</button>
