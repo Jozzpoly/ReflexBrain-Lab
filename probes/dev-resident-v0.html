@@ -18,18 +18,20 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 .details{color:#abbec7;font:12px/1.6 ui-monospace,Consolas,monospace;white-space:pre-wrap}
 .keys{margin-top:11px;display:flex;gap:15px;flex-wrap:wrap;font-size:12px;color:#bed1d9}
 input[type=range]{accent-color:#65dfc8;width:165px}
-footer{color:#90aeb9;font-size:12px;margin:14px 0 25px}
+details.settings{margin:10px 0 2px;border:1px solid #315465;border-radius:8px;padding:8px 12px;background:#102936}details.settings summary{cursor:pointer;color:#afd9d2;font-size:13px;user-select:none}details.settings .controls{margin-bottom:1px}.keys{margin:9px 0}footer{color:#90aeb9;font-size:12px;margin:14px 0 25px}
 kbd{background:#193b49;padding:2px 5px;border-radius:4px}
-@media(max-width:600px){main{padding:10px}.stat{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{gap:5px}button,select{padding:9px 10px}p{font-size:12px}}
+@media(max-width:600px){p{display:none}.controls{margin:6px 0}.keys{margin:6px 0;gap:9px}main{padding:10px}.stat{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{gap:5px}button,select{padding:9px 10px}p{font-size:12px}}
 </style></head><body><main>
 <div class="kicker">REFLEXBRAIN / O-DEV V0 · EKSPERYMENT NIEZAKWALIFIKOWANY</div>
 <h1>Jeden świat, jeden mieszkaniec</h1>
 <p>Nowy mieszkaniec nie podąża za turkusowym kolorem. Sam wykonuje proste próby ruchowe i aktualizuje ocenę ich skutków dla własnego ciała. Nie uczymy go jeszcze znaczenia zdarzeń. Przesuń materię, przejmij ciało albo zatrzymaj czas. To podgląd badawczy, nie ukończona gra.</p>
+<details class="settings" id="settings"><summary>Zmień wariant badania</summary>
 <div class="controls">
 <label>Tryb <select id="mode"><option value="adaptive">Uczy się</option><option value="frozen">Bez uczenia</option><option value="random">Losowe próby</option></select></label>
 <label>Ciało <select id="body"><option value="B1">B1 — wydłużone</option><option value="B0">B0 — dysk</option></select></label>
 <label>Świat <select id="layout"><option value="yard">Yard</option><option value="shifted">Shifted</option></select></label>
-<button id="restart">Nowy przebieg</button>
+<button id="restart">Nowy przebieg</button></div></details>
+<div class="controls">
 <button id="pause">Pauza</button><button id="takeover">Przejmij</button>
 <button id="save">Zapisz chwilę</button><button id="restore" disabled>Wróć do zapisu</button>
 </div>
@@ -40,11 +42,12 @@ kbd{background:#193b49;padding:2px 5px;border-radius:4px}
 <div class="tile"><small>Władza nad ciałem</small><div class="n" id="authority">AUTO</div></div>
 </div>
 <div class="info"><span id="status">Ładowanie Rapiera…</span></div>
-<canvas id="world" width="900" height="600" class="world" aria-label="Świat fizyczny. Możesz przeciągać okrągłe obiekty"></canvas>
-<div class="sense"><div style="color:#9fc0c8;font-size:12px;margin-bottom:8px">Ostatnia prawnie otrzymana klatka 96 RGB (nie wszechwiedza hosta)</div><canvas class="eye" id="eye" width="96" height="12" aria-label="Oryginalna prywatna siatkówka"></canvas><div class="details" id="details"></div></div>
 <div class="keys"><span><kbd>W/S</kbd> napęd</span><span><kbd>A/D</kbd> obrót</span><span><kbd>Q/E</kbd> wzrok</span>
 <label>Napęd <input id="drive" type="range" min="-100" max="100" value="0"></label>
 <label>Obrót <input id="turn" type="range" min="-100" max="100" value="0"></label>
 </div>
+<canvas id="world" width="900" height="600" class="world" aria-label="Świat fizyczny. Możesz przeciągać okrągłe obiekty"></canvas>
+<div class="sense"><div style="color:#9fc0c8;font-size:12px;margin-bottom:8px">Ostatnia prawnie otrzymana klatka 96 RGB (nie wszechwiedza hosta)</div><canvas class="eye" id="eye" width="96" height="12" aria-label="Oryginalna prywatna siatkówka"></canvas><div class="details" id="details"></div></div>
+
 <footer>Podczas pauzy ingerencja w materię NIE tworzy magicznej nowej klatki siatkówki. Zapis jest ulotny (w tej karcie), a obserwacja hosta nie jest informacją mózgu. Mapa kamery pokazuje prawdziwą fizykę dla Ciebie, nie dla aktora. Kontakty i liczba prób nie są miarą inteligencji.</footer>
 </main><script type="module" src="../src/living-organism/dev-field.ts"></script></body></html>
