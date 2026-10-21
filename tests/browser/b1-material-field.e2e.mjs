@@ -20,8 +20,18 @@ try{
   await page.goto(URL,{waitUntil:'networkidle',timeout:30000});
   await page.waitForFunction(()=>Number(document.querySelector('#world0')?.dataset.tick)>30 &&
     Number(document.querySelector('#world1')?.dataset.tick)>30,null,{timeout:20000});
-  const initial0=await snap(0),initial1=await snap(1);
-  check(initial0.tick===initial1.tick,'paired Worlds have unsynchronized physics clocks');
+  // Atomically read both panel clocks. Two awaited cross-page evaluations
+  // could straddle an animation frame and falsely diagnose a sync defect.
+  const simultaneously=await page.evaluate(()=>[0,1].map(i=>{
+    const c=document.querySelector('#world'+i);
+    return {tick:Number(c?.dataset.tick),actorX:Number(c?.dataset.actorX),
+      targetX:Number(c?.dataset.targetX),targetY:Number(c?.dataset.targetY),
+      cameraCenter:Number(c?.dataset.cameraCenter)};
+  }));
+  const initial0=simultaneously[0],initial1=simultaneously[1];
+  check(initial0.tick===initial1.tick,
+    'paired Worlds actually have unsynchronized atomic physics clocks: '+
+    JSON.stringify(simultaneously));
   check(Math.abs(initial0.targetX-9)<.01&&Math.abs(initial1.targetX-9)<.01,
     'actual physical cyan targets missing');
   check(Number.isFinite(initial1.actorX),'missing B1 actor');
