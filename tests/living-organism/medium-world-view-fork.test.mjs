@@ -31,16 +31,17 @@ describe('MEDIUM/W — actual physical authority versus view / continuation / fo
    const lensB=()=>runtime.world.inspect();
    const before=lensA(),target=before.objects.find(o=>o.kind==='object');
    expect(target).toBeDefined();
+   const initialX=target.x, initialY=target.y;
    expect(lensB()).toEqual(before);
    // An observer snapshot is not the physical authority.
    before.objects.find(o=>o.handle===target.handle).x=9999;
-   expect(lensB().objects.find(o=>o.handle===target.handle).x).toBeCloseTo(target.x,8);
+   expect(lensB().objects.find(o=>o.handle===target.handle).x).toBeCloseTo(initialX,8);
    // One host-side physical mutation; both lenses now see it at the SAME tick.
-   runtime.world.moveObject(target.handle,target.x+1.25,target.y-.6);
+   runtime.world.moveObject(target.handle,initialX+1.25,initialY-.6);
    const a=lensA().objects.find(o=>o.handle===target.handle);
    const b=lensB().objects.find(o=>o.handle===target.handle);
-   expect(a.x).toBeCloseTo(target.x+1.25,6);
-   expect(a.y).toBeCloseTo(target.y-.6,6);
+   expect(a.x).toBeCloseTo(initialX+1.25,6);
+   expect(a.y).toBeCloseTo(initialY-.6,6);
    expect(b).toEqual(a);
    expect(lensA().tick).toBe(before.tick);
    expect(lensB().tick).toBe(before.tick);
