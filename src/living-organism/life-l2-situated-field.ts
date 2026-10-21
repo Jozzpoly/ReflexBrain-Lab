@@ -87,6 +87,10 @@ const draw=()=>{
  canvas.dataset.habit=String(s.habit);
  canvas.dataset.interventionSeen=lastInterventionTick===null||f.tick>lastInterventionTick?'yes':'no';
  canvas.dataset.centerX=String(center.x);canvas.dataset.centerY=String(center.y);
+ const sampleObject=world.objects.find(o=>o.kind==='object');
+ canvas.dataset.objectX=String(sampleObject?.x??NaN);
+ canvas.dataset.objectY=String(sampleObject?.y??NaN);
+ canvas.dataset.manualFrames=String(s.manualFrames);
 };
 function animate(t:number){
  if(!lastTime)lastTime=t;

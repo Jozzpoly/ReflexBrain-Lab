@@ -23,6 +23,40 @@ jobs:
       - run: yarn run check
 
 
+
+  browser-life-l2-r3:
+    if: github.event_name == 'pull_request' && github.head_ref == 'research/rb-life-l2-coupled-ontogeny-2026-10-21'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: yarn install --non-interactive
+      - run: yarn run build
+      - name: Confirm system Chrome
+        run: google-chrome --version
+      - name: Install separate Playwright Chrome driver
+        run: yarn add --dev --ignore-scripts playwright-core@1.56.0
+      - name: Serve real built situated browser probe
+        run: |
+          yarn vite preview --host 127.0.0.1 --port 4187 > /tmp/rb-l2-r3-preview.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4187/probes/life-l2-situated.html >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/rb-l2-r3-preview.log
+          exit 1
+      - name: Real Chrome direct World intervention, private retinal provenance and mobile control
+        run: node tests/browser/life-l2-r3.e2e.mjs
+      - name: Preserve real browser diagnostic screenshots and result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflexbrain-l2-r3-browser
+          path: artifacts/life-l2-r3
+          if-no-files-found: ignore
+
   browser-r3g:
     if: github.event_name == 'pull_request' && github.head_ref == 'medium/medium-d-r3g-runtime-clean-pointer'
     runs-on: ubuntu-latest
