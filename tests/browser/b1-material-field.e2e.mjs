@@ -13,7 +13,7 @@ const snap=i=>page.locator('#world'+i).evaluate(el=>({
   tick:Number(el.dataset.tick),actorX:Number(el.dataset.actorX),actorY:Number(el.dataset.actorY),
   targetX:Number(el.dataset.targetX),targetY:Number(el.dataset.targetY),
   cameraCenter:Number(el.dataset.cameraCenter),dragHandle:el.dataset.dragHandle,
-  manual:el.dataset.manual==='true'
+  manual:el.dataset.manual==='true',retinaStatus:el.dataset.retinaStatus??''
 }));
 await fs.mkdir(out,{recursive:true});
 try{
@@ -38,7 +38,12 @@ try{
   await page.screenshot({path:out+'/01-dual-world.png',fullPage:true});
   // Real manual authority uses the same command to both different bodies.
   await page.locator('#pilot').click();
+  // A previous autonomous dwell could have reached a wall before we grabbed
+  // authority. Start the manual actuator comparison from a reproducible body
+  // state without weakening the requirement that BOTH motors move.
+  await page.locator('#reset').click(); // reset preserves manual authority
   const before0=await snap(0),before1=await snap(1);
+  check(before0.manual&&before1.manual,'manual takeover lost on world reset');
   await page.locator('#drive').evaluate(el=>{el.value='75';el.dispatchEvent(new Event('input',{bubbles:true}));});
   await page.waitForTimeout(520);
   await page.locator('#drive').evaluate(el=>{el.value='0';el.dispatchEvent(new Event('input',{bubbles:true}));});
@@ -68,15 +73,27 @@ try{
   const dragged=await snap(1);
   check(Math.hypot(dragged.targetX-start.targetX,dragged.targetY-start.targetY)>.5,
     'Owner physical object drag did not change actual B1 world');
+  check(dragged.retinaStatus==='pre-intervention',
+    'paused host world changed while UI falsely presents previous retina as newly sensed');
   const unperturbed=await snap(0);
   check(Math.abs(unperturbed.targetX-initial0.targetX)<.1,
     'independent B0 World was changed by B1-only intervention');
   await page.screenshot({path:out+'/03-after-one-world-intervention.png',fullPage:true});
+  // Deliberately change HOST authority and pause state after saving. Restore
+  // must not claim 'same moment' while resuming a different controller.
+  await page.locator('#pilot').click();
+  await page.locator('#run').click();
+  check(!(await snap(1)).manual,'pre-restore authority switch did not happen');
   await page.locator('#restore').click();
+  check((await snap(1)).manual,'checkpoint restored matter but NOT manual authority');
+  check((await page.locator('#run').innerText())==='Wznów',
+    'checkpoint restored matter but NOT paused simulation state');
   const restored=await snap(1);
   check(Math.hypot(restored.targetX-start.targetX,restored.targetY-start.targetY)<.001 &&
     restored.tick===start.tick,
     'B1 checkpoint failed to restore exact prior material state');
+  check(restored.retinaStatus==='delivered',
+    'restore must also restore retina provenance from the saved sensory snapshot');
   const bothRestored=await snap(0);
   check(bothRestored.tick===start.tick,'counterfactual restored only one World');
   await page.screenshot({path:out+'/04-full-world-counterfactual-restore.png',fullPage:true});
@@ -100,6 +117,8 @@ try{
     dragged.tick,{timeout:18000});
   const autonomic=await snap(1);
   check(!autonomic.manual,'old authored autonomous controller failed to regain authority');
+  check(autonomic.retinaStatus==='delivered',
+    'autonomous sensing after resumption did not acknowledge new physical World');
   await page.screenshot({path:out+'/04-after-return-to-auto.png',fullPage:true});
 
   for(const [width,height] of [[900,900],[390,844],[320,720]]){

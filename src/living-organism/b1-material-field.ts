@@ -9,6 +9,8 @@ type Unit={
   info:HTMLElement;cameraCenter:number;path:number;
   before:{x:number;y:number};touchWindows:number;materialTouched:number;
   visited:Set<string>;dragHandle:number|null;dragPointer:number|null;
+  /** Researcher-only: world material changed after actor's last delivered frame. */
+  lastEditTick:number|null;
 };
 const create=<T extends Element>(selector:string):T=>{
   const el=document.querySelector<T>(selector);
@@ -31,8 +33,10 @@ const col=(rgb:number[])=>'rgb('+rgb.map(v=>Math.round(v*255)).join(',')+')';
 
 type SavedUnit={world:Checkpoint;brain:OccupantState;motor:Demand;path:number;
   before:{x:number;y:number};touchWindows:number;materialTouched:number;
-  visited:string[];cameraCenter:number};
+  visited:string[];cameraCenter:number;lastEditTick:number|null};
+type SavedViewControl={manual:boolean;paused:boolean;drive:string;turn:string};
 let saved:SavedUnit[]|null=null;
+let savedViewControl:SavedViewControl|null=null;
 let units:Unit[]=[];
 let paused=false,manual=false,clock=0,acc=0;
 function makeWorld(shape:BodyShape){
@@ -57,14 +61,14 @@ function make(i:number,shape:BodyShape):Unit{
     retina,retinaCtx:retina.getContext('2d')!,
     info:create<HTMLElement>('#stat'+i),cameraCenter:8,path:0,
     before:{x:0,y:0},touchWindows:0,materialTouched:0,
-    visited:new Set<string>(),dragHandle:null,dragPointer:null
+    visited:new Set<string>(),dragHandle:null,dragPointer:null,lastEditTick:null
   };
 }
 function reset(){
   for(const u of units)u.world.free();
   units=[make(0,'B0'),make(1,'B1')];
   acc=0;clock=0;pressed.clear();drive.value='0';turn.value='0';
-  saved=null;restoreButton.disabled=true;
+  saved=null;savedViewControl=null;restoreButton.disabled=true;
   installPointerHandlers();
   paint();
 }
@@ -91,6 +95,8 @@ function installPointerHandlers(){
       const u=units[i];if(u.dragHandle===null||u.dragPointer!==e.pointerId)return;
       const p=fromPointer(u,e);
       u.world.moveObject(u.dragHandle,p.x,p.y);
+      // Do NOT manufacture a new private observation at the same paused tick.
+      u.lastEditTick=u.world.inspect().tick;
     });
     for(const type of ['pointerup','pointercancel','lostpointercapture'])
       canvas.addEventListener(type,()=>{units[i].dragHandle=null;units[i].dragPointer=null;});
@@ -115,6 +121,8 @@ function step(){
       u.visited.add(Math.floor(pos.x/2)+':'+Math.floor(pos.y/2));
     }else if(manual){u.motor=cmd;}
     w.step(u.motor);
+    if(u.lastEditTick!==null && w.observe().tick>u.lastEditTick)
+      u.lastEditTick=null; // next scheduled 30Hz actor frame was delivered
     const pos=w.inspect().actor;
     u.path+=Math.hypot(pos.x-u.before.x,pos.y-u.before.y);
     u.before={x:pos.x,y:pos.y};
@@ -177,13 +185,17 @@ function paint(){
     u.canvas.dataset.targetY=String(target?.y??NaN);
     u.canvas.dataset.dragHandle=String(u.dragHandle??'');
     u.canvas.dataset.manual=String(manual);
+    // Label the actor's actual last-delivered frame, not the current host view.
+    u.canvas.dataset.retinaStatus=u.lastEditTick===null?'delivered':'pre-intervention';
     const mode=u.brain.capture().mode;
     const touches=Array.from(f.touch).reduce((p,x)=>p+x,0);
     u.info.textContent=
       'Świat: '+round(s.tick/120)+'s · tryb: '+(manual?'RĘCZNIE':'AUTO / '+mode)+'\n'+
       'Pozycja ('+round(a.x)+', '+round(a.y)+') · ślad '+round(u.path)+'\n'+
       'Kontakt z materią: '+u.materialTouched+' okien · dotyk '+round(touches)+
-      ' · pola 2m: '+u.visited.size;
+      ' · pola 2m: '+u.visited.size+'\n'+
+      (u.lastEditTick===null?'Siatkówka: ostatnia odebrana klatka 30Hz':
+       'Siatkówka: OBRAZ SPRZED INGERENCJI — aktor jeszcze nie widział zmiany');
   }
   time.textContent=(document.hidden?'Ukryta karta':paused?'Zatrzymane':manual?'Sterowanie ręczne':'Stary autorski Occupant')+
     ' · '+round(units[0]?.world.inspect().tick/120||0)+' s fizyki';
@@ -209,12 +221,13 @@ create<HTMLButtonElement>('#save').addEventListener('click',()=>{
     world:u.world.captureCheckpoint(),brain:u.brain.capture(),
     motor:{...u.motor},path:u.path,before:{...u.before},
     touchWindows:u.touchWindows,materialTouched:u.materialTouched,
-    visited:[...u.visited],cameraCenter:u.cameraCenter,
+    visited:[...u.visited],cameraCenter:u.cameraCenter,lastEditTick:u.lastEditTick,
   }));
+  savedViewControl={manual,paused,drive:drive.value,turn:turn.value};
   restoreButton.disabled=false;
 });
 restoreButton.addEventListener('click',()=>{
-  if(!saved)return;
+  if(!saved||!savedViewControl)return;
   for(let i=0;i<units.length;i++){
     const u=units[i],s=saved[i];
     u.world.restoreCheckpoint(s.world);
@@ -222,9 +235,16 @@ restoreButton.addEventListener('click',()=>{
     u.path=s.path;u.before={...s.before};
     u.touchWindows=s.touchWindows;u.materialTouched=s.materialTouched;
     u.visited=new Set(s.visited);u.cameraCenter=s.cameraCenter;
+    u.lastEditTick=s.lastEditTick;
     u.dragHandle=null;u.dragPointer=null;
   }
-  pressed.clear();drive.value='0';turn.value='0';acc=0;clock=0;
+  // Recover actual actor authority and paused-time state alongside physics.
+  // Physical held keys are deliberately never invented on restore.
+  manual=savedViewControl.manual;paused=savedViewControl.paused;
+  drive.value=savedViewControl.drive;turn.value=savedViewControl.turn;
+  runButton.textContent=paused?'Wznów':'Pauza';
+  pilotButton.textContent=manual?'Oddaj oba ciała':'Przejmij oba ciała';
+  pressed.clear();acc=0;clock=0;
   paint();
 });
 create<HTMLButtonElement>('#reset').addEventListener('click',reset);

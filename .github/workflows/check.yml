@@ -160,7 +160,7 @@ jobs:
           if-no-files-found: ignore
 
   browser-b1-material:
-    if: github.event_name == 'pull_request' && github.head_ref == 'research/rb-body-b1-material-affordance-2026-10-21'
+    if: github.event_name == 'pull_request' && (github.head_ref == 'research/rb-body-b1-material-affordance-2026-10-21' || github.head_ref == 'research/rb-experience-contract-2026-10-21')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
