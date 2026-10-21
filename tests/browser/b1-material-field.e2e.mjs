@@ -79,7 +79,15 @@ try{
   check(Math.abs(unperturbed.targetX-initial0.targetX)<.1,
     'independent B0 World was changed by B1-only intervention');
   await page.screenshot({path:out+'/03-after-one-world-intervention.png',fullPage:true});
+  // Deliberately change HOST authority and pause state after saving. Restore
+  // must not claim 'same moment' while resuming a different controller.
+  await page.locator('#pilot').click();
+  await page.locator('#run').click();
+  check(!(await snap(1)).manual,'pre-restore authority switch did not happen');
   await page.locator('#restore').click();
+  check((await snap(1)).manual,'checkpoint restored matter but NOT manual authority');
+  check((await page.locator('#run').innerText())==='Wznów',
+    'checkpoint restored matter but NOT paused simulation state');
   const restored=await snap(1);
   check(Math.hypot(restored.targetX-start.targetX,restored.targetY-start.targetY)<.001 &&
     restored.tick===start.tick,
