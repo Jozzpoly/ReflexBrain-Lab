@@ -136,3 +136,35 @@ export function runL2R0MotorProbe(plateHeld:boolean):L2R0MotorProbe{
    privateFrames,physicallyLoaded};
  }finally{w.free();}
 }
+
+
+/** R1a: intentionally BLIND constant motor. This is a negative/control actor,
+ * not a candidate learned resident. Host reads private frames only to audit
+ * sensory timing; the action never consumes a single sensor value. */
+export type L2BlindMotorRun={
+ railEnabled:boolean;ticks:number;firstCrossTick:number|null;actorEndX:number;
+ maxActorX:number;maxAbsActorY:number;privateFrames:number;
+ actualGateLoadedTransitions:number;motorPolicy:'fixed-forward';
+};
+export function runL2BlindMotor(railEnabled:boolean,ticks=14400):L2BlindMotorRun{
+ const scene=createL2R0World(railEnabled,'B0','R0b');
+ const w=scene.world;
+ let firstCrossTick:number|null=null,privateFrames=0,lastPrivate=-1;
+ let maxActorX=-Infinity,maxAbsActorY=0;
+ const blind:Demand={drive:.65,turn:0,gazeRate:0};
+ try{
+  for(let i=0;i<ticks;i++){
+   const f=w.observe(); // not a motor input; audit only
+   if(f.tick!==lastPrivate){lastPrivate=f.tick;privateFrames++;}
+   w.step(blind);
+   const a=w.inspect().actor;
+   maxActorX=Math.max(maxActorX,a.x);maxAbsActorY=Math.max(maxAbsActorY,Math.abs(a.y));
+   if(firstCrossTick===null&&a.x>7.4&&Math.abs(a.y)<1.5)
+    firstCrossTick=i+1;
+  }
+  return {railEnabled,ticks,firstCrossTick,actorEndX:w.inspect().actor.x,
+   maxActorX,maxAbsActorY,privateFrames,
+   actualGateLoadedTransitions:w.inspectGateLink()!.loadTransitions,
+   motorPolicy:'fixed-forward'};
+ }finally{w.free();}
+}
