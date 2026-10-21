@@ -112,6 +112,51 @@ try{
       'horizontal overflow '+width+': '+JSON.stringify(geometry));
     await page.screenshot({path:out+'/viewport-'+width+'.png',fullPage:true});
   }
+  // Actual touch input on a mobile-emulated Chrome page, not mouse input
+  // merely tested after resizing a desktop viewport.
+  let mobileTouchDistance=0;
+  const context=await browser.newContext({
+    viewport:{width:390,height:844},deviceScaleFactor:1,
+    isMobile:true,hasTouch:true,
+  });
+  try{
+    const mobile=await context.newPage();
+    const mobileErrors=[];
+    mobile.on('pageerror',e=>mobileErrors.push(String(e)));
+    await mobile.goto(URL,{waitUntil:'networkidle',timeout:30000});
+    await mobile.waitForFunction(()=>Number(document.querySelector('#world1')?.dataset.tick)>20,
+      null,{timeout:20000});
+    await mobile.locator('#run').click();
+    await mobile.locator('#world1').scrollIntoViewIfNeeded();
+    const info=await mobile.locator('#world1').evaluate(c=>({
+      tick:Number(c.dataset.tick),targetX:Number(c.dataset.targetX),
+      targetY:Number(c.dataset.targetY),cameraCenter:Number(c.dataset.cameraCenter),
+    }));
+    const r=await mobile.locator('#world1').boundingBox();
+    check(r,'no mobile target canvas');
+    // Mobile observer's 18x12 world-span; camera zoom changes no physics.
+    const startX=r.x+(info.targetX-(info.cameraCenter-9))/18*r.width;
+    const startY=r.y+(6-info.targetY)/12*r.height;
+    const cdp=await mobile.context().newCDPSession(mobile);
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',
+      touchPoints:[{x:startX,y:startY,id:1}]});
+    for(let i=1;i<=8;i++){
+      await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',
+        touchPoints:[{x:startX-i*(r.width/18)*1.2/8,
+          y:startY-i*(r.height/12)*.7/8,id:1}]});
+    }
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    const after=await mobile.locator('#world1').evaluate(c=>({
+      tick:Number(c.dataset.tick),targetX:Number(c.dataset.targetX),
+      targetY:Number(c.dataset.targetY),
+    }));
+    mobileTouchDistance=Math.hypot(after.targetX-info.targetX,after.targetY-info.targetY);
+    check(after.tick===info.tick,'touch move advanced physics despite pause');
+    check(mobileTouchDistance>.4,'real mobile touch gesture did not drag physical B1 object: '+
+      JSON.stringify({info,after,mobileTouchDistance,startX,startY,r}));
+    check(mobileErrors.length===0,'mobile JavaScript errors '+JSON.stringify(mobileErrors));
+    await mobile.screenshot({path:out+'/mobile-real-touch-drag.png',fullPage:true});
+  }finally{await context.close();}
   check(errors.length===0,'Browser JS errors '+JSON.stringify(errors));
   const result={
     verdict:'B1_MATERIAL_BROWSER_ENGINEERING_PASS',
@@ -120,7 +165,7 @@ try{
     materialDragDistance:Math.hypot(dragged.targetX-start.targetX,dragged.targetY-start.targetY),
     manualDeltas:{B0:driven0.actorX-before0.actorX,B1:driven1.actorX-before1.actorX},
     beforeAndAfter:{initial0,initial1,dragged,restored,autonomic},
-    mobileWidths:[900,390,320],errors,
+    mobileWidths:[900,390,320],mobileTouchDistance,errors,
   };
   await fs.writeFile(out+'/result.json',JSON.stringify(result,null,2)+'\n');
   console.log('RB_B1_BROWSER_RESULT '+JSON.stringify(result));
