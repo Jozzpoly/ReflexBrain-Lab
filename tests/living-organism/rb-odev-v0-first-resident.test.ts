@@ -5,7 +5,8 @@ import {DevResident,type DevMode} from '../../src/living-organism/dev-resident';
 
 const ZERO:Demand={drive:0,turn:0,gazeRate:0};
 type Summary={shape:BodyShape;layout:DevLayout;mode:DevMode|'world-null';
-  steps:number;travel:number;objectDisplacement:number;visited4mCells:number;
+  steps:number;travel:number;looseMaterialDisplacement:number;independentRailDisplacement:number;
+  looseObjectsMoved:number;visited4mCells:number;
   privateFrames:number;touchFrames:number;lastModeStats:ReturnType<DevResident['capture']>;
   actor:{x:number;y:number};totalMaterialObjects:number;finite:boolean};
 function run(shape:BodyShape,layout:DevLayout,mode:DevMode|'world-null',ticks=3600):Summary {
@@ -28,17 +29,21 @@ function run(shape:BodyShape,layout:DevLayout,mode:DevMode|'world-null',ticks=36
    }
   }
   const final=r.world.inspect();
-  const displaced=final.objects.filter(o=>o.kind==='object')
-   .reduce((sum,o)=>{
-     const p=initial.get(o.handle);
-     if(!p)throw Error('physics lost a material body');
-     return sum+Math.hypot(o.x-p.x,o.y-p.y);
-   },0);
+  const deltas=final.objects.filter(o=>o.kind==='object').map(o=>{
+    const p=initial.get(o.handle);
+    if(!p)throw Error('physics lost a material body');
+    return {handle:o.handle,travel:Math.hypot(o.x-p.x,o.y-p.y)};
+   });
+  const independentRailDisplacement=deltas.find(d=>d.handle===r.hostMoverHandle)?.travel??NaN;
+  const loose=deltas.filter(d=>d.handle!==r.hostMoverHandle);
+  const looseMaterialDisplacement=loose.reduce((sum,d)=>sum+d.travel,0);
   return {shape,layout,mode,steps:ticks,travel,
-   objectDisplacement:displaced,visited4mCells:cells.size,
+   looseMaterialDisplacement,independentRailDisplacement,
+   looseObjectsMoved:loose.filter(d=>d.travel>.10).length,
+   visited4mCells:cells.size,
    privateFrames,touchFrames,lastModeStats:r.resident.capture(),
    actor:{x:last.x,y:last.y},totalMaterialObjects:initial.size,
-   finite:[travel,displaced,last.x,last.y].every(Number.isFinite)};
+   finite:[travel,looseMaterialDisplacement,independentRailDisplacement,last.x,last.y].every(Number.isFinite)};
  }finally{r.free();}
 }
 describe('O-DEV/V0 — first continuing non-cyan resident in actual material ecology',()=>{
@@ -81,8 +86,10 @@ describe('O-DEV/V0 — first continuing non-cyan resident in actual material eco
    for(const layout of ['yard','shifted'] as const)
     for(const mode of ['adaptive','frozen','random'] as const)
      rows.push(run(shape,layout,mode));
-  rows.push(run('B1','yard','world-null'));
-  expect(rows).toHaveLength(13);
+  for(const layout of ['yard','shifted'] as const)
+   for(const shape of ['B0','B1'] as const)
+    rows.push(run(shape,layout,'world-null'));
+  expect(rows).toHaveLength(16);
   expect(rows.every(x=>x.steps===3600&&x.privateFrames===900&&x.finite&&x.totalMaterialObjects>=4)).toBe(true);
   expect(rows.filter(x=>x.mode==='adaptive').every(x=>x.lastModeStats.learnedTrials>=1)).toBe(true);
   expect(rows.filter(x=>x.mode!=='adaptive').every(x=>x.lastModeStats.learnedTrials===0)).toBe(true);
