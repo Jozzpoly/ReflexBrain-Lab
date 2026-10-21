@@ -18,6 +18,7 @@ export default defineConfig({
         openEcologyD0: "probes/world-ecology-d0.html",
         coupledEcologyD1: "probes/world-ecology-d1.html",
         bodyMaterialB1: "probes/b1-material-field.html",
+        devResidentV0: "probes/dev-resident-v0.html",
         mediumDR3A: "probes/medium-d-r3a-material-fork.html",
         mediumDR3C: "probes/medium-d-r3c-shadow-fork.html",
         mediumDR3E: "probes/medium-d-r3e-spatial-proxy.html",

@@ -191,3 +191,36 @@ jobs:
           name: reflexbrain-b1-material-browser
           path: artifacts/b1-material-field
           if-no-files-found: ignore
+
+  browser-odev-v0:
+    if: github.event_name == 'pull_request' && github.head_ref == 'research/rb-odev-first-resident-2026-10-21'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build actual continuous resident
+        run: |
+          yarn install --non-interactive
+          yarn run build
+          test -f dist/probes/dev-resident-v0.html
+      - name: Chrome availability
+        run: google-chrome --version
+      - name: Lightweight Chrome driver
+        run: yarn add --dev --ignore-scripts playwright-core@1.56.0
+      - name: Real Chrome browser, mobile, intervention, restoration
+        run: |
+          yarn vite preview --host 127.0.0.1 --port 4179 > /tmp/odev-preview.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4179/probes/dev-resident-v0.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node tests/browser/odev-v0-resident.e2e.mjs
+      - name: Real screenshots and forensic results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflexbrain-odev-v0-chrome
+          path: artifacts/odev-v0
+          if-no-files-found: ignore
