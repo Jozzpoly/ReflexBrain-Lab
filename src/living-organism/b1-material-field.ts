@@ -23,9 +23,10 @@ const drive=create<HTMLInputElement>('#drive');
 const turn=create<HTMLInputElement>('#turn');
 const pressed=new Set<string>();
 const round=(x:number)=>x.toFixed(2);
-const scale=24;
-const worldSpan=30;
-const heightSpan=20;
+// Preserve the same physical World. Only observer zoom changes on mobile.
+const span=()=>window.innerWidth<600?18:30;
+const pixelsPerUnit=()=>720/span();
+const fieldHeight=()=>480/pixelsPerUnit();
 const col=(rgb:number[])=>'rgb('+rgb.map(v=>Math.round(v*255)).join(',')+')';
 
 type SavedUnit={world:Checkpoint;brain:OccupantState;motor:Demand;path:number;
@@ -67,12 +68,12 @@ function reset(){
   installPointerHandlers();
   paint();
 }
-function sx(u:Unit,x:number){return (x-(u.cameraCenter-worldSpan/2))*scale;}
-function sy(y:number){return (heightSpan/2-y)*scale;}
+function sx(u:Unit,x:number){return (x-(u.cameraCenter-span()/2))*pixelsPerUnit();}
+function sy(y:number){return (fieldHeight()/2-y)*pixelsPerUnit();}
 function fromPointer(u:Unit,e:PointerEvent){
   const r=u.canvas.getBoundingClientRect();
   const fx=(e.clientX-r.left)/r.width,fy=(e.clientY-r.top)/r.height;
-  return {x:u.cameraCenter-worldSpan/2+fx*worldSpan,y:heightSpan/2-fy*heightSpan};
+  return {x:u.cameraCenter-span()/2+fx*span(),y:fieldHeight()/2-fy*fieldHeight()};
 }
 function installPointerHandlers(){
   // Assign once: the handlers read current Units to survive reset.
@@ -129,12 +130,12 @@ function paint(){
   for(const u of units){
     const {ctx,canvas,retinaCtx,retina}=u;
     const s=u.world.inspect(),f=u.world.observe();
-    u.cameraCenter=Math.max(8,s.actor.x);
+    u.cameraCenter=Math.max(window.innerWidth<600?6:8,s.actor.x);
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle='#091923';ctx.fillRect(0,0,canvas.width,canvas.height);
-    const left=u.cameraCenter-worldSpan/2;
+    const left=u.cameraCenter-span()/2;
     ctx.strokeStyle='#1b3442';ctx.lineWidth=1;
-    for(let x=Math.floor(left);x<=left+worldSpan;x++){
+    for(let x=Math.floor(left);x<=left+span();x++){
       ctx.beginPath();ctx.moveTo(sx(u,x),0);ctx.lineTo(sx(u,x),canvas.height);ctx.stroke();
     }
     for(let y=-10;y<=10;y++){
@@ -144,8 +145,8 @@ function paint(){
       ctx.save();ctx.translate(sx(u,o.x),sy(o.y));ctx.rotate(-o.angle);
       ctx.fillStyle=col(o.color);
       if(o.kind==='object'){
-        ctx.beginPath();ctx.arc(0,0,o.hx*scale,0,Math.PI*2);ctx.fill();
-      }else{ctx.fillRect(-o.hx*scale,-o.hy*scale,2*o.hx*scale,2*o.hy*scale);}
+        ctx.beginPath();ctx.arc(0,0,o.hx*pixelsPerUnit(),0,Math.PI*2);ctx.fill();
+      }else{ctx.fillRect(-o.hx*pixelsPerUnit(),-o.hy*pixelsPerUnit(),2*o.hx*pixelsPerUnit(),2*o.hy*pixelsPerUnit());}
       ctx.restore();
     }
     const a=s.actor;
@@ -153,10 +154,10 @@ function paint(){
     ctx.fillStyle=u.shape==='B0'?'#69a6e4':'#71d6a5';
     ctx.strokeStyle='#f0fbff';ctx.lineWidth=2;
     ctx.beginPath();
-    if(u.shape==='B0')ctx.arc(0,0,scale,0,Math.PI*2);
-    else ctx.roundRect(-1.3*scale,-.65*scale,2.6*scale,1.3*scale,.65*scale);
+    if(u.shape==='B0')ctx.arc(0,0,pixelsPerUnit(),0,Math.PI*2);
+    else ctx.roundRect(-1.3*pixelsPerUnit(),-.65*pixelsPerUnit(),2.6*pixelsPerUnit(),1.3*pixelsPerUnit(),.65*pixelsPerUnit());
     ctx.fill();ctx.stroke();
-    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(1.2*scale,0);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(1.2*pixelsPerUnit(),0);ctx.stroke();
     ctx.restore();
     ctx.strokeStyle='#ffdc8b';ctx.lineWidth=2;
     ctx.beginPath();ctx.moveTo(sx(u,a.x),sy(a.y));
