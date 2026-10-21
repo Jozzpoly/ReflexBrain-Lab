@@ -67,6 +67,32 @@ def evolve(case, total=500):
             if case=="noise":
                 rng=np.random.default_rng(123)
                 a=np.clip(a+rng.normal(0,.1,a.shape)*(a>.01),0,1)
+            elif case=="translate_x5":
+                a=np.roll(a,5,axis=1)  # spatial-symmetry positive control
+            elif case in ("redistribute_r1","shuffle7"):
+                cy,cx=np.unravel_index(a.argmax(),a.shape)
+                iy,ix=np.ogrid[:N,:N]
+                dx=(ix-cx+N//2)%N-N//2
+                dy=(iy-cy+N//2)%N-N//2
+                if case=="redistribute_r1":
+                    d2=dx*dx+dy*dy
+                    core=d2<=1
+                    annulus=(d2>=25)&(d2<=81)
+                    amount=float(a[core].sum())
+                    a[core]=0
+                    spare=1-a[annulus]
+                    total=float(spare.sum())
+                    if total<amount or amount<=0:
+                        raise AssertionError("Cannot preserve O1 instantaneous mass")
+                    a[annulus]+=spare*(amount/total)
+                else:
+                    ys=(cy+np.arange(-3,4))%N
+                    xs=(cx+np.arange(-3,4))%N
+                    patch=a[np.ix_(ys,xs)].copy()
+                    rng=np.random.default_rng(123)
+                    a[np.ix_(ys,xs)]=rng.permutation(patch.ravel()).reshape(7,7)
+                if abs(float(a.sum())-before)>1e-8:
+                    raise AssertionError("Mass-neutral intervention lost material")
             elif case.startswith("remove"):
                 radius=int(case.split("_")[1])
                 cy,cx=np.unravel_index(a.argmax(),a.shape)
@@ -92,11 +118,26 @@ def experiment():
             "case_results":[evolve(x) for x in
                 ["intact","blank","noise","remove_1","remove_2","remove_3"]]}
 
+def experiment_o1():
+    """A separately armed test of local organization holding initial mass fixed."""
+    return {"source_blob":SPEC["sourceBlob"],"canvas":[N,N],
+            "rule":"original Lenia; O1 structure vs scalar mass",
+            "case_results":[evolve(x) for x in
+                ["intact","translate_x5","redistribute_r1","shuffle7","remove_1"]]}
+
 if __name__=="__main__":
     result=experiment()
     p=ROOT/"artifacts"/"r6"
     p.mkdir(parents=True,exist_ok=True)
     (p/"orbium_donor_results.json").write_text(json.dumps(result,indent=2)+"\n")
+    o1=experiment_o1()
+    (p/"orbium_o1_mass_neutral.json").write_text(json.dumps(o1,indent=2)+"\n")
+    for arm in o1["case_results"]:
+        z=arm["measurements"]
+        print("R6_O1",arm["case"],
+          "m150",next(t["mass"] for t in z if t["step"]==150),
+          "m500",z[-1]["mass"],"alive",arm["survived_500_mass_gt5"],
+          "intervention",arm["perturbationAt150"])
     for arm in result["case_results"]:
         z=arm["measurements"]
         print("R6_O0",arm["case"],

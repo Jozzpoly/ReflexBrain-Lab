@@ -22,12 +22,12 @@ jobs:
       - run: python -m pip install "numpy>=1.26,<3"
       - name: Verify original notebook seed and unperturbed numerical fidelity
         run: python -m unittest discover -s tests -p 'r6_orbium_donor_test.py' -v
-      - name: Run six original-Lenia controlled perturbations
+      - name: O1 mass-conserving structural controls\n        run: python -m unittest discover -s tests -p 'r6_orbium_o1_test.py' -v\n      - name: Run six original-Lenia controlled perturbations and O1 variants
         run: python -m scripts.r6_orbium_probe
       - name: Preserve numerical donor evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: rb-r6-original-lenia
-          path: artifacts/r6/orbium_donor_results.json
+          path: artifacts/r6/*.json
           if-no-files-found: ignore
