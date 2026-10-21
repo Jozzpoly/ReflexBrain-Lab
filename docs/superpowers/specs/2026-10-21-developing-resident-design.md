@@ -1,6 +1,6 @@
 # Developing Resident — Design Candidate, NOT Final Architecture
 **2026-10-21 · Owner-approved direction, written design pending Owner review · ReflexBrain Lab**
-**Status:** DESIGN FOR REVIEW. **No implementation of the new resident is authorized by this document alone.** Existing E0/B0, B1, M1, S0, OL0, P0/P1 and D0/D1 sources remain donor evidence rather than canonical learned/living systems.
+**Status:** DESIGN FOR REVIEW, **NOT a final architecture endorsement**. After this design was written, the Owner-authorized ongoing R&D produced a bounded executable [O-DEV/V0 pilot in draft PR #81](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/81) on the #80 physical donor. **That pilot does not approve this whole architecture**: its actor-private body-mobility learning demonstrably changes subsequent physics, but did NOT qualify transferable material competence, actor-relative significance, or a better living organism. Its verified [final native + Chrome CI #39585873022](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/39585873022) passes 44 files/135 tests; [full research result](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/rb-odev-first-resident-2026-10-21/docs/competence-runs/RB-ODEV-V0_RESULT_2026-10-21.md) documents both positive and negative evidence. Existing E0/B0, B1, M1, S0, OL0, P0/P1 and D0/D1 sources remain donors, not canonically qualified organisms.
 
 ## Decision in 60 seconds — Owner-readable layer
 
