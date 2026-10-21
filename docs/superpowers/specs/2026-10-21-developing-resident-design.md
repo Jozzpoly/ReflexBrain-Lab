@@ -139,6 +139,22 @@ A later source audit found two previously authored, **still-binding research con
 
 **Critical split, without two new products:** The embodied resident is both (a) worthwhile developmental research and (b) a **host sufficiently honest for ReflexBrain proper**. These two frontiers cannot be collapsed into one sign of 'brain success'. Stage B / O-DEV's sensorimotor learner improves action-effect competence; it is not automatically a learned actor-relative significance organ. The oldest charter's narrower learned-semantic question is not obsolete just because O-DEV is interesting. Conversely a semantic classifier without a credible living consumer is not enough.
 
+**Current host-sufficiency inventory, explicitly NOT a product pass:**
+
+| Original criterion | Evidence on hand | Strict judgement |
+| --- | --- | --- |
+| H1 actor-owned continuing trajectory | 600s `Occupant`+Rapier and independent checkpointed state | EXECUTABLE, but development/meaning absent |
+| H2 private history affects later choice | M1 last-bearing ablation alters commands but fails stronger contact gate | CAUSAL BEHAVIOR DELTA, not useful learning |
+| H3 World differs from private knowledge | Occlusion, hidden movement, A1 retinal aliases | QUALIFIED in narrow physical cases |
+| H4 matter follows body/world action | B1 verified moves material otherwise unreachable by B0 in made-up gap | PHYSICALLY YES; actor knowledge unproven |
+| H5 autonomous world pressure | Movers and D1 coupled gate/plate | PHYSICALLY YES; lived relevance unproven |
+| H6 adequate ordinary local competence | Owner S0 and observed B0 wall/color loops | **NO — currently decisive blocker** |
+| H7 recurring actor-relative ambiguity | No ordinary resident case survives cheap factual rule/obstacle response | **UNQUALIFIED** |
+| H8 material downstream semantic consumer | S0 concern controller worse than cheap chase; developmental consumer not yet present | **UNQUALIFIED** |
+| H9 significance generalization opportunity | No held-out recurring semantic family distinct from authored colors | **UNQUALIFIED** |
+
+This table stops the repeated mistake of claiming that a World mechanics or sensor PASS advances the **full host**. The next work must preferentially reduce H6's *actual ordinary competence blocker* while seeking a meaningful H7/H8 pressure as early as possible, not improve every green/partial row. H1–H5 may be enough as scaffolding for a new developmental challenger, but **not evidence that the new learned-meaning organ is ready or necessary**.
+
 **Hard early EXIT/VETO:** as soon as one ordinary live host generates **recurring actor-relative ambiguous consequences** that (H7) are not resolved by a cheap factual/local rule, (H8) genuinely affect an ongoing activity, and (H9) recur across surface variation, return to a *scoped ReflexBrain proper* causal-consumer/shadow research line **without waiting for a beautiful mature organism or full O-DEV**. Do not keep optimizing B1, maps, graphics, memory, brain size or the world merely because their defects remain visible. H1–H6 host sufficiency must remain adequate; if movement defects dominate observed results, improve only that blocker. This is a **branch in execution**, not an additional gate after G6.
 
 **Private supervision does not follow automatically from material physics:** `LivingWorld.observe()` gives 96 colors (no distance, object ID, or object displacement label), touch impulse sectors and body-relative velocity/rotation. `PrivateVision` currently triangulates a uniquely visible turquoise patch under an explicitly **stationary-fragment** assumption and is not consumed by the old `Occupant`. A pushed moving fragment violates that assumption; A1 already showed a contact can preserve approximately identical relative RGB while radically changing absolute material progress. Hence B1's verified 0.976m displacement **does not qualify** the actor as having witnessed, understood or learned that displacement. The proposed first action-effect learner MUST specify a trace of lawful available input *before* selecting a supervision target. Predictions are only about future legal private observations or appropriately declared self/bodily signals; researcher World outcome is an **evaluation variable only**, never direct training truth. No private identifiability → no learner success regardless of World displacement.
