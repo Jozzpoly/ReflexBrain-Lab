@@ -243,3 +243,22 @@ jobs:
           name: reflexbrain-life-l1-ten-minute
           path: artifacts/life-l1
           if-no-files-found: ignore
+
+  life-l1-two-hour:
+    if: github.event_name == 'pull_request' && github.head_ref == 'research/rb-life-l1-durable-process-2026-10-21'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: yarn install --non-interactive
+      - name: Execute 2 hours of native Rapier biography, 2 real OS processes
+        run: node scripts/life-l1-endurance.mjs
+      - name: Preserve replayable 1h and 2h life snapshots and physical audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reflexbrain-life-l1-two-hour
+          path: artifacts/life-l1-endurance
+          if-no-files-found: ignore
