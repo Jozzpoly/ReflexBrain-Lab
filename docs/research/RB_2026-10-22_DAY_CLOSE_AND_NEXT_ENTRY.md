@@ -1,3 +1,5 @@
+> **NOWY PUNKT STARTOWY — 22.10.2026:** [poranne odzyskanie i dzisiejsza decyzja badawcza](RB_2026-10-22_MORNING_REENTRY_AND_CAMPAIGN.md). Ta notatka z zamknięcia dnia pozostaje archiwum wczorajszych ustaleń; przy planowaniu kolejnej pracy zacznij od świeższego audytu.
+
 # ReflexBrain — zamknięcie dnia i odzyskanie kierunku (22.10.2026)
 
 **STATUS:** zapis dla **gałęzi R6 / PR #87**, nie globalny `main`; żadna nowa formacja nie została zakwalifikowana jako „żywy organizm”. Rozdzielić rzeczywisty wynik, uprzednio zamrożoną hipotezę i interpretację.
