@@ -25,6 +25,10 @@ const seed=(w:LivingWorld,preset:SceneName)=>{
 seed(world,scene);
 let paused=false,manual=false,follow=true,tool:'select'|'free'|'anchor'='select';
 let selected:number|null=null,dragging:number|null=null,pan:{x:number;y:number}|null=null;
+let dragMoved=false;
+const activePointers=new Map<number,{x:number;y:number}>();
+let pendingTap:{id:number,x:number;y:number;worldX:number;worldY:number}|null=null;
+let gestureWasMulti=false,pinchDistance=0;
 let cam={x:0,y:0},last=0,acc=0,zoom=1;
 const undo:LabCheckpoint[]=[];
 const remember=()=>{undo.push({world:world.captureCheckpoint(),resident:resident.capture()});if(undo.length>20)undo.shift();};
@@ -156,43 +160,93 @@ function closest(p:{x:number;y:number}){
  return [...world.inspect().objects].reverse().find(o=>o.kind==='part'&&
    Math.abs(p.x-o.x)<o.hx+.08&&Math.abs(p.y-o.y)<o.hy+.08);
 }
+function addOwnerPart(x:number,y:number){
+ const shape=shapes[$<HTMLSelectElement>('#shape').value as keyof typeof shapes]||shapes.beam;
+ try{
+  // Intentional OWNER-authored creation; disallow accidental intersection
+  // with the same physical actor, not a hidden actor-centric score.
+  const actor=world.inspect().actor;
+  const dx=Math.max(0,Math.abs(x-actor.x)-shape.hx);
+  const dy=Math.max(0,Math.abs(y-actor.y)-shape.hy);
+  if(Math.hypot(dx,dy)<1.05)throw Error('Za blisko ciała — postaw dalej, potem przeciągnij');
+  if(world.inspect().objects.filter(o=>o.kind==='part').length>=64)
+    throw Error('Limit 64 części — usuń niepotrzebną');
+  remember();
+  const id=world.addMaterialPart(x,y,shape.hx,shape.hy,tool==='anchor'?'anchored':'dynamic');
+  choosePart(id);
+  info('OWNER: utworzył #'+id+' '+tool+' / '+$<HTMLSelectElement>('#shape').value);
+ }catch(err){info('Nie dodano: '+String(err));}
+}
 canvas.addEventListener('pointerdown',e=>{
  e.preventDefault();canvas.focus();
+ activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ canvas.setPointerCapture(e.pointerId);
+ if(activePointers.size>=2){
+  // Two fingers always mean camera manipulation, not a second placement.
+  gestureWasMulti=true;pendingTap=null;dragging=null;dragMoved=false;pan=null;
+  const pts=[...activePointers.values()];
+  pinchDistance=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
+  follow=false;$('#follow').setAttribute('aria-pressed','false');
+  return;
+ }
  const p=screenToWorld(e,dims()),hit=closest(p);
  if(tool==='select'){
-  if(hit){choosePart(hit.handle);remember();dragging=hit.handle;}
-  else {choosePart(null);pan={x:p.x,y:p.y};follow=false;$('#follow').setAttribute('aria-pressed','false');}
- }else{
-  const shape=shapes[$<HTMLSelectElement>('#shape').value as keyof typeof shapes]||shapes.beam;
-  try{
-   // An editor action is not a material-world rule: avoid accidental initial
-   // interpenetration with the body. Later deliberate physical dragging is free.
-   const actor=world.inspect().actor;
-   const dx=Math.max(0,Math.abs(p.x-actor.x)-shape.hx);
-   const dy=Math.max(0,Math.abs(p.y-actor.y)-shape.hy);
-   if(Math.hypot(dx,dy)<1.05)throw Error('Za blisko ciała — postaw dalej, potem możesz przeciągnąć');
-   remember();const id=world.addMaterialPart(p.x,p.y,shape.hx,shape.hy,tool==='anchor'?'anchored':'dynamic');
-   choosePart(id);info('OWNER: utworzył #'+id+' '+tool+' / '+$<HTMLSelectElement>('#shape').value);
-  }catch(err){info('Nie dodano: '+String(err));}
- }
- canvas.setPointerCapture(e.pointerId);
+  if(hit){choosePart(hit.handle);dragging=hit.handle;dragMoved=false;}
+  else{choosePart(null);pan={x:p.x,y:p.y};
+   follow=false;$('#follow').setAttribute('aria-pressed','false');}
+ }else if(e.pointerType==='touch'){
+  // Defer placement until an actual tap completes. This allows two-finger
+  // zoom or one-finger scroll attempts WITHOUT spawning accidental solids.
+  pendingTap={id:e.pointerId,x:e.clientX,y:e.clientY,worldX:p.x,worldY:p.y};
+ }else addOwnerPart(p.x,p.y);
 });
 canvas.addEventListener('pointermove',e=>{
+ if(!activePointers.has(e.pointerId))return;
+ activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(activePointers.size>=2){
+  const pts=[...activePointers.values()],d=dims();
+  const mx=(pts[0].x+pts[1].x)/2,my=(pts[0].y+pts[1].y)/2;
+  const dist=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
+  if(pinchDistance>4&&dist>4){
+   const oldPoint=screenToWorld({clientX:mx,clientY:my} as PointerEvent,d);
+   zoomBy(dist/pinchDistance);
+   const newPoint=screenToWorld({clientX:mx,clientY:my} as PointerEvent,dims());
+   cam.x+=oldPoint.x-newPoint.x;cam.y+=oldPoint.y-newPoint.y;
+  }
+  pinchDistance=dist;return;
+ }
  if(e.buttons===0&&!e.pressure)return;
+ if(pendingTap){
+  if(Math.hypot(e.clientX-pendingTap.x,e.clientY-pendingTap.y)>12)pendingTap=null;
+  return;
+ }
+ if(gestureWasMulti)return;
  const p=screenToWorld(e,dims());
  if(dragging!==null){
+  const obj=world.inspect().objects.find(o=>o.handle===dragging);
+  if(!obj)return;
+  if(!dragMoved&&Math.hypot(p.x-obj.x,p.y-obj.y)<.10)return;
+  if(!dragMoved){remember();dragMoved=true;}
   world.moveMaterialPart(dragging,p.x,p.y);
- }else if(pan){
-  cam.x+=pan.x-p.x;cam.y+=pan.y-p.y;
- }
+ }else if(pan){cam.x+=pan.x-p.x;cam.y+=pan.y-p.y;}
 });
-canvas.addEventListener('wheel',e=>{e.preventDefault();zoomBy(e.deltaY>0?1/1.16:1.16);},{passive:false});
-const release=()=>{
- if(dragging!==null){
-  info('OWNER: przemieścił materiał #'+dragging+' (ręczna translacja)');
- }
- dragging=null;pan=null;
-};
+canvas.addEventListener('wheel',e=>{
+ e.preventDefault();
+ // Zoom around the point under the cursor, not an unrelated screen center.
+ const oldPoint=screenToWorld(e,dims());
+ zoomBy(e.deltaY>0?1/1.16:1.16);
+ const newPoint=screenToWorld(e,dims());
+ cam.x+=oldPoint.x-newPoint.x;cam.y+=oldPoint.y-newPoint.y;
+},{passive:false});
+function release(e:PointerEvent){
+ if(pendingTap?.id===e.pointerId&&!gestureWasMulti&&e.type==='pointerup')
+  addOwnerPart(pendingTap.worldX,pendingTap.worldY);
+ pendingTap=null;
+ if(dragging!==null&&dragMoved)info('OWNER: przemieścił materiał #'+dragging+' (ręczna translacja)');
+ dragging=null;dragMoved=false;pan=null;
+ activePointers.delete(e.pointerId);
+ if(activePointers.size===0){gestureWasMulti=false;pinchDistance=0;}
+}
 canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);
 function enterManual(){
  if(!manual){
