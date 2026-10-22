@@ -12,9 +12,27 @@ describe('R7/P0 prearmed dormant physical affordance (not a living organism)',()
    expect(q.samples.map(x=>x.tick)).toEqual([0,1200,3600,7200,10800,14400]);
    expect(q.physicsFinalBytes).toBeGreaterThan(50);
   }
-  // Frozen hypothesis: early power created a durable, *quiet* effect
-  // after the independently powered material source was shut off.
-  // If false: record source execution as SCIENTIFIC FAIL; don't retune.
-  expect(r.scientificPass,r.reasons.join('; ')).toBe(true);
+  // Exact original SCIENTIFIC FAIL: Actions #39805607201. The original
+  // positive claim failed, without changing material geometry or motor.
+  expect(r.scientificPass).toBe(false);
+  expect(r.reasons).toEqual([
+    'dormant passage was not B0-open in each later 30s snapshot',
+  ]);
+  expect(r.early.firstSourceContactTick).toBe(121);
+  expect(r.early.firstOpenTick).toBe(211);
+  expect(r.early.samples.find(x=>x.tick===1200)?.open).toBe(true);
+  expect(r.early.samples.filter(x=>x.tick>=3600).every(x=>!x.open)).toBe(true);
+  expect(r.early.ordinaryTravel.slice(1)).toEqual([0,0,0]);
+  expect(r.early.samples.find(x=>x.tick===14400)?.blockerDisplacement)
+    .toBeGreaterThan(3.3);
+  // Host-only geometry counterfactual: the moved ordinary blocker no longer
+  // blocks, but the UNREMOVED source body does after its power stops.
+  for(const m of r.early.samples.filter(x=>x.tick>=3600)){
+    expect(m.blockerAloneOpen).toBe(true);
+    expect(m.sourceAloneOpen).toBe(false);
+    expect(m.powered).toBe(false);
+  }
+  expect(r.never.samples.every(x=>!x.open)).toBe(true);
+  expect(r.always.samples.find(x=>x.tick===7200)?.open).toBe(true);
  },180000);
 });

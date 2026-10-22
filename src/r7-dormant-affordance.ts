@@ -15,6 +15,8 @@ export type R7Moment={
  blocker:{x:number;y:number;speed:number};
  shuttle:{x:number;y:number;speed:number};
  blockerDisplacement:number; contactTicks:number; sourceOpenTick:number|null;
+ // Host-only anatomical attribution. NEVER an actor-facing perception.
+ blockerAloneOpen:boolean;sourceAloneOpen:boolean;
 };
 export type R7Run={
  power:R7Power; samples:R7Moment[];ordinaryTravel:number[];
@@ -28,6 +30,14 @@ const point=(v:{x:number;y:number})=>({x:v.x,y:v.y});
 const norm=(a:{x:number;y:number},b:{x:number;y:number})=>
   Math.hypot(a.x-b.x,a.y-b.y);
 
+// Same B01b B0-center geometric clearance for exactly ONE circular body.
+// Host forensic attribution only, no changes to physical collision or motor.
+function openIfOnlyCircle(x:number,y:number,r:number):boolean{
+ const lo=-1.20+1.0,hi=1.20-1.0,rad=r+1.0;
+ if(Math.abs(x)>rad+.12)return true;
+ return y-rad>lo||y+rad<hi;
+}
+
 export function runR7Dormant(power:R7Power):R7Run{
  const s=createB01bScenario(power!=='never');
  const snapshot=():R7Moment=>{
@@ -39,7 +49,9 @@ export function runR7Dormant(power:R7Power):R7Run{
    powered:s.processEnabled,open:isB01bPassageOpen(s),
    blocker:{x:p.x,y:p.y,speed:Math.hypot(v.x,v.y)},
    shuttle:{x:q.x,y:q.y,speed:Math.hypot(w.x,w.y)},
-   blockerDisplacement:0,contactTicks:s.contactTicks,sourceOpenTick:s.firstOpenTick};
+   blockerDisplacement:0,contactTicks:s.contactTicks,sourceOpenTick:s.firstOpenTick,
+   blockerAloneOpen:openIfOnlyCircle(p.x,p.y,.50),
+   sourceAloneOpen:openIfOnlyCircle(q.x,q.y,.55)};
  };
  const samples:R7Moment[]=[];
  let executedUpdates=0;
