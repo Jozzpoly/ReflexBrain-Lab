@@ -88,7 +88,7 @@ export class LivingWorld {
       R.ColliderDesc.cuboid(hx,hy).setMass(Math.max(.3,Math.min(6,2*hx*hy)))
         .setFriction(.45).setRestitution(.015),rb);
     this.surfaces.push({handle:co.handle,color:[.74,.65,.40],kind:'part',hx,hy,mode});
-    this.frame=null;
+    // Leave the most recent 30Hz private frame intact until solver advances.
     return co.handle as number;
   }
   setMaterialPartMode(handle:number,mode:'anchored'|'dynamic'){
@@ -101,7 +101,7 @@ export class LivingWorld {
     body.setAngvel(0,true);
     body.setBodyType(mode==='anchored'?R.RigidBodyType.Fixed:R.RigidBodyType.Dynamic,true);
     surface.mode=mode;
-    this.frame=null;
+    // Leave the most recent 30Hz private frame intact until solver advances.
   }
   moveMaterialPart(handle:number,x:number,y:number){
     if(![x,y].every(Number.isFinite))throw new Error('Invalid material position');
@@ -112,14 +112,14 @@ export class LivingWorld {
     body.setLinvel({x:0,y:0},true);
     body.setAngvel(0,true);
     this.world.propagateModifiedBodyPositionsToColliders();
-    this.frame=null;
+    // Leave the most recent 30Hz private frame intact until solver advances.
   }
   removeMaterialPart(handle:number){
     const idx=this.surfaces.findIndex(s=>s.handle===handle&&s.kind==='part');
     if(idx<0)throw new Error('Not a material part');
     this.world.removeRigidBody(this.world.getCollider(handle).parent());
     this.surfaces.splice(idx,1);
-    this.frame=null;
+    // Leave the most recent 30Hz private frame intact until solver advances.
   }
   /**
    * Explicit independent material World process. Optional bounds belong

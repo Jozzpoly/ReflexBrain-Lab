@@ -59,6 +59,47 @@ describe('R8 early material workbench — physical, no actor learning claim',()=
     expect(anchored.retina0).toEqual(dynamic.retina0);
     expect(anchored.actorX).not.toBeCloseTo(dynamic.actorX,2);
   });
+  it('OWNER edits while paused never backdate the resident 30Hz retina frame',()=>{
+    const w=new LivingWorld(false);
+    try{
+      tick(w,5,still);
+      const old=w.observe();
+      expect(old.tick).toBe(4);
+      const retinalOld=Array.from(old.retina);
+      const id=w.addMaterialPart(4,0,.6,.6,'anchored');
+      w.moveMaterialPart(id,3.5,0);
+      w.setMaterialPartMode(id,'dynamic');
+      const cp=w.captureCheckpoint();
+      expect(w.observe().tick).toBe(4);
+      expect(Array.from(w.observe().retina)).toEqual(retinalOld);
+      tick(w,2,still); // physical clock ticks 6,7, no new private sample
+      expect(w.observe().tick).toBe(4);
+      expect(Array.from(w.observe().retina)).toEqual(retinalOld);
+      tick(w,1,still);
+      expect(w.observe().tick).toBe(8);
+      expect(Array.from(w.observe().retina)).not.toEqual(retinalOld);
+      w.restoreCheckpoint(cp);
+      expect(w.inspect().tick).toBe(5);
+      expect(w.observe().tick).toBe(4);
+      expect(Array.from(w.observe().retina)).toEqual(retinalOld);
+    }finally{w.free();}
+  });
+  it('unanchoring an existing physical part permits real later body displacement',()=>{
+    const w=new LivingWorld(false);
+    try{
+      const id=w.addMaterialPart(2.8,0,.55,.75,'anchored');
+      tick(w,160,forward);
+      const fixedX=part(w,id).x;
+      expect(fixedX).toBeCloseTo(2.8,5);
+      w.setMaterialPartMode(id,'dynamic');
+      tick(w,220,forward);
+      const moved=part(w,id);
+      expect(moved.mode).toBe('dynamic');
+      expect(moved.handle).toBe(id);
+      expect(moved.x-fixedX).toBeGreaterThan(.25);
+      expect(w.inspect().tick).toBe(380);
+    }finally{w.free();}
+  });
   it('snapshot replay keeps authored modifications and lawful private observations exact',()=>{
     const w=new LivingWorld(false);
     try{

@@ -190,6 +190,8 @@ function frame(t:number){
  tick:world.inspect().tick,actor:world.inspect().actor,
  parts:world.inspect().objects.filter(o=>o.kind==='part'),
  privateKeys:Object.keys(world.observe()),retinaLength:world.observe().retina.length,
+ privateFrameTick:world.observe().tick,
+ retinaDigest:Array.from(world.observe().retina).map(x=>Math.round(x*255)).join(','),
  selected,manual,paused,hasCheckpoint:checkpoint!==null
 });
 requestAnimationFrame(frame);

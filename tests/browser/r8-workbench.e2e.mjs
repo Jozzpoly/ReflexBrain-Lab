@@ -28,8 +28,12 @@ try{
  const initial=state.parts[0],id=initial.handle;
  expect(state.privateKeys.join(',')==='tick,retina,touch,proprio'&&state.retinaLength===288,
   'private host World IDs or material mode escaped perception');
+ const priorFrame=(await audit(desktop)).privateFrameTick;
+ const priorRetina=(await audit(desktop)).retinaDigest;
  await desktop.locator('#toggle').click();
  state=await audit(desktop);
+ expect(state.privateFrameTick===priorFrame&&state.retinaDigest===priorRetina,
+  'paused OWNER mode change forged an actor sensory timestamp');
  expect(state.parts[0].handle===id&&state.parts[0].mode==='anchored','collider identity changed on anchor');
  await desktop.locator('#save').click();
  expect((await audit(desktop)).hasCheckpoint,'save missing');
@@ -42,6 +46,8 @@ try{
  await desktop.mouse.move(ox+scale*1.7,oy-scale*.3,{steps:7});await desktop.mouse.up();
  state=await audit(desktop);
  expect(state.parts[0].x>initial.x+1.1,'Owner drag failed to affect actual material');
+ expect(state.privateFrameTick===priorFrame&&state.retinaDigest===priorRetina,
+  'paused OWNER drag leaked the new material into resident eye before clock advanced');
  await desktop.locator('#toggle').click();
  expect((await audit(desktop)).parts[0].mode==='dynamic','release failed');
  await desktop.locator('#restore').click();
