@@ -26,7 +26,9 @@ def seed():
 
 def researcher_flow(kind):
     out=np.zeros((N,N,2),dtype=np.float64)
-    if kind=="uniform":
+    if kind in ("uniform","blank"):
+        # Correction after audit: O2 prearmed blank control requires F != 0.
+        # Original CI used F == 0 for blank; preserve its evidence separately.
         out[...,0]=2.0
         out[...,1]=-1.4
     elif kind=="reverse":

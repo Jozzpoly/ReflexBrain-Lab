@@ -26,7 +26,9 @@ class TransportOnly(unittest.TestCase):
         for x in r["pairwise"].values():
             self.assertGreater(x["still_vs_uniform_mass_field_L1"],.01)
     def test_nonexistent_material_cannot_be_adaptively_generated(self):
+        self.assertGreater(float(np.abs(researcher_flow("blank")).max()),0)
         z=np.zeros((N,N),dtype=np.float64)
-        b=reintegration(z,researcher_flow("varying"),"torus")
-        self.assertEqual(float(b.sum()),0)
+        for border in ("torus","wall"):
+            b=reintegration(z,researcher_flow("blank"),border)
+            self.assertEqual(float(b.sum()),0)
 if __name__=="__main__":unittest.main()
