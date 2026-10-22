@@ -11,6 +11,28 @@ const authoredScene=[
 ] as const;
 
 describe('R8 resident–material relationship: observational anti-self-deception diagnostic',()=>{
+ it('separately observes whether the default material yard continues without actor motor or Owner intervention',()=>{
+  const w=new LivingWorld(false);
+  try{
+   for(const [x,y,hx,hy,mode] of authoredScene)w.addMaterialPart(x,y,hx,hy,mode);
+   const baseline=w.inspect().objects.filter(x=>x.kind==='part');
+   const idle={drive:0,turn:0,gazeRate:0};
+   for(let i=0;i<7200;i++)w.step(idle);
+   const now=w.inspect().objects.filter(x=>x.kind==='part');
+   const changes=now.map((o,i)=>({
+    handle:o.handle,
+    linearDisplacement:Math.hypot(o.x-baseline[i].x,o.y-baseline[i].y),
+    angularDisplacement:Math.abs(o.angle-baseline[i].angle)
+   }));
+   const maxMotion=Math.max(...changes.map(o=>o.linearDisplacement));
+   console.log('RB_R8_NO_ACTOR_WORLD_PROCESS '+JSON.stringify({
+    physicalSeconds:60,solverSteps:w.inspect().tick,materialParts:now.length,
+    maxMotion,hasAnyIndependentMaterialMotion:maxMotion>.0001
+   }));
+   expect(w.inspect().tick).toBe(7200);
+   expect(changes.every(o=>Number.isFinite(o.linearDisplacement)&&Number.isFinite(o.angularDisplacement))).toBe(true);
+  }finally{w.free();}
+ },120000);
  it('records first two minutes of the actual unscripted UI occupant under unchanged controls',()=>{
   const w=new LivingWorld(false),resident=new Occupant();
   try{
