@@ -194,6 +194,20 @@ try{
   await mobile.setViewportSize({width,height:800});
   const size=await mobile.evaluate(()=>({doc:document.documentElement.scrollWidth,vw:innerWidth}));
   expect(size.doc<=size.vw+2,'horizontal UI overflow at '+width+': '+JSON.stringify(size));
+  const overlay=await mobile.evaluate(()=>{
+    const field=document.querySelector('.viewport')?.getBoundingClientRect();
+    const pad=document.querySelector('.touch-drive');
+    const key=document.querySelector('.touch-drive [data-hold="w"]');
+    const box=(el)=>{if(!el)return null;const b=el.getBoundingClientRect();return {x:b.x,y:b.y,width:b.width,height:b.height};};
+    return {cssViewport:innerWidth,visualViewport:visualViewport?.width,
+      field:box(document.querySelector('.viewport')),drive:box(pad),key:box(key),
+      display:pad?getComputedStyle(pad).display:null,visibility:pad?getComputedStyle(pad).visibility:null,
+      screenHeight:innerHeight,scrollWidth:document.documentElement.scrollWidth};
+  });
+  await writeFile(dir+'/mobile-'+width+'-layout.json',JSON.stringify(overlay,null,2));
+  expect(overlay.display==='flex'&&overlay.key&&overlay.key.width>=40&&overlay.key.height>=40&&
+    overlay.field&&overlay.key.y>=overlay.field.y&&overlay.key.y+overlay.key.height<=overlay.field.y+overlay.field.height+2,
+    'missing or unreachable physical drive control at '+width+': '+JSON.stringify(overlay));
   await mobile.screenshot({path:dir+'/mobile-'+width+'.png',fullPage:true});
  }
  await mobile.locator('#toolAnchor').tap();
