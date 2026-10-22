@@ -195,6 +195,29 @@ try{
  expect(JSON.stringify(afterBad.parts)===JSON.stringify(imported.parts)&&afterBad.tick===imported.tick,
   'malformed Owner file destroyed an existing real world');
  await importPage.screenshot({path:dir+'/05-imported-on-fresh-browser-page.png',fullPage:true});
+ // A new world is not the former world with a new geometry: Owner manual
+ // authority, stale camera controls and another world's event log must end.
+ await importPage.locator('#manual').click();
+ await importPage.locator('#materialCenter').click();
+ await importPage.locator('#toolAnchor').click();
+ const oldEpisode=await audit(importPage);
+ expect(oldEpisode.manual&&!oldEpisode.follow&&oldEpisode.tool==='anchor'&&oldEpisode.paused,
+  'fresh-world reset preconditions absent: '+JSON.stringify(oldEpisode));
+ await importPage.locator('#scene').selectOption('open');
+ await importPage.locator('#reset').click();
+ const freshEpisode=await audit(importPage);
+ expect(freshEpisode.tick===0&&freshEpisode.parts.length===0&&!freshEpisode.manual&&
+  freshEpisode.follow&&freshEpisode.tool==='select'&&freshEpisode.paused&&
+  !freshEpisode.hasCheckpoint&&freshEpisode.undoCount===0,
+  'new world inherited another physical/control episode: '+JSON.stringify(freshEpisode));
+ expect(await importPage.locator('#manual').getAttribute('aria-pressed')==='false'&&
+  await importPage.locator('#follow').getAttribute('aria-pressed')==='true',
+  'reset displayed misleading motor/camera authority');
+ const freshEvents=await importPage.locator('#events').innerText();
+ expect(freshEvents.includes('poprzednia historia interwencji zakończona')&&
+  !freshEvents.includes('wczytał prawdziwy plik R8'),
+  'new world falsely inherited the previous world intervention history');
+ await importPage.screenshot({path:dir+'/06-clean-new-world.png',fullPage:true});
  await importPage.close();
 
  const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});
