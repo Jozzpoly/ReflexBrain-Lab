@@ -1,3 +1,5 @@
+> **Aktualne wejście na gałęzi R8 / PR #89 (22.10.2026):** [Open material workbench · real Chrome i źródłowa fizyka](docs/research/RB_R8_OPEN_MATERIAL_RESULT_2026-10-22.md). Strona do ręcznego badania: [Warsztat R8](probes/material-workbench-r8.html), dostępna po uruchomieniu tej gałęzi/builda, **NIE opublikowana na Pages/Jaskini**. Poniższe stare instrukcje Pre-O0 nie są aktualnym frontem tej gałęzi. R7/P0 zachowuje osobną naukową porażkę na PR #88.
+
 # ReflexBrain Lab
 
 > **Current active frontier:** `research/pre-o0-foundations-campaign`  

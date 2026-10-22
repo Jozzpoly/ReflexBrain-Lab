@@ -1,0 +1,31 @@
+# R8 — otwarty materialny warsztat: wynik i ograniczenia, 22.10.2026
+**Engineering PASS, NOT an artificial-life or Owner-experience qualification.**
+[Pre-registered research contract](RB_R8_OPEN_MATERIAL_ARMED_2026-10-22.md), isolated [PR #89](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/89) stacked directly on qualified LIFE/L1 PR #84. No merge, no public deploy, L2 #86, R6 #87 and R7 #88 untouched. R7 doorway physical science FAIL is preserved.
+
+## What was ACTUALLY implemented
+- A standalone real Vite entry `probes/material-workbench-r8.html` and responsive canvas `src/living-organism/material-workbench-view.ts`. No artificial objective/task, no closed map or authored colored target. World camera is free-pan or actor-follow.
+- Existing `LivingWorld(false)` on real 120 Hz Rapier remains the authority. Added at most 64 rectangular **real material parts** with Rapier colliders (actual 2D box, linear damping, friction, rotation locked). OWNER can add anywhere, switch actual FIXED↔DYNAMIC using a stable collider handle, directly reposition/remove material. Existing world physics, retina, touch and proprio continue unchanged.
+- The same single O-CTRL/Occupant authored controller and/or manual WASD/touch drive stay as motor authority. The controller is NOT a new learner and may behave stupidly/roam into emptiness.
+- Session-local **in-memory** checkpoint saves/restores World+the authored resident; it is NOT yet an exported durable LIFE/L1 file across browser close or new process. Camera/tool selection and human authority controls are not serialized. Humans must know they are making an intervention.
+- No global actor-facing part handle, mode, task ID or world coordinate. Observe still contains only tick, 96 RGB ray samples, touch, proprio. **Important defect found and fixed during review:** initial material methods invalidated the private frame on paused OWNER manipulation. They now preserve the last 30 Hz sampled frame until the World genuinely advances; no duplicate newly manufactured sensory history at the same tick.
+
+## Actually source-executed QA
+[Full GitHub Actions Check #39814075608](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/39814075608) at source SHA `b277db80139913d19d2d9f3336061879b23f3383`: TypeScript compilation PASS; **48 test files / 145 native tests PASS**, Vite multi-entry bundle PASS.
+- Test actual anchored solid versus genuinely dynamic box under the **same forward actor motor**; fixed part does not move but dynamic part does. After anchoring then releasing, actor force can move the same collider again; no handle replacement.
+- Test legal private frame under paused-owner part creation/motion/anchoring: old retina persists at actor tick4 during physical ticks5–7; only physics tick8 creates new 30Hz sample. Restoring snapshot at tick5 also restores historical frame tick4. No retroactive memory injection.
+- Test multiple parts, deleting one while keeping the other's identity intact, material mode retained in World checkpoint, exact replay after 304 actual future solver updates including physics bytes, actor state and private sensory observations.
+
+[Real Chrome desktop/mobile UI #39814075599](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/39814075599): **PASS**, with preserved screenshots and machine-readable evidence artifact `rb-r8-workbench-chromium`.
+- Real mouse pointer adds/anchors/drags/releases/deletes, then saves and restores EXACT same physical collider handle, mode and x coordinate at original physics tick45; paused edit does not mutate actor's previously sampled retina.
+- Actual manual physical actor drives into a created dynamic block: **4.8702743 world units** of part displacement. This is true solved body–material interaction, not a mouse-driven movement.
+- Chromium mobile touch viewports 390 and 320px: no horizontal overflow, physical anchored part successfully created by touch. Page JavaScript console errors: **none**.
+- Original Chrome run [#39812980492](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/39812980492) failed due to an automatically requested missing favicon (HTTP404), not a physical/browser-interaction failure; added explicit empty data icon; subsequent Chrome runs passed. Preserved original failure.
+- Tests are programmatically verified browser interactions, not an Owner gameplay recording or proof that touch feels good.
+
+## What this changes and what it does NOT
+This supplies an **open research medium** to create more than one physical environment layout without designing a gate puzzle. Objects can carry old collisions, become obstacles or be physically pushed, and the same timeline is checkpointed, with legal 30 Hz sensory exposure. It is a *capability to explore causality*, not evidence that animals learn to build, construct niches, generate an internal goal, have chemistry, evolve/repair their bodies, or develop varied daily practices. A collection of human-placed blocks could still be lifeless scenery. Even a perfect, long-lived fixed model must not be promoted from machine PASS against explicit Owner feeling.
+Only 2D bounded rigid boxes, no joints/connectors, no gravity, no shape deformation, no persistent global library, no multi-agent social processes and no automatic source of novelty. Actor's autonomous routine remains the previously criticized basic authored control; manual Owner actions are labeled as OWNER, not inferred resident agency.
+
+## Next scientific leverage, without another conveyor-belt fixture
+Let a human freely build/test/alter this world and record **which configurations evoke interesting unplanned causal relations**, rather than scripting "complete structure" or "push cyan". If useful, design one legal sensor/history counterfactual against a simple reactive null **inside a configuration discovered through actual play**. Don't declare R8 a prerequisite to all future living studies; it can also falsify whether current Rapier/material capabilities are too impoverished. Narrow engineering alternatives from Splot Box3D remain donors, not automatic engine migration.
+Do not merge/deploy until user-guided evaluation. Browser version is on isolated PR branch and not published as a live site.
