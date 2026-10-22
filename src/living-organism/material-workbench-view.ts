@@ -308,18 +308,59 @@ function render(){
  for(const o of state.objects){
   if(o.kind!=='part')continue;
   ctx.save();ctx.translate(X(o.x),Y(o.y));ctx.rotate(-o.angle);
-  ctx.fillStyle=o.mode==='anchored'?'#ae844b':'#4a9d9f';
+  const fixed=o.mode==='anchored';
+  ctx.fillStyle=fixed?'#a77b43':'#459b9e';
   ctx.fillRect(-o.hx*s,-o.hy*s,o.hx*2*s,o.hy*2*s);
-  ctx.strokeStyle=o.handle===selected?'#fff1b8':'#223548';ctx.lineWidth=o.handle===selected?3:1.5;
+  // Physical mode is legible by shape treatment, not just hue.
+  ctx.fillStyle=fixed?'#6f5135':'#27656e';
+  ctx.fillRect(-o.hx*s,-o.hy*s,o.hx*2*s,Math.min(5,o.hy*s*.32));
+  ctx.fillStyle=fixed?'rgba(255,229,178,.27)':'rgba(215,255,248,.3)';
+  ctx.fillRect(-o.hx*s,-o.hy*s+5,o.hx*2*s,Math.min(2,o.hy*s*.18));
+  if(fixed){
+   // Pinned corners are a legend for actual Rapier FIXED type.
+   const rad=Math.min(5,Math.max(2,Math.min(o.hx,o.hy)*s*.18));
+   ctx.fillStyle='#f0d6a2';
+   for(const px of [-o.hx*s+rad*2,o.hx*s-rad*2]){
+    for(const py of [-o.hy*s+rad*2,o.hy*s-rad*2]){
+     ctx.beginPath();ctx.arc(px,py,rad,0,Math.PI*2);ctx.fill();
+    }
+   }
+  }
+  ctx.strokeStyle=o.handle===selected?'#ffe4a5':fixed?'#bf9e6d':'#87cac7';
+  ctx.lineWidth=o.handle===selected?3:1.5;
   ctx.strokeRect(-o.hx*s,-o.hy*s,o.hx*2*s,o.hy*2*s);
-  if(o.mode==='anchored'){ctx.fillStyle='rgba(255,255,255,.26)';ctx.fillRect(-o.hx*s,-o.hy*s,o.hx*2*s,.08*s);}
   ctx.restore();
  }
- ctx.fillStyle='#83aaf0';ctx.beginPath();ctx.arc(X(state.actor.x),Y(state.actor.y),s,0,Math.PI*2);ctx.fill();
- ctx.lineWidth=2;ctx.strokeStyle='#f5fcff';ctx.beginPath();ctx.moveTo(X(state.actor.x),Y(state.actor.y));
- ctx.lineTo(X(state.actor.x+Math.cos(state.actor.angle)*1.2),Y(state.actor.y+Math.sin(state.actor.angle)*1.2));ctx.stroke();
- ctx.strokeStyle='#70e1ce';ctx.beginPath();ctx.moveTo(X(state.actor.x),Y(state.actor.y));
- ctx.lineTo(X(state.actor.x+Math.cos(state.actor.angle+state.gaze)*2.8),Y(state.actor.y+Math.sin(state.actor.angle+state.gaze)*2.8));ctx.stroke();
+ const a=state.actor,cx=X(a.x),cy=Y(a.y);
+ ctx.save();ctx.translate(cx,cy);ctx.rotate(-a.angle);
+ const bodyPaint=ctx.createRadialGradient(-.31*s,-.31*s,.06*s,0,0,1.03*s);
+ bodyPaint.addColorStop(0,'#adc9f4');bodyPaint.addColorStop(.72,'#7398cf');
+ bodyPaint.addColorStop(1,'#40658e');
+ ctx.fillStyle=bodyPaint;ctx.beginPath();ctx.arc(0,0,s,0,Math.PI*2);ctx.fill();
+ ctx.lineWidth=2;ctx.strokeStyle='#c2e4f4';ctx.stroke();
+ // The chassis marker follows the real rigid body's facing.
+ ctx.fillStyle='#314e79';
+ ctx.beginPath();ctx.moveTo(.83*s,0);ctx.lineTo(.33*s,-.23*s);
+ ctx.lineTo(.33*s,.23*s);ctx.closePath();ctx.fill();
+ ctx.strokeStyle='#d2edff';ctx.lineWidth=Math.max(1.2,s*.03);
+ ctx.beginPath();ctx.moveTo(-.57*s,0);ctx.lineTo(.32*s,0);ctx.stroke();
+ ctx.restore();
+ // A short EYE marker, not a fabricated distance ray through solid matter.
+ const eyedir=a.angle+state.gaze;
+ const eyeX=cx+Math.cos(eyedir)*s*.73,eyeY=cy-Math.sin(eyedir)*s*.73;
+ ctx.fillStyle='#9af6da';ctx.beginPath();ctx.arc(eyeX,eyeY,Math.max(3,s*.13),0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle='#15454c';ctx.lineWidth=1.5;ctx.stroke();
+ // Contact arcs use ONLY actual 30 Hz actor-private contact impulses.
+ for(let i=0;i<f.touch.length;i++){
+  const impulse=Math.max(0,f.touch[i]);
+  if(impulse<.002)continue;
+  const ang=a.angle-Math.PI+(i+.5)*Math.PI/4;
+  ctx.beginPath();
+  ctx.arc(cx,cy,s*1.075,-ang-.27,-ang+.27);
+  ctx.lineWidth=3+Math.min(3,Math.log1p(impulse));
+  ctx.strokeStyle='rgba(255,202,130,'+Math.min(.96,.28+Math.log1p(impulse)*.38)+')';
+  ctx.stroke();
+ }
  for(let i=0;i<96;i++){
   rctx.fillStyle='rgb('+Array.from(f.retina.slice(i*3,i*3+3)).map(v=>Math.round(v*255)).join(',')+')';
   rctx.fillRect(i,0,1,12);
