@@ -301,6 +301,46 @@ export class LivingWorld {
     return {tick:this.tick,gaze:this.gaze,actor:{x:p.x,y:p.y,vx:v.x,vy:v.y,angle:this.actor.rotation()},
       objects:this.surfaces.map(s=>{const b=this.world.getCollider(s.handle).parent(),p=b.translation();return {...s,color:[...s.color] as Color,x:p.x,y:p.y,angle:b.rotation()};})};
   }
+  /**
+   * R8 host-only structural assertion after restoring a user-supplied snapshot.
+   * JSON metadata must not fabricate geometry, modes, or handles that disagree
+   * with actual Rapier. This is NOT a proof of source authenticity or learning.
+   */
+  verifyR8MaterialSnapshot(){
+    const actor=this.actor;
+    if(!actor||!actor.isDynamic()||actor.numColliders()!==1)
+      throw new Error('R8: missing valid physical actor');
+    const actorCollider=actor.collider(0);
+    if(!actorCollider||actorCollider.shapeType()!==R.ShapeType.Ball||
+       Math.abs(actorCollider.radius()-1)>1e-4||actorCollider.isSensor())
+      throw new Error('R8: wrong actor collider');
+    if(this.surfaces.length>64)throw new Error('R8: excessive parts');
+    const expected=new Set<number>([actorCollider.handle]);
+    for(const part of this.surfaces){
+      if(part.kind!=='part'||!['anchored','dynamic'].includes(part.mode||'')||
+         !Number.isSafeInteger(part.handle)||expected.has(part.handle))
+        throw new Error('R8: duplicated or unrecognized material handle');
+      const collider=this.world.getCollider(part.handle);
+      if(!collider||collider.shapeType()!==R.ShapeType.Cuboid||
+         collider.isSensor())
+        throw new Error('R8: material collider missing or non-solid');
+      const ext=collider.halfExtents(),body=collider.parent();
+      if(!ext||!body||body.numColliders()!==1||
+         Math.abs(ext.x-part.hx)>1e-4||Math.abs(ext.y-part.hy)>1e-4)
+        throw new Error('R8: material geometry mismatch');
+      if(part.mode==='anchored'?!body.isFixed():!body.isDynamic())
+        throw new Error('R8: material body mode mismatch');
+      expected.add(part.handle);
+    }
+    let actual=0;
+    this.world.forEachCollider((collider:any)=>{
+      actual++;
+      if(!expected.has(collider.handle))
+        throw new Error('R8: undeclared physical collider');
+    });
+    if(actual!==expected.size)
+      throw new Error('R8: missing physical collider');
+  }
   /** Host-only attribution aligned with the private sensory window, never brain input. */
   inspectContactSample():HostContactSample{return structuredClone(this.contactSample);}
   captureCheckpoint():Checkpoint {
