@@ -109,6 +109,13 @@ try{
  await desktop.waitForFunction((before)=>window.__r8Audit().tick>=before+20,t,{timeout:12000});
  const resumed=await audit(desktop);
  expect(resumed.actor.x!==state.actor.x,'manual body never moved physically');
+ expect(resumed.residentLastTick!==null&&resumed.tick-resumed.residentLastTick<=4,
+   'resident silently skipped sampled time while Owner exercised motor authority');
+ await desktop.locator('#manual').click(); // return motor to authored resident
+ const returned=await audit(desktop);
+ expect(!returned.manual&&returned.residentLastTick!==null&&
+   returned.tick-returned.residentLastTick<=4&&Number.isFinite(returned.residentHeading),
+   'returning motor authority fabricated a stale temporal gap in resident history');
  await desktop.screenshot({path:dir+'/02-human-taking-over.png',fullPage:true});
 
 // Undo is TIME TRAVEL, not just a cosmetic editor operation. It must
