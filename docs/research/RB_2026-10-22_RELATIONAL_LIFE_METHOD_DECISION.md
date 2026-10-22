@@ -14,6 +14,15 @@ To jest błąd *niedopasowania skal i wzajemnej dostępności*, a nie pojedynczy
 
 **Wniosek roboczy:** bez spotkania *własnej przeszłości w zmienionym przez siebie świecie* nie da się zaobserwować ani głębokiej ontogenezy, ani użytecznego, actor-relative znaczenia. Nie wymagamy literalnej pętli powrotu do tego samego miejsca; „powrót” może być pośredni, społeczny, materiałowy, percepcyjny, opóźniony. Nie narzucać go motorem „jedź do punktu X”.
 
+## 1a. KRITICZNA AUTOKOREKTA — ruch świata nie jest wymaganym tempem jego życia
+W poprzedniej kampanii R4/R5 potraktowaliśmy poruszanie się luźnych przedmiotów w późnych 30-sekundowych oknach jako ważny test „odnawiającej się ekologii”. To jest **ważny wąski test** konkretnego silnika/rail, ale zbyt agresywny **ogólny warunek życia**. Prawdziwe następstwa działania organizmu mogą trwać w formie *spokojnego stanu*: gniazdo/nora, porzucona przeszkoda, ślad, zniszczona droga, nabyta lokalna własność materiału, niedostępne po eksploatacji miejsce. Materia w tym czasie nie musi stale się poruszać. Ważne jest, czy ta zmiana **przeżywa sprawcę, pozostaje osiągalna, zmienia dalsze możliwe interakcje i może zostać rzeczywiście ponownie doświadczona**, a nie ile metrów przebyła.
+Trzy różne procesy, nie jeden `worldMovement`:
+- **autonomiczny proces**: świat może wytwarzać nowe stany pod nieobecność jednostki;
+- **materialna pamięć**: wykonane zmiany pozostają i mogą później działać, nawet przy zerowej aktywności;
+- **powrotna przyczynowość**: jednostka/inna jednostka rzeczywiście spotyka te zmienione możliwości i coś dalej się wydarza.
+
+R4a / R5a nadal **FAIL ich jawnie zamrożone hipotezy**; nic w oryginalnych CI i ich braku późnych spotkań nie uległo zmianie. Jednak nasz szerszy wniosek „world nie ma ekologii, bo przez 90s nic nie porusza zwykłych obiektów” był **nieuzasadnionym uogólnieniem**. Nie ulepszać testu przez wymuszenie ruchliwości; potrzebujemy **potencjalnie doniosłego stanu i późniejszego zetknięcia**, czasem po długiej ciszy. Nieużyta osadź śladu sama też nie dowodzi życia; to musi mieć związek z dalszą działalnością, nie tylko atrakcyjny efekt w renderze.
+
 ## 2. Cztery rozdzielone poziomy — nie wpisywać z góry w jeden KPI
 (A) **Dostępność i wzajemność**: czy proces świata działa na skali, którą aktywność osoby może w ogóle ponownie spotkać, i czy indywidualne działanie zmienia dalsze możliwości świata? Obserwacja to nie to samo co sprawczość.
 (B) **Trwałość organizacji**: czy struktura/uwarunkowania osobnika są realnie utrzymywane, zmieniane lub tracone w interakcji, zamiast mieć zawsze-niezniszczalny bazowy actor rigid body lub biologiczny health meter?
@@ -26,7 +35,7 @@ Nie wolno uznać jednej własności za dowód pozostałych. W szczególności `c
 Podmiotem obserwacji jest **relacja między co najmniej jednym trwającym indywidualnym procesem a innymi działającymi niezależnie procesami materialnymi**.
 
 Aby w ogóle zacząć kosztowną implementację nowego świata, potrzebujemy odpowiedzi na cztery rzeczy:
-1. Co w świecie zmienia się nadal **bez** organizmu — i dlaczego nie zatrzyma się po pierwszym dotknięciu / rozproszeniu? Nie wolno podmieniać tego na samą cykliczną ruchliwość źródła energii.
+1. Co w świecie istnieje lub rozwija się niezależnie od organizmu, a co **pozostaje jako konsekwencja** jego wcześniejszej działalności? Zależność może być opóźniona lub statyczna; nie wymaga nieprzerwanej ruchliwości świata. Nie wolno podmieniać jej na cykliczny ruch silnika ani na dekoracyjny ślad.
 2. Co organizm może *fizycznie* zmienić w dalszym przebiegu tego procesu, także przypadkowo albo niekorzystnie, a nie wyłącznie ukończyć puzzle?
 3. Skąd w jednostce bierze się kontynuacja/przerwanie działalności? Można użyć jasno podpisanego `authored practice` jako scaffold, ale ani odruchu, ani jego autorstwa nie przypisywać „własnej potrzeby”.
 4. Jak wcześniejsza zmiana świata może wrócić do jednostki przez **legalną percepcję** (także za pośrednictwem innych aktorów, z opóźnieniem)? Nie wstawiać magicznych World coords/gate labels/score do mózgu.
@@ -53,7 +62,7 @@ Jeśli nie potrafimy tego opisać jednym rzeczowym związkiem przyczynowym, kole
 ## 6. Kampania badawcza w krótkich, autonomicznych krokach bez blokowania Ownera
 **Przed kodem**: odtworzyć naturalną możliwość z istniejących donorów i wymienić NAJWĘŻSZĄ brakującą zależność; preferować jedną materialną relację, nie nowy generator świata. Nie projektować ostatniego architektonicznego modelu danych.
 
-**Pierwszy ograniczony przebieg**: *najpierw world-alone*: czy proces stwarza jakościowo różne sytuacje również później, przy nieobecności aktora (a nie sam utrzymuje zegar)? *potem actor+world*: czy aktor ma do nich fizyczny i percepcyjny dostęp bez host-guidance? Najtańszy naiwno-odruchowy rival od początku. Jeśli już tu fail, nie eskalować.
+**Pierwszy ograniczony przebieg**: *najpierw world-alone*: czy świat ma trwałą, dostępną historię i/lub autonomiczne procesy po wyjściu aktora (a nie tylko działający zegar)? Brak bieżącego ruchu nie wystarcza do uznania tego za FAIL; *potem actor+world*: czy aktor ma do nich fizyczny i percepcyjny dostęp bez host-guidance? Najtańszy naiwno-odruchowy rival od początku. Jeśli już tu fail, nie eskalować.
 
 **Drugi przebieg tylko gdy pierwszy wnosi wartość**: realne oddziaływanie jednostki na późniejszy world; dwa różne osiągalne przebiegi; prywatne historie legalne, oddzielona ingerencja badacza. Test powrotnej przyczynowości i możliwe H7–H9, nie improwizowana jedna nagroda. Dopiero wtedy długa ciągłość mierzona w godzinach i wizualny Owner test.
 
