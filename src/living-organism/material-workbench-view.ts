@@ -165,11 +165,18 @@ $('#restore').addEventListener('click',()=>{
  info('OWNER: odtworzył ten sam świat i odruch — fizyka zatrzymana do decyzji');
 });
 $('#reset').addEventListener('click',()=>{
- world.free();world=new LivingWorld(false);resident=new Occupant();checkpoint=null;undo.length=0;choosePart(null);
+ // New World begins a fresh physical and authored-control episode. Keeping the
+ // Owner's PAUSE choice is deliberate; leaking old authority/events is not.
+ world.free();world=new LivingWorld(false);resident=new Occupant();checkpoint=null;undo.length=0;
+ dragging=null;pan=null;pendingTap=null;gestureWasMulti=false;pinchDistance=0;activePointers.clear();
+ choosePart(null);chooseTool('select');keys.clear();
+ manual=false;$('#manual').setAttribute('aria-pressed','false');$('#manual').textContent='Przejmij ciało';
+ follow=true;$('#follow').setAttribute('aria-pressed','true');
  scene=$<HTMLSelectElement>('#scene').value as SceneName;
  seed(world,scene);
- $<HTMLButtonElement>('#restore').disabled=true;keys.clear();cam={x:0,y:0};zoom=1;last=0;acc=0;
- info('OWNER: nowy świat (świadomy reset)');
+ $<HTMLButtonElement>('#restore').disabled=true;cam={x:0,y:0};zoom=1;last=0;acc=0;
+ events.textContent='';
+ info('OWNER: nowy świat i nowy odruch; poprzednia historia interwencji zakończona');
 });
 function dims(){
  const r=canvas.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);
@@ -417,6 +424,6 @@ function frame(t:number){
  privateKeys:Object.keys(world.observe()),retinaLength:world.observe().retina.length,
  privateFrameTick:world.observe().tick,
  retinaDigest:Array.from(world.observe().retina).map(x=>Math.round(x*255)).join(','),
- selected,manual,paused,cam:{...cam},zoom,scene,undoCount:undo.length,hasCheckpoint:checkpoint!==null
+ selected,manual,paused,follow,tool,cam:{...cam},zoom,scene,undoCount:undo.length,hasCheckpoint:checkpoint!==null
 });
 requestAnimationFrame(frame);
