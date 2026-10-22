@@ -18,6 +18,8 @@ describe('R8 protected cross-tab material file: no fragile in-page-only history'
    const restored=new LivingWorld(false);
    try{
     restored.restoreCheckpoint(file.world);
+    // A valid saved world must survive structural validation against Rapier.
+    expect(()=>restored.verifyR8MaterialSnapshot()).not.toThrow();
     const clone=new Occupant();clone.restore(file.resident);
     expect(restored.inspect()).toEqual(w.inspect());
     expect(restored.observe()).toEqual(w.observe());
