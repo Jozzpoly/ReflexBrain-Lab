@@ -15,6 +15,8 @@ try{
  attach(desktop);
  await desktop.goto('http://127.0.0.1:4187/probes/material-workbench-r8.html',{waitUntil:'networkidle'});
  await desktop.waitForFunction(()=>window.__r8Audit?.().tick>6,null,{timeout:25000});
+ const desktopLanding=await desktop.screenshot({type:'jpeg',quality:26,fullPage:false});
+ console.log('RB_R8_DESKTOP_FIRST_IMPRESSION_JPEG '+desktopLanding.toString('base64'));
  await desktop.locator('#pause').click();
  const initialScene=await audit(desktop);
  expect(initialScene.parts.length>=6,'Owner first contact starts empty');
@@ -180,6 +182,11 @@ try{
  attach(mobile);
  await mobile.goto('http://127.0.0.1:4187/probes/material-workbench-r8.html',{waitUntil:'networkidle'});
  await mobile.waitForFunction(()=>window.__r8Audit?.().tick>3,null,{timeout:25000});
+ const firstMobileField=await mobile.locator('#field').boundingBox();
+ expect(firstMobileField&&firstMobileField.y<844*.46,
+   'physical world is too far below the first mobile screen');
+ const firstMobile=await mobile.screenshot({type:'jpeg',quality:26,fullPage:false});
+ console.log('RB_R8_MOBILE_FIRST_IMPRESSION_JPEG '+firstMobile.toString('base64'));
  await mobile.locator('#pause').click();
  expect((await audit(mobile)).parts.length>=6,'mobile landing starts empty');
  await mobile.locator('#scene').selectOption('open');await mobile.locator('#reset').click();
