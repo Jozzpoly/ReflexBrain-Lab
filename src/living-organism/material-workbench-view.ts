@@ -73,8 +73,9 @@ $('#manual').addEventListener('click',()=>{
 $('#undo').addEventListener('click',()=>{
  const before=undo.pop();if(!before)return;
  world.restoreCheckpoint(before.world);resident.restore(before.resident);
+ paused=true;$('#pause').textContent='Wznów';
  choosePart(null);keys.clear();acc=0;last=0;
- info('OWNER: jawnie cofnął ostatnią edycję');
+ info('OWNER: przywrócono stan SPRZED edycji — cofnięty również czas, świat zatrzymany');
 });
 $('#zoomIn').addEventListener('click',()=>zoomBy(1.28));
 $('#zoomOut').addEventListener('click',()=>zoomBy(1/1.28));
@@ -127,7 +128,8 @@ $<HTMLInputElement>('#importFile').addEventListener('change',async()=>{
 $('#restore').addEventListener('click',()=>{
  if(!checkpoint)return;world.restoreCheckpoint(checkpoint.world);undo.length=0;
  resident.restore(checkpoint.resident);choosePart(null);keys.clear();acc=0;last=0;
- info('OWNER: odtworzył ten sam świat, ciało i pamięć odruchu');
+ paused=true;$('#pause').textContent='Wznów';
+ info('OWNER: odtworzył ten sam świat i odruch — fizyka zatrzymana do decyzji');
 });
 $('#reset').addEventListener('click',()=>{
  world.free();world=new LivingWorld(false);resident=new Occupant();checkpoint=null;undo.length=0;choosePart(null);

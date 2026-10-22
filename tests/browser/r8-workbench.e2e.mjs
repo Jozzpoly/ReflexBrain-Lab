@@ -95,6 +95,22 @@ try{
  const resumed=await audit(desktop);
  expect(resumed.actor.x!==state.actor.x,'manual body never moved physically');
  await desktop.screenshot({path:dir+'/02-human-taking-over.png',fullPage:true});
+
+// Undo is TIME TRAVEL, not just a cosmetic editor operation. It must
+// visibly PAUSE the full World on its older real solver tick.
+ await desktop.locator('#pause').click();
+ const undoBase=await audit(desktop);
+ await desktop.locator('#toolFree').click();
+ await desktop.mouse.click(placeX,placeY);
+ let authored=await audit(desktop);
+ expect(authored.parts.length>=2,'failed to place item for undo');
+ await desktop.locator('#undo').click();
+ const undone=await audit(desktop);
+ expect(undone.paused&&undone.tick===undoBase.tick,
+  'undo did not pause the entire restored physical timeline');
+ expect(undone.parts.length===undoBase.parts.length,
+  'undo failed to restore material identity at old tick');
+
  
 // Verify that the actual hand-driven actor can CHANGE a material piece,
 // not just move itself inside a colorful rendering.
