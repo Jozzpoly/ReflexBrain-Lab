@@ -193,11 +193,19 @@ const release=()=>{
 };
 canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);
 function enterManual(){
- if(manual)return;
- manual=true;
- $<HTMLButtonElement>('#manual').setAttribute('aria-pressed','true');
- $('#manual').textContent='Oddaj sterowanie';
- info('OWNER: ręczne sterowanie ciałem, nie ruch sztucznego mózgu');
+ if(!manual){
+  manual=true;
+  $<HTMLButtonElement>('#manual').setAttribute('aria-pressed','true');
+  $('#manual').textContent='Oddaj sterowanie';
+  info('OWNER: ręczne sterowanie ciałem, nie ruch sztucznego mózgu');
+ }
+ // Physical body-control intent must not be silently swallowed by pause:
+ // pressing a steering key resumes world time exactly once.
+ if(paused){
+  paused=false;last=0;acc=0;
+  $('#pause').textContent='Pauza';
+  info('OWNER: wznawia prawdziwy czas fizyczny sterowaniem');
+ }
 }
 // Keyboard works even when the canvas isn't focused. Avoid swallowing
 // letters in future real text inputs and select controls.

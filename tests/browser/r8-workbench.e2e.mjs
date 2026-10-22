@@ -195,18 +195,22 @@ try{
    'mobile DRAG did not move persistent part: '+JSON.stringify({before:firstPart,after:dragged.parts[0]}));
  // Driving with the overlay must visibly act on the same body, without
  // scrolling page or touching the world editor.
- await mobile.locator('#pause').tap();
+ // Start from a known PAUSED state. The actual on-screen control
+ // should resume simulation, acquire manual authority, and move real Rapier.
+ if(!(await audit(mobile)).paused)await mobile.locator('#pause').tap();
  const actorBefore=await audit(mobile);
- const mobileUp=mobile.locator('[data-hold="w"]');
+ expect(actorBefore.paused,'touch-drive precondition: world should be paused');
+ const mobileUp=mobile.locator('.touch-drive [data-hold="w"]');
  await mobileUp.scrollIntoViewIfNeeded();
  const br=await mobileUp.boundingBox();expect(br,'on-world touch control absent');
  const cd=await mobile.context().newCDPSession(mobile);
  await cd.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:point(br.x+br.width/2,br.y+br.height/2)});
  await mobile.waitForTimeout(510);
  await cd.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
- await mobile.locator('#pause').tap();
  const actorAfter=await audit(mobile);
- expect(actorAfter.manual&&actorAfter.actor.x>actorBefore.actor.x+.05,
+ await mobile.locator('#pause').tap();
+ expect(actorAfter.manual&&!actorAfter.paused&&
+  actorAfter.tick>actorBefore.tick+12&&actorAfter.actor.x>actorBefore.actor.x+.05,
   'in-world touchscreen vehicle control did not move the physical body: '+JSON.stringify({before:actorBefore,after:actorAfter,button:br}));
  const mobilePreview=await mobile.screenshot({type:'jpeg',quality:27,fullPage:false});
  console.log('RB_R8_MOBILE_PREVIEW_JPEG '+mobilePreview.toString('base64'));
