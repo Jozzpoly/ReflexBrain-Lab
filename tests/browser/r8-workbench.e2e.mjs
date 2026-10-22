@@ -194,6 +194,32 @@ try{
  const afterBad=await audit(importPage);
  expect(JSON.stringify(afterBad.parts)===JSON.stringify(imported.parts)&&afterBad.tick===imported.tick,
   'malformed Owner file destroyed an existing real world');
+ // A JSON envelope can be syntactically valid yet falsely describe the Rapier
+ // actor, a part's exact shape/mode, or physical bodies absent from metadata.
+ // Such files must fail BEFORE ownership of the old running world is replaced.
+ for(const variant of ['missing-collider','wrong-size','wrong-mode','hidden-collider','fake-actor']){
+  const forged=JSON.parse(bytes);
+  if(variant==='missing-collider')forged.world.surfaces[0].handle=2147483647;
+  if(variant==='wrong-size')forged.world.surfaces[0].hx+=.25;
+  if(variant==='wrong-mode')forged.world.surfaces[0].mode=
+    forged.world.surfaces[0].mode==='anchored'?'dynamic':'anchored';
+  if(variant==='hidden-collider')forged.world.surfaces.pop();
+  if(variant==='fake-actor')forged.world.actorHandle=forged.world.surfaces[0].handle;
+  const forgedFile={name:'r8-forged-'+variant+'.json',
+    mimeType:'application/json',buffer:Buffer.from(JSON.stringify(forged))};
+  const priorEvents=await importPage.locator('#events').innerText();
+  await importPage.locator('#importFile').setInputFiles(forgedFile);
+  await importPage.waitForFunction(previous=>
+    (document.querySelector('#events')?.textContent||'').length>previous.length,
+    priorEvents,{timeout:10000});
+  const afterRejected=await audit(importPage);
+  const eventLog=await importPage.locator('#events').innerText();
+  expect(eventLog.includes('Nie wczytano pliku:'),
+    'structurally invalid Rapier world was accepted: '+variant);
+  expect(JSON.stringify(afterRejected.parts)===JSON.stringify(imported.parts)&&
+    afterRejected.tick===imported.tick&&afterRejected.privateFrameTick===imported.privateFrameTick,
+    'a forged metadata/physics mismatch destroyed a previously valid scene: '+variant);
+ }
  await importPage.screenshot({path:dir+'/05-imported-on-fresh-browser-page.png',fullPage:true});
  // A new world is not the former world with a new geometry: Owner manual
  // authority, stale camera controls and another world's event log must end.
