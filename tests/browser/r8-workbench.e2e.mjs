@@ -79,6 +79,30 @@ try{
  const resumed=await audit(desktop);
  expect(resumed.actor.x!==state.actor.x,'manual body never moved physically');
  await desktop.screenshot({path:dir+'/02-human-taking-over.png',fullPage:true});
+ 
+// Verify that the actual hand-driven actor can CHANGE a material piece,
+// not just move itself inside a colorful rendering.
+ await desktop.locator('#pause').click(); // freeze before constructing new situation
+ await desktop.locator('#reset').click(); // intentional Owner reset; manual mode retained
+ await desktop.locator('#toolFree').click();
+ await desktop.locator('#shape').selectOption('block');
+ const fieldBox=await desktop.locator('#field').boundingBox();expect(fieldBox,'no browser physical box');
+ const factor=Math.min(47,Math.max(28,fieldBox.width/22));
+ await desktop.mouse.click(fieldBox.x+fieldBox.width/2+factor*2.8,
+   fieldBox.y+fieldBox.height/2);
+ const beforePush=await audit(desktop);
+ expect(beforePush.parts.length===1&&beforePush.parts[0].mode==='dynamic','real push fixture absent');
+ await desktop.locator('#pause').click();
+ await desktop.locator('#field').focus();
+ await desktop.keyboard.down('w');
+ await desktop.waitForTimeout(1600);
+ await desktop.keyboard.up('w');
+ await desktop.locator('#pause').click();
+ const afterPush=await audit(desktop);
+ const actualMaterialPush=afterPush.parts[0].x-beforePush.parts[0].x;
+ expect(actualMaterialPush>.35,'Chrome body force never moved real matter: '+actualMaterialPush);
+ expect(afterPush.tick>beforePush.tick+90,'Chrome fixture missed real solver time');
+ await desktop.screenshot({path:dir+'/04-actor-actually-moved-material.png',fullPage:true});
  const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});
  attach(mobile);
  await mobile.goto('http://127.0.0.1:4187/probes/material-workbench-r8.html',{waitUntil:'networkidle'});
@@ -101,7 +125,7 @@ try{
  const result={verdict:'R8 ENGINEERING CHROME PASS; NO ORGANISM CLAIM',
   originalTick:frozen.tick,restoredTick:state.tick,
   retainedHandle:id,restoredPhysicalBodyType:true,addedSurvivorAfterRemove:true,
-  manualActorMoved:true,mobileAnchorPartCreated:true,mobileWidths:[390,320],
+  manualActorMoved:true,actualMaterialPush,mobileAnchorPartCreated:true,mobileWidths:[390,320],
   privateFrameFields:frozen.privateKeys,errors};
  await writeFile(dir+'/result.json',JSON.stringify(result,null,2)+'\n');
  console.log('RB_R8_BROWSER '+JSON.stringify(result));
