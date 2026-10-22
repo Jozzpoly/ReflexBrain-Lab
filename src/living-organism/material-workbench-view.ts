@@ -23,7 +23,7 @@ const seed=(w:LivingWorld,preset:SceneName)=>{
  for(const [x,y,hx,hy,mode] of items)w.addMaterialPart(x,y,hx,hy,mode);
 };
 seed(world,scene);
-let paused=false,manual=false,follow=false,tool:'select'|'free'|'anchor'='select';
+let paused=false,manual=false,follow=true,tool:'select'|'free'|'anchor'='select';
 let selected:number|null=null,dragging:number|null=null,pan:{x:number;y:number}|null=null;
 let cam={x:0,y:0},last=0,acc=0,zoom=1;
 const undo:LabCheckpoint[]=[];
