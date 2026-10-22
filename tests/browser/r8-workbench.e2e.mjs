@@ -195,6 +195,7 @@ try{
  await mobile.locator('#pause').tap();
  const actorBefore=await audit(mobile);
  const mobileUp=mobile.locator('[data-hold="w"]');
+ await mobileUp.scrollIntoViewIfNeeded();
  const br=await mobileUp.boundingBox();expect(br,'on-world touch control absent');
  const cd=await mobile.context().newCDPSession(mobile);
  await cd.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:point(br.x+br.width/2,br.y+br.height/2)});
@@ -203,7 +204,7 @@ try{
  await mobile.locator('#pause').tap();
  const actorAfter=await audit(mobile);
  expect(actorAfter.manual&&actorAfter.actor.x>actorBefore.actor.x+.05,
-  'in-world touchscreen vehicle control did not move the physical body');
+  'in-world touchscreen vehicle control did not move the physical body: '+JSON.stringify({before:actorBefore,after:actorAfter,button:br}));
  const mobilePreview=await mobile.screenshot({type:'jpeg',quality:27,fullPage:false});
  console.log('RB_R8_MOBILE_PREVIEW_JPEG '+mobilePreview.toString('base64'));
  await mobile.screenshot({path:dir+'/03-mobile-touched-material.png',fullPage:true});
