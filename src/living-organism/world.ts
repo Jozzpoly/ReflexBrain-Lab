@@ -100,6 +100,14 @@ export class LivingWorld {
     body.setLinvel({x:0,y:0},true);
     body.setAngvel(0,true);
     body.setBodyType(mode==='anchored'?R.RigidBodyType.Fixed:R.RigidBodyType.Dynamic,true);
+    // A part CREATED fixed must acquire the SAME mobility/damping
+    // characteristics as a part CREATED dynamic when released.
+    // Rapier setBodyType does not synthesize a dynamic descriptor.
+    if(mode==='dynamic'){
+      body.setLinearDamping(1.7);
+      body.setAngularDamping(3);
+      body.lockRotations(true,true);
+    }
     surface.mode=mode;
     // Leave the most recent 30Hz private frame intact until solver advances.
   }

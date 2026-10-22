@@ -100,6 +100,28 @@ describe('R8 early material workbench — physical, no actor learning claim',()=
       expect(w.inspect().tick).toBe(380);
     }finally{w.free();}
   });
+  it('an originally fixed then released part behaves like an originally dynamic part',()=>{
+    const rollout=(bornFixed:boolean)=>{
+      const w=new LivingWorld(false);
+      try{
+        const id=w.addMaterialPart(2.8,0,.55,.75,bornFixed?'anchored':'dynamic');
+        if(bornFixed)w.setMaterialPartMode(id,'dynamic');
+        const first=part(w,id);
+        const track:number[]=[];
+        for(let i=0;i<480;i++){
+          w.step(i<280?forward:still);
+          if(i%24===0)track.push(part(w,id).x);
+        }
+        return {track,final:part(w,id),tick:w.inspect().tick};
+      }finally{w.free();}
+    };
+    const a=rollout(false),b=rollout(true);
+    expect(a.tick).toBe(480);
+    expect(b.tick).toBe(480);
+    for(let i=0;i<a.track.length;i++)expect(b.track[i]).toBeCloseTo(a.track[i],3);
+    expect(b.final.angle).toBeCloseTo(a.final.angle,3);
+    expect(b.final.mode).toBe('dynamic');
+  });
   it('snapshot replay keeps authored modifications and lawful private observations exact',()=>{
     const w=new LivingWorld(false);
     try{
