@@ -42,6 +42,7 @@ info('R8: otwarty świat bez klatki. Wszystkie modyfikacje części są OWNER.')
 function choosePart(handle:number|null){
  selected=handle;
  const obj=world.inspect().objects.find(x=>x.handle===handle&&x.kind==='part');
+ document.querySelector('.selected-actions')?.classList.toggle('is-selected',Boolean(obj));
  $('#chosen').textContent=obj?'#'+handle+' · '+obj.mode:'—';
  $<HTMLButtonElement>('#toggle').disabled=!obj;
  $<HTMLButtonElement>('#delete').disabled=!obj;
@@ -94,6 +95,24 @@ $('#zoomIn').addEventListener('click',()=>zoomBy(1.28));
 $('#zoomOut').addEventListener('click',()=>zoomBy(1/1.28));
 $('#center').addEventListener('click',()=>{
  cameraReset();follow=true;$('#follow').setAttribute('aria-pressed','true');
+});
+// Owner-only camera operation. Neither physical position nor actor-private frame changes.
+$('#materialCenter').addEventListener('click',()=>{
+ const parts=world.inspect().objects.filter(o=>o.kind==='part');
+ follow=false;$('#follow').setAttribute('aria-pressed','false');
+ if(!parts.length){cam={x:0,y:0};zoom=1;}
+ else{
+  const ext=parts.map(o=>{
+   const c=Math.abs(Math.cos(o.angle)),s=Math.abs(Math.sin(o.angle));
+   return {x:o.x,y:o.y,dx:c*o.hx+s*o.hy,dy:s*o.hx+c*o.hy};
+  });
+  const minX=Math.min(...ext.map(o=>o.x-o.dx)),maxX=Math.max(...ext.map(o=>o.x+o.dx));
+  const minY=Math.min(...ext.map(o=>o.y-o.dy)),maxY=Math.max(...ext.map(o=>o.y+o.dy));
+  cam={x:(minX+maxX)/2,y:(minY+maxY)/2};
+  const d=dims(),base=d.scale/zoom;
+  zoom=Math.max(.45,Math.min(2,Math.min(d.w*.8/(maxX-minX+3),d.h*.75/(maxY-minY+3))/base));
+ }
+ info('OWNER: kamera pokazuje materię — świat, ciało i historia bez ingerencji');
 });
 $('#follow').addEventListener('click',()=>{
  follow=!follow;$('#follow').setAttribute('aria-pressed',String(follow));
