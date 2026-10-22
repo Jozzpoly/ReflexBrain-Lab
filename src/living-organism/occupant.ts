@@ -62,6 +62,27 @@ export class Occupant {
   }
   return {...s.demand};
  }
+ /**
+  * The Owner controls the *motor*, not the provenance of the body's senses.
+  * Legally sampled proprioception may still update passive orientation/time,
+  * but Owner movement cannot count as this controller's chosen exploration.
+  * A suspended authored concern is explicitly abandoned on takeover;
+  * no target, self-command or fictitious long-gap odometry is backfilled.
+  */
+ witnessExternalMotor(frame:PrivateFrame):void{
+  const s=this.state;
+  if(s.lastTick!==null&&frame.tick<s.lastTick)return;
+  if(s.lastTick===null||frame.tick>s.lastTick){
+   const dt=s.lastTick===null?0:(frame.tick-s.lastTick)/120;
+   s.heading=wrap(s.heading+frame.proprio.omega*dt);
+   s.lastTick=frame.tick;
+  }
+  // On authority transfer, clear an old command even on an already-sampled tick.
+  s.mode='explore';s.demand={drive:0,turn:0,gazeRate:0};
+  s.lastDirection=null;s.lastSeenTick=null;s.closeSince=null;
+  s.exploreTravel=0;s.exploreTurn=0;
+  s.yieldUntil=0;s.ignoreUntil=0;s.escapeDrive=0;s.escapeTurn=0;
+ }
  capture():OccupantState{return {...this.state,demand:{...this.state.demand}};}
  restore(state:OccupantState){this.state={...state,demand:{...state.demand}};}
 }

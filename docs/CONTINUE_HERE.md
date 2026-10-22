@@ -1,3 +1,5 @@
+> **START R8 (22.10.2026, tylko branch research/rb-r8-open-material-workbench-2026-10-22):** [actual experiment, QA i granice](research/RB_R8_OPEN_MATERIAL_RESULT_2026-10-22.md). Poniższy etap O-CTRL z 6 października jest historyczny; nie używać go jako kolejki implementacyjnej. Prace L1 #84, L2 #86, R6 #87 i R7 #88 oddzielone.
+
 # CONTINUE HERE — ReflexBrain Pre-O0 — 2026-10-06
 
 Status: **RECOVERY ANCHOR · READ THIS FIRST AFTER SESSION LOSS**

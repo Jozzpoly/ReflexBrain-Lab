@@ -1,0 +1,54 @@
+name: R8 real Chrome material workbench
+on:
+  pull_request:
+    paths:
+      - "src/living-organism/material-workbench-view.ts"
+      - "src/living-organism/world.ts"
+      - "probes/material-workbench-r8.html"
+      - "tests/browser/r8-workbench.e2e.mjs"
+      - ".github/workflows/r8-workbench-browser.yml"
+      - "vite.config.ts"
+  workflow_dispatch:
+jobs:
+  material-play:
+    if: github.event_name != 'pull_request' || github.head_ref == 'research/rb-r8-open-material-workbench-2026-10-22'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build actual Vite material workbench
+        run: |
+          yarn install --non-interactive
+          yarn run build
+          test -s dist/probes/material-workbench-r8.html
+      - name: Confirm real Chrome available
+        run: google-chrome --version
+      - name: Install only isolated browser test driver
+        run: yarn add --dev --ignore-scripts playwright-core@1.56.0
+      - name: Serve compiled research multi-entry
+        run: |
+          yarn vite preview --host 127.0.0.1 --port 4187 > /tmp/rb-r8.log 2>&1 &
+          for i in {1..40}; do
+            if curl -fsS http://127.0.0.1:4187/probes/material-workbench-r8.html >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/rb-r8.log
+          exit 1
+      - name: Actual pointer, physics, checkpoint and mobile/touch
+        run: node tests/browser/r8-workbench.e2e.mjs
+      - name: Preserve compiled isolated R8 preview bundle (not deployed)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rb-r8-static-preview
+          path: dist
+          if-no-files-found: error
+      - name: Preserve screenshots and source-executed UI evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rb-r8-workbench-chromium
+          path: artifacts/r8-workbench
+          if-no-files-found: ignore
