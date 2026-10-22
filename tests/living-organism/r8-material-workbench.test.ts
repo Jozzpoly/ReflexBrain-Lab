@@ -122,6 +122,29 @@ describe('R8 early material workbench — physical, no actor learning claim',()=
     expect(b.final.angle).toBeCloseTo(a.final.angle,3);
     expect(b.final.mode).toBe('dynamic');
   });
+  it('actual Rapier rotation preserves collider identity, temporal sensory boundary and replay',()=>{
+    const w=new LivingWorld(false);
+    try{
+      const id=w.addMaterialPart(3.1,0,1.2,.22,'anchored');
+      for(let i=0;i<5;i++)w.step(still);
+      const old=w.observe();
+      w.rotateMaterialPart(id,Math.PI/12);
+      expect(part(w,id).handle).toBe(id);
+      expect(part(w,id).angle).toBeCloseTo(Math.PI/12,5);
+      expect(w.observe()).toEqual(old);
+      for(let i=0;i<3;i++)w.step(still);
+      expect(w.observe().tick).toBe(8);
+      expect(Array.from(w.observe().retina)).not.toEqual(Array.from(old.retina));
+      const cp=w.captureCheckpoint();
+      w.rotateMaterialPart(id,-Math.PI/4);
+      w.restoreCheckpoint(cp);
+      expect(part(w,id).angle).toBeCloseTo(Math.PI/12,5);
+      w.setMaterialPartMode(id,'dynamic');
+      expect(part(w,id).handle).toBe(id);
+      for(let i=0;i<60;i++)w.step(forward);
+      expect([part(w,id).x,part(w,id).y,part(w,id).angle].every(Number.isFinite)).toBe(true);
+    }finally{w.free();}
+  });
   it('snapshot replay keeps authored modifications and lawful private observations exact',()=>{
     const w=new LivingWorld(false);
     try{

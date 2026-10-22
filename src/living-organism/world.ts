@@ -122,6 +122,17 @@ export class LivingWorld {
     this.world.propagateModifiedBodyPositionsToColliders();
     // Leave the most recent 30Hz private frame intact until solver advances.
   }
+  /** Manual Owner material rotation. A real Rapier pose change preserving identity. */
+  rotateMaterialPart(handle:number,delta:number){
+    if(!Number.isFinite(delta)||Math.abs(delta)>Math.PI)throw new Error('Invalid material rotation');
+    const surface=this.surfaces.find(s=>s.handle===handle&&s.kind==='part');
+    if(!surface)throw new Error('Not a material part');
+    const body=this.world.getCollider(handle).parent();
+    body.setRotation(Math.atan2(Math.sin(body.rotation()+delta),Math.cos(body.rotation()+delta)),true);
+    body.setAngvel(0,true);
+    this.world.propagateModifiedBodyPositionsToColliders();
+    // No 30Hz private-frame backdating during paused Owner intervention.
+  }
   removeMaterialPart(handle:number){
     const idx=this.surfaces.findIndex(s=>s.handle===handle&&s.kind==='part');
     if(idx<0)throw new Error('Not a material part');

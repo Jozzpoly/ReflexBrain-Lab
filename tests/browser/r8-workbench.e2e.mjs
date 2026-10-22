@@ -43,6 +43,12 @@ try{
  expect(state.privateFrameTick===priorFrame&&state.retinaDigest===priorRetina,
   'paused OWNER mode change forged an actor sensory timestamp');
  expect(state.parts[0].handle===id&&state.parts[0].mode==='anchored','collider identity changed on anchor');
+ await desktop.locator('#rotateR').click();
+ state=await audit(desktop);
+ expect(state.parts[0].handle===id&&Math.abs(state.parts[0].angle-Math.PI/12)<.001,
+   'rotate changed collider identity or failed true Rapier rotation');
+ await desktop.locator('#rotateL').click();
+ expect(Math.abs((await audit(desktop)).parts[0].angle)<.001,'inverse rotation failed');
  await desktop.locator('#save').click();
  expect((await audit(desktop)).hasCheckpoint,'save missing');
  await desktop.locator('#toolSelect').click();

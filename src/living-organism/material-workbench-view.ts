@@ -45,6 +45,8 @@ function choosePart(handle:number|null){
  $('#chosen').textContent=obj?'#'+handle+' · '+obj.mode:'—';
  $<HTMLButtonElement>('#toggle').disabled=!obj;
  $<HTMLButtonElement>('#delete').disabled=!obj;
+ $<HTMLButtonElement>('#rotateL').disabled=!obj;
+ $<HTMLButtonElement>('#rotateR').disabled=!obj;
 }
 function chooseTool(t:typeof tool){
  tool=t;
@@ -63,6 +65,13 @@ function changeMode(){
  choosePart(o.handle);info('OWNER: #'+o.handle+' → '+(newMode==='anchored'?'kotwica':'swobodny'));
 }
 $('#toggle').addEventListener('click',changeMode);
+for(const [id,sign] of [['#rotateL',-1],['#rotateR',1]] as const){
+ $(id).addEventListener('click',()=>{
+  if(selected===null)return;
+  remember();world.rotateMaterialPart(selected,sign*Math.PI/12);
+  info('OWNER: obrócił część #'+selected+' o '+sign*15+'°');
+ });
+}
 $('#delete').addEventListener('click',()=>{
  if(selected===null)return;
  const n=selected;remember();world.removeMaterialPart(n);choosePart(null);info('OWNER: usunięto #'+n);
@@ -157,8 +166,11 @@ function screenToWorld(e:{clientX:number;clientY:number},d:ReturnType<typeof dim
         y:cam.y-(e.clientY-r.top-d.h/2)/d.scale};
 }
 function closest(p:{x:number;y:number}){
- return [...world.inspect().objects].reverse().find(o=>o.kind==='part'&&
-   Math.abs(p.x-o.x)<o.hx+.08&&Math.abs(p.y-o.y)<o.hy+.08);
+ return [...world.inspect().objects].reverse().find(o=>{
+  if(o.kind!=='part')return false;
+  const dx=p.x-o.x,dy=p.y-o.y,c=Math.cos(o.angle),sn=Math.sin(o.angle);
+  return Math.abs(c*dx+sn*dy)<o.hx+.1&&Math.abs(-sn*dx+c*dy)<o.hy+.1;
+ });
 }
 function addOwnerPart(x:number,y:number){
  const shape=shapes[$<HTMLSelectElement>('#shape').value as keyof typeof shapes]||shapes.beam;

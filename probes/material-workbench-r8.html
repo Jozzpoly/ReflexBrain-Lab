@@ -68,6 +68,8 @@ details{color:var(--muted)}details summary{cursor:pointer;color:var(--text);font
 </div>
 <div class="viewport"><canvas id="field" width="1120" height="700" tabindex="0" aria-label="Interaktywny świat fizyczny, przeciąganie elementów i przesuwanie kamery"></canvas>
 <div class="selected-actions" aria-label="Wybrana część">
+<button id="rotateL" disabled title="Obróć część w lewo o 15 stopni">↶15°</button>
+<button id="rotateR" disabled title="Obróć część w prawo o 15 stopni">↷15°</button>
 <button id="toggle" disabled title="Zakotwicz lub uwolnij wybraną fizyczną część">Kotwica ⇄</button>
 <button id="delete" disabled title="Usuń wybraną część">Usuń ×</button></div>
 <div class="touch-drive" role="group" aria-label="Sterowanie ciałem na ekranie">
@@ -95,7 +97,7 @@ details{color:var(--muted)}details summary{cursor:pointer;color:var(--text);font
 <section class="panel"><div class="eyebrow">HISTORIA INTERWENCJI</div><div id="events" aria-live="polite"></div></section>
 <section class="panel">
 <details><summary>Jak się bawić i skąd pochodzi ruch?</summary>
-<p><b>Na komputerze:</b> Chwyć blok i przesuń. Kliknij „Ruchomy” lub „Stały”, by dodać belkę, słupek lub blok. Puste tło przesuwa kamerę, kółko myszy przybliża. WASD steruje ciałem, Q/E kierunkiem wzroku.</p>
+<p><b>Na komputerze:</b> Chwyć blok i przesuń; wybraną część można także obrócić o 15°. Kliknij „Ruchomy” lub „Stały”, by dodać belkę, słupek lub blok. Puste tło przesuwa kamerę, kółko myszy przybliża. WASD steruje ciałem, Q/E kierunkiem wzroku.</p>
 <p><b>Na telefonie:</b> sterowanie ciałem jest na samym świecie. Przytrzymaj przycisk, by rozpocząć ruch. Wszelkie stawianie, przeciąganie i kotwiczenie materii jest Twoją interwencją.</p>
 <p>Automatyczny mieszkaniec ma prosty autorski odruch, nie jest nową sztuczną inteligencją. Ten eksperyment nie kwalifikuje „życia”.</p></details>
 <div class="notice" style="margin-top:13px">Wszystkie części początkowego placu ustawił autor. Organizm nie potrafi jeszcze sam budować. Tego nie symulujemy ani nie ukrywamy.</div>
