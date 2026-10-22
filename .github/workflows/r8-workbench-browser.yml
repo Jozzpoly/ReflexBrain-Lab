@@ -38,6 +38,13 @@ jobs:
           exit 1
       - name: Actual pointer, physics, checkpoint and mobile/touch
         run: node tests/browser/r8-workbench.e2e.mjs
+      - name: Preserve compiled isolated R8 preview bundle (not deployed)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rb-r8-static-preview
+          path: dist
+          if-no-files-found: error
       - name: Preserve screenshots and source-executed UI evidence
         if: always()
         uses: actions/upload-artifact@v4
