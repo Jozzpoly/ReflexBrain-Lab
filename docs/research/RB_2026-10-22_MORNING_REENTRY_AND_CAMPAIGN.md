@@ -1,5 +1,7 @@
 # ReflexBrain — START DNIA / odzyskanie całej kampanii · 22.10.2026
 
+> **NAJNOWSZA KOREKTA METODY (22.10.2026)** — przed techniczną pracą przeczytaj [badawczą decyzję o relacji i granicach donorów](RB_2026-10-22_RELATIONAL_LIFE_METHOD_DECISION.md). Jej audyt odkrył dwie rzeczy przysłonięte poprzednim planem: (1) **brak ciągłego ruchu zwykłej materii po 30 s NIE unieważnia ekologicznej pamięci** — trwały, nieruchomy ślad może zmieniać późniejsze życie; (2) brak jest w obecnym Rapier World bogatych **kompozycyjnych materialnych działań**, więc kolejny „sprytny” sterownik prawdopodobnie wróci do pchania tych samych obiektów. Dodatkowy silny DONOR: [Gloopipelago Owner M4 FAIL](https://github.com/Jozzpoly/Gloopipelago/blob/m4b-living-world-legibility-2026-09-10/evidence/owner/M4_COMPOSITE_OWNER_FAIL_2026-09-10.md) — prawdziwa selekcja i 1800–3600s życia, lecz wszystkie organizmy wykonują jeden ten sam wzorzec foraging. To nie jest nowa decyzja o przenoszeniu Gloop do ReflexBrain.
+
 > **Rola tego dokumentu:** decyzja badawcza po ponownym czytaniu i podważeniu pracy z 21–22 października; dotyczy wyłącznie gałęzi R6 (PR #87) jako punkt wejścia, **nie** jest nowym finalnym GDD ani automatyczną modyfikacją kierunku innych gałęzi. Świeży live GitHub na początku tej analizy: PR #84 `5d8ca8f`, #86 `29d4506`, #87 `75b910f`, wszystkie draft, bez merge; `main` `75b9572`. Ponownie sprawdź HEAD przed kolejnym commitem.
 
 ## Osąd w pięć zdań
