@@ -1,5 +1,5 @@
 import {chromium} from 'playwright-core';
-import {mkdir,writeFile} from 'node:fs/promises';
+import {mkdir,writeFile,readFile} from 'node:fs/promises';
 const dir='artifacts/r8-workbench';
 await mkdir(dir,{recursive:true});
 const browser=await chromium.launch({channel:'chrome',headless:true});
@@ -109,6 +109,41 @@ try{
  expect(actualMaterialPush>.35,'Chrome body force never moved real matter: '+actualMaterialPush);
  expect(afterPush.tick>beforePush.tick+90,'Chrome fixture missed real solver time');
  await desktop.screenshot({path:dir+'/04-actor-actually-moved-material.png',fullPage:true});
+ // One complete external, safely restorable WORLD across browser contexts.
+ // No save-control click is sufficient: inspect downloaded bytes in Node and
+ // load into a separate fresh page, after mutating the original world.
+ const expectedExport=await audit(desktop);
+ const downloadPromise=desktop.waitForEvent('download',{timeout:15000});
+ await desktop.locator('#export').click();
+ const downloaded=await downloadPromise;
+ const filePath=dir+'/owner-material-world.json';
+ await downloaded.saveAs(filePath);
+ const bytes=await readFile(filePath,'utf8'),parsed=JSON.parse(bytes);
+ expect(parsed.format==='reflexbrain-r8-workbench'&&parsed.world.physics.length>100,
+  'download missing actual Rapier bytes or identity');
+ const importPage=await browser.newPage({viewport:{width:1000,height:790}});
+ attach(importPage);
+ await importPage.goto('http://127.0.0.1:4187/probes/material-workbench-r8.html',{waitUntil:'networkidle'});
+ await importPage.waitForFunction(()=>window.__r8Audit?.().tick>8);
+ await importPage.locator('#importFile').setInputFiles(filePath);
+ await importPage.waitForFunction(t=>window.__r8Audit()?.tick===t&&window.__r8Audit()?.paused,
+   expectedExport.tick,{timeout:15000});
+ const imported=await audit(importPage);
+ expect(JSON.stringify(imported.parts)===JSON.stringify(expectedExport.parts),
+  'external import changed material physics and identity');
+ expect(imported.privateFrameTick===expectedExport.privateFrameTick,
+  'external import invented different private sensory time');
+ // A forged or broken file is REJECTED while the recovered real World survives.
+ const corruptPath=dir+'/corrupt-r8.json';
+ await writeFile(corruptPath,bytes.replace('"ownerAuthored":true','"ownerAuthored":false'));
+ await importPage.locator('#importFile').setInputFiles(corruptPath);
+ await importPage.waitForFunction(()=>document.querySelector('#events')?.textContent?.includes('Nie wczytano'));
+ const afterBad=await audit(importPage);
+ expect(JSON.stringify(afterBad.parts)===JSON.stringify(imported.parts)&&afterBad.tick===imported.tick,
+  'malformed Owner file destroyed an existing real world');
+ await importPage.screenshot({path:dir+'/05-imported-on-fresh-browser-page.png',fullPage:true});
+ await importPage.close();
+
  const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});
  attach(mobile);
  await mobile.goto('http://127.0.0.1:4187/probes/material-workbench-r8.html',{waitUntil:'networkidle'});
@@ -133,7 +168,7 @@ try{
  const result={verdict:'R8 ENGINEERING CHROME PASS; NO ORGANISM CLAIM',
   originalTick:frozen.tick,restoredTick:state.tick,
   retainedHandle:id,restoredPhysicalBodyType:true,addedSurvivorAfterRemove:true,
-  manualActorMoved:true,actualMaterialPush,mobileAnchorPartCreated:true,mobileWidths:[390,320],
+  manualActorMoved:true,actualMaterialPush,externalFileRoundtrip:true,rejectsCorruptImport:true,mobileAnchorPartCreated:true,mobileWidths:[390,320],
   privateFrameFields:frozen.privateKeys,errors};
  await writeFile(dir+'/result.json',JSON.stringify(result,null,2)+'\n');
  console.log('RB_R8_BROWSER '+JSON.stringify(result));

@@ -1,6 +1,7 @@
 import {initLivingWorld,LivingWorld,type Checkpoint,type Demand} from './world';
 import {Occupant,type OccupantState} from './occupant';
 import {E0_DT} from '../e0-body-seam';
+import {encodeR8Save,decodeR8Save} from './r8-save';
 await initLivingWorld();
 type LabCheckpoint={world:Checkpoint;resident:OccupantState};
 const $=<T extends HTMLElement>(selector:string)=>document.querySelector<T>(selector)!;
@@ -86,6 +87,42 @@ $('#follow').addEventListener('click',()=>{
 $('#save').addEventListener('click',()=>{
  checkpoint={world:world.captureCheckpoint(),resident:resident.capture()};
  $<HTMLButtonElement>('#restore').disabled=false;info('OWNER: zapisał stan fizyczny + odruch');
+});
+$('#export').addEventListener('click',()=>{
+ try{
+  const content=encodeR8Save({world:world.captureCheckpoint(),resident:resident.capture(),scene});
+  const blob=new Blob([content],{type:'application/json;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');link.href=url;
+  link.download='ReflexBrain-R8-'+world.inspect().tick+'.json';
+  document.body.appendChild(link);link.click();link.remove();
+  window.setTimeout(()=>URL.revokeObjectURL(url),5000);
+  info('OWNER: wyeksportował plik całego świata do zachowania i podzielenia się');
+ }catch(e){info('Nie zapisano pliku: '+String(e));}
+});
+$('#import').addEventListener('click',()=>$<HTMLInputElement>('#importFile').click());
+$<HTMLInputElement>('#importFile').addEventListener('change',async()=>{
+ const input=$<HTMLInputElement>('#importFile'),file=input.files?.[0];input.value='';
+ if(!file)return;
+ if(file.size>8000000){info('Nie wczytano: plik zbyt duży');return;}
+ let staged:LivingWorld|null=null;
+ try{
+  const cp=decodeR8Save(await file.text());
+  staged=new LivingWorld(false);
+  staged.restoreCheckpoint(cp.world); // verify Rapier actually can recover material
+  const newResident=new Occupant();
+  newResident.restore(cp.resident);
+  const old=world;world=staged;staged=null;resident=newResident;old.free();
+  scene=cp.scene;$<HTMLSelectElement>('#scene').value=scene;
+  checkpoint=null;undo.length=0;dragging=null;pan=null;choosePart(null);keys.clear();
+  $<HTMLButtonElement>('#restore').disabled=true;
+  paused=true;manual=false;$('#pause').textContent='Wznów';
+  $<HTMLButtonElement>('#manual').setAttribute('aria-pressed','false');
+  $('#manual').textContent='Przejmij ciało';
+  follow=false;$<HTMLButtonElement>('#follow').setAttribute('aria-pressed','false');
+  zoom=1;cameraReset();last=0;acc=0;events.textContent='';
+  info('OWNER: wczytał prawdziwy plik R8 — fizyka, części i historia sterownika; pauza');
+ }catch(e){if(staged)staged.free();info('Nie wczytano pliku: '+String(e));}
 });
 $('#restore').addEventListener('click',()=>{
  if(!checkpoint)return;world.restoreCheckpoint(checkpoint.world);undo.length=0;
