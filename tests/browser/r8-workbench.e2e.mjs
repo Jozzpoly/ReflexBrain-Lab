@@ -298,14 +298,19 @@ try{
  const freshRect=await mobile.locator('#field').boundingBox();
  expect(freshRect,'mobile field lost bounds after zoom/reset scrolling');
  const neutral=await audit(mobile);
- expect(neutral.parts.length===0&&Math.abs(neutral.zoom-1)<.001,
-  'new empty stage did not reset multi-touch camera');
+ expect(neutral.parts.length===0&&Math.abs(neutral.zoom-1)<.001&&neutral.tool==='select',
+  'new empty stage did not restore actual camera and default editor tool');
+ // New World intentionally discards the previous scene's placement tool.
+ // Choose it explicitly again, then recompute screen coordinates after toolbar scroll.
+ await mobile.locator('#toolAnchor').tap();
+ await mobile.locator('#field').scrollIntoViewIfNeeded();
+ const placingRect=await mobile.locator('#field').boundingBox();expect(placingRect,'no mobile field after choosing tool');
  // Never silently spawn an authored solid intersecting the actual resident.
- await mobile.touchscreen.tap(freshRect.x+freshRect.width*.50,
-   freshRect.y+freshRect.height*.50);
+ await mobile.touchscreen.tap(placingRect.x+placingRect.width*.50,
+   placingRect.y+placingRect.height*.50);
  expect((await audit(mobile)).parts.length===0,'unsafe overlapping part created on the actor');
- await mobile.touchscreen.tap(freshRect.x+freshRect.width*.80,
-   freshRect.y+freshRect.height*.52);
+ await mobile.touchscreen.tap(placingRect.x+placingRect.width*.80,
+   placingRect.y+placingRect.height*.52);
  const touch=await audit(mobile);
  expect(touch.parts.length===1&&touch.parts[0].mode==='anchored','mobile tap did not create anchored material');
  // Not only "tap works": touch drag should move the EXACT physical collider.
