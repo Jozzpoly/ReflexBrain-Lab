@@ -60,7 +60,8 @@ def record(t,a):
 
 def evolve(case, total=500):
     a = np.zeros((N,N)) if case == "blank" else initial()
-    frames=[]; removed=None
+    frames=[]; removed=None; executed_updates=0
+    dynamic_delta={}
     for t in range(total+1):
         if t==150 and case not in ("blank","intact"):
             before=float(a.sum())
@@ -81,10 +82,10 @@ def evolve(case, total=500):
                     amount=float(a[core].sum())
                     a[core]=0
                     spare=1-a[annulus]
-                    total=float(spare.sum())
-                    if total<amount or amount<=0:
+                    capacity=float(spare.sum())
+                    if capacity<amount or amount<=0:
                         raise AssertionError("Cannot preserve O1 instantaneous mass")
-                    a[annulus]+=spare*(amount/total)
+                    a[annulus]+=spare*(amount/capacity)
                 else:
                     ys=(cy+np.arange(-3,4))%N
                     xs=(cx+np.arange(-3,4))%N
@@ -108,8 +109,19 @@ def evolve(case, total=500):
                      "lossFraction":round((before-float(a.sum()))/max(before,1e-12),5)}
         if t in (0,50,100,149,150,151,200,300,400,500):
             frames.append(record(t,a))
-        if t<total: a=step(a)
+        if t<total:
+            nxt=step(a)
+            if t in (199,299,399,499):
+                dynamic_delta[str(t)+"->"+str(t+1)]={
+                  "L1":round(float(np.abs(nxt-a).sum()),10),
+                  "max":round(float(np.abs(nxt-a).max()),10)}
+            a=nxt
+            executed_updates+=1
+    if executed_updates!=total:
+        raise AssertionError("Simulation timeline lie: reported time exceeds executed physics updates")
     return {"case":case,"perturbationAt150":removed,"measurements":frames,
+            "executed_updates":executed_updates,
+            "dynamics_samples":dynamic_delta,
             "survived_500_mass_gt5":bool(a.sum()>5)}
 
 def experiment():

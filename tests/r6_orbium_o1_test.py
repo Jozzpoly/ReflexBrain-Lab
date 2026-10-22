@@ -17,6 +17,12 @@ class OrganizationBeyondScalar(unittest.TestCase):
         shifted=self.cases["translate_x5"]["measurements"][-1]["mass"]
         self.assertAlmostEqual(original,shifted,places=3)
         self.assertTrue(self.cases["translate_x5"]["survived_500_mass_gt5"])
+    def test_all_arms_actually_execute_all_500_dynamics_updates(self):
+        # Prevent future "t500 alive" results when model updates silently stop.
+        for name, arm in self.cases.items():
+            with self.subTest(case=name):
+                self.assertEqual(arm["executed_updates"],500)
+                self.assertIn("499->500",arm["dynamics_samples"])
     def test_reference_material_loss_stays_distinct(self):
         self.assertGreater(self.cases["remove_1"]["perturbationAt150"]["lossFraction"],.05)
 if __name__=="__main__":unittest.main()
