@@ -61,8 +61,8 @@ details{color:var(--muted)}details summary{cursor:pointer;color:var(--text);font
 <section class="play-main" aria-label="Fizyczny świat badawczy">
 <div class="hud" role="group" aria-label="Główne narzędzia">
 <button id="toolSelect" aria-pressed="true">✋ Chwyć</button>
-<button id="toolFree" aria-pressed="false">＋ Ruchomy</button>
-<button id="toolAnchor" aria-pressed="false">＋ Stały</button>
+<button id="toolFree" aria-pressed="false">+ Ruchomy</button>
+<button id="toolAnchor" aria-pressed="false">+ Stały</button>
 <select id="shape" aria-label="Kształt części"><option value="beam">Belka</option><option value="post">Słupek</option><option value="block">Blok</option></select>
 <span class="spacer"></span><button id="undo" title="Odtwórz wcześniejszy stan świata wraz z jego zegarem">↶ Cofnij</button>
 </div>
@@ -85,11 +85,11 @@ details{color:var(--muted)}details summary{cursor:pointer;color:var(--text);font
 <canvas id="retina" width="96" height="12" aria-label="96 kolorowych próbek oczu mieszkańca"></canvas>
 <dl class="stats"><dt>Zegar fizyczny</dt><dd id="tick">—</dd><dt>Części świata</dt><dd id="count">—</dd><dt>Wybrany element</dt><dd id="chosen">—</dd>
 <dt>Autor ruchu</dt><dd id="actorMode">—</dd><dt>Prędkość / obrót</dt><dd id="motion">—</dd></dl>
-<div class="row"><button id="follow" aria-pressed="false">Śledź ciało</button><button id="center">◎ Znajdź ciało</button><button id="zoomOut" title="Oddal">−</button><button id="zoomIn" title="Przybliż">＋</button></div>
+<div class="row"><button id="follow" aria-pressed="false">Śledź ciało</button><button id="center">◎ Znajdź ciało</button><button id="zoomOut" title="Oddal">−</button><button id="zoomIn" title="Przybliż">+</button></div>
 </section>
 <section class="panel"><div class="eyebrow">ŚWIAT / KONTYNUACJA</div><h2>Twoje eksperymenty</h2>
 <label for="scene" style="font-size:12px;color:var(--muted)">Początek nowej sceny:</label>
-<select id="scene" aria-label="Wybór sceny"><option value="encounter" selected>Materiałowy plac</option><option value="open">Całkiem pusto</option></select>
+<select id="scene" aria-label="Wybór sceny"><option value="encounter" selected>Plac materii</option><option value="open">Całkiem pusto</option></select>
 <div class="row"><button id="reset" title="Nowy świat według wybranej sceny">Nowy świat</button><button id="save">Zapisz chwilę</button><button id="restore" disabled>Wróć do chwili</button></div>
 <div class="row"><button id="export">↓ Pobierz świat</button><button id="import">↑ Wczytaj świat</button><input id="importFile" type="file" accept="application/json,.json" hidden></div>
 <p class="side-note">„Pobierz świat” zapisuje prawdziwą fizykę i stan sterownika do pliku. Cofnięcie przywraca również wcześniejszy zegar świata.</p>
