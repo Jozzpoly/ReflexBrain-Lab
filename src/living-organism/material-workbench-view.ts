@@ -409,6 +409,10 @@ function frame(t:number){
   acc+=Math.min(.06,(t-last)/1000);let n=0;
   while(acc>=E0_DT&&n<12){
    const observation=world.observe();
+   // Even when the Owner provides the motor, the resident's clock and
+   // body-relative evidence must not invent 30 seconds of absent samples.
+   // This is passive proprioception, never credit for autonomous activity.
+   if(manual)resident.witnessExternalMotor(observation);
    const demand:Demand=manual?
     {drive:Number(keys.has('w'))-Number(keys.has('s')),
      turn:Number(keys.has('a'))-Number(keys.has('d')),
@@ -425,6 +429,8 @@ function frame(t:number){
  privateKeys:Object.keys(world.observe()),retinaLength:world.observe().retina.length,
  privateFrameTick:world.observe().tick,
  retinaDigest:Array.from(world.observe().retina).map(x=>Math.round(x*255)).join(','),
- selected,manual,paused,follow,tool,cam:{...cam},zoom,scene,undoCount:undo.length,hasCheckpoint:checkpoint!==null
+ selected,manual,paused,follow,tool,residentLastTick:resident.capture().lastTick,
+ residentHeading:resident.capture().heading,
+ cam:{...cam},zoom,scene,undoCount:undo.length,hasCheckpoint:checkpoint!==null
 });
 requestAnimationFrame(frame);
