@@ -318,7 +318,7 @@ export class LivingWorld {
     const expected=new Set<number>([actorCollider.handle]);
     for(const part of this.surfaces){
       if(part.kind!=='part'||!['anchored','dynamic'].includes(part.mode||'')||
-         !Number.isSafeInteger(part.handle)||expected.has(part.handle))
+         !Number.isFinite(part.handle)||expected.has(part.handle))
         throw new Error('R8: duplicated or unrecognized material handle');
       const collider=this.world.getCollider(part.handle);
       if(!collider||collider.shapeType()!==R.ShapeType.Cuboid||
