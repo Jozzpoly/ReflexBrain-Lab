@@ -201,6 +201,17 @@ try{
  attach(mobile);
  await mobile.goto('http://127.0.0.1:4187/probes/material-workbench-r8.html',{waitUntil:'networkidle'});
  await mobile.waitForFunction(()=>window.__r8Audit?.().tick>3,null,{timeout:25000});
+ const retinaMirror=()=>mobile.evaluate(()=>{
+  const src=document.querySelector('#retina'),dst=document.querySelector('#mobileRetina');
+  if(!src||!dst)return {same:false,display:'missing'};
+  const a=src.getContext('2d').getImageData(0,0,96,12).data;
+  const b=dst.getContext('2d').getImageData(0,0,96,12).data;
+  return {same:a.length===b.length&&a.every((v,i)=>v===b[i]),
+    display:getComputedStyle(document.querySelector('.mobile-eye')).display};
+ });
+ const mirrorAtFirstContact=await retinaMirror();
+ expect(mirrorAtFirstContact.same&&mirrorAtFirstContact.display==='flex',
+  'mobile world does not show an exact copy of the actor-private existing retina: '+JSON.stringify(mirrorAtFirstContact));
  const firstMobileField=await mobile.locator('#field').boundingBox();
  expect(firstMobileField&&firstMobileField.y<844*.46,
    'physical world is too far below the first mobile screen');
