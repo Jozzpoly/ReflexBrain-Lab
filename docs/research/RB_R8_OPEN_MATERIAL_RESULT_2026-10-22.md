@@ -1,5 +1,31 @@
 # R8 — otwarty materialny warsztat: wynik i ograniczenia, 22.10.2026
 
+## Nocny audyt przed Owner testem — 22/23.10.2026 (prymat nauki nad pokazem)
+
+**NOWA KANONICZNA GRANICA:** R8 jest coraz bardziej niezawodnym narzędziem fizyki, ale jeszcze nie środowiskiem podtrzymującym wielorakie sposoby życia. Nie wolno mylić PASS przeglądarki, ciekawych kontaktów ani ruchu mieszkańca z żywym organizmem.
+
+### Przeciwtest dwóch źródeł dynamiki
+W nowym rzeczywistym `tests/living-organism/r8-occupant-long-horizon-diagnostic.test.ts` wykonano:
+- **120 s nienaruszonego autorskiego Occupanta na autentycznych 7 początkowych częściach R8:** 14 400 aktualizacji Rapiera i 3 600 prywatnych próbek 30 Hz. Materiał o rzeczywistym kolorze sensorycznym był obecny w **2 576 / 3 600 próbek (71.6%)**; **22 / 3 600** próbek zawierało impuls kontaktu. Materia rzeczywiście zmieniła pozycję. Ten licznik dotyczy próbek z impulsem, NIE dokładnej liczby sekund kontaktu.
+- Po 100 s aktor był około **13 jednostek** od początku, po 110 s około **15.6**, po 120 s około **12.6**, przy prawidłowym upływie czasu fizycznego. Nie był monotonicznie oddalający się: wcześniej wracał w rejon materiału. Raportowanie 97/120 s wewnątrz arbitralnego promienia 12 jednostek to wyłącznie metryka diagnostyczna, nie definicja ekologicznej więzi.
+- **60 s świata bez działania aktora i ingerencji Ownera:** 7 200 kroków, 7 części, **maksymalne przemieszczenie wszystkich części 0**. To poprawna mechanika bez grawitacji/procesów, ale obala każdą sugestię, że R8 już posiada samoczynnie aktywną ekologię.
+- Kontrolowany **dwuczęściowy łańcuch fizycznego kontaktu** udowodnił mediację siły bez dotyku aktora do dalszej części w kroku 61 i wąski negatywny kontrast po zakotwiczeniu części pośredniej; dodatkowy negatywny kontrast przy wysunięciu dalej położonego bloku poza geometrię kontaktu rzeczywiście pozostawił go bez ruchu. Ani jeden z tych testów nie dowodzi wyuczonego znaczenia.
+
+**Decydująca rozbieżność:** mieszkaniec wielokrotnie otrzymuje legalny obraz materiałów, ale jego odziedziczony sterownik `visibleTurquoisePatches` poszukuje turkusowych cech, których złotobrązowe części R8 nie posiadają. Nie „naprawiać” tego ślepym zakodowaniem nowego pogoniowego zachowania. Brakuje realnego procesu, dzięki któremu konsekwencja mogłaby nabrać trwałego znaczenia dla samego aktora.
+
+### Dostępność warsztatu bez fałszowania świata
+- Camera-only `Pokaż materię` centruje aktualną geometrię rzeczywistych części i nie teleportuje mieszkańca, nie zmienia fizycznego zegara ani próbek prywatnego wzroku; real-Chrome test utrwala ten kontrakt.
+- `Śledź ciało` pokazuje prawidłowy początkowy stan; przyciski części pojawiają się tylko przy prawdziwie wybranym obiekcie, pozostawiając pierwszy widok czystszy.
+- Na mobile widoczny podczas działania na scenie podgląd siatkówki jest kopią **tej samej** ostatniej legalnej próbki 30 Hz; test przeglądarkowy porównuje piksele z panelem zmysłu, bez dodatkowego pobierania percepcji.
+- Oddzielny `rb-r8-static-preview` jest artefaktem skompilowanego builda, NIE publicznym live-test URL. Strony GitHub Pages, Jaskinia i main nie były zmieniane.
+
+**Evidence na źródłowym HEAD `c084728` (test + minimalne UI aż do e42a0a6):** [Check #39866167372](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/39866167372): **53 pliki / 158 testów PASS, TypeScript, Vite PASS**. [Chromium #39866167361](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/39866167361): **PASS**. Te rezultaty kwalifikują wykonanie, nie doświadczenie Ownera.
+
+**Następny rozsądny próg:** bezpieczny niezależny adres uruchomienia, swobodny Owner test bez narzuconego zadania, a potem decyzja, czy materiałowy substrat wspiera więcej niż ruchy prostokątów. Jeśli nie, przyjąć Owner FAIL i badać jedną rzeczywiście generatywną zależność materia–konsekwencja–historia. Nie rozbudowywać dziś sterownika dla atrakcyjności demonstracji.
+
+---
+
+
 > **LATE R8 PREFLIGHT REVISION — 22.10, source 688120a, not an Owner PASS.** The detailed first implementation evidence below is an *earlier historical baseline* at b277db8. In particular, its claim that R8 has **only in-memory saves** is NOW OBSOLETE. This revision records actual later code and QA without rewriting the original evidence.
 
 ### Later material-composition challenge — actually executed, bounded
