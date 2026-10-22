@@ -21,6 +21,10 @@ try{
  await desktop.locator('#pause').click();
  const initialScene=await audit(desktop);
  expect(initialScene.parts.length>=6,'Owner first contact starts empty');
+ expect(await desktop.locator('.selected-actions').evaluate(e=>getComputedStyle(e).display)==='none',
+  'unused contextual editor buttons obscure first-contact world');
+ expect(await desktop.locator('#follow').getAttribute('aria-pressed')==='true',
+  'follow button misstates default actual camera behaviour');
  const initialPreview=await desktop.screenshot({type:'jpeg',quality:28,fullPage:false});
  console.log('RB_R8_OWNER_FIRST_DESKTOP_JPEG '+initialPreview.toString('base64'));
  await desktop.locator('#scene').selectOption('open');await desktop.locator('#reset').click();
@@ -35,6 +39,8 @@ try{
  let state=await audit(desktop);
  expect(state.parts.length===1&&state.parts[0].mode==='dynamic','part did not spawn via real pointer');
  const initial=state.parts[0],id=initial.handle;
+ expect(await desktop.locator('.selected-actions').evaluate(e=>getComputedStyle(e).display)==='flex',
+  'part editor not revealed after real material selection');
  await desktop.locator('#zoomIn').click();await desktop.locator('#zoomOut').click();
  expect(Math.abs((await audit(desktop)).zoom-1)<.001,'camera zoom roundtrip drift');
  expect(state.privateKeys.join(',')==='tick,retina,touch,proprio'&&state.retinaLength===288,
@@ -164,6 +170,18 @@ try{
  await importPage.waitForFunction(t=>window.__r8Audit()?.tick===t&&window.__r8Audit()?.paused,
    expectedExport.tick,{timeout:15000});
  const imported=await audit(importPage);
+ // Camera-only recovery from a possibly remote actor: zero physical or private mutation.
+ const beforeMaterialFocus=await audit(importPage);
+ await importPage.locator('#materialCenter').click();
+ const afterMaterialFocus=await audit(importPage);
+ expect(afterMaterialFocus.tick===beforeMaterialFocus.tick&&
+  JSON.stringify(afterMaterialFocus.actor)===JSON.stringify(beforeMaterialFocus.actor)&&
+  JSON.stringify(afterMaterialFocus.parts)===JSON.stringify(beforeMaterialFocus.parts)&&
+  afterMaterialFocus.privateFrameTick===beforeMaterialFocus.privateFrameTick&&
+  afterMaterialFocus.retinaDigest===beforeMaterialFocus.retinaDigest,
+  'material camera centering changed true World, actor or legally sampled sensor frame');
+ expect(afterMaterialFocus.cam.x!==beforeMaterialFocus.cam.x||afterMaterialFocus.cam.y!==beforeMaterialFocus.cam.y,
+  'material camera centering did not move observer camera');
  expect(JSON.stringify(imported.parts)===JSON.stringify(expectedExport.parts),
   'external import changed material physics and identity');
  expect(imported.privateFrameTick===expectedExport.privateFrameTick,
