@@ -151,7 +151,7 @@ function dims(){
  ctx.setTransform(dpr,0,0,dpr,0,0);
  return{w,h,scale:Math.min(47,Math.max(28,w/22))*zoom};
 }
-function screenToWorld(e:PointerEvent,d:ReturnType<typeof dims>){
+function screenToWorld(e:{clientX:number;clientY:number},d:ReturnType<typeof dims>){
  const r=canvas.getBoundingClientRect();
  return{x:cam.x+(e.clientX-r.left-d.w/2)/d.scale,
         y:cam.y-(e.clientY-r.top-d.h/2)/d.scale};

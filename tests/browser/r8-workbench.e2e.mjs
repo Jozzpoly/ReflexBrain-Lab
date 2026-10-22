@@ -105,10 +105,10 @@ try{
  let authored=await audit(desktop);
  expect(authored.parts.length>=2,'failed to place item for undo');
  await desktop.locator('#undo').click();
- const undone=await audit(desktop);
- expect(undone.paused&&undone.tick===undoBase.tick,
+ const timeTravelResult=await audit(desktop);
+ expect(timeTravelResult.paused&&timeTravelResult.tick===undoBase.tick,
   'undo did not pause the entire restored physical timeline');
- expect(undone.parts.length===undoBase.parts.length,
+ expect(timeTravelResult.parts.length===undoBase.parts.length,
   'undo failed to restore material identity at old tick');
 
  
