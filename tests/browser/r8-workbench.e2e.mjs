@@ -18,6 +18,8 @@ try{
  await desktop.locator('#pause').click();
  const initialScene=await audit(desktop);
  expect(initialScene.parts.length>=6,'Owner first contact starts empty');
+ const initialPreview=await desktop.screenshot({type:'jpeg',quality:28,fullPage:false});
+ console.log('RB_R8_OWNER_FIRST_DESKTOP_JPEG '+initialPreview.toString('base64'));
  await desktop.locator('#scene').selectOption('open');await desktop.locator('#reset').click();
  const frozen=await audit(desktop);
  expect(frozen.parts.length===0,'empty mode must be actually empty');
@@ -75,6 +77,14 @@ try{
  await desktop.locator('#delete').click();
  state=await audit(desktop);
  expect(state.parts.length===1&&state.parts[0].handle!==id,'part removal corrupted survivors');
+ await desktop.locator('#undo').click();
+ const undone=await audit(desktop);
+ expect(undone.parts.length===2&&undone.parts.some(x=>x.handle===id),
+   'Undo failed to restore the same physical deleted body');
+ await desktop.mouse.click(ox,oy);
+ expect((await audit(desktop)).selected===id,'Undo reselect failed');
+ await desktop.locator('#delete').click();
+
  // Manual body still exercises physical Rapier world at 120 Hz.
  await desktop.locator('#manual').click();await desktop.locator('#pause').click();
  await desktop.locator('#field').focus();
@@ -163,12 +173,45 @@ try{
  await mobile.touchscreen.tap(r.x+r.width*.64,r.y+r.height*.52);
  const touch=await audit(mobile);
  expect(touch.parts.length===1&&touch.parts[0].mode==='anchored','mobile tap did not create anchored material');
+ // Not only "tap works": touch drag should move the EXACT physical collider.
+ await mobile.locator('#toolSelect').tap();
+ const viewport=await mobile.locator('#field').boundingBox();expect(viewport,'no drag viewport');
+ const firstTouch=await audit(mobile);
+ const scaleMobile=Math.min(47,Math.max(28,viewport.width/22))*firstTouch.zoom;
+ const firstPart=firstTouch.parts[0];
+ const sx=viewport.x+viewport.width/2+(firstPart.x-firstTouch.cam.x)*scaleMobile;
+ const sy=viewport.y+viewport.height/2-(firstPart.y-firstTouch.cam.y)*scaleMobile;
+ const cdp=await mobile.context().newCDPSession(mobile);
+ const point=(x,y)=>[{x,y,id:1,radiusX:6,radiusY:6,force:1}];
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:point(sx,sy)});
+ for(let i=1;i<=8;i++)
+   await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:point(sx+45*i/8,sy-12*i/8)});
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+ const dragged=await audit(mobile);
+ expect(dragged.parts[0].handle===firstPart.handle&&dragged.parts[0].x>firstPart.x+.8,
+   'mobile DRAG did not move persistent part: '+JSON.stringify({before:firstPart,after:dragged.parts[0]}));
+ // Driving with the overlay must visibly act on the same body, without
+ // scrolling page or touching the world editor.
+ await mobile.locator('#pause').tap();
+ const actorBefore=await audit(mobile);
+ const mobileUp=mobile.locator('[data-hold="w"]');
+ const br=await mobileUp.boundingBox();expect(br,'on-world touch control absent');
+ const cd=await mobile.context().newCDPSession(mobile);
+ await cd.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:point(br.x+br.width/2,br.y+br.height/2)});
+ await mobile.waitForTimeout(510);
+ await cd.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+ await mobile.locator('#pause').tap();
+ const actorAfter=await audit(mobile);
+ expect(actorAfter.manual&&actorAfter.actor.x>actorBefore.actor.x+.05,
+  'in-world touchscreen vehicle control did not move the physical body');
+ const mobilePreview=await mobile.screenshot({type:'jpeg',quality:27,fullPage:false});
+ console.log('RB_R8_MOBILE_PREVIEW_JPEG '+mobilePreview.toString('base64'));
  await mobile.screenshot({path:dir+'/03-mobile-touched-material.png',fullPage:true});
  expect(errors.length===0,'unexpected real Chrome exceptions: '+JSON.stringify(errors));
  const result={verdict:'R8 ENGINEERING CHROME PASS; NO ORGANISM CLAIM',
   originalTick:frozen.tick,restoredTick:state.tick,
   retainedHandle:id,restoredPhysicalBodyType:true,addedSurvivorAfterRemove:true,
-  manualActorMoved:true,actualMaterialPush,externalFileRoundtrip:true,rejectsCorruptImport:true,mobileAnchorPartCreated:true,mobileWidths:[390,320],
+  manualActorMoved:true,actualMaterialPush,externalFileRoundtrip:true,rejectsCorruptImport:true,mobileAnchorPartCreated:true,mobileDragMoved:true,mobileOverlayDrive:true,mobileWidths:[390,320],
   privateFrameFields:frozen.privateKeys,errors};
  await writeFile(dir+'/result.json',JSON.stringify(result,null,2)+'\n');
  console.log('RB_R8_BROWSER '+JSON.stringify(result));
