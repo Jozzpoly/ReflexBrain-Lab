@@ -168,7 +168,7 @@ try{
  await importPage.waitForFunction(()=>window.__r8Audit?.().tick>8);
  await importPage.locator('#importFile').setInputFiles(filePath);
  await importPage.waitForFunction(t=>window.__r8Audit()?.tick===t&&window.__r8Audit()?.paused,
-   expectedExport.tick,{timeout:15000});
+   expectedExport.tick,{timeout:15000}).catch(async e=>{ const events=await importPage.locator('#events').innerText(); throw Error('Valid R8 import failed: '+events+'; '+String(e)); });
  const imported=await audit(importPage);
  // Camera-only recovery from a possibly remote actor: zero physical or private mutation.
  const beforeMaterialFocus=await audit(importPage);
