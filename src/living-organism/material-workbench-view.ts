@@ -186,18 +186,29 @@ const release=()=>{
  dragging=null;pan=null;
 };
 canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);
-canvas.addEventListener('keydown',e=>{
- const k=e.key.toLowerCase();if('wasdqe'.includes(k)&&k.length===1){
-  e.preventDefault();keys.add(k);
+function enterManual(){
+ if(manual)return;
+ manual=true;
+ $<HTMLButtonElement>('#manual').setAttribute('aria-pressed','true');
+ $('#manual').textContent='Oddaj sterowanie';
+ info('OWNER: ręczne sterowanie ciałem, nie ruch sztucznego mózgu');
+}
+// Keyboard works even when the canvas isn't focused. Avoid swallowing
+// letters in future real text inputs and select controls.
+document.addEventListener('keydown',e=>{
+ const target=e.target;
+ if(target instanceof HTMLElement &&
+   (['INPUT','TEXTAREA','SELECT'].includes(target.tagName)||target.isContentEditable))return;
+ const k=e.key.toLowerCase();
+ if(k.length===1&&'wasdqe'.includes(k)){
+  e.preventDefault();enterManual();keys.add(k);
  }
 });
-canvas.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
-canvas.addEventListener('blur',()=>keys.clear());
+document.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
+window.addEventListener('blur',()=>keys.clear());
 for(const btn of document.querySelectorAll<HTMLButtonElement>('[data-hold]')){
  const k=btn.dataset.hold!;
- btn.addEventListener('pointerdown',e=>{e.preventDefault();manual=true;
-  $<HTMLButtonElement>('#manual').setAttribute('aria-pressed','true');
-  $('#manual').textContent='Oddaj sterowanie';keys.add(k);btn.setPointerCapture(e.pointerId);});
+ btn.addEventListener('pointerdown',e=>{e.preventDefault();enterManual();keys.add(k);btn.setPointerCapture(e.pointerId);});
  const up=()=>keys.delete(k);btn.addEventListener('pointerup',up);
  btn.addEventListener('pointercancel',up);btn.addEventListener('lostpointercapture',up);
 }
