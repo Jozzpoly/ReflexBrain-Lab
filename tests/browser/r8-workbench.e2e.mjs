@@ -186,6 +186,21 @@ try{
  await mobile.locator('#toolAnchor').tap();
  await mobile.locator('#field').scrollIntoViewIfNeeded();
  const r=await mobile.locator('#field').boundingBox();expect(r,'no mobile touch canvas');
+ // Two-finger pinch on an editor tool must zoom CAMERA, never create parts.
+ const zoomBefore=await audit(mobile);
+ const pinch=await mobile.context().newCDPSession(mobile);
+ const tips=(delta)=>[
+  {id:1,x:r.x+r.width*.5-delta,y:r.y+r.height*.36,radiusX:6,radiusY:6,force:1},
+  {id:2,x:r.x+r.width*.5+delta,y:r.y+r.height*.36,radiusX:6,radiusY:6,force:1}
+ ];
+ await pinch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:tips(20)});
+ for(let d=25;d<=65;d+=8)
+  await pinch.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:tips(d)});
+ await pinch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+ const zoomAfter=await audit(mobile);
+ expect(zoomAfter.parts.length===0,'pinch accidentally created material while editor tool was active');
+ expect(zoomAfter.zoom>zoomBefore.zoom*1.3,
+  'true two-finger zoom failed: '+JSON.stringify({before:zoomBefore.zoom,after:zoomAfter.zoom}));
  // Never silently spawn an authored solid intersecting the actual resident.
  await mobile.touchscreen.tap(r.x+r.width*.50,r.y+r.height*.50);
  expect((await audit(mobile)).parts.length===0,'unsafe overlapping part created on the actor');
@@ -235,7 +250,7 @@ try{
  const result={verdict:'R8 ENGINEERING CHROME PASS; NO ORGANISM CLAIM',
   originalTick:frozen.tick,restoredTick:state.tick,
   retainedHandle:id,restoredPhysicalBodyType:true,addedSurvivorAfterRemove:true,
-  manualActorMoved:true,actualMaterialPush,externalFileRoundtrip:true,rejectsCorruptImport:true,mobileAnchorPartCreated:true,mobileDragMoved:true,mobileOverlayDrive:true,mobileWidths:[390,320],
+  manualActorMoved:true,actualMaterialPush,externalFileRoundtrip:true,rejectsCorruptImport:true,mobileAnchorPartCreated:true,mobileDragMoved:true,mobileOverlayDrive:true,mobilePinchNoGhostParts:true,mobileWidths:[390,320],
   privateFrameFields:frozen.privateKeys,errors};
  await writeFile(dir+'/result.json',JSON.stringify(result,null,2)+'\n');
  console.log('RB_R8_BROWSER '+JSON.stringify(result));
