@@ -16,6 +16,7 @@ try{
  await desktop.goto('http://127.0.0.1:4187/probes/material-workbench-r8.html',{waitUntil:'networkidle'});
  await desktop.waitForFunction(()=>window.__r8Audit?.().tick>6,null,{timeout:25000});
  const desktopLanding=await desktop.screenshot({type:'jpeg',quality:26,fullPage:false});
+ await writeFile(dir+'/first-desktop-viewport.jpg',desktopLanding);
  console.log('RB_R8_DESKTOP_FIRST_IMPRESSION_JPEG '+desktopLanding.toString('base64'));
  await desktop.locator('#pause').click();
  const initialScene=await audit(desktop);
@@ -186,6 +187,7 @@ try{
  expect(firstMobileField&&firstMobileField.y<844*.46,
    'physical world is too far below the first mobile screen');
  const firstMobile=await mobile.screenshot({type:'jpeg',quality:26,fullPage:false});
+ await writeFile(dir+'/first-mobile-viewport.jpg',firstMobile);
  console.log('RB_R8_MOBILE_FIRST_IMPRESSION_JPEG '+firstMobile.toString('base64'));
  await mobile.locator('#pause').click();
  expect((await audit(mobile)).parts.length>=6,'mobile landing starts empty');
@@ -208,6 +210,14 @@ try{
   expect(overlay.display==='flex'&&overlay.key&&overlay.key.width>=40&&overlay.key.height>=40&&
     overlay.field&&overlay.key.y>=overlay.field.y&&overlay.key.y+overlay.key.height<=overlay.field.y+overlay.field.height+2,
     'missing or unreachable physical drive control at '+width+': '+JSON.stringify(overlay));
+  // The viewport may currently be scrolled to the scene selector below the canvas.
+  // Full-page screenshots are NOT evidence that overlay controls were rendered.
+  // Place the field on screen and capture the actual visible 800px viewport.
+  await mobile.locator('#field').scrollIntoViewIfNeeded();
+  const onscreen=await mobile.locator('.touch-drive [data-hold="w"]').boundingBox();
+  expect(onscreen&&onscreen.y>=0&&onscreen.y+onscreen.height<=800,
+    'drive overlay is not on-screen after showing field at '+width+': '+JSON.stringify(onscreen));
+  await mobile.screenshot({path:dir+'/mobile-'+width+'-real-viewport.png',fullPage:false});
   await mobile.screenshot({path:dir+'/mobile-'+width+'.png',fullPage:true});
  }
  await mobile.locator('#toolAnchor').tap();
