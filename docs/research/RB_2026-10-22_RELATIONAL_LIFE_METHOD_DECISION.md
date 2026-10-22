@@ -14,7 +14,7 @@ To jest błąd *niedopasowania skal i wzajemnej dostępności*, a nie pojedynczy
 
 **Wniosek roboczy:** bez spotkania *własnej przeszłości w zmienionym przez siebie świecie* nie da się zaobserwować ani głębokiej ontogenezy, ani użytecznego, actor-relative znaczenia. Nie wymagamy literalnej pętli powrotu do tego samego miejsca; „powrót” może być pośredni, społeczny, materiałowy, percepcyjny, opóźniony. Nie narzucać go motorem „jedź do punktu X”.
 
-## 1a. KRITICZNA AUTOKOREKTA — ruch świata nie jest wymaganym tempem jego życia
+## 1a. KRYTYCZNA AUTOKOREKTA — ruch świata nie jest wymaganym tempem jego życia
 W poprzedniej kampanii R4/R5 potraktowaliśmy poruszanie się luźnych przedmiotów w późnych 30-sekundowych oknach jako ważny test „odnawiającej się ekologii”. To jest **ważny wąski test** konkretnego silnika/rail, ale zbyt agresywny **ogólny warunek życia**. Prawdziwe następstwa działania organizmu mogą trwać w formie *spokojnego stanu*: gniazdo/nora, porzucona przeszkoda, ślad, zniszczona droga, nabyta lokalna własność materiału, niedostępne po eksploatacji miejsce. Materia w tym czasie nie musi stale się poruszać. Ważne jest, czy ta zmiana **przeżywa sprawcę, pozostaje osiągalna, zmienia dalsze możliwe interakcje i może zostać rzeczywiście ponownie doświadczona**, a nie ile metrów przebyła.
 Trzy różne procesy, nie jeden `worldMovement`:
 - **autonomiczny proces**: świat może wytwarzać nowe stany pod nieobecność jednostki;
@@ -81,6 +81,13 @@ W osobnym [M5a audit plan](https://github.com/Jozzpoly/Gloopipelago/blob/m5a-dyn
 
 ## 8. Co naprawdę znaczy „różne sposoby życia”
 Nie chodzi o 20 preprogramowanych klas zachowania lub złożone genome JSON. W Gloop ograniczeniem był **jeden schemat działalności** o parametrach zmienianych przez geny. Przyszły świat powinien otwierać realne kombinacje i konflikty możliwości: to, co jest materialnie łatwe dla jednej jednostki lub jej historii, może być trudne dla innej; działalność może tworzyć nowe miejsca/warunki i zamykać inne. Nie zakładać, że same liczby morfologii lub diet wystarczą. Nie wymagać na starcie pełnej ewolucji „wszystkiego” — już jeden rzeczywisty nowy tryb wzajemnej przyczynowości jest mocniejszy niż tysiąc płynnie zróżnicowanych wersji tej samej pętli.
+
+## 8a. Twarda granica obecnego kodu — nie mylić „bogatszej myśli” z „bogatszym działaniem”
+Źródło: `src/living-organism/world.ts` z PR #86 na branch `research/rb-life-l2-coupled-ontogeny-2026-10-21`. `Demand` ma tylko `drive,turn,gazeRate`. Jedno `LivingWorld` udostępnia bazowy B0/B1 rigid body, kontakt, 96RGB oraz movable circles, ściany, **maksymalnie jeden** `railMover` i **maksymalnie jeden** mechanizm `loadCoupledGate`. Rzeczywista fizyka działa, istnieje checkpoint i ręczna ingerencja badacza, ale brak prymitywów trwałej zmiany struktury materiału, indywidualnego tworzenia/niszczenia części, self-maintenance lub wieloosobowej współzależności. B1 jest gotową alternatywną morfologią, nie morfologią rozwijającą się z doświadczenia.
+
+To nie daje matematycznego dowodu „za mało akcji na życie”: ciągły napęd może przy wystarczająco ciekawej materii tworzyć mnóstwo skutków. **Lecz** żaden wariant R3–R5 nie pokazał, że te konsekwencje stają się dostępne jako inne późniejsze możliwości działalności. Dodawanie wyłącznie ukrytych parametrów pamięci/algorytmu do obecnych trzech kanałów może znów skończyć na innym trajektorium tego samego pchania.
+
+**Możliwy donor-hipoteza, nie zatwierdzony plan implementacji:** jedna kompozycyjna własność materialna (np. lokalna odwracalna zmiana połączeń/struktury albo trwała zmiana lokalnych warunków kontaktu), dzięki której proste działania mogą *wytwarzać nowe affordancje* bez zaimplementowania osobnych komend „buduj, przechowuj, chroń, wróć”. Trzeba wykazać realną konsekwencję dla dalszych interakcji, nie postawić obiekt na świecie i nazwać go gniazdem. Nie zakładać, że Rapier joints lub deformacja to już właściwe rozwiązanie; w pierwszym eksperymencie może być lepsza prostsza pamięć materialna. Nie otwierać migracji na Box3D ani całej autopoietycznej chemii z rozpędu.
 
 ## 9. Decyzja na dziś / czego świadomie NIE robić
 W aktualnym stanie projekt nie potrzebuje kolejnej liczbowej odporności, nowej Lenii, lepszego zero-reward motoru ani wymyślania w tej chwili „prawdziwego metabolism”. Potrzebuje *jednej* dobrze wybranej, źródłowo obronionej wzajemnej zależności, którą można później badać **w działającym świecie i w prawdziwym doświadczeniu Ownera**.
