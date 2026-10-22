@@ -7,6 +7,7 @@ type LabCheckpoint={world:Checkpoint;resident:OccupantState};
 const $=<T extends HTMLElement>(selector:string)=>document.querySelector<T>(selector)!;
 const canvas=$<HTMLCanvasElement>('#field'),ctx=canvas.getContext('2d')!;
 const retina=$<HTMLCanvasElement>('#retina'),rctx=retina.getContext('2d')!;
+const mobileRetina=$<HTMLCanvasElement>('#mobileRetina'),mrctx=mobileRetina.getContext('2d')!;
 const status=$<HTMLElement>('#status'),events=$<HTMLElement>('#events');
 let world=new LivingWorld(false),resident=new Occupant(),checkpoint:LabCheckpoint|null=null;
 type SceneName='encounter'|'open';
@@ -384,6 +385,8 @@ function render(){
   rctx.fillStyle='rgb('+Array.from(f.retina.slice(i*3,i*3+3)).map(v=>Math.round(v*255)).join(',')+')';
   rctx.fillRect(i,0,1,12);
  }
+ // Identical already-sampled private evidence; no second sensor query and no new time.
+ mrctx.clearRect(0,0,96,12);mrctx.drawImage(retina,0,0);
  $('#tick').textContent=state.tick+' / '+(state.tick/120).toFixed(1)+' s';
  $('#count').textContent=String(state.objects.filter(o=>o.kind==='part').length);
  const o=state.objects.find(x=>x.handle===selected&&x.kind==='part');
