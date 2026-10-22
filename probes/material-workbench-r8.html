@@ -28,8 +28,9 @@ dl{display:grid;grid-template-columns:1fr auto;gap:5px;font-size:12px}dt{color:v
 </style></head><body><main>
 <div class="eyebrow">REFLEXBRAIN · R8 · MATERIAL WORKBENCH / NOT LIFE PASS</div>
 <h1>Materię można zmienić. Co stanie się później?</h1>
-<p>Otwarty świat fizyczny. Dodawaj belki i bloki, przeciągaj je, kotwicz lub uwalniaj. Ciało może je naprawdę pchać. Nie ma celu ani punktacji, a proste automatyczne sterowanie <strong>nie jest nowym mózgiem</strong>.</p>
+<p>Na starcie kilka autorsko ułożonych części lub całkiem pusty teren. Dodawaj belki i bloki, przeciągaj je, kotwicz lub uwalniaj. Ciało może je naprawdę pchać. Nie ma celu ani punktacji, a proste automatyczne sterowanie <strong>nie jest nowym mózgiem</strong>.</p>
 <div class="bar" role="group" aria-label="Narzędzia materii">
+<label for="scene">Scena</label><select id="scene" aria-label="Wybór sceny"><option value="encounter" selected>Materiałowy plac</option><option value="open">Całkiem pusto</option></select>
 <button id="toolSelect" aria-pressed="true">✋ Wybierz / przeciągnij</button>
 <button id="toolFree" aria-pressed="false">＋ Swobodny</button>
 <button id="toolAnchor" aria-pressed="false">＋ Zakotwiczony</button>
@@ -38,13 +39,13 @@ dl{display:grid;grid-template-columns:1fr auto;gap:5px;font-size:12px}dt{color:v
 </div>
 <div class="bar" role="group" aria-label="Czas i sterowanie">
 <button id="pause">Pauza</button><button id="manual" aria-pressed="false">Przejmij ciało</button>
-<button id="save">Zapisz chwilę</button><button id="restore" disabled>Wróć do zapisu</button>
-<button id="follow" aria-pressed="false">Śledź ciało</button><button id="reset">Nowy świat</button>
+<button id="undo">↶ Cofnij edycję</button><button id="save">Zapisz chwilę</button><button id="restore" disabled>Wróć do zapisu</button>
+<button id="follow" aria-pressed="false">Śledź ciało</button><button id="center">◎ Do ciała</button><button id="zoomOut">−</button><button id="zoomIn">＋</button><button id="reset">Nowa scena</button>
 <span id="status">Start</span>
 </div>
 <div class="layout"><section class="panel">
 <canvas id="field" width="1120" height="700" tabindex="0" aria-label="Otwarte fizyczne laboratorium materii, dotknij by dodać element lub go przeciągnąć"></canvas>
-<div class="help">Dotyk/mysz: wybierz materiał i przeciągnij, albo dotknij tła by dodać. Puste tło w trybie wyboru przesuwa kamerę. Elementy zachowują swój identyfikator przy zakotwiczeniu. WASD: jazda/skręt, Q/E: wzrok; na telefonie użyj przycisków. Kiedy poruszasz elementem ręcznie, to <b>Twoja interwencja</b>, nie działanie organizmu.</div>
+<div class="help">Dotyk/mysz: wybierz materiał i przeciągnij, albo dotknij tła by dodać. Puste tło przesuwa kamerę. Kółko myszy i przyciski ± przybliżają. „Do ciała” odnajduje mieszkańca, „Cofnij” odwraca ostatnią edycję. Elementy zachowują swój identyfikator przy zakotwiczeniu. WASD: jazda/skręt, Q/E: wzrok; na telefonie użyj przycisków. Kiedy poruszasz elementem ręcznie, to <b>Twoja interwencja</b>, nie działanie organizmu.</div>
 </section><aside class="aside">
 <section class="panel"><div class="eyebrow">AKTOR · PRYWATNE ZMYSŁY</div><canvas id="retina" width="96" height="12"></canvas><p class="help">96 kolorowych próbek, bez globalnej mapy, identyfikatorów i kotwicy.</p>
 <dl><dt>Czas fizyczny</dt><dd id="tick">0</dd><dt>Części materialne</dt><dd id="count">0</dd><dt>Wybrana część</dt><dd id="chosen">—</dd><dt>Tryb</dt><dd id="actorMode">Autor / odruch</dd><dt>Ruch ciała</dt><dd id="motion">—</dd></dl></section>

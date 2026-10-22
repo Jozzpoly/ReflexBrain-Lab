@@ -16,7 +16,11 @@ try{
  await desktop.goto('http://127.0.0.1:4187/probes/material-workbench-r8.html',{waitUntil:'networkidle'});
  await desktop.waitForFunction(()=>window.__r8Audit?.().tick>6,null,{timeout:25000});
  await desktop.locator('#pause').click();
+ const initialScene=await audit(desktop);
+ expect(initialScene.parts.length>=6,'Owner first contact starts empty');
+ await desktop.locator('#scene').selectOption('open');await desktop.locator('#reset').click();
  const frozen=await audit(desktop);
+ expect(frozen.parts.length===0,'empty mode must be actually empty');
  expect(frozen.paused,'pause did not stop');
  const c=desktop.locator('#field'),rect=await c.boundingBox();expect(rect,'no field canvas');
  const placeX=rect.x+rect.width*.73,placeY=rect.y+rect.height*.47;
@@ -26,6 +30,8 @@ try{
  let state=await audit(desktop);
  expect(state.parts.length===1&&state.parts[0].mode==='dynamic','part did not spawn via real pointer');
  const initial=state.parts[0],id=initial.handle;
+ await desktop.locator('#zoomIn').click();await desktop.locator('#zoomOut').click();
+ expect(Math.abs((await audit(desktop)).zoom-1)<.001,'camera zoom roundtrip drift');
  expect(state.privateKeys.join(',')==='tick,retina,touch,proprio'&&state.retinaLength===288,
   'private host World IDs or material mode escaped perception');
  const priorFrame=(await audit(desktop)).privateFrameTick;
@@ -108,6 +114,8 @@ try{
  await mobile.goto('http://127.0.0.1:4187/probes/material-workbench-r8.html',{waitUntil:'networkidle'});
  await mobile.waitForFunction(()=>window.__r8Audit?.().tick>3,null,{timeout:25000});
  await mobile.locator('#pause').click();
+ expect((await audit(mobile)).parts.length>=6,'mobile landing starts empty');
+ await mobile.locator('#scene').selectOption('open');await mobile.locator('#reset').click();
  for(const width of [390,320]){
   await mobile.setViewportSize({width,height:800});
   const size=await mobile.evaluate(()=>({doc:document.documentElement.scrollWidth,vw:innerWidth}));

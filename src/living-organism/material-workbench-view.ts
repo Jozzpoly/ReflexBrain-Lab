@@ -8,9 +8,27 @@ const canvas=$<HTMLCanvasElement>('#field'),ctx=canvas.getContext('2d')!;
 const retina=$<HTMLCanvasElement>('#retina'),rctx=retina.getContext('2d')!;
 const status=$<HTMLElement>('#status'),events=$<HTMLElement>('#events');
 let world=new LivingWorld(false),resident=new Occupant(),checkpoint:LabCheckpoint|null=null;
+type SceneName='encounter'|'open';
+let scene:SceneName='encounter';
+const seed=(w:LivingWorld,preset:SceneName)=>{
+ if(preset==='open')return;
+ // Author-supplied material only. No organism-built construction.
+ const items=[
+ [3.1,.2,.52,.55,'dynamic'],[5.2,-.6,.60,.60,'dynamic'],
+ [4.2,2.5,1.15,.22,'dynamic'],[7.1,1.9,.22,1.15,'anchored'],
+ [-2.4,2.3,.6,.55,'dynamic'],[-4.4,-1.8,1.15,.22,'anchored'],
+ [1.1,-3.4,.22,1.15,'anchored']
+ ] as const;
+ for(const [x,y,hx,hy,mode] of items)w.addMaterialPart(x,y,hx,hy,mode);
+};
+seed(world,scene);
 let paused=false,manual=false,follow=false,tool:'select'|'free'|'anchor'='select';
 let selected:number|null=null,dragging:number|null=null,pan:{x:number;y:number}|null=null;
-let cam={x:0,y:0},last=0,acc=0,dragLogTick=-1;
+let cam={x:0,y:0},last=0,acc=0,zoom=1;
+const undo:LabCheckpoint[]=[];
+const remember=()=>{undo.push({world:world.captureCheckpoint(),resident:resident.capture()});if(undo.length>20)undo.shift();};
+const zoomBy=(factor:number)=>{zoom=Math.max(.45,Math.min(3.5,zoom*factor));};
+const cameraReset=()=>{const a=world.inspect().actor;cam={x:a.x,y:a.y};};
 const keys=new Set<string>();
 const shapes={beam:{hx:1.15,hy:.22},post:{hx:.22,hy:1.15},block:{hx:.6,hy:.6}} as const;
 const safe=(n:number)=>Number.isFinite(n)?n.toFixed(2):'—';
@@ -36,13 +54,13 @@ function changeMode(){
  const o=world.inspect().objects.find(x=>x.handle===selected&&x.kind==='part');
  if(!o)return;
  const newMode=o.mode==='anchored'?'dynamic':'anchored';
- world.setMaterialPartMode(o.handle,newMode);
+ remember();world.setMaterialPartMode(o.handle,newMode);
  choosePart(o.handle);info('OWNER: #'+o.handle+' → '+(newMode==='anchored'?'kotwica':'swobodny'));
 }
 $('#toggle').addEventListener('click',changeMode);
 $('#delete').addEventListener('click',()=>{
  if(selected===null)return;
- const n=selected;world.removeMaterialPart(n);choosePart(null);info('OWNER: usunięto #'+n);
+ const n=selected;remember();world.removeMaterialPart(n);choosePart(null);info('OWNER: usunięto #'+n);
 });
 $('#pause').addEventListener('click',()=>{
  paused=!paused;last=0;acc=0;keys.clear();$('#pause').textContent=paused?'Wznów':'Pauza';
@@ -50,6 +68,17 @@ $('#pause').addEventListener('click',()=>{
 $('#manual').addEventListener('click',()=>{
  manual=!manual;keys.clear();$('#manual').setAttribute('aria-pressed',String(manual));
  $('#manual').textContent=manual?'Oddaj sterowanie':'Przejmij ciało';info(manual?'OWNER przejął ciało':'OWNER oddał ciało autorskiemu odruchowi');
+});
+$('#undo').addEventListener('click',()=>{
+ const before=undo.pop();if(!before)return;
+ world.restoreCheckpoint(before.world);resident.restore(before.resident);
+ choosePart(null);keys.clear();acc=0;last=0;
+ info('OWNER: jawnie cofnął ostatnią edycję');
+});
+$('#zoomIn').addEventListener('click',()=>zoomBy(1.28));
+$('#zoomOut').addEventListener('click',()=>zoomBy(1/1.28));
+$('#center').addEventListener('click',()=>{
+ cameraReset();follow=true;$('#follow').setAttribute('aria-pressed','true');
 });
 $('#follow').addEventListener('click',()=>{
  follow=!follow;$('#follow').setAttribute('aria-pressed',String(follow));
@@ -59,13 +88,15 @@ $('#save').addEventListener('click',()=>{
  $<HTMLButtonElement>('#restore').disabled=false;info('OWNER: zapisał stan fizyczny + odruch');
 });
 $('#restore').addEventListener('click',()=>{
- if(!checkpoint)return;world.restoreCheckpoint(checkpoint.world);
+ if(!checkpoint)return;world.restoreCheckpoint(checkpoint.world);undo.length=0;
  resident.restore(checkpoint.resident);choosePart(null);keys.clear();acc=0;last=0;
  info('OWNER: odtworzył ten sam świat, ciało i pamięć odruchu');
 });
 $('#reset').addEventListener('click',()=>{
- world.free();world=new LivingWorld(false);resident=new Occupant();checkpoint=null;choosePart(null);
- $<HTMLButtonElement>('#restore').disabled=true;keys.clear();cam={x:0,y:0};last=0;acc=0;
+ world.free();world=new LivingWorld(false);resident=new Occupant();checkpoint=null;undo.length=0;choosePart(null);
+ scene=$<HTMLSelectElement>('#scene').value as SceneName;
+ seed(world,scene);
+ $<HTMLButtonElement>('#restore').disabled=true;keys.clear();cam={x:0,y:0};zoom=1;last=0;acc=0;
  info('OWNER: nowy świat (świadomy reset)');
 });
 function dims(){
@@ -75,7 +106,7 @@ function dims(){
   canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
  }
  ctx.setTransform(dpr,0,0,dpr,0,0);
- return{w,h,scale:Math.min(47,Math.max(28,w/22))};
+ return{w,h,scale:Math.min(47,Math.max(28,w/22))*zoom};
 }
 function screenToWorld(e:PointerEvent,d:ReturnType<typeof dims>){
  const r=canvas.getBoundingClientRect();
@@ -90,12 +121,12 @@ canvas.addEventListener('pointerdown',e=>{
  e.preventDefault();canvas.focus();
  const p=screenToWorld(e,dims()),hit=closest(p);
  if(tool==='select'){
-  if(hit){choosePart(hit.handle);dragging=hit.handle;dragLogTick=world.inspect().tick;}
-  else {choosePart(null);pan={x:p.x,y:p.y};}
+  if(hit){choosePart(hit.handle);remember();dragging=hit.handle;}
+  else {choosePart(null);pan={x:p.x,y:p.y};follow=false;$('#follow').setAttribute('aria-pressed','false');}
  }else{
   const shape=shapes[$<HTMLSelectElement>('#shape').value as keyof typeof shapes]||shapes.beam;
   try{
-   const id=world.addMaterialPart(p.x,p.y,shape.hx,shape.hy,tool==='anchor'?'anchored':'dynamic');
+   remember();const id=world.addMaterialPart(p.x,p.y,shape.hx,shape.hy,tool==='anchor'?'anchored':'dynamic');
    choosePart(id);info('OWNER: utworzył #'+id+' '+tool+' / '+$<HTMLSelectElement>('#shape').value);
   }catch(err){info('Nie dodano: '+String(err));}
  }
@@ -110,6 +141,7 @@ canvas.addEventListener('pointermove',e=>{
   cam.x+=pan.x-p.x;cam.y+=pan.y-p.y;
  }
 });
+canvas.addEventListener('wheel',e=>{e.preventDefault();zoomBy(e.deltaY>0?1/1.16:1.16);},{passive:false});
 const release=()=>{
  if(dragging!==null){
   info('OWNER: przemieścił materiał #'+dragging+' (ręczna translacja)');
@@ -192,6 +224,6 @@ function frame(t:number){
  privateKeys:Object.keys(world.observe()),retinaLength:world.observe().retina.length,
  privateFrameTick:world.observe().tick,
  retinaDigest:Array.from(world.observe().retina).map(x=>Math.round(x*255)).join(','),
- selected,manual,paused,hasCheckpoint:checkpoint!==null
+ selected,manual,paused,cam:{...cam},zoom,scene,undoCount:undo.length,hasCheckpoint:checkpoint!==null
 });
 requestAnimationFrame(frame);
