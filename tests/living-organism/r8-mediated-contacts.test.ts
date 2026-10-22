@@ -5,11 +5,11 @@ beforeAll(initLivingWorld);
 const forward={drive:1,turn:0,gazeRate:0};
 type Mode='dynamic'|'anchored';
 
-function run(mode:Mode){
+function run(mode:Mode,farYOffset=0){
  const w=new LivingWorld(false);
  try{
   const near=w.addMaterialPart(2.6,0,.55,.55,mode);
-  const far=w.addMaterialPart(4.15,0,.55,.55,'dynamic');
+  const far=w.addMaterialPart(4.15,farYOffset,.55,.55,'dynamic');
   let firstFarMotion:null|{tick:number;nearX:number;farX:number;actorX:number;directActorGap:number}=null;
   let nearMoved=false;
   const trace:{tick:number;actorX:number;nearX:number;farX:number}[]=[];
@@ -24,7 +24,7 @@ function run(mode:Mode){
    }
    if(state.tick%120===0)trace.push({tick:state.tick,actorX:state.actor.x,nearX:p.x,farX:q.x});
   }
-  return {mode,nearMoved,firstFarMotion,trace,tick:w.inspect().tick};
+  return {mode,farYOffset,nearMoved,firstFarMotion,trace,tick:w.inspect().tick};
  }finally{w.free();}
 }
 
@@ -40,5 +40,12 @@ describe('R8 open matter: compositional contact causal challenge, not life',()=>
   expect(free.firstFarMotion!.directActorGap).toBeGreaterThan(.025);
   expect(fixed.nearMoved).toBe(false);
   expect(fixed.firstFarMotion).toBeNull();
+ });
+ it('the same movable near body cannot transmit its forward push to a geometrically separate far part',()=>{
+  const apart=run('dynamic',2.4);
+  console.log('RB_R8_OFF_AXIS_NEGATIVE '+JSON.stringify(apart));
+  expect(apart.nearMoved).toBe(true);
+  expect(apart.firstFarMotion).toBeNull();
+  expect(apart.tick).toBe(720);
  });
 });
