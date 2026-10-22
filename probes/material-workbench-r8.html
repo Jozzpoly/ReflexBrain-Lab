@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b121c"><title>ReflexBrain · Warsztat materii R8</title>
+<style>
+:root{color-scheme:dark;--bg:#08111b;--panel:#121e2b;--border:#294153;--text:#eaf0f6;--sub:#a7b7c8;--teal:#80ddd0;--amber:#f3c37a}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,sans-serif}
+main{max-width:1400px;padding:clamp(10px,2vw,24px);margin:0 auto}
+h1{font-size:clamp(24px,3vw,36px);margin:7px 0;letter-spacing:-.035em}
+p{margin:7px 0 14px;color:var(--sub);max-width:1040px}a{color:var(--teal)}
+.eyebrow{font:700 11px system-ui;letter-spacing:.13em;color:var(--teal)}
+.bar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:12px 0}
+button,select{font:inherit;background:#182c3c;border:1px solid #3b5a6e;color:var(--text);padding:10px 12px;border-radius:9px;cursor:pointer;min-height:43px}
+button[aria-pressed=true]{border-color:var(--teal);background:#1c4a50}button:focus-visible,select:focus-visible{outline:2px solid var(--teal)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px;min-width:0}
+canvas{display:block;width:100%;height:auto;border-radius:8px;background:#081522}
+#field{aspect-ratio:16/10;touch-action:none;cursor:crosshair;min-height:240px}
+#retina{height:45px;image-rendering:pixelated}
+.help{font-size:12px;color:var(--sub);line-height:1.55}
+#events{max-height:200px;overflow:auto;font-size:11px;color:#b0c8d5;word-break:break-word}
+#events div{padding:5px 2px;border-bottom:1px solid #233849}
+dl{display:grid;grid-template-columns:1fr auto;gap:5px;font-size:12px}dt{color:var(--sub)}dd{margin:0;font-variant-numeric:tabular-nums}
+.dpad{display:grid;grid-template-columns:repeat(3,62px);justify-content:center;gap:6px;margin-top:10px}
+.dpad button{touch-action:none;user-select:none}.dpad .up{grid-column:2}.dpad .left{grid-column:1}.dpad .right{grid-column:3}.dpad .down{grid-column:2}
+.note{border-left:3px solid #957748;background:#282214;padding:9px;font-size:12px}
+#status{color:var(--teal);font-size:13px;font-variant-numeric:tabular-nums}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.aside{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.aside>.panel{margin:0}}@media(max-width:590px){.aside{display:block}.aside>.panel{margin:9px 0}.bar button{flex:1 1 auto}.bar select{flex:1 1 auto}main{padding:9px}#field{min-height:220px}}
+</style></head><body><main>
+<div class="eyebrow">REFLEXBRAIN · R8 · MATERIAL WORKBENCH / NOT LIFE PASS</div>
+<h1>Materię można zmienić. Co stanie się później?</h1>
+<p>Otwarty świat fizyczny. Dodawaj belki i bloki, przeciągaj je, kotwicz lub uwalniaj. Ciało może je naprawdę pchać. Nie ma celu ani punktacji, a proste automatyczne sterowanie <strong>nie jest nowym mózgiem</strong>.</p>
+<div class="bar" role="group" aria-label="Narzędzia materii">
+<button id="toolSelect" aria-pressed="true">✋ Wybierz / przeciągnij</button>
+<button id="toolFree" aria-pressed="false">＋ Swobodny</button>
+<button id="toolAnchor" aria-pressed="false">＋ Zakotwiczony</button>
+<select id="shape" aria-label="Kształt części"><option value="beam">Belka pozioma</option><option value="post">Słupek</option><option value="block">Blok</option></select>
+<button id="toggle" disabled>Zmień kotwicę</button><button id="delete" disabled>Usuń element</button>
+</div>
+<div class="bar" role="group" aria-label="Czas i sterowanie">
+<button id="pause">Pauza</button><button id="manual" aria-pressed="false">Przejmij ciało</button>
+<button id="save">Zapisz chwilę</button><button id="restore" disabled>Wróć do zapisu</button>
+<button id="follow" aria-pressed="false">Śledź ciało</button><button id="reset">Nowy świat</button>
+<span id="status">Start</span>
+</div>
+<div class="layout"><section class="panel">
+<canvas id="field" width="1120" height="700" tabindex="0" aria-label="Otwarte fizyczne laboratorium materii, dotknij by dodać element lub go przeciągnąć"></canvas>
+<div class="help">Dotyk/mysz: wybierz materiał i przeciągnij, albo dotknij tła by dodać. Puste tło w trybie wyboru przesuwa kamerę. Elementy zachowują swój identyfikator przy zakotwiczeniu. WASD: jazda/skręt, Q/E: wzrok; na telefonie użyj przycisków. Kiedy poruszasz elementem ręcznie, to <b>Twoja interwencja</b>, nie działanie organizmu.</div>
+</section><aside class="aside">
+<section class="panel"><div class="eyebrow">AKTOR · PRYWATNE ZMYSŁY</div><canvas id="retina" width="96" height="12"></canvas><p class="help">96 kolorowych próbek, bez globalnej mapy, identyfikatorów i kotwicy.</p>
+<dl><dt>Czas fizyczny</dt><dd id="tick">0</dd><dt>Części materialne</dt><dd id="count">0</dd><dt>Wybrana część</dt><dd id="chosen">—</dd><dt>Tryb</dt><dd id="actorMode">Autor / odruch</dd><dt>Ruch ciała</dt><dd id="motion">—</dd></dl></section>
+<section class="panel"><div class="eyebrow">STEROWANIE DOTYKIEM</div>
+<div class="dpad"><button class="up" data-hold="w">▲</button><button class="left" data-hold="a">◀</button><button class="right" data-hold="d">▶</button><button class="down" data-hold="s">▼</button></div>
+<div class="bar"><button data-hold="q">Wzrok ◀</button><button data-hold="e">Wzrok ▶</button></div>
+<div class="note">To tylko warsztat i ręczne eksperymenty. Kotwiczenie i stawianie części robi człowiek, nie samodzielnie rozwijające się stworzenie. Ocena żywości nadal otwarta.</div>
+</section><section class="panel"><div class="eyebrow">HISTORIA INTERWENCJI</div><div id="events" aria-live="polite"></div></section>
+</aside></div>
+</main><script type="module" src="../src/living-organism/material-workbench-view.ts"></script>
+</body></html>
