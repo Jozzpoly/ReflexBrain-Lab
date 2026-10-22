@@ -30,7 +30,7 @@ canvas{display:block}#field{width:100%;height:100%;touch-action:none;cursor:cros
 .side{display:flex;flex-direction:column;gap:12px}.panel{border:1px solid var(--edge);border-radius:13px;background:var(--bg);padding:14px;min-width:0}
 .panel h2{margin:2px 0 12px;font-size:15px}#retina{width:100%;height:42px;image-rendering:pixelated;border-radius:5px;border:1px solid #385063}
 .stats{display:grid;grid-template-columns:1fr auto;gap:6px;padding:9px 0;margin:0;font-size:12px}.stats dt{color:var(--muted)}.stats dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
-.row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.row>*{flex:1 1 105px}.side-note{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.55}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.row>*{flex:1 1 105px}.camera-tools{display:grid;grid-template-columns:minmax(0,1fr) 43px 43px}.camera-tools>*{min-width:0;padding:8px 4px}.side-note{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.55}
 #events{max-height:170px;overflow:auto;word-break:break-word;font-size:11px;color:#b5d4d9}#events>div{padding:6px 0;border-bottom:1px solid #244254}
 details{color:var(--muted)}details summary{cursor:pointer;color:var(--text);font-size:12px}details p{font-size:12px;line-height:1.7;margin:8px 0}
 .notice{padding:11px;background:#292719;border-left:3px solid #b29356;border-radius:4px;font-size:11px;color:#decbb0}
@@ -92,7 +92,7 @@ details{color:var(--muted)}details summary{cursor:pointer;color:var(--text);font
 <canvas id="retina" width="96" height="12" aria-label="96 kolorowych próbek oczu mieszkańca"></canvas>
 <dl class="stats"><dt>Zegar fizyczny</dt><dd id="tick">—</dd><dt>Części świata</dt><dd id="count">—</dd><dt>Wybrany element</dt><dd id="chosen">—</dd>
 <dt>Autor ruchu</dt><dd id="actorMode">—</dd><dt>Prędkość / obrót</dt><dd id="motion">—</dd></dl>
-<div class="row"><button id="follow" aria-pressed="true">Śledź ciało</button><button id="center">◎ Znajdź ciało</button><button id="materialCenter">◎ Pokaż materię</button><button id="zoomOut" title="Oddal">−</button><button id="zoomIn" title="Przybliż">+</button></div>
+<div class="row"><button id="follow" aria-pressed="true">Śledź ciało</button><button id="center">◎ Znajdź ciało</button></div><div class="row camera-tools"><button id="materialCenter">◎ Pokaż materię</button><button id="zoomOut" title="Oddal">−</button><button id="zoomIn" title="Przybliż">+</button></div>
 </section>
 <section class="panel"><div class="eyebrow">ŚWIAT / KONTYNUACJA</div><h2>Twoje eksperymenty</h2>
 <label for="scene" style="font-size:12px;color:var(--muted)">Początek nowej sceny:</label>
