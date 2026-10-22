@@ -143,7 +143,8 @@ $<HTMLInputElement>('#importFile').addEventListener('change',async()=>{
  try{
   const cp=decodeR8Save(await file.text());
   staged=new LivingWorld(false);
-  staged.restoreCheckpoint(cp.world); // verify Rapier actually can recover material
+  staged.restoreCheckpoint(cp.world); // actual Rapier restore is necessary but not sufficient
+  staged.verifyR8MaterialSnapshot(); // prove surface metadata matches real collision geometry
   const newResident=new Occupant();
   newResident.restore(cp.resident);
   const old=world;world=staged;staged=null;resident=newResident;old.free();
