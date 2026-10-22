@@ -212,13 +212,17 @@ try{
  // test assumes a false post-pinch camera origin.
  await mobile.locator('#reset').tap();
  await mobile.locator('#field').scrollIntoViewIfNeeded();
+ const freshRect=await mobile.locator('#field').boundingBox();
+ expect(freshRect,'mobile field lost bounds after zoom/reset scrolling');
  const neutral=await audit(mobile);
  expect(neutral.parts.length===0&&Math.abs(neutral.zoom-1)<.001,
   'new empty stage did not reset multi-touch camera');
  // Never silently spawn an authored solid intersecting the actual resident.
- await mobile.touchscreen.tap(r.x+r.width*.50,r.y+r.height*.50);
+ await mobile.touchscreen.tap(freshRect.x+freshRect.width*.50,
+   freshRect.y+freshRect.height*.50);
  expect((await audit(mobile)).parts.length===0,'unsafe overlapping part created on the actor');
- await mobile.touchscreen.tap(r.x+r.width*.80,r.y+r.height*.52);
+ await mobile.touchscreen.tap(freshRect.x+freshRect.width*.80,
+   freshRect.y+freshRect.height*.52);
  const touch=await audit(mobile);
  expect(touch.parts.length===1&&touch.parts[0].mode==='anchored','mobile tap did not create anchored material');
  // Not only "tap works": touch drag should move the EXACT physical collider.
