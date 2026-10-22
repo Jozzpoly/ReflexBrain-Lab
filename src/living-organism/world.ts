@@ -6,7 +6,7 @@ export type Demand = {drive:number;turn:number;gazeRate:number};
 /** Optional experimental shape, default B0 remains unchanged. */
 export type BodyShape = 'B0'|'B1';
 type Color = [number,number,number];
-type Surface = {handle:number;color:Color;kind:'object'|'wall'|'block';hx:number;hy:number};
+type Surface = {handle:number;color:Color;kind:'object'|'wall'|'block'|'part';hx:number;hy:number;mode?:'anchored'|'dynamic'};
 export type PrivateFrame = {tick:number;retina:Float32Array;touch:Float32Array;proprio:{forward:number;lateral:number;omega:number;gaze:number}};
 export type HostContactEvent={tick:number;handle:number;impulse:number};
 export type HostContactSample={tick:number;contacts:HostContactEvent[]};
@@ -69,6 +69,57 @@ export class LivingWorld {
     this.surfaces.push({handle:co.handle,color:[...color],kind:'wall',hx,hy});
     if(this.tick===0)this.frame=null;
     return co.handle;
+  }
+  /** Authored open-world material part: actual Rapier FIXED/DYNAMIC rectangle.
+   * Collider handle remains stable across changes; modes are HOST truth only.
+   * Physics and private 96RGB/contact sampling stay unchanged.
+   */
+  addMaterialPart(x:number,y:number,hx:number,hy:number,mode:'anchored'|'dynamic'='dynamic'){
+    if(![x,y,hx,hy].every(Number.isFinite)||hx<=0||hy<=0||hx>8||hy>8)
+      throw new Error('Invalid material part shape');
+    if(this.surfaces.filter(s=>s.kind==='part').length>=64)
+      throw new Error('Material workbench capacity (64) reached');
+    const rb=this.world.createRigidBody(
+      (mode==='anchored'?R.RigidBodyDesc.fixed():R.RigidBodyDesc.dynamic()
+         .setLinearDamping(1.7).setAngularDamping(3).lockRotations())
+        .setTranslation(x,y)
+    );
+    const co=this.world.createCollider(
+      R.ColliderDesc.cuboid(hx,hy).setMass(Math.max(.3,Math.min(6,2*hx*hy)))
+        .setFriction(.45).setRestitution(.015),rb);
+    this.surfaces.push({handle:co.handle,color:[.74,.65,.40],kind:'part',hx,hy,mode});
+    this.frame=null;
+    return co.handle as number;
+  }
+  setMaterialPartMode(handle:number,mode:'anchored'|'dynamic'){
+    if(mode!=='anchored'&&mode!=='dynamic')throw new Error('Unknown material mode');
+    const surface=this.surfaces.find(s=>s.handle===handle&&s.kind==='part');
+    if(!surface)throw new Error('Not a material part');
+    if(surface.mode===mode)return;
+    const body=this.world.getCollider(handle).parent();
+    body.setLinvel({x:0,y:0},true);
+    body.setAngvel(0,true);
+    body.setBodyType(mode==='anchored'?R.RigidBodyType.Fixed:R.RigidBodyType.Dynamic,true);
+    surface.mode=mode;
+    this.frame=null;
+  }
+  moveMaterialPart(handle:number,x:number,y:number){
+    if(![x,y].every(Number.isFinite))throw new Error('Invalid material position');
+    const surface=this.surfaces.find(s=>s.handle===handle&&s.kind==='part');
+    if(!surface)throw new Error('Not a material part');
+    const body=this.world.getCollider(handle).parent();
+    body.setTranslation({x,y},true);
+    body.setLinvel({x:0,y:0},true);
+    body.setAngvel(0,true);
+    this.world.propagateModifiedBodyPositionsToColliders();
+    this.frame=null;
+  }
+  removeMaterialPart(handle:number){
+    const idx=this.surfaces.findIndex(s=>s.handle===handle&&s.kind==='part');
+    if(idx<0)throw new Error('Not a material part');
+    this.world.removeRigidBody(this.world.getCollider(handle).parent());
+    this.surfaces.splice(idx,1);
+    this.frame=null;
   }
   /**
    * Explicit independent material World process. Optional bounds belong
