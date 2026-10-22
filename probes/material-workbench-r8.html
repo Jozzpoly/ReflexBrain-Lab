@@ -21,10 +21,12 @@ canvas{display:block;width:100%;height:auto;border-radius:8px;background:#081522
 #events div{padding:5px 2px;border-bottom:1px solid #233849}
 dl{display:grid;grid-template-columns:1fr auto;gap:5px;font-size:12px}dt{color:var(--sub)}dd{margin:0;font-variant-numeric:tabular-nums}
 .dpad{display:grid;grid-template-columns:repeat(3,62px);justify-content:center;gap:6px;margin-top:10px}
-.dpad button{touch-action:none;user-select:none}.dpad .up{grid-column:2}.dpad .left{grid-column:1}.dpad .right{grid-column:3}.dpad .down{grid-column:2}
+.dpad button{touch-action:none;user-select:none}.viewport{position:relative}.touch-drive{display:none}.dpad .up{grid-column:2}.dpad .left{grid-column:1}.dpad .right{grid-column:3}.dpad .down{grid-column:2}
 .note{border-left:3px solid #957748;background:#282214;padding:9px;font-size:12px}
 #status{color:var(--teal);font-size:13px;font-variant-numeric:tabular-nums}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.aside{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.aside>.panel{margin:0}}@media(max-width:590px){.aside{display:block}.aside>.panel{margin:9px 0}.bar button{flex:1 1 auto}.bar select{flex:1 1 auto}main{padding:9px}#field{min-height:220px}}
+.touch-drive button{background:rgba(30,61,84,.88);backdrop-filter:blur(6px);border-color:#53798c}
+@media(max-width:760px){#field{height:350px;aspect-ratio:auto}.touch-drive{display:flex;align-items:end;justify-content:space-between;position:absolute;bottom:8px;left:8px;right:8px;pointer-events:none}.touch-drive button{pointer-events:auto;min-height:43px;min-width:43px;padding:6px}.touch-drive .dpad{grid-template-columns:repeat(3,43px);gap:4px;margin:0}.touch-drive .gaze-pad{display:flex;gap:5px;margin-bottom:3px}.touch-drive .gaze-pad button{width:43px;height:46px}}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.aside{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.aside>.panel{margin:0}}@media(max-width:590px){h1{font-size:24px;line-height:1.1}main>p{font-size:12px;margin:3px 0 7px}.bar{gap:4px;margin:6px 0}.bar button,.bar select{font-size:11px;min-height:35px;padding:6px 8px;flex:0 1 auto}.bar label{font-size:11px}.aside{display:block}.aside>.panel{margin:9px 0}.bar button{flex:0 1 auto}.bar select{flex:0 1 auto}main{padding:9px}#field{min-height:350px}}
 </style></head><body><main>
 <div class="eyebrow">REFLEXBRAIN · R8 · MATERIAL WORKBENCH / NOT LIFE PASS</div>
 <h1>Materię można zmienić. Co stanie się później?</h1>
@@ -48,14 +50,19 @@ dl{display:grid;grid-template-columns:1fr auto;gap:5px;font-size:12px}dt{color:v
 <span id="status">Start</span>
 </div>
 <div class="layout"><section class="panel">
-<canvas id="field" width="1120" height="700" tabindex="0" aria-label="Otwarte fizyczne laboratorium materii, dotknij by dodać element lub go przeciągnąć"></canvas>
+<div class="viewport"><canvas id="field" width="1120" height="700" tabindex="0" aria-label="Otwarte fizyczne laboratorium materii, dotknij by dodać element lub go przeciągnąć"></canvas><div class="touch-drive" role="group" aria-label="Sterowanie ciałem na ekranie">
+<div class="dpad"><button class="up" data-hold="w" aria-label="Jazda do przodu">▲</button>
+<button class="left" data-hold="a" aria-label="Skręt w lewo">◀</button>
+<button class="right" data-hold="d" aria-label="Skręt w prawo">▶</button>
+<button class="down" data-hold="s" aria-label="Jazda do tyłu">▼</button></div>
+<div class="gaze-pad"><button data-hold="q" aria-label="Wzrok w lewo">↶</button><button data-hold="e" aria-label="Wzrok w prawo">↷</button></div>
+</div></div>
 <div class="help">Dotyk/mysz: wybierz materiał i przeciągnij, albo dotknij tła by dodać. Puste tło przesuwa kamerę. Kółko myszy i przyciski ± przybliżają. „Do ciała” odnajduje mieszkańca, „Cofnij” odwraca ostatnią edycję. „Pobierz świat” zapisuje prawdziwy plik, który można zachować lub wysłać do analizy. Elementy zachowują swój identyfikator przy zakotwiczeniu. WASD: jazda/skręt, Q/E: wzrok; na telefonie użyj przycisków. Kiedy poruszasz elementem ręcznie, to <b>Twoja interwencja</b>, nie działanie organizmu.</div>
 </section><aside class="aside">
 <section class="panel"><div class="eyebrow">AKTOR · PRYWATNE ZMYSŁY</div><canvas id="retina" width="96" height="12"></canvas><p class="help">96 kolorowych próbek, bez globalnej mapy, identyfikatorów i kotwicy.</p>
 <dl><dt>Czas fizyczny</dt><dd id="tick">0</dd><dt>Części materialne</dt><dd id="count">0</dd><dt>Wybrana część</dt><dd id="chosen">—</dd><dt>Tryb</dt><dd id="actorMode">Autor / odruch</dd><dt>Ruch ciała</dt><dd id="motion">—</dd></dl></section>
 <section class="panel"><div class="eyebrow">STEROWANIE DOTYKIEM</div>
-<div class="dpad"><button class="up" data-hold="w">▲</button><button class="left" data-hold="a">◀</button><button class="right" data-hold="d">▶</button><button class="down" data-hold="s">▼</button></div>
-<div class="bar"><button data-hold="q">Wzrok ◀</button><button data-hold="e">Wzrok ▶</button></div>
+<div class="help">Na telefonie sterowanie fizycznym ciałem jest dostępne bezpośrednio na obrazie świata.</div>
 <div class="note">To tylko warsztat i ręczne eksperymenty. Kotwiczenie i stawianie części robi człowiek, nie samodzielnie rozwijające się stworzenie. Ocena żywości nadal otwarta.</div>
 </section><section class="panel"><div class="eyebrow">HISTORIA INTERWENCJI</div><div id="events" aria-live="polite"></div></section>
 </aside></div>
