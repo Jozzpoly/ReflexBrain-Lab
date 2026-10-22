@@ -201,6 +201,14 @@ try{
  expect(zoomAfter.parts.length===0,'pinch accidentally created material while editor tool was active');
  expect(zoomAfter.zoom>zoomBefore.zoom*1.3,
   'true two-finger zoom failed: '+JSON.stringify({before:zoomBefore.zoom,after:zoomAfter.zoom}));
+ // The pinch has correctly shifted the camera. Return to a new EMPTY stage
+ // before asserting that screen centre is the physical actor; otherwise the
+ // test assumes a false post-pinch camera origin.
+ await mobile.locator('#reset').tap();
+ await mobile.locator('#field').scrollIntoViewIfNeeded();
+ const neutral=await audit(mobile);
+ expect(neutral.parts.length===0&&Math.abs(neutral.zoom-1)<.001,
+  'new empty stage did not reset multi-touch camera');
  // Never silently spawn an authored solid intersecting the actual resident.
  await mobile.touchscreen.tap(r.x+r.width*.50,r.y+r.height*.50);
  expect((await audit(mobile)).parts.length===0,'unsafe overlapping part created on the actor');
