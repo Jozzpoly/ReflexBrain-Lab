@@ -1,5 +1,25 @@
 # R8 — otwarty materialny warsztat: wynik i ograniczenia, 22.10.2026
 
+## Krytyczna kampania po odzyskaniu kierunku — 22/23.10 (nowe wyniki)
+
+**Qualified source `561e148`**: [full CI: 54 pliki / 160 testów PASS](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/39871681899), [real Chromium PASS](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/39871681900). Na tym etapie PR pozostaje izolowanym draftem; **żaden z tych wyników nie jest Owner-experience / artificial-life PASS**.
+
+### Causal intervention versus actor-private experience — confirmed historical violation and correction
+- Wcześniej po przejęciu napędu przez Ownera kod UI przestawał wywoływać `Occupant.decide`, a `Occupant.lastTick` pozostawał stary. Po 3600 realnych krokach ręcznego obrotu, powrót do autonomii rekonstruował cały brakujący czas z **jednej końcowej prędkości kątowej**, co przy realnym obrocie -0.265 rad dawało syntetyczną zmianę heading -2.489 rad: **błąd 2.224 rad (~127°)**, 901 brakujących prywatnych próbek.
+- Teraz `Occupant.witnessExternalMotor(privateFrame)` stale przetwarza *wyłącznie legalną, już pobraną próbkę 30Hz* podczas oddania napędu człowiekowi. Włącza zegar oraz orientację, ale resetuje niezrealizowane własne polecenia i hipotezy celu, NIE dopisuje Owner-motion do authored exploration ani nie pobiera World identity. To nie uczący się agent, lecz poprawna granica atrybucji.
+- Ten sam frozen 30-second motor sequence: **901 próbek uwzględnionych, luka 0, błąd heading 0.0364 rad (~2.1°), zachowany PRNG seed i brak samozaliczonego ruchu**. Kontrpróba starego zachowania i korekta są w `tests/living-organism/r8-manual-authority-history.test.ts`. Real Chrome dodatkowo kontroluje świeżość ostatniego sampled frame przy ręcznym przejęciu i zwrocie ciała.
+- Granica poznawcza: to wąska pasywna propriocepcja i utrzymanie chronologii, nie dowód samodzielnej pamięci przyczynowej, internal-model learning ani autobiografii.
+
+### Portable R8 save: actual physics must agree with claimed metadata
+- Poprzednio poprawny składniowo JSON mógł wskazywać nieistniejące collidery, kłamać o kształcie, body type albo pomijać aktywną bryłę. Jedynie `Rapier.World.restoreSnapshot` nie weryfikował prawdziwości osobnej listy części. W razie podmiany starego świata błędny plik mógł uszkodzić działającą sesję.
+- R8 teraz **stages and verifies**, jeszcze przed zastąpieniem aktywnego świata: prawdziwy aktor B0, każdy collider materiałowy i jego rzeczywista geometria, body type, brak duplikatów i nieopisanych colliders. Test real Chrome odrzuca pięć wariantów forged metadata przy nienaruszonym prawdziwym świecie i przyjmuje poprawny roundtrip.
+- Krytyczna korekta własnej walidacji: w użytej deterministycznej wersji Rapiera legalny `collider.handle` może być np. `5e-324`, a nie JS safe integer. Nie wolno utożsamiać opaque handle z liczbą całkowitą; dowodem prawdziwości ID jest rozstrzygnięcie go w realnym świecie i zgodność bryły. **Ujawniony red test na poprawnym pliku został naprawiony**, nie zamaskowany.
+- Kontrola gwarantuje jedynie zgodność strukturalną z realnymi colliderami w danym snapshot. Nie jest kryptograficznym poświadczeniem autorstwa ani dowodem prawdziwości wszystkich historycznych sensor samples.
+- Nie ma publicznego Owner-playable URL, tylko izolowany branch + statyczny artefakt. **Nie wdrażać automatycznie w `main`, Pages ani Jaskinię.**
+
+---
+
+
 ## Nocny audyt przed Owner testem — 22/23.10.2026 (prymat nauki nad pokazem)
 
 **NOWA KANONICZNA GRANICA:** R8 jest coraz bardziej niezawodnym narzędziem fizyki, ale jeszcze nie środowiskiem podtrzymującym wielorakie sposoby życia. Nie wolno mylić PASS przeglądarki, ciekawych kontaktów ani ruchu mieszkańca z żywym organizmem.
