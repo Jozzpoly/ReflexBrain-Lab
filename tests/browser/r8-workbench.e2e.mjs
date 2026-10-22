@@ -170,7 +170,10 @@ try{
  await mobile.locator('#toolAnchor').tap();
  await mobile.locator('#field').scrollIntoViewIfNeeded();
  const r=await mobile.locator('#field').boundingBox();expect(r,'no mobile touch canvas');
- await mobile.touchscreen.tap(r.x+r.width*.64,r.y+r.height*.52);
+ // Never silently spawn an authored solid intersecting the actual resident.
+ await mobile.touchscreen.tap(r.x+r.width*.50,r.y+r.height*.50);
+ expect((await audit(mobile)).parts.length===0,'unsafe overlapping part created on the actor');
+ await mobile.touchscreen.tap(r.x+r.width*.80,r.y+r.height*.52);
  const touch=await audit(mobile);
  expect(touch.parts.length===1&&touch.parts[0].mode==='anchored','mobile tap did not create anchored material');
  // Not only "tap works": touch drag should move the EXACT physical collider.

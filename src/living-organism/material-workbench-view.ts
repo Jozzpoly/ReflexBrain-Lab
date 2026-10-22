@@ -163,6 +163,12 @@ canvas.addEventListener('pointerdown',e=>{
  }else{
   const shape=shapes[$<HTMLSelectElement>('#shape').value as keyof typeof shapes]||shapes.beam;
   try{
+   // An editor action is not a material-world rule: avoid accidental initial
+   // interpenetration with the body. Later deliberate physical dragging is free.
+   const actor=world.inspect().actor;
+   const dx=Math.max(0,Math.abs(p.x-actor.x)-shape.hx);
+   const dy=Math.max(0,Math.abs(p.y-actor.y)-shape.hy);
+   if(Math.hypot(dx,dy)<1.05)throw Error('Za blisko ciała — postaw dalej, potem możesz przeciągnąć');
    remember();const id=world.addMaterialPart(p.x,p.y,shape.hx,shape.hy,tool==='anchor'?'anchored':'dynamic');
    choosePart(id);info('OWNER: utworzył #'+id+' '+tool+' / '+$<HTMLSelectElement>('#shape').value);
   }catch(err){info('Nie dodano: '+String(err));}
