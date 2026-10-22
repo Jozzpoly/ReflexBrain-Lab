@@ -82,7 +82,9 @@ $('#pause').addEventListener('click',()=>{
  paused=!paused;last=0;acc=0;keys.clear();$('#pause').textContent=paused?'Wznów':'Pauza';
 });
 $('#manual').addEventListener('click',()=>{
- manual=!manual;keys.clear();$('#manual').setAttribute('aria-pressed',String(manual));
+ manual=!manual;keys.clear();
+ if(manual)resident.witnessExternalMotor(world.observe());
+ $('#manual').setAttribute('aria-pressed',String(manual));
  $('#manual').textContent=manual?'Oddaj sterowanie':'Przejmij ciało';info(manual?'OWNER przejął ciało':'OWNER oddał ciało autorskiemu odruchowi');
 });
 $('#undo').addEventListener('click',()=>{
@@ -291,6 +293,7 @@ canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercan
 function enterManual(){
  if(!manual){
   manual=true;
+  resident.witnessExternalMotor(world.observe());
   $<HTMLButtonElement>('#manual').setAttribute('aria-pressed','true');
   $('#manual').textContent='Oddaj sterowanie';
   info('OWNER: ręczne sterowanie ciałem, nie ruch sztucznego mózgu');
