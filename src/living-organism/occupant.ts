@@ -71,10 +71,13 @@ export class Occupant {
   */
  witnessExternalMotor(frame:PrivateFrame):void{
   const s=this.state;
-  if(s.lastTick!==null&&frame.tick<=s.lastTick)return;
-  const dt=s.lastTick===null?0:(frame.tick-s.lastTick)/120;
-  s.heading=wrap(s.heading+frame.proprio.omega*dt);
-  s.lastTick=frame.tick;
+  if(s.lastTick!==null&&frame.tick<s.lastTick)return;
+  if(s.lastTick===null||frame.tick>s.lastTick){
+   const dt=s.lastTick===null?0:(frame.tick-s.lastTick)/120;
+   s.heading=wrap(s.heading+frame.proprio.omega*dt);
+   s.lastTick=frame.tick;
+  }
+  // On authority transfer, clear an old command even on an already-sampled tick.
   s.mode='explore';s.demand={drive:0,turn:0,gazeRate:0};
   s.lastDirection=null;s.lastSeenTick=null;s.closeSince=null;
   s.exploreTravel=0;s.exploreTurn=0;
