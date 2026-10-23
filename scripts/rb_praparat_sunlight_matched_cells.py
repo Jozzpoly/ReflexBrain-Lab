@@ -46,8 +46,14 @@ def pct(samples):
     def at(q):
         k=(len(a)-1)*q
         i=int(k);j=min(len(a)-1,i+1)
-        return round(a[i]*(j-k+i)+a[j]*(k-i),6)
+        frac=k-i
+        return round(a[i]*(1-frac)+a[j]*frac,6)
     return {"n":len(a),"median":at(.5),"p25":at(.25),"p75":at(.75)}
+# Native source summary must NOT turn a tiny cell difference into a huge
+# artificial trajectory: test quantile interpolation on a known 5-member series.
+assert pct([1.0,2.0,3.0,4.0,5.0]) == {"n":5,"median":3.0,"p25":2.0,"p75":4.0}
+assert pct([0.0,1.0]) == {"n":2,"median":0.5,"p25":0.25,"p75":0.75}
+
 def compare(step,source_report):
     idx=step//80
     pa=BASE/f"cells{idx}.dat.tar.gz"
