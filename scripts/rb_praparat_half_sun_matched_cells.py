@@ -58,15 +58,15 @@ def compare(step,source_report):
     idx=step//80
     pa=BASE/f"cells{idx}.dat.tar.gz"
     pb=DIM/f"cells{idx}.dat.tar.gz"
-    stats={"step":step,"source_same_age_book_cells":0,"sunlit_physical_cells":0,
-          "dark_physical_cells":0,"common_physical_slots":0,
+    stats={"step":step,"source_same_age_book_cells":0,"full_light_physical_cells":0,
+          "half_light_physical_cells":0,"common_physical_slots":0,
           "different_age_or_book_common_slot":0,
           "both_neural_active_original":0,"same_weights_matched_cells":0,
           "changed_original_neighbor_inputs":0,"changed_world_RGB_inputs":0,
           "changed_world_touch_inputs":0,"changed_neural_outputs":0,
           "source_neural_outputs_changed_with_no_input_change":0,
           "native_raw_source_sha256":[]}
-    deltas={k:[] for k in ("energy_diff_dark_minus_light","position_difference",
+    deltas={k:[] for k in ("energy_diff_half_minus_full","position_difference",
             "neighbor_input_L1","incoming_RGB_L1","incoming_touch_abs","output_L1")}
     with tarfile.open(pa,"r:gz") as ta,tarfile.open(pb,"r:gz") as tb:
         an=f"cells{idx}.dat"
@@ -80,15 +80,15 @@ def compare(step,source_report):
             if int(al)!=15000 or int(bl)!=15000:raise ValueError("source header not 15000")
             for i in range(1,15001):
                 ca=record(a,i,ha);cb=record(b,i,hb)
-                stats["sunlit_physical_cells"]+=int(ca is not None)
-                stats["dark_physical_cells"]+=int(cb is not None)
+                stats["full_light_physical_cells"]+=int(ca is not None)
+                stats["half_light_physical_cells"]+=int(cb is not None)
                 if ca is None or cb is None:continue
                 stats["common_physical_slots"]+=1
                 if ca["age"]!=cb["age"] or ca["book"]!=cb["book"]:
                     stats["different_age_or_book_common_slot"]+=1
                     continue
                 stats["source_same_age_book_cells"]+=1
-                deltas["energy_diff_dark_minus_light"].append(cb["E"]-ca["E"])
+                deltas["energy_diff_half_minus_full"].append(cb["E"]-ca["E"])
                 deltas["position_difference"].append(
                     math.sqrt(sum((x-y)**2 for x,y in zip(ca["pos"],cb["pos"]))))
                 if ca["NN"]!=1 or cb["NN"]!=1:continue
@@ -116,9 +116,9 @@ def compare(step,source_report):
         expected["source_baseline"]["original_native_sha"],
         expected["native_sun_half"]["original_native_sha"]]:
         raise ValueError("actual PP6 source SHA mismatch: worlds not same exact original run")
-    if stats["sunlit_physical_cells"]!=expected["source_baseline"]["non_information_non_sun_cells"]:
+    if stats["full_light_physical_cells"]!=expected["source_baseline"]["non_information_non_sun_cells"]:
         raise ValueError("native baseline body cell count inconsistent")
-    if stats["dark_physical_cells"]!=expected["native_sun_half"]["non_information_non_sun_cells"]:
+    if stats["half_light_physical_cells"]!=expected["native_sun_half"]["non_information_non_sun_cells"]:
         raise ValueError("native dark body cell count inconsistent")
     stats["distributions"]={key:pct(value) for key,value in deltas.items()}
     return stats
