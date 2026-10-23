@@ -1,0 +1,59 @@
+name: "RB Praparat / Current Native Material Causality"
+on:
+  pull_request:
+    branches:
+      - research/rb-r6-developmental-substrates-2026-10-22
+    paths:
+      - "scripts/rb_praparat_original_lifecycle_probe.py"
+      - "scripts/rb_praparat_native_graph_audit.py"
+      - "scripts/rb_praparat_native_fixed_seed_pair.py"
+      - "scripts/rb_praparat_source_causal_half_light.py"
+      - "scripts/rb_praparat_half_sun_matched_cells.py"
+      - "scripts/rb_praparat_archive_manifest.py"
+      - ".github/workflows/rb-praparat-original.yml"
+  workflow_dispatch:
+jobs:
+  original-source:
+    if: github.event_name != 'pull_request' || github.head_ref == 'research/rb-praparat-source-exemplar-audit-2026-10-23'
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare unchanged original native Fortran source compiler
+        run: |
+          if ! command -v gfortran >/dev/null; then
+            sudo apt-get -qq update
+            sudo apt-get -qq install -y gfortran
+          fi
+          gfortran --version | head -1
+      - name: Fetch and SHA-gate pinned original author's source and archive
+        run: |
+          git clone --depth=1 -q https://github.com/A5size/OpenPraparat.git /tmp/openpraparat-original
+          test "$(git -C /tmp/openpraparat-original rev-parse HEAD)" = "e9e105d48ab597612d1749a5f169663559b12287"
+          test -f /tmp/openpraparat-original/examples.tar.gz
+          test -s /tmp/openpraparat-original/src/praparat.f90
+      - name: Compile unchanged author Fortran headless executable
+        run: |
+          make -C /tmp/openpraparat-original/src praparat_cui
+          test -x /tmp/openpraparat-original/src/praparat_cui
+      - name: Audit author archive metadata and safety caps
+        run: python3 scripts/rb_praparat_archive_manifest.py
+      - name: PP2 replay original normal source world 240 genuine steps with 3 native state snapshots
+        run: python3 scripts/rb_praparat_original_lifecycle_probe.py
+      - name: PP3-PP4B audit original native age, connected fragments and true 28-D neuron vectors
+        run: python3 scripts/rb_praparat_native_graph_audit.py
+      - name: PP5B duplicate frozen author world to verify exact fixed-seed replay
+        run: python3 scripts/rb_praparat_native_fixed_seed_pair.py
+      - name: PP6D one nonzero 50-percent light source-native world intervention and finite-value gate
+        run: python3 scripts/rb_praparat_source_causal_half_light.py
+      - name: PP6E read-only same-native-cell sensory, energy and physical differences
+        run: python3 scripts/rb_praparat_half_sun_matched_cells.py
+      - name: Preserve compact scientific JSON evidence, never the enormous original snapshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rb-praparat-qualified-material-research
+          path: artifacts/praparat/*.json
+          if-no-files-found: ignore
