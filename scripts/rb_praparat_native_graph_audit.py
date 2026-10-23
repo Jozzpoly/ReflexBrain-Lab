@@ -6,7 +6,7 @@ Source: A5size/OpenPraparat@e9e105d48ab597612d1749a5f169663559b12287
       src/praparat.f90 write_cell_into_one, lines 2108-2207.
 """
 from __future__ import annotations
-import collections, hashlib, json, pathlib, tarfile
+import collections, hashlib, json, pathlib, tarfile, math, statistics
 
 WORK=pathlib.Path("/tmp/pp2-preserved-dumbbell-normal")
 AUDIT=pathlib.Path("artifacts/praparat/pp2_original_normal_lifecycle_audit.json")
@@ -43,14 +43,36 @@ def parse_slot(fp,i):
     if exist:
         state["exist"]=exist
         state["book_sha"]=hashlib.sha256(book.rstrip(b"\r\n")).hexdigest()[:18]
-    needed={15:"energy",17:"internal_id",18:"age",26:"ccf",27:"iocc",36:"info"}
+    # Exact zero-based serialization fields verified against original author source.
+    needed={4:"position",6:"velocity",10:"light_r",11:"light_g",12:"light_b",
+            15:"energy",17:"internal_id",18:"age",19:"sensor_vector",
+            20:"effector_vector",21:"neural_w1",22:"neural_w2",
+            26:"ccf",27:"iocc",30:"hit_cell_flag",33:"eat_flag",
+            35:"light_flag",36:"info",37:"neural_flag"}
     for field in range(4,FIELDS):
         line=fp.readline()
         if not line:raise ValueError(f"truncated cell {i}, field {field}")
         if not exist or field not in needed:continue
         kind=needed[field]
         if kind in ("ccf","iocc"):state[kind]=values_int(line,8)
-        elif kind=="energy":state[kind]=float_first(line)
+        elif kind in ("position","velocity"):
+            values=[float(v.replace(b"D",b"E")) for v in line.split()]
+            if len(values)!=3 or not all(math.isfinite(v) for v in values):
+                raise ValueError("original xyz/velocity field malformed")
+            state[kind]=tuple(values)
+        elif kind in ("sensor_vector","effector_vector"):
+            # Original author NN stored values; do not infer live contact solely from vector.
+            values=[float(v.replace(b"D",b"E")) for v in line.split()]
+            if not values or not all(math.isfinite(v) for v in values):
+                raise ValueError("original neural IO not finite")
+            state[kind+"_mean_abs"]=sum(abs(x) for x in values)/len(values)
+            state[kind+"_nonzero_fraction"]=sum(abs(x)>1e-8 for x in values)/len(values)
+        elif kind in ("neural_w1","neural_w2"):
+            state[kind+"_sha"]=hashlib.sha256(line.strip()).hexdigest()[:18]
+        elif kind in ("energy","light_r","light_g","light_b"):
+            v=float_first(line)
+            if not math.isfinite(v):raise ValueError("original scalar not finite: "+kind)
+            state[kind]=v
         else:state[kind]=first_int(line)
     return state if exist else None
 
@@ -256,6 +278,136 @@ def complete_fragment_cohort(src,dst):
           sum(len(dst["groups"][k])>=2 for k in destination_sources)
     }
 
+
+def pp4_percentiles(v):
+    if not v:return {"n":0,"median":None,"p25":None,"p75":None}
+    a=sorted(float(x) for x in v)
+    def at(q):
+        i=(len(a)-1)*q
+        lo=int(i);hi=min(len(a)-1,lo+1)
+        return round(a[lo]+(a[hi]-a[lo])*(i-lo),6)
+    return {"n":len(a),"median":at(.5),"p25":at(.25),"p75":at(.75)}
+
+def pp4_quantile_cut(v,q):
+    a=sorted(v)
+    i=(len(a)-1)*q
+    lo=int(i);hi=min(len(a)-1,lo+1)
+    return a[lo]+(a[hi]-a[lo])*(i-lo)
+
+def pp4_dist(x,y):
+    return math.sqrt(sum((a-b)**2 for a,b in zip(x,y)))
+
+def pp4_avg3(v):
+    return tuple(sum(x[i] for x in v)/len(v) for i in range(3))
+
+def pp4_functional_cohort(src,dst):
+    """Descriptive same-physical-members outcomes; NOT a learned-behavior classifier."""
+    old,new=src["cells"],dst["cells"]
+    dt=dst["t"]-src["t"]
+    age={i for i in old.keys()&new.keys() if new[i]["age"]-old[i]["age"]==dt}
+    ages_nonsolar=[i for i in age if i!=1]
+    drift=pp4_avg3([tuple(new[i]["position"][d]-old[i]["position"][d] for d in range(3))
+                    for i in ages_nonsolar])
+    records=[]
+    initial_groups=[group for group in src["groups"] if 2<=len(group)<=5]
+    centers=[pp4_avg3([old[i]["position"] for i in group]) for group in initial_groups]
+    cuts_x=[pp4_quantile_cut([v[0] for v in centers], q) for q in (.25,.5,.75)]
+    cuts_z=[pp4_quantile_cut([v[2] for v in centers], q) for q in (.25,.5,.75)]
+    def quartile(x,cuts):
+        return sum(x>boundary for boundary in cuts)
+    for group,start_center in zip(initial_groups,centers):
+        if not all(i in age for i in group):continue
+        following={new[i]["internal_id"] for i in group}
+        if len(following)!=len(group):continue
+        if len({dst["parents"][i] for i in group})!=1:continue
+        k=dst["parents"][group[0]]
+        if set(dst["groups"][k])!=set(group):continue
+        c1=pp4_avg3([new[i]["position"] for i in group])
+        displacement=pp4_dist(c1,start_center)
+        residual=pp4_dist(c1,tuple(start_center[d]+drift[d] for d in range(3)))
+        relative_shape_change=math.sqrt(
+            sum(sum(((new[i]["position"][d]-c1[d])-(old[i]["position"][d]-start_center[d]))**2
+                    for d in range(3)) for i in group)/len(group))
+        body_old=[old[i] for i in group if old[i]["info"]==0 and i!=1]
+        body_new=[new[i] for i in group if new[i]["info"]==0 and i!=1]
+        if not body_old or len(body_old)!=len(body_new):continue
+        neural_old=[x for x in body_old if x["neural_flag"]==1]
+        neural_new=[x for x in body_new if x["neural_flag"]==1]
+        def nn_mean(items,name):
+            return statistics.mean(x[name] for x in items) if items else None
+        light0=statistics.mean(x["light_r"]+x["light_g"]+x["light_b"] for x in body_old)/3
+        light1=statistics.mean(x["light_r"]+x["light_g"]+x["light_b"] for x in body_new)/3
+        rec={
+          "size":len(group),
+          "region_x":quartile(start_center[0],cuts_x),
+          "region_z":quartile(start_center[2],cuts_z),
+          "cohort_centroid_displacement":displacement,
+          "centroid_displacement_minus_world_drift":residual,
+          "shape_relative_rms":relative_shape_change,
+          "source_velocity_mean_t0":statistics.mean(math.sqrt(sum(v*v for v in old[i]["velocity"])) for i in group),
+          "source_velocity_mean_t1":statistics.mean(math.sqrt(sum(v*v for v in new[i]["velocity"])) for i in group),
+          "body_energy_mean_delta":statistics.mean(y["energy"]-x["energy"] for x,y in zip(body_old,body_new)),
+          "body_energy_mean_t0":statistics.mean(x["energy"] for x in body_old),
+          "body_energy_mean_t1":statistics.mean(x["energy"] for x in body_new),
+          "light_intensity_mean_t0":light0,"light_intensity_mean_t1":light1,
+          "neural_active_cells_t0":len(neural_old),
+          "neural_active_cells_t1":len(neural_new),
+          "neural_inputs_nonzero_frac_t0":nn_mean(neural_old,"sensor_vector_nonzero_fraction"),
+          "neural_inputs_nonzero_frac_t1":nn_mean(neural_new,"sensor_vector_nonzero_fraction"),
+          "neural_outputs_mean_abs_t0":nn_mean(neural_old,"effector_vector_mean_abs"),
+          "neural_outputs_mean_abs_t1":nn_mean(neural_new,"effector_vector_mean_abs"),
+          "source_eat_flag_count_t0":sum(x["eat_flag"]==1 for x in body_old),
+          "source_eat_flag_count_t1":sum(x["eat_flag"]==1 for x in body_new),
+          "source_hit_cell_flag_count_t0":sum(x["hit_cell_flag"]==1 for x in body_old),
+          "source_hit_cell_flag_count_t1":sum(x["hit_cell_flag"]==1 for x in body_new),
+          "source_light_flag_count_t0":sum(x["light_flag"]==1 for x in body_old),
+          "source_light_flag_count_t1":sum(x["light_flag"]==1 for x in body_new),
+          "book_same_fraction":sum(old[i]["book_sha"]==new[i]["book_sha"] for i in group)/len(group),
+          "NN_w1_same_fraction":sum(old[i]["neural_w1_sha"]==new[i]["neural_w1_sha"] for i in group)/len(group),
+          "NN_w2_same_fraction":sum(old[i]["neural_w2_sha"]==new[i]["neural_w2_sha"] for i in group)/len(group)
+        }
+        records.append(rec)
+    values=[
+      "cohort_centroid_displacement","centroid_displacement_minus_world_drift",
+      "shape_relative_rms","source_velocity_mean_t0","source_velocity_mean_t1",
+      "body_energy_mean_delta","body_energy_mean_t0","body_energy_mean_t1",
+      "light_intensity_mean_t0","light_intensity_mean_t1",
+      "neural_inputs_nonzero_frac_t0","neural_inputs_nonzero_frac_t1",
+      "neural_outputs_mean_abs_t0","neural_outputs_mean_abs_t1",
+      "neural_active_cells_t0","neural_active_cells_t1",
+      "source_eat_flag_count_t0","source_eat_flag_count_t1",
+      "source_hit_cell_flag_count_t0","source_hit_cell_flag_count_t1",
+      "source_light_flag_count_t0","source_light_flag_count_t1",
+      "book_same_fraction","NN_w1_same_fraction","NN_w2_same_fraction"
+    ]
+    def aggregate(items):
+        return {key:pp4_percentiles([z[key] for z in items if z[key] is not None]) for key in values}
+    by_size={str(k):{"count":sum(x["size"]==k for x in records),
+                        "metrics":aggregate([x for x in records if x["size"]==k])}
+             for k in (2,3,4,5)}
+    by_region=[]
+    for k in range(4):
+        for v in range(4):
+            samples=[x for x in records if x["region_x"]==k and x["region_z"]==v]
+            by_region.append({"quartile_x":k,"quartile_z":v,"count":len(samples),
+               "displacement":pp4_percentiles([x["cohort_centroid_displacement"] for x in samples]),
+               "residual_displacement":pp4_percentiles([x["centroid_displacement_minus_world_drift"] for x in samples]),
+               "energy_change":pp4_percentiles([x["body_energy_mean_delta"] for x in samples])})
+    return {
+       "from":src["t"],"to":dst["t"],"matched_original_2to5_units":len(records),
+       "sampled_source_2to5_units":len(initial_groups),
+       "global_same_aged_non_sun_cell_translation":list(drift),
+       "quartile_X_cuts":cuts_x,"quartile_Z_cuts":cuts_z,
+       "distribution_all_matching_units":aggregate(records),
+       "by_original_group_size":by_size,"by_original_XZ_quartile":by_region,
+       "source_bodies_with_neural_activity_t0":sum(x["neural_active_cells_t0"]>0 for x in records),
+       "source_bodies_with_neural_activity_t1":sum(x["neural_active_cells_t1"]>0 for x in records),
+       "fraction_constant_book_whole_body":(sum(x["book_same_fraction"]==1 for x in records)/len(records)
+                                            if records else None),
+       "interpretation":"Observational displacement/energy/activity differences, no learning, behavioral strategies or causal world affordances established",
+       "baseline_limit":"Global cohort center drift is not a physics-control, sensor-null or matched environment"
+    }
+
 try:
     metadata=json.loads(AUDIT.read_text(encoding="utf-8"))
     if not metadata.get("science_qualified"):
@@ -288,6 +440,8 @@ try:
                                   for a,b in ((0,1),(1,2),(0,2))]
     report["all_fragment_cohort_transitions"]=[complete_fragment_cohort(loaded[a],loaded[b])
                                   for a,b in ((0,1),(1,2),(0,2))]
+    report["pp4_functional_cohorts"]=[pp4_functional_cohort(loaded[a],loaded[b])
+                                  for a,b in ((0,1),(1,2),(0,2))]
     report["integrity"]={
         "source_cell_count_matches":all(x["active_count_matches_original_log"] is True for x in report["snapshots"] if x["aligned_pre_update_world_step"] is not None),
         "source_edge_count_matches":all(x["edge_count_matches_original_log"] is True for x in report["snapshots"] if x["aligned_pre_update_world_step"] is not None),
@@ -306,6 +460,22 @@ except Exception as e:
 finally:
     DEST.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     print("RB_PP3_LINEAGE "+json.dumps(report,ensure_ascii=False)[:17500])
+    if report.get("pp4_functional_cohorts"):
+        print("RB_PP4_FUNCTIONAL "+json.dumps([
+           {"from":x["from"],"to":x["to"],
+            "matched":x["matched_original_2to5_units"],
+            "total":x["sampled_source_2to5_units"],
+            "drift":x["global_same_aged_non_sun_cell_translation"],
+            "medians":{key:value["median"] for key,value in x["distribution_all_matching_units"].items()},
+            "sizes":{k:{"count":v["count"],
+                        "displacement":v["metrics"]["cohort_centroid_displacement"],
+                        "energy_delta":v["metrics"]["body_energy_mean_delta"],
+                        "nn_output":v["metrics"]["neural_outputs_mean_abs_t1"]}
+                     for k,v in x["by_original_group_size"].items()},
+            "neurally_active":[x["source_bodies_with_neural_activity_t0"],
+                               x["source_bodies_with_neural_activity_t1"]],
+            "constant_book_fraction":x["fraction_constant_book_whole_body"]}
+            for x in report["pp4_functional_cohorts"]],ensure_ascii=False))
     if report.get("all_fragment_cohort_transitions"):
         print("RB_PP3_FRAGMENT_SUMMARY "+json.dumps([
            {"from":x["from"],"to":x["to"],
