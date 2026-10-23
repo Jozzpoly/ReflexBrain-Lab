@@ -52,7 +52,7 @@ def main():
             if not (member.isfile() or member.isdir()):
                 raise ValueError("Unknown archive member type: "+name[:120])
             if member.isfile():
-                if member.size>MAX_FILE: raise ValueError("archive file exceeds single-file bound "+name)
+                if (name==TARGET or name.startswith(TARGET+"/")) and member.size>MAX_FILE:\n                    raise ValueError("SELECTED archive file exceeds single-file bound "+name)
                 total+=member.size
                 if total>MAX_TOTAL:raise ValueError("original archive has >1.1GB metadata uncompressed")
             raw.append({"name":name,"bytes":member.size,"type":"file" if member.isfile() else "directory"})
