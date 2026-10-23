@@ -5,7 +5,9 @@ on:
       - research/rb-r6-developmental-substrates-2026-10-22
     paths:
       - "scripts/rb_original_flowlenia_source_replay.py"
+      - "scripts/rb_original_flowlenia_embedded_P_probe.py"
       - "docs/research/RB_FL0_*"
+      - "docs/research/RB_FL1_*"
       - ".github/workflows/rb-original-flowlenia.yml"
   workflow_dispatch:
 jobs:
@@ -34,10 +36,16 @@ jobs:
         env:
           PYTHONPATH: ".upstream-FlowLenia:."
         run: python scripts/rb_original_flowlenia_source_replay.py
+      - name: Execute original local parameter-field flow with no callbacks or mutation
+        env:
+          PYTHONPATH: ".upstream-FlowLenia:."
+        run: python scripts/rb_original_flowlenia_embedded_P_probe.py
       - name: Preserve unedited measured source evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: rb-fl0-original-source
-          path: artifacts/fl0/*.json
+          path: |
+            artifacts/fl0/*.json
+            artifacts/fl1/*.json
           if-no-files-found: ignore
