@@ -14,13 +14,16 @@ try:
         content=r.read(2_000_001)
     if len(content)>2_000_000:raise ValueError("declared bound exceeded")
     data=json.loads(content)
-    records=list(data.values()) if isinstance(data,dict) else data
-    if not isinstance(records,list): raise ValueError("unexpected metadata shape")
+    if not isinstance(data,dict):raise ValueError("unexpected top-level categories")
+    # Top level groups experiment families, not individual creatures.
+    groups={k:v for k,v in data.items() if isinstance(v,dict)}
+    records=[rec for family in groups.values() for rec in family.values()]
     out["status"]="METADATA_PARSED"
     out["bytes"]=len(content)
     out["top_type"]=type(data).__name__
+    out["family_counts"]={k:len(v) for k,v in groups.items()}
     out["entries"]=len(records)
-    out["top_names"]=list(data)[:4] if isinstance(data,dict) else []
+    out["top_names"]=list(data)[:4]
     out["sample_fields"]=sorted(records[0].keys()) if records and isinstance(records[0],dict) else []
     pointers=[]
     forms={}
