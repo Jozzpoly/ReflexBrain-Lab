@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install bounded original-source CPU dependencies
-        run: python -m pip install "numpy>=1.26,<2" "jax[cpu]==0.4.35" "equinox==0.11.10" "jaxtyping==0.2.36"
+        run: python -m pip install "numpy>=1.26,<2" "jax[cpu]==0.4.35" "equinox==0.11.10" "jaxtyping==0.2.36" "matplotlib>=3.8,<4"
       - name: Get exact original external upstream source, not our adapted R6 operator
         run: |
           git clone -q https://github.com/erwanplantec/FlowLenia.git .upstream-FlowLenia
