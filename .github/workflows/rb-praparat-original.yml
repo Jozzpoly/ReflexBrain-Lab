@@ -8,6 +8,7 @@ on:
       - "scripts/rb_praparat_archive_manifest.py"
       - ".github/workflows/rb-praparat-original.yml"
       - "docs/research/RB_PP0_*"
+      - "docs/research/RB_PP0A_*"
   workflow_dispatch:
 jobs:
   original-source:
@@ -35,8 +36,10 @@ jobs:
         run: |
           make -C /tmp/openpraparat-original/src praparat_cui
           test -x /tmp/openpraparat-original/src/praparat_cui
-      - name: Size-gate published archive first; do not extract until member sizes are qualified
+      - name: Index original archive safely before extracting only the predeclared 58MB specimen
         run: python3 scripts/rb_praparat_archive_manifest.py
+      - name: Run exactly author's original 02fix source exemplar for bounded 10 steps
+        run: python3 scripts/rb_praparat_original_exemplar_probe.py
       - name: Preserve compact auditable source/fixture/run report, never binary or archive
         if: always()
         uses: actions/upload-artifact@v4
