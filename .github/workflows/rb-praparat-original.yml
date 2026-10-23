@@ -13,6 +13,8 @@ on:
       - "scripts/rb_praparat_source_causal_sunlight.py"
       - "scripts/rb_praparat_sunlight_matched_cells.py"
       - "scripts/rb_praparat_zero_sun_info_finiteness.py"
+      - "scripts/rb_praparat_source_causal_half_light.py"
+      - "scripts/rb_praparat_half_sun_matched_cells.py"
       - "scripts/rb_praparat_archive_manifest.py"
       - ".github/workflows/rb-praparat-original.yml"
       - "docs/research/RB_PP0_*"
@@ -26,6 +28,7 @@ on:
       - "docs/research/RB_PP6_*"
       - "docs/research/RB_PP6B_*"
       - "docs/research/RB_PP6C_*"
+      - "docs/research/RB_PP6D_*"
   workflow_dispatch:
 jobs:
   original-source:
@@ -73,6 +76,10 @@ jobs:
         run: python3 scripts/rb_praparat_sunlight_matched_cells.py
       - name: PP6C source-native zero-light information particle NaN/Inf falsifier (no added steps)
         run: python3 scripts/rb_praparat_zero_sun_info_finiteness.py
+      - name: PP6D original numeric-safe 50-percent emitted light, one matching author-world A/B
+        run: python3 scripts/rb_praparat_source_causal_half_light.py
+      - name: PP6E same physically-aged cells read-only under nonzero half-light
+        run: python3 scripts/rb_praparat_half_sun_matched_cells.py
       - name: Preserve compact auditable source/fixture/run report, never binary or archive
         if: always()
         uses: actions/upload-artifact@v4
