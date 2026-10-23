@@ -133,7 +133,10 @@ def main():
           "EAT_COUNT*","DEATHS_COUNT*","EXPANSION_COUNT*","CONNECT_COUNT*",
           "DISCONNECT_COUNT*","TURN_BOOKMARKER_COUNT*","TOT_ENERGY*",
           "ALONE_COUNT*","ENERGY_TRANSIT_COUNT*")
-    sample_ticks=(10,80,160,200,240)
+    # Native Fortran step() logs WORLD_STEP BEFORE processing that step;
+    # compressed snapshots are saved AFTER step 80/160/240.
+    # 81 and 161 directly test exact source state parity for t80 and t160.
+    sample_ticks=(10,80,81,160,161,200,240)
     history={k:{} for k in sample_ticks}
     stamps=[]
     tick=None
