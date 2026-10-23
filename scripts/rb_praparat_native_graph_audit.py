@@ -100,7 +100,8 @@ def build_components(cells):
         "source_active_slots":len(active),
         "source_non_information_cells":sum(c["info"]==0 for c in cells.values()),
         "source_information_cells":sum(c["info"]==1 for c in cells.values()),
-        "source_total_energy":sum(c["energy"] for c in cells.values()),
+        "source_total_energy_including_sun":sum(c["energy"] for c in cells.values()),
+        "source_total_energy_excluding_sun_slot1":sum(c["energy"] for i,c in cells.items() if i!=1),
         "source_internal_id_equal_slot":sum(c["internal_id"]==i for i,c in cells.items()),
         "source_internal_id_other_slot":sum(c["internal_id"]!=i for i,c in cells.items()),
         "active_flag_directed_count":raw_flags,
@@ -181,27 +182,40 @@ try:
     loaded=[parse_native_file(t) for t in STEPS]
     for state in loaded:
         t=state["t"]
-        expected=metadata["run"]["sampled_original_counters"].get(str(t),{})
+        # Source praparat.f90: step() emits diagnostics at the BEGINNING of each
+        # update, while main.f90 writes native state AFTER step(80).
+        # Therefore original saved t80 matches log WORLD_STEP=81 (and t160→161).
+        # t240 has no step241 log in this 240-step run; never compare to t240's
+        # pre-update diagnostic and falsely disqualify an intact source snapshot.
+        compared_to_world_step=t+1 if t<240 else None
+        expected=(metadata["run"]["sampled_original_counters"].get(str(compared_to_world_step),{})
+                  if compared_to_world_step is not None else {})
         summary=state["summary"]
+        summary["aligned_pre_update_world_step"]=compared_to_world_step
         summary["source_check_active_cells"]=expected.get("CALC_CLL")
         summary["source_check_spring_edges"]=expected.get("CONN_CLL")
         summary["source_check_info_cells"]=expected.get("NUMBER_OF_INFO_TRANS")
-        summary["active_count_matches_original_log"]=(summary["source_active_slots"]==expected.get("CALC_CLL"))
-        summary["edge_count_matches_original_log"]=(summary["unique_undirected_edges"]==expected.get("CONN_CLL"))
-        summary["info_count_matches_original_log"]=(summary["source_information_cells"]==expected.get("NUMBER_OF_INFO_TRANS"))
+        summary["active_count_matches_original_log"]=(summary["source_active_slots"]==expected.get("CALC_CLL")
+            if compared_to_world_step is not None else None)
+        summary["edge_count_matches_original_log"]=(summary["unique_undirected_edges"]==expected.get("CONN_CLL")
+            if compared_to_world_step is not None else None)
+        summary["info_count_matches_original_log"]=(summary["source_information_cells"]==expected.get("NUMBER_OF_INFO_TRANS")
+            if compared_to_world_step is not None else None)
         report["snapshots"].append({"step":t,**summary})
     # A host-only identity link is deliberately stricter than a recycled cell slot.
     report["cohort_transitions"]=[cohort_continuity(loaded[a],loaded[b])
                                   for a,b in ((0,1),(1,2),(0,2))]
     report["integrity"]={
-        "source_cell_count_matches":all(x["active_count_matches_original_log"] for x in report["snapshots"]),
-        "source_edge_count_matches":all(x["edge_count_matches_original_log"] for x in report["snapshots"]),
-        "source_info_count_matches":all(x["info_count_matches_original_log"] for x in report["snapshots"]),
+        "source_cell_count_matches":all(x["active_count_matches_original_log"] is True for x in report["snapshots"] if x["aligned_pre_update_world_step"] is not None),
+        "source_edge_count_matches":all(x["edge_count_matches_original_log"] is True for x in report["snapshots"] if x["aligned_pre_update_world_step"] is not None),
+        "source_info_count_matches":all(x["info_count_matches_original_log"] is True for x in report["snapshots"] if x["aligned_pre_update_world_step"] is not None),
         "all_link_targets_real":all(x["invalid_link_target_count"]==0 for x in report["snapshots"]),
         "all_links_reciprocal":all(x["nonreciprocal_directed_link_count"]==0 for x in report["snapshots"])
     }
     report["status"]="SOURCE_NATIVE_GRAPH_STREAM_PARSED"
-    report["science_qualified"]=report["integrity"]["source_cell_count_matches"]
+    report["science_qualified"]=all(report["integrity"].values())
+    report["integrity"]["source_step_240_not_directly_crosschecked"]=True
+    report["interpretation"]="Source spring networks contain many small components; age-consistent slots indicate cell continuity, not organism-level individuality."
 except Exception as e:
     report["status"]="SOURCE_NATIVE_GRAPH_AUDIT_INCONCLUSIVE"
     report["error_type"]=type(e).__name__
