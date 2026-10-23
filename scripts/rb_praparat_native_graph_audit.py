@@ -306,6 +306,17 @@ except Exception as e:
 finally:
     DEST.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     print("RB_PP3_LINEAGE "+json.dumps(report,ensure_ascii=False)[:17500])
+    if report.get("all_fragment_cohort_transitions"):
+        print("RB_PP3_FRAGMENT_SUMMARY "+json.dumps([
+           {"from":x["from"],"to":x["to"],
+            "size_bands":x["original_component_size_counts"],
+            "units":x["all_multicell_source_unit_summary"],
+            "by_size":x["multicell_by_original_size"],
+            "preserved_edges":x["native_spring_edges_preserved"],
+            "eligible_edges":x["native_edges_whose_endpoints_age_consistent"],
+            "retention":x["spring_retention_given_both_aged"],
+            "recipient_components_with_multiple_origins":x["later_components_with_descendants_from_multiple_multicell_origins"]}
+            for x in report["all_fragment_cohort_transitions"]],ensure_ascii=False))
 if report["status"]!="SOURCE_NATIVE_GRAPH_STREAM_PARSED":
     raise SystemExit("PP3 parser did not qualify: inspect native JSON audit")
 if not report.get("science_qualified"):
