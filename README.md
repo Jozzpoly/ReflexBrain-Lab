@@ -1,3 +1,7 @@
+> **22.10.2026 NOWE WEJŚCIE:** [poranne odzyskanie pełnej kampanii i decyzja badawcza](docs/research/RB_2026-10-22_MORNING_REENTRY_AND_CAMPAIGN.md). Poniższe starsze materiały to udokumentowane wyniki i kontekst, a nie automatyczna kolejka eksperymentów.
+
+> **Aktualny front tej gałęzi (22.10.2026):** [R6 — dzienny checkpoint i wejście do następnej pracy](docs/research/RB_2026-10-22_DAY_CLOSE_AND_NEXT_ENTRY.md). Poniższy tekst dziedziczy stan Pre-O0 z 6 października; **nie jest aktualnym routingiem dla PR #87**. Równolegle: LIFE/L1 PR #84, L2 R0–R5a PR #86. Nie przenosić tego bannera automatycznie do `main`.
+
 # ReflexBrain Lab
 
 > **Current active frontier:** `research/pre-o0-foundations-campaign`  

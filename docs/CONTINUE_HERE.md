@@ -1,3 +1,5 @@
+> **Tylko gałąź R6 / PR #87, 22.10.2026:** bieżący punkt odzyskania to [R6 day-close / next-entry](research/RB_2026-10-22_DAY_CLOSE_AND_NEXT_ENTRY.md). Pozostałe instrukcje poniżej opisują historyczny stan O-CTRL/PR #6 sprzed 16 dni i **nie powinny sterować tą gałęzią**. Zweryfikuj live PR #84/#86/#87 i ich CI.
+
 # CONTINUE HERE — ReflexBrain Pre-O0 — 2026-10-06
 
 Status: **RECOVERY ANCHOR · READ THIS FIRST AFTER SESSION LOSS**
