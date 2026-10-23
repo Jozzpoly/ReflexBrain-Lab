@@ -67,6 +67,7 @@ def parse_slot(fp,i):
                 raise ValueError("original neural IO not finite")
             state[kind+"_mean_abs"]=sum(abs(x) for x in values)/len(values)
             state[kind+"_nonzero_fraction"]=sum(abs(x)>1e-8 for x in values)/len(values)
+            state[kind]=tuple(values)
         elif kind in ("neural_w1","neural_w2"):
             state[kind+"_sha"]=hashlib.sha256(line.strip()).hexdigest()[:18]
         elif kind in ("energy","light_r","light_g","light_b"):
@@ -408,6 +409,80 @@ def pp4_functional_cohort(src,dst):
        "baseline_limit":"Global cohort center drift is not a physics-control, sensor-null or matched environment"
     }
 
+
+def pp4b_full_cell_vector_change(src,dst):
+    """Exact source float-array comparison, NOT learning evidence."""
+    a,b=src["cells"],dst["cells"]
+    dt=dst["t"]-src["t"]
+    age={i for i in a.keys()&b.keys() if b[i]["age"]-a[i]["age"]==dt}
+    cohorts={"connected_2to5_exact":[],"isolated_1to1":[]}
+    pergroup_displacements=[]
+    for group in src["groups"]:
+        size=len(group)
+        if size!=1 and not 2<=size<=5:continue
+        if not all(i in age for i in group):continue
+        target={dst["parents"][i] for i in group}
+        if len(target)!=1:continue
+        if set(dst["groups"][next(iter(target))])!=set(group):continue
+        groupname=("isolated_1to1" if size==1 else "connected_2to5_exact")
+        p0=pp4_avg3([a[i]["position"] for i in group])
+        p1=pp4_avg3([b[i]["position"] for i in group])
+        if size>=2:
+            pergroup_displacements.append(tuple(p1[d]-p0[d] for d in range(3)))
+        for i in group:
+            old,new=a[i],b[i]
+            if old["info"]!=0 or new["info"]!=0:return_value=False
+            else:return_value=True
+            if not return_value or old["neural_flag"]!=1 or new["neural_flag"]!=1:continue
+            delta_sensor=[abs(x-y) for x,y in zip(old["sensor_vector"],new["sensor_vector"])]
+            delta_effector=[abs(x-y) for x,y in zip(old["effector_vector"],new["effector_vector"])]
+            if len(delta_sensor)!=len(old["sensor_vector"]) or len(delta_effector)!=len(old["effector_vector"]):
+                raise ValueError("original vector lengths vary; cannot claim equality")
+            light0=[old["light_r"],old["light_g"],old["light_b"]]
+            light1=[new["light_r"],new["light_g"],new["light_b"]]
+            cohorts[groupname].append({
+             "input_L1":sum(delta_sensor),"output_L1":sum(delta_effector),
+             "input_Linf":max(delta_sensor),"output_Linf":max(delta_effector),
+             "light_L1":sum(abs(x-y) for x,y in zip(light0,light1)),
+             "input_equal_exact":old["sensor_vector"]==new["sensor_vector"],
+             "output_equal_exact":old["effector_vector"]==new["effector_vector"],
+             "book_equal":old["book_sha"]==new["book_sha"],
+             "w1_equal":old["neural_w1_sha"]==new["neural_w1_sha"],
+             "w2_equal":old["neural_w2_sha"]==new["neural_w2_sha"]
+            })
+    def summary(items):
+        n=len(items)
+        keys=("input_L1","output_L1","input_Linf","output_Linf","light_L1")
+        changes=collections.Counter()
+        for x in items:
+            i=x["input_Linf"]>1e-8
+            o=x["output_Linf"]>1e-8
+            changes[("input_changed" if i else "input_unchanged")+"_"+
+                    ("output_changed" if o else "output_unchanged")]+=1
+        return {"examined_native_neural_cells":n,
+          "raw_vector_lengths":{"inputs":len(a[next(iter(a))]["sensor_vector"]),
+                                "outputs":len(a[next(iter(a))]["effector_vector"])},
+          "metrics":{k:pp4_percentiles([x[k] for x in items]) for k in keys},
+          "raw_input_exact_equality":sum(x["input_equal_exact"] for x in items),
+          "raw_output_exact_equality":sum(x["output_equal_exact"] for x in items),
+          "light_triplet_identical":sum(x["light_L1"]==0 for x in items),
+          "book_equal":sum(x["book_equal"] for x in items),
+          "w1_equal":sum(x["w1_equal"] for x in items),
+          "w2_equal":sum(x["w2_equal"] for x in items),
+          "changed_pair_categories_at_Linf_1e8":dict(changes)}
+    peer_median_shift=tuple(statistics.median(p[d] for p in pergroup_displacements)
+                            for d in range(3)) if pergroup_displacements else (0,0,0)
+    peer_residual=[math.sqrt(sum((p[d]-peer_median_shift[d])**2 for d in range(3)))
+                   for p in pergroup_displacements]
+    return {"from":src["t"],"to":dst["t"],
+        "connected_2to5_exact":summary(cohorts["connected_2to5_exact"]),
+        "isolated_1to1":summary(cohorts["isolated_1to1"]),
+        "matched_2to5_bodies_for_peer_motion":len(pergroup_displacements),
+        "peer_median_displacement_vector":list(peer_median_shift),
+        "peer_center_residual_displacement":pp4_percentiles(peer_residual),
+        "interpretation":"No outcome selection, 3 sampled original states; output equality at samples is not proof of no between-sample neural changes."
+    }
+
 try:
     metadata=json.loads(AUDIT.read_text(encoding="utf-8"))
     if not metadata.get("science_qualified"):
@@ -442,6 +517,8 @@ try:
                                   for a,b in ((0,1),(1,2),(0,2))]
     report["pp4_functional_cohorts"]=[pp4_functional_cohort(loaded[a],loaded[b])
                                   for a,b in ((0,1),(1,2),(0,2))]
+    report["pp4b_full_vector_differences"]=[pp4b_full_cell_vector_change(loaded[a],loaded[b])
+                                  for a,b in ((0,1),(1,2),(0,2))]
     report["integrity"]={
         "source_cell_count_matches":all(x["active_count_matches_original_log"] is True for x in report["snapshots"] if x["aligned_pre_update_world_step"] is not None),
         "source_edge_count_matches":all(x["edge_count_matches_original_log"] is True for x in report["snapshots"] if x["aligned_pre_update_world_step"] is not None),
@@ -460,6 +537,8 @@ except Exception as e:
 finally:
     DEST.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     print("RB_PP3_LINEAGE "+json.dumps(report,ensure_ascii=False)[:17500])
+    if report.get("pp4b_full_vector_differences"):
+        print("RB_PP4B_VECTOR "+json.dumps(report["pp4b_full_vector_differences"],ensure_ascii=False))
     if report.get("pp4_functional_cohorts"):
         print("RB_PP4_FUNCTIONAL "+json.dumps([
            {"from":x["from"],"to":x["to"],
