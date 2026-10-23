@@ -35,7 +35,7 @@ function simulate(gap:number,arm:Arm){
  let connectionFirst:{pos:{x:number;y:number};angle:number}|null=null;
  let maximumRelativeError=0;
  let contactFrames=0,partWallContactFrames=0,wallContacts=0;
- let maxActorX=-Infinity,farCounter=0;
+ let maxActorX=-Infinity,farCounter=0,solverSteps=0;
  const snapshots:any[]=[];
  try{
   for(let tick=1;tick<=2400;tick++){
@@ -43,7 +43,7 @@ function simulate(gap:number,arm:Arm){
    const drive=tick<930?1:tick<1090?0:.75;
    const turn=tick<930?0:tick<1090?.85:0;
    applyE0Demand(actor,drive,turn);
-   world.step();
+   world.step();solverSteps++;
    const bodyPos=xy(actor.translation());
    maxActorX=Math.max(maxActorX,bodyPos.x);
    if(bodyPos.x>7.5)farCounter++;
@@ -97,7 +97,7 @@ function simulate(gap:number,arm:Arm){
       cargo:p&&{...p,angle:cargo.rotation()},joined:Boolean(joint)});
    }
   }
-  const result={arm,gap,steps:world.timestep===E0_DT?2400:-1,
+  const result={arm,gap,steps:solverSteps,worldStepSize:world.timestep,
     firstContactTick,linkedTick,breakTick,partStopsAt,contactFrames,
     partWallContactFrames,wallContacts,maxActorX,maxRelativeDeviation:maximumRelativeError,
     lastActor:xy(actor.translation()),lastPart:cargo?xy(cargo.translation()):null,
