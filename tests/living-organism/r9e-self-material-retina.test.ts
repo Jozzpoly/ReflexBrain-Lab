@@ -62,7 +62,7 @@ function audit(t:ReturnType<typeof init>,frame:PrivateFrame,tick:number){
    const distance=host.world.getCollider(id).castRay(ray,12,true);
    if(distance>=0&&distance<nearest){nearest=distance;handle=id;}
   }
-  const expectedRed=handle===null?.025:.74;
+  const expectedRed=handle===null ? .025 : .74;
   if(Math.abs(frame.retina[i*3]-expectedRed)>1e-4)errors++;
   if(handle===null)background++;
   else if(t.joints.has(handle))self++;
