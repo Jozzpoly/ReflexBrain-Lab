@@ -10,6 +10,7 @@ on:
       - "scripts/rb_praparat_native_graph_audit.py"
       - "scripts/rb_praparat_native_replay_repeat.py"
       - "scripts/rb_praparat_native_fixed_seed_pair.py"
+      - "scripts/rb_praparat_source_causal_sunlight.py"
       - "scripts/rb_praparat_archive_manifest.py"
       - ".github/workflows/rb-praparat-original.yml"
       - "docs/research/RB_PP0_*"
@@ -20,6 +21,7 @@ on:
       - "docs/research/RB_PP4*"
       - "docs/research/RB_PP5A_*"
       - "docs/research/RB_PP5B_*"
+      - "docs/research/RB_PP6_*"
   workflow_dispatch:
 jobs:
   original-source:
@@ -61,6 +63,8 @@ jobs:
         run: python3 scripts/rb_praparat_native_replay_repeat.py
       - name: PP5B two identical original native 240-step worlds with original documented fixed-seed mode
         run: python3 scripts/rb_praparat_native_fixed_seed_pair.py
+      - name: PP6 causal matched original world native SUN_RGB ablation at fixed seed, 240 source steps
+        run: python3 scripts/rb_praparat_source_causal_sunlight.py
       - name: Preserve compact auditable source/fixture/run report, never binary or archive
         if: always()
         uses: actions/upload-artifact@v4
