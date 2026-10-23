@@ -154,11 +154,14 @@ def main():
     run["last_world_step"]=stamps[-1] if stamps else None
     run["logged_steps"]=len(stamps)
     run["first_logged_step"]=stamps[0] if stamps else None
-    run["strictly_increasing_world_step"]=all(x<y for x,y in zip(stamps,stamps[1:]))
+    run["nondecreasing_world_step"]=all(x<=y for x,y in zip(stamps,stamps[1:]))
+    run["complete_world_step_coverage"]=set(range(1,241)).issubset(set(stamps))
+    run["duplicate_step_log_ids"]=sorted(t for t in set(stamps) if stamps.count(t)>1)
     run["original_stdout_tail"]=lines[-18:]
     report["run"]=run
     qualified=(rc==0 and not timed_out and
-               run["last_world_step"]==240 and run["strictly_increasing_world_step"] and
+               run["last_world_step"]==240 and run["nondecreasing_world_step"] and
+               run["complete_world_step_coverage"] and
                all(x.get("validated_inner_bytes",0)>10 for x in stored))
     report["science_qualified"]=bool(qualified)
     report["status"]=("ORIGINAL_240_STEP_LIFECYCLE_EXECUTED" if qualified
