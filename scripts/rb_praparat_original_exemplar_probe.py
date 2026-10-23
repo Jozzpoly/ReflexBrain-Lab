@@ -123,7 +123,8 @@ def main():
     lines=(work/"pp0_process.log").read_text(errors="replace").splitlines()
     report["run"]["original_stdout_tail"]=lines[-45:]
     world_ticks=[int(v) for v in re.findall(r"(?m)^\s*WORLD_STEP\s*=\s*(\d+)", "\n".join(lines))]
-    calc_cells=[int(v) for v in re.findall(r"(?m)^\s*CALC_CLL\s*=\s*(\d+)", "\\n".join(lines))]
+    calc_cells=[int(m.group(1)) for line in lines if
+                (m:=re.search(r"^\s*CALC_CLL\s*=\s*(\d+)",line))]
     report["run"]["last_original_world_step"]=world_ticks[-1] if world_ticks else None
     report["run"]["last_original_active_cells"]=calc_cells[-1] if calc_cells else None
     if rc==0 and not timed_out and valid_member and report["run"]["last_original_world_step"]==10:
