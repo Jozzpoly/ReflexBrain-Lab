@@ -116,5 +116,5 @@ function simulate(gap:number,arm:Arm){
  }finally{world.free();}
 }
 describe('R9 real Rapier conditional material-coupling feasibility, not artificial life',()=>{
- it.each(cases)('gap $gap / $arm',({gap,arm})=>simulate(gap,arm),180000);
+ it.each(cases)('gap $gap / $arm',({gap,arm})=>{simulate(gap,arm);},180000);
 });
