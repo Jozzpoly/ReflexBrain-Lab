@@ -100,20 +100,33 @@ def main():
     binary=ROOT/"src/praparat_cui"
     assert binary.exists(),"original compiler did not produce program"
     # The program's output can be huge; own log and store only last fragments.
-    resultfile=work/"cells1.dat"
+    resultfile=work/"cells1.dat.tar.gz"
     before=time.time()
     rc,timed_out=run_cmd(["bash","-c",
                 "ulimit -v 3145728; exec "+str(binary)],cwd=work,seconds=150)
     elapsed=time.time()-before
     report["run"]={"exit_code":rc,"timed_out":timed_out,"seconds_wall":round(elapsed,3),
-       "snapshot_exists":resultfile.exists(),
-       "snapshot_bytes":resultfile.stat().st_size if resultfile.exists() else 0}
+       "original_tar_snapshot_exists":resultfile.exists(),
+       "original_tar_snapshot_bytes":resultfile.stat().st_size if resultfile.exists() else 0}
+    valid_member=False
     if resultfile.is_file() and resultfile.stat().st_size>0:
-        report["run"]["snapshot_sha256"]=sha256(resultfile)
-        with resultfile.open("rb") as f:report["run"]["snapshot_first_100_bytes"]=repr(f.read(100))
+        report["run"]["original_tar_snapshot_sha256"]=sha256(resultfile)
+        with tarfile.open(resultfile,"r:gz") as archive:
+            members=archive.getmembers()
+            info=next((m for m in members if m.name in ("cells1.dat","./cells1.dat") and m.isfile()),None)
+            report["run"]["tar_members"]=[{"name":m.name,"bytes":m.size} for m in members[:6]]
+            if info is not None and 10<info.size<500_000_000:
+                valid_member=True
+                report["run"]["inner_original_cells_snapshot_bytes"]=info.size
+                with archive.extractfile(info) as inp:
+                    report["run"]["snapshot_first_100_bytes"]=repr(inp.read(100))
     lines=(work/"pp0_process.log").read_text(errors="replace").splitlines()
     report["run"]["original_stdout_tail"]=lines[-45:]
-    if rc==0 and not timed_out and resultfile.exists() and resultfile.stat().st_size>10:
+    world_ticks=[int(v) for v in re.findall(r"(?m)^\s*WORLD_STEP\s*=\s*(\d+)", "\n".join(lines))]
+    calc_cells=[int(v) for v in re.findall(r"(?m)^\s*CALC_CLL\s*=\s*(\d+)", "\\n".join(lines))]
+    report["run"]["last_original_world_step"]=world_ticks[-1] if world_ticks else None
+    report["run"]["last_original_active_cells"]=calc_cells[-1] if calc_cells else None
+    if rc==0 and not timed_out and valid_member and report["run"]["last_original_world_step"]==10:
         report["status"]="ORIGINAL_ENGINE_EXECUTED_PRESERVED_EXEMPLAR"
         report["science_qualified"]=True
     else:report["status"]="ORIGINAL_SOURCE_EXECUTION_INCOMPLETE"
