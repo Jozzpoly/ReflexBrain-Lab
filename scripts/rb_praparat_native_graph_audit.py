@@ -483,6 +483,69 @@ def pp4b_full_cell_vector_change(src,dst):
         "interpretation":"No outcome selection, 3 sampled original states; output equality at samples is not proof of no between-sample neural changes."
     }
 
+
+def pp4c_real_world_channel_attribution(src,dst):
+    """Source NOIU=3*8+4, first 24=cell neighbors, last4=world RGB+touch."""
+    old,new=src["cells"],dst["cells"]
+    dt=dst["t"]-src["t"]
+    age={i for i in old.keys()&new.keys() if new[i]["age"]-old[i]["age"]==dt}
+    samples={"small_connected":[],"singletons":[]}
+    for group in src["groups"]:
+        n=len(group)
+        if n>5:continue
+        if not all(i in age for i in group):continue
+        successors={dst["parents"][i] for i in group}
+        if len(successors)!=1 or set(dst["groups"][next(iter(successors))])!=set(group):continue
+        cat="singletons" if n==1 else "small_connected"
+        for i in group:
+            a,b=old[i],new[i]
+            if a["info"]!=0 or b["info"]!=0 or a["neural_flag"]!=1 or b["neural_flag"]!=1:continue
+            ia,ib=a["sensor_vector"],b["sensor_vector"]
+            oa,ob=a["effector_vector"],b["effector_vector"]
+            if len(ia)!=28 or len(ib)!=28 or len(oa)!=28 or len(ob)!=28:
+                raise ValueError("source original NOIU=28 NOOU=28 violated")
+            diff=[abs(x-y) for x,y in zip(ia,ib)]
+            output_change=max(abs(x-y) for x,y in zip(oa,ob))>1e-8
+            internal=max(diff[:24])>1e-8
+            rgb=max(diff[24:27])>1e-8
+            touch=diff[27]>1e-8
+            rgb_seen=any(abs(v)>1e-8 for v in list(ia[24:27])+list(ib[24:27]))
+            touch_seen=abs(ia[27])>1e-8 or abs(ib[27])>1e-8
+            samples[cat].append({
+              "internal_change":internal,
+              "rgb_change":rgb,"touch_change":touch,
+              "external_world_change":rgb or touch,
+              "output_change":output_change,
+              "rgb_seen_either":rgb_seen,
+              "touch_seen_either":touch_seen,
+              "internal_L1":sum(diff[:24]),
+              "incoming_RGB_L1":sum(diff[24:27]),
+              "incoming_touch_L1":diff[27],
+              "output_L1":sum(abs(x-y) for x,y in zip(oa,ob))
+            })
+    def summary(seq):
+        n=len(seq)
+        names=("internal_change","rgb_change","touch_change","external_world_change",
+          "output_change","rgb_seen_either","touch_seen_either")
+        categories=collections.Counter()
+        for r in seq:
+            cause=("internal" if r["internal_change"] else "no_internal")
+            source=("external" if r["external_world_change"] else "no_external")
+            effect=("output_changed" if r["output_change"] else "output_same")
+            categories[f"{cause}_{source}_{effect}"]+=1
+        return {"native_neural_cells":n,
+          "counts":{key:sum(bool(item[key]) for item in seq) for key in names},
+          "proportions":{key:round(sum(bool(item[key]) for item in seq)/n,6) if n else None for key in names},
+          "L1_distributions":{key:pp4_percentiles([r[key] for r in seq]) for key in
+             ("internal_L1","incoming_RGB_L1","incoming_touch_L1","output_L1")},
+          "joint_categories":dict(categories)}
+    return {"from":src["t"],"to":dst["t"],
+       "source_sensor_channel_authority":"native source IDUIO_LR=25 LG=26 LB=27 TOUCH=28; other 24 spring/neighbor",
+       "connected_2to5_exact":summary(samples["small_connected"]),
+       "exact_1cell_baseline":summary(samples["singletons"]),
+       "claim_limit":"Source-native sensor co-observation only; cannot infer causal learning, action or unobserved intersample world encounters"
+    }
+
 try:
     metadata=json.loads(AUDIT.read_text(encoding="utf-8"))
     if not metadata.get("science_qualified"):
@@ -519,6 +582,8 @@ try:
                                   for a,b in ((0,1),(1,2),(0,2))]
     report["pp4b_full_vector_differences"]=[pp4b_full_cell_vector_change(loaded[a],loaded[b])
                                   for a,b in ((0,1),(1,2),(0,2))]
+    report["pp4c_native_external_sensor_attribution"]=[pp4c_real_world_channel_attribution(loaded[a],loaded[b])
+                                  for a,b in ((0,1),(1,2),(0,2))]
     report["integrity"]={
         "source_cell_count_matches":all(x["active_count_matches_original_log"] is True for x in report["snapshots"] if x["aligned_pre_update_world_step"] is not None),
         "source_edge_count_matches":all(x["edge_count_matches_original_log"] is True for x in report["snapshots"] if x["aligned_pre_update_world_step"] is not None),
@@ -537,6 +602,9 @@ except Exception as e:
 finally:
     DEST.write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
     print("RB_PP3_LINEAGE "+json.dumps(report,ensure_ascii=False)[:17500])
+    if report.get("pp4c_native_external_sensor_attribution"):
+        print("RB_PP4C_WORLD_CHANNELS "+json.dumps(
+             report["pp4c_native_external_sensor_attribution"],ensure_ascii=False))
     if report.get("pp4b_full_vector_differences"):
         print("RB_PP4B_VECTOR "+json.dumps(report["pp4b_full_vector_differences"],ensure_ascii=False))
     if report.get("pp4_functional_cohorts"):
