@@ -123,8 +123,8 @@ function run(layout:Layout,seed:number){
   const aNow=adhesive.world.inspect(),iNow=inert.world.inspect();
   const moved=(t:Trace)=>{
    const state=t.world.inspect();
-   return state.objects.filter(o=>o.mode==='dynamic'&&initially.some(z=>z.mode==='dynamic'&&
-    Math.hypot((z.x===undefined?0:z.x)-o.x,z.y-o.y)>.20)).length;
+   return state.objects.filter((o,i)=>o.mode==='dynamic'&&
+    Math.hypot(o.x-initially[i].x,o.y-initially[i].y)>.20).length;
   };
   const wrap=(t:Trace)=>({path:+t.path.toFixed(2),joined:t.joined,broken:t.broken,
     currentlyJoined:t.joints.size,peakJoined:t.peak,configurationCount:t.configurations.size,
