@@ -6,6 +6,7 @@ on:
     paths:
       - "research/r6/**"
       - "scripts/r6_orbium_probe.py"
+      - "scripts/r6_two_pattern_world_probe.py"
       - "tests/r6_orbium_donor_test.py"
       - "tests/r6_orbium_o1_test.py"
       - "tests/r6_flow_operator_o2_test.py"
@@ -33,6 +34,8 @@ jobs:
         run: python -m scripts.r6_flow_transport_probe
       - name: Run six original-Lenia controlled perturbations and O1 variants
         run: python -m scripts.r6_orbium_probe
+      - name: Execute R10 real two-pattern shared material world with predeclared solo nulls
+        run: python -m scripts.r6_two_pattern_world_probe
       - name: Preserve numerical donor evidence
         if: always()
         uses: actions/upload-artifact@v4
