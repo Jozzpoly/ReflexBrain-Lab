@@ -175,6 +175,87 @@ def cohort_continuity(src,dst):
         sum(x["same_aged_survivors"]>0 for x in predecessors),
     }
 
+def observed_native_edges(cells):
+    """Source CCF/IOCC reciprocal physical spring edges; no synthetic IDs."""
+    edges=set()
+    for slot,cell in cells.items():
+        for flag,target in zip(cell["ccf"],cell["iocc"]):
+            if flag==1 and target in cells and target!=slot:
+                edges.add(tuple(sorted((slot,target))))
+    return edges
+
+def complete_fragment_cohort(src,dst):
+    """Every source multicell unit, no outcome filtering, no organism labels."""
+    dt=dst["t"]-src["t"]
+    old,new=src["cells"],dst["cells"]
+    survivors={i for i in (old.keys()&new.keys())
+               if new[i]["age"]-old[i]["age"]==dt}
+    bands=collections.Counter(
+      "6+" if len(g)>=6 else str(len(g)) for g in src["groups"])
+    categories=collections.Counter()
+    by_size={}
+    source_units=[g for g in src["groups"] if len(g)>=2]
+    for group in source_units:
+        src_n=len(group)
+        category="6+" if src_n>=6 else str(src_n)
+        sub=by_size.setdefault(category,collections.Counter())
+        sub["source_fragments"]+=1
+        sub["source_constituent_cells"]+=src_n
+        surviving=[v for v in group if v in survivors]
+        destination=collections.Counter(dst["parents"][v] for v in surviving)
+        remaining=len(surviving)
+        maxco=max(destination.values(),default=0)
+        # Full original membership AND no extra members in successor: very strict
+        exact=(remaining==src_n and len(destination)==1 and
+               set(dst["groups"][next(iter(destination))])==set(group))
+        labels={
+          "all_members_age_continuous":remaining==src_n,
+          "all_members_remain_together":remaining==src_n and len(destination)==1,
+          "exact_member_set_unmodified":bool(exact),
+          "coherent_core_at_least_two":maxco>=2,
+          "partial_group_cell_loss":0<remaining<src_n,
+          "all_original_cells_absent":remaining==0,
+          "survivors_distributed_across_components":len(destination)>1,
+          "all_surviving_cells_isolated":remaining>=2 and maxco==1,
+          "at_least_one_constituent_survives":remaining>0
+        }
+        for label,truth in labels.items():
+            if truth:
+                categories[label]+=1
+                sub[label]+=1
+        categories["original_multicell_fragments"]+=1
+        categories["original_multicell_cells"]+=src_n
+        categories["retained_age_continuous_multicell_cells"]+=remaining
+        sub["retained_age_continuous_cells"]+=remaining
+    edges0=observed_native_edges(old)
+    edges1=observed_native_edges(new)
+    pre_both={(a,b) for a,b in edges0 if a in survivors and b in survivors}
+    preserved=pre_both & edges1
+    # Count destination components that contain ancestors from distinct
+    # originally connected, multicell fragments. This is a diagnostic for
+    # physical recombination, not romantic organism lineage.
+    destination_sources=collections.defaultdict(set)
+    source_sizes={i:len(g) for i,g in enumerate(src["groups"])}
+    for v in survivors:
+        original=src["parents"][v]
+        if source_sizes[original]>=2:
+            destination_sources[dst["parents"][v]].add(original)
+    return {
+       "from":src["t"],"to":dst["t"],
+       "original_component_size_counts":dict(sorted(bands.items())),
+       "all_multicell_source_unit_summary":dict(categories),
+       "multicell_by_original_size":{k:dict(v) for k,v in sorted(by_size.items())},
+       "native_original_edges":len(edges0),
+       "native_later_edges":len(edges1),
+       "native_edges_whose_endpoints_age_consistent":len(pre_both),
+       "native_spring_edges_preserved":len(preserved),
+       "spring_retention_given_both_aged":round(len(preserved)/len(pre_both),6) if pre_both else None,
+       "later_components_with_descendants_from_multiple_multicell_origins":
+          sum(len(u)>1 for u in destination_sources.values()),
+       "later_multicell_components_with_any_same_aged_original_multicell_cell":
+          sum(len(dst["groups"][k])>=2 for k in destination_sources)
+    }
+
 try:
     metadata=json.loads(AUDIT.read_text(encoding="utf-8"))
     if not metadata.get("science_qualified"):
@@ -204,6 +285,8 @@ try:
         report["snapshots"].append({"step":t,**summary})
     # A host-only identity link is deliberately stricter than a recycled cell slot.
     report["cohort_transitions"]=[cohort_continuity(loaded[a],loaded[b])
+                                  for a,b in ((0,1),(1,2),(0,2))]
+    report["all_fragment_cohort_transitions"]=[complete_fragment_cohort(loaded[a],loaded[b])
                                   for a,b in ((0,1),(1,2),(0,2))]
     report["integrity"]={
         "source_cell_count_matches":all(x["active_count_matches_original_log"] is True for x in report["snapshots"] if x["aligned_pre_update_world_step"] is not None),
