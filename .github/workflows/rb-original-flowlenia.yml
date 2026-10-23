@@ -7,6 +7,7 @@ on:
       - "scripts/rb_original_flowlenia_source_replay.py"
       - "scripts/rb_original_flowlenia_embedded_P_probe.py"
       - "scripts/rb_sensorimotor_lenia_archive_index.py"
+      - "scripts/rb_sensorimotor_original_zip_index.py"
       - "docs/research/RB_FL0_*"
       - "docs/research/RB_FL1_*"
       - ".github/workflows/rb-original-flowlenia.yml"
@@ -43,6 +44,8 @@ jobs:
         run: python scripts/rb_original_flowlenia_embedded_P_probe.py
       - name: Check external authored sensorimotor-state record catalog, metadata only
         run: python scripts/rb_sensorimotor_lenia_archive_index.py
+      - name: Check accessible archive central index via small safe HTTP byte ranges
+        run: python scripts/rb_sensorimotor_original_zip_index.py
       - name: Preserve unedited measured source evidence
         if: always()
         uses: actions/upload-artifact@v4
