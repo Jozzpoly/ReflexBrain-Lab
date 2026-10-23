@@ -10,16 +10,16 @@ from __future__ import annotations
 import hashlib, json, os, pathlib, re, subprocess, tarfile, time
 ROOT=pathlib.Path("/tmp/openpraparat-original")
 ARCHIVE=ROOT/"examples.tar.gz"
-TARGET="examples/01dumbbell_shaped/01normal"
-MAX_TOTAL=300_000_000
-MAX_SELECTED=160_000_000
-MAX_FILE=70_000_000
+TARGET="examples/02reticulated/02fix"
+MAX_TOTAL=1_100_000_000
+MAX_SELECTED=90_000_000
+MAX_FILE=50_000_000
 AUDIT=pathlib.Path("artifacts/praparat/pp0_original_exemplar_audit.json")
 AUDIT.parent.mkdir(parents=True,exist_ok=True)
 EXPECTED_SHA="e9e105d48ab597612d1749a5f169663559b12287"
 report={"protocol":"docs/research/RB_PP0_ORIGINAL_PRAPARAT_EXEMPLAR_ARMED_2026-10-23.md",
         "upstream_repo":"A5size/OpenPraparat","upstream_sha":EXPECTED_SHA,
-        "physics_source_edited":False, "science_qualified":False,"status":"not_started"}
+        "physics_source_edited":False, "science_qualified":False,"status":"not_started","fixture_reason":"published 02fix under 90MB size cap; not an unassisted organism control"}
 def sha256(path):
     h=hashlib.sha256()
     with open(path,"rb") as f:
@@ -38,7 +38,7 @@ def main():
     assert got==EXPECTED_SHA,(got,EXPECTED_SHA)
     assert ARCHIVE.is_file()
     report["archive"]={"bytes":ARCHIVE.stat().st_size,"sha256":sha256(ARCHIVE)}
-    work=pathlib.Path("/tmp/pp0-preserved-dumbbell")
+    work=pathlib.Path("/tmp/pp0-preserved-reticulated-fixed")
     work.mkdir(parents=True,exist_ok=True)
     raw=[]
     selected=[]
@@ -54,12 +54,12 @@ def main():
             if member.isfile():
                 if member.size>MAX_FILE: raise ValueError("archive file exceeds single-file bound "+name)
                 total+=member.size
-                if total>MAX_TOTAL:raise ValueError("original archive expands beyond 300 MB")
+                if total>MAX_TOTAL:raise ValueError("original archive has >1.1GB metadata uncompressed")
             raw.append({"name":name,"bytes":member.size,"type":"file" if member.isfile() else "directory"})
             if name==TARGET or name.startswith(TARGET+"/"):
                 selected.append(member)
                 if member.isfile():chosen+=member.size
-                if chosen>MAX_SELECTED:raise ValueError("selected original folder expands >160MB")
+                if chosen>MAX_SELECTED:raise ValueError("selected original folder expands >90MB")
         assert len(selected)>0,"original author sample folder absent"
         assert chosen>0
         for member in selected:
