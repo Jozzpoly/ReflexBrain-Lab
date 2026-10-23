@@ -5,10 +5,12 @@ on:
       - research/rb-r6-developmental-substrates-2026-10-22
     paths:
       - "scripts/rb_praparat_original_exemplar_probe.py"
+      - "scripts/rb_praparat_original_normal_probe.py"
       - "scripts/rb_praparat_archive_manifest.py"
       - ".github/workflows/rb-praparat-original.yml"
       - "docs/research/RB_PP0_*"
       - "docs/research/RB_PP0A_*"
+      - "docs/research/RB_PP1_*"
   workflow_dispatch:
 jobs:
   original-source:
@@ -40,6 +42,8 @@ jobs:
         run: python3 scripts/rb_praparat_archive_manifest.py
       - name: Run exactly author's original 02fix source exemplar for bounded 10 steps
         run: python3 scripts/rb_praparat_original_exemplar_probe.py
+      - name: PP1 test one original NORMAL 435MB dumbbell state for exactly 10 steps
+        run: python3 scripts/rb_praparat_original_normal_probe.py
       - name: Preserve compact auditable source/fixture/run report, never binary or archive
         if: always()
         uses: actions/upload-artifact@v4
