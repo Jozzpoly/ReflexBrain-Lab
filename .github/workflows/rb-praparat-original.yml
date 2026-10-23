@@ -1,34 +1,16 @@
-name: "ReflexBrain PP0 / Original Praparat Headless Exemplar"
+name: "RB Praparat / Current Native Material Causality"
 on:
   pull_request:
     branches:
       - research/rb-r6-developmental-substrates-2026-10-22
     paths:
-      - "scripts/rb_praparat_original_exemplar_probe.py"
-      - "scripts/rb_praparat_original_normal_probe.py"
       - "scripts/rb_praparat_original_lifecycle_probe.py"
       - "scripts/rb_praparat_native_graph_audit.py"
-      - "scripts/rb_praparat_native_replay_repeat.py"
       - "scripts/rb_praparat_native_fixed_seed_pair.py"
-      - "scripts/rb_praparat_source_causal_sunlight.py"
-      - "scripts/rb_praparat_sunlight_matched_cells.py"
-      - "scripts/rb_praparat_zero_sun_info_finiteness.py"
       - "scripts/rb_praparat_source_causal_half_light.py"
       - "scripts/rb_praparat_half_sun_matched_cells.py"
       - "scripts/rb_praparat_archive_manifest.py"
       - ".github/workflows/rb-praparat-original.yml"
-      - "docs/research/RB_PP0_*"
-      - "docs/research/RB_PP0A_*"
-      - "docs/research/RB_PP1_*"
-      - "docs/research/RB_PP2_*"
-      - "docs/research/RB_PP3_*"
-      - "docs/research/RB_PP4*"
-      - "docs/research/RB_PP5A_*"
-      - "docs/research/RB_PP5B_*"
-      - "docs/research/RB_PP6_*"
-      - "docs/research/RB_PP6B_*"
-      - "docs/research/RB_PP6C_*"
-      - "docs/research/RB_PP6D_*"
   workflow_dispatch:
 jobs:
   original-source:
@@ -39,51 +21,39 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare headless native original compiler
+      - name: Prepare unchanged original native Fortran source compiler
         run: |
           if ! command -v gfortran >/dev/null; then
             sudo apt-get -qq update
             sudo apt-get -qq install -y gfortran
           fi
           gfortran --version | head -1
-      - name: Fetch immutable original OpenPraparat source and its author's preserved example archive
+      - name: Fetch and SHA-gate pinned original author's source and archive
         run: |
           git clone --depth=1 -q https://github.com/A5size/OpenPraparat.git /tmp/openpraparat-original
           test "$(git -C /tmp/openpraparat-original rev-parse HEAD)" = "e9e105d48ab597612d1749a5f169663559b12287"
           test -f /tmp/openpraparat-original/examples.tar.gz
           test -s /tmp/openpraparat-original/src/praparat.f90
-      - name: Compile unmodified original Fortran headless executable
+      - name: Compile unchanged author Fortran headless executable
         run: |
           make -C /tmp/openpraparat-original/src praparat_cui
           test -x /tmp/openpraparat-original/src/praparat_cui
-      - name: Index original archive safely before extracting only the predeclared 58MB specimen
+      - name: Audit author archive metadata and safety caps
         run: python3 scripts/rb_praparat_archive_manifest.py
-      - name: Run exactly author's original 02fix source exemplar for bounded 10 steps
-        run: python3 scripts/rb_praparat_original_exemplar_probe.py
-      - name: PP1 test one original NORMAL 435MB dumbbell state for exactly 10 steps
-        run: python3 scripts/rb_praparat_original_normal_probe.py
-      - name: PP2 longer original 240-step no-edit lifecycle at frozen native 80-step snapshots
+      - name: PP2 replay original normal source world 240 genuine steps with 3 native state snapshots
         run: python3 scripts/rb_praparat_original_lifecycle_probe.py
-      - name: PP3 stream original 42-field cell graph and age-consistent cohort across same native PP2 snapshots
+      - name: PP3-PP4B audit original native age, connected fragments and true 28-D neuron vectors
         run: python3 scripts/rb_praparat_native_graph_audit.py
-      - name: PP5A verify repeatability of exact unmodified 240-step original world from same saved start
-        run: python3 scripts/rb_praparat_native_replay_repeat.py
-      - name: PP5B two identical original native 240-step worlds with original documented fixed-seed mode
+      - name: PP5B duplicate frozen author world to verify exact fixed-seed replay
         run: python3 scripts/rb_praparat_native_fixed_seed_pair.py
-      - name: PP6 causal matched original world native SUN_RGB ablation at fixed seed, 240 source steps
-        run: python3 scripts/rb_praparat_source_causal_sunlight.py
-      - name: PP6B same-age native physical cells matched across source sunlit and dark saved states
-        run: python3 scripts/rb_praparat_sunlight_matched_cells.py
-      - name: PP6C source-native zero-light information particle NaN/Inf falsifier (no added steps)
-        run: python3 scripts/rb_praparat_zero_sun_info_finiteness.py
-      - name: PP6D original numeric-safe 50-percent emitted light, one matching author-world A/B
+      - name: PP6D one nonzero 50-percent light source-native world intervention and finite-value gate
         run: python3 scripts/rb_praparat_source_causal_half_light.py
-      - name: PP6E same physically-aged cells read-only under nonzero half-light
+      - name: PP6E read-only same-native-cell sensory, energy and physical differences
         run: python3 scripts/rb_praparat_half_sun_matched_cells.py
-      - name: Preserve compact auditable source/fixture/run report, never binary or archive
+      - name: Preserve compact scientific JSON evidence, never the enormous original snapshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rb-pp0-published-original-engine-audit
+          name: rb-praparat-qualified-material-research
           path: artifacts/praparat/*.json
           if-no-files-found: ignore
