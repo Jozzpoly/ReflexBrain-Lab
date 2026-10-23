@@ -5,6 +5,7 @@ on:
       - research/rb-r6-developmental-substrates-2026-10-22
     paths:
       - "scripts/rb_praparat_original_exemplar_probe.py"
+      - "scripts/rb_praparat_archive_manifest.py"
       - ".github/workflows/rb-praparat-original.yml"
       - "docs/research/RB_PP0_*"
   workflow_dispatch:
@@ -34,8 +35,8 @@ jobs:
         run: |
           make -C /tmp/openpraparat-original/src praparat_cui
           test -x /tmp/openpraparat-original/src/praparat_cui
-      - name: Extract only author's published dumbbell exemplar and execute 10 bounded original updates
-        run: python3 scripts/rb_praparat_original_exemplar_probe.py
+      - name: Size-gate published archive first; do not extract until member sizes are qualified
+        run: python3 scripts/rb_praparat_archive_manifest.py
       - name: Preserve compact auditable source/fixture/run report, never binary or archive
         if: always()
         uses: actions/upload-artifact@v4
