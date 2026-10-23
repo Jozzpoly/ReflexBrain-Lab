@@ -1,0 +1,45 @@
+name: "ReflexBrain PP0 / Original Praparat Headless Exemplar"
+on:
+  pull_request:
+    branches:
+      - research/rb-r6-developmental-substrates-2026-10-22
+    paths:
+      - "scripts/rb_praparat_original_exemplar_probe.py"
+      - ".github/workflows/rb-praparat-original.yml"
+      - "docs/research/RB_PP0_*"
+  workflow_dispatch:
+jobs:
+  original-source:
+    if: github.event_name != 'pull_request' || github.head_ref == 'research/rb-praparat-source-exemplar-audit-2026-10-23'
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare headless native original compiler
+        run: |
+          if ! command -v gfortran >/dev/null; then
+            sudo apt-get -qq update
+            sudo apt-get -qq install -y gfortran
+          fi
+          gfortran --version | head -1
+      - name: Fetch immutable original OpenPraparat source and its author's preserved example archive
+        run: |
+          git clone --depth=1 -q https://github.com/A5size/OpenPraparat.git /tmp/openpraparat-original
+          test "$(git -C /tmp/openpraparat-original rev-parse HEAD)" = "e9e105d48ab597612d1749a5f169663559b12287"
+          test -f /tmp/openpraparat-original/examples.tar.gz
+          test -s /tmp/openpraparat-original/src/praparat.f90
+      - name: Compile unmodified original Fortran headless executable
+        run: |
+          make -C /tmp/openpraparat-original/src praparat_cui
+          test -x /tmp/openpraparat-original/src/praparat_cui
+      - name: Extract only author's published dumbbell exemplar and execute 10 bounded original updates
+        run: python3 scripts/rb_praparat_original_exemplar_probe.py
+      - name: Preserve compact auditable source/fixture/run report, never binary or archive
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rb-pp0-published-original-engine-audit
+          path: artifacts/praparat/*.json
+          if-no-files-found: ignore
