@@ -16,7 +16,7 @@ const finite=(x:number)=>Number.isFinite(x);
 
 function createWorld(){
  const w=new LivingWorld(false,'B0');
- for(const p of PARTS)w.addMaterialPart(...p);
+ for(const p of PARTS)w.addMaterialPart(p[0],p[1],p[2],p[3],p[4]);
  return w;
 }
 function descriptors(w:LivingWorld){
