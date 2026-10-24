@@ -151,11 +151,11 @@ describe('RB-R13: real altered matter versus actor private learning history',()=
      forksBefore.push({variant,bytes:start.physics,frame:sample,
        actor:w.inspect().actor,active:seeded.capture().active,
        learned:seeded.capture().learnedTrials});
+     const learnedAtFork=seeded.capture().learnedTrials;
      const trace=new HostTrace(origin,pre);
      const future=advance(w,seeded,FORK,trace);
      const end=trace.report(w);
-     forks.push({variant,initialLearned:seeded.capture().learnedTrials, // after future; label corrected below
-      first30s:pre.report(source),future,final:end,
+     forks.push({variant,learnedAtFork,future,final:end,
       learnedAfter:seeded.capture().learnedTrials,chosenAfter:seeded.capture().chosen});
     }finally{w.free();}
    }
