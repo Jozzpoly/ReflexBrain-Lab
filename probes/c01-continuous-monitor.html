@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReflexBrain • C01 | Private Time, Real World</title>
+<style>
+:root{color-scheme:dark;--bg:#080e17;--panel:#111b2a;--panel2:#0e1724;--edge:#26364a;--ink:#e6effc;--sub:#aabbd0;--muted:#8397b0;--cyan:#72e5e0;--amber:#ffd08a;--green:#8de5a4;--pink:#f6a4b5;--blue:#93b9ff}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse 1100px 600px at 28% -10%,#152e42 0%,transparent 62%),var(--bg);color:var(--ink);font:14px/1.48 system-ui,-apple-system,Segoe UI,sans-serif}
+header,main,footer{max-width:1250px;margin:auto;padding-inline:clamp(15px,3vw,38px)}
+header{padding-top:30px;padding-bottom:17px}
+a{color:var(--cyan);text-underline-offset:3px}
+.crumb{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--cyan)}
+h1{font-size:clamp(26px,3vw,41px);line-height:1.13;letter-spacing:-.04em;margin:13px 0 11px}
+.intro{max-width:830px;color:var(--sub);font-size:15px;line-height:1.65;margin:0 0 14px}
+.chips{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0 4px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.06em;border:1px solid var(--edge);background:#142334;border-radius:999px;padding:5px 11px;color:var(--sub);font-weight:700}
+.chip.good{color:var(--green);border-color:#34554a}.chip.warn{color:var(--amber);border-color:#5e4835}
+.controls{background:linear-gradient(130deg,#152337,#101b2b);border:1px solid var(--edge);border-radius:14px;padding:15px 17px;margin:10px 0 19px;display:grid;grid-template-columns:auto auto auto minmax(150px,1fr) auto;gap:12px;align-items:center}
+button,select{background:#20334a;border:1px solid #3e536b;border-radius:8px;color:var(--ink);padding:9px 12px;font:inherit;cursor:pointer}
+button:hover{background:#2b435f}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+button.primary{background:#1f5c69;border-color:#328395;font-weight:700}
+input[type=range]{accent-color:var(--cyan);width:100%}
+label{color:var(--sub);font-size:12px}
+.time{font-variant-numeric:tabular-nums;min-width:97px;text-align:right;color:var(--cyan);font-weight:750;font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.case{background:linear-gradient(145deg,var(--panel),#101723);border:1px solid var(--edge);border-radius:15px;overflow:hidden;min-width:0}
+.case-top{display:flex;justify-content:space-between;gap:9px;align-items:start;padding:16px 17px 10px}
+.case h2{font-size:16px;margin:0 0 4px;letter-spacing:-.02em}
+.case-caption{font-size:12px;color:var(--muted)}
+.phase{font-size:10px;letter-spacing:.09em;text-transform:uppercase;font-weight:800;background:#233047;border:1px solid #364965;border-radius:20px;padding:5px 9px;white-space:nowrap}
+.phase.PATROL{color:var(--blue)}.phase.CHECK{color:var(--amber);border-color:#6e583e}.phase.REOBSERVED{color:var(--green);border-color:#3c664f}.phase.UNRESOLVED{color:var(--pink)}.phase.QUIET{color:var(--muted)}
+.canvas-wrap{padding:0 10px}
+canvas{display:block;width:100%;height:auto;aspect-ratio:2/1.12;background:#0a1320;border:1px solid #243348;border-radius:9px}
+.data{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:12px 16px 16px;border:1px solid #29394b;border-radius:10px;overflow:hidden}
+.data-col{padding:10px 12px;min-width:0}
+.data-col+.data-col{border-left:1px solid #29394b;background:#0d1623}
+.dtitle{font-size:10px;letter-spacing:.11em;color:var(--cyan);font-weight:800;margin-bottom:7px}
+.data-col+.data-col .dtitle{color:var(--amber)}
+.readout{font-size:12px;color:var(--sub);min-height:63px;line-height:1.7}
+.readout strong{color:var(--ink);font-weight:650}
+.inset{font-variant-numeric:tabular-nums}
+.note{border-top:1px solid var(--edge);margin-top:23px;padding-top:19px;color:var(--sub);line-height:1.65}
+.note h3{color:var(--ink);font-size:15px;margin:0 0 6px}
+.note p{max-width:940px;margin:5px 0}
+.key{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:5px 0 0;font-size:12px;color:var(--muted)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-inline:5px 1px}
+footer{padding-top:25px;padding-bottom:35px;color:var(--muted);font-size:12px}
+#boot-error{display:none;color:var(--pink);margin:10px 0;border:1px solid #674753;padding:12px;border-radius:8px}
+@media(max-width:880px){.grid{grid-template-columns:1fr}.controls{grid-template-columns:auto auto auto 1fr}.time{grid-column:4;grid-row:2}.controls input{grid-column:1/-1;grid-row:2}}
+@media(max-width:480px){.controls{gap:7px}.controls button,.controls select{padding:8px 9px}.case-top{padding:14px 13px 9px}.data{margin-inline:12px}.data-col{padding:9px}}
+</style>
+</head>
+<body>
+<header>
+<div class="crumb"><a href="../index.html">ReflexBrain Lab</a> / C01 · observation surface</div>
+<h1>Private time. Real consequences.</h1>
+<p class="intro">Cztery synchronizowane przebiegi <strong>tej samej fizyki</strong>. Obiekt znika z prywatnego P0, a świat może zmienić się za przeszkodą. Prostemu kontrolerowi nie przekazujemy chwili zmiany. Jego decyzja o sprawdzeniu zależy wyłącznie od czasu od ostatniej własnej obserwacji.</p>
+<div class="chips">
+<span class="chip good">C01 · mechanistic PASS</span>
+<span class="chip">4 synchronized worlds</span>
+<span class="chip warn">Authored control · NOT an organism</span>
+<span class="chip">Deterministic replay generated in browser</span>
+</div>
+</header>
+<main>
+<div class="controls" aria-label="Sterowanie odtwarzaniem">
+<button id="play" class="primary" type="button">▶ Play</button>
+<button id="reset" type="button">↺ Reset</button>
+<select id="speed" aria-label="Szybkość">
+<option value=".5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option>
+</select>
+<input id="seek" type="range" min="0" max="360" value="0" step="1" aria-label="Tick symulacji">
+<div id="time" class="time">000 / 360</div>
+</div>
+<div id="boot-error" role="alert"></div>
+<div id="cases" class="grid" aria-live="off"></div>
+<section class="note">
+<h3>Jak czytać ten eksperyment</h3>
+<p><strong>MICROSCOPE</strong> zna fizyczną pozycję ukrytego obiektu i moment impulsu. <strong>ACTOR PRIVATE</strong> zawiera tylko aktualny body-relative blob, odometrię, prywatny zegar i ostatni legalny odczyt. Informacja o impulsie nigdy nie trafia do kontrolera.</p>
+<p>Kolorowy promień pojawia się tylko przy aktualnym legalnym P0; historia nie jest rysowana jako aktualna pozycja obiektu. CHECK to jawnie zaprogramowany obowiązek monitorowania, nie dowód percepcji tożsamości, samodzielnych potrzeb ani życia.</p>
+<div class="key"><span class="dot" style="background:#93b9ff"></span> ciało B0 <span class="dot" style="background:#72e5e0"></span> obiekt dynamiczny <span class="dot" style="background:#ffd08a"></span> legalny odczyt P0 <span class="dot" style="background:#f6a4b5"></span> interwencja świata (microscope)</div>
+</section>
+</main>
+<footer>Evidence: <a href="https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/pre-o0-foundations-campaign/docs/runs/OCTRL-C01_RESULT.md">C01 result</a> · <a href="https://github.com/Jozzpoly/ReflexBrain-Lab/pull/18">PR #18</a> · Unqualified for life, learning, identity, G1–G5 or Owner experiential claims.</footer>
+<script type="module">
+import { initE0Rapier } from '../src/e0-body-seam.ts';
+import { runC01Campaign, C01_TOTAL_TICKS } from '../src/c01-private-evidence-monitor.ts';
+
+const descriptors=[
+  {k:'early',name:'Early hidden change',meta:'World impulse at tick 95',tone:'#ec9cae'},
+  {k:'late',name:'Late hidden change',meta:'World impulse at tick 155',tone:'#e9c184'},
+  {k:'staticWorld',name:'Static world',meta:'No external impulse',tone:'#8cc1f0'},
+  {k:'ablated',name:'Memory ablation',meta:'Same World as Late · no stored last-seen',tone:'#bcabdf'}
+];
+const cases=document.querySelector('#cases');
+for(const d of descriptors){
+ const panel=document.createElement('section');
+ panel.className='case';panel.innerHTML=`
+ <div class="case-top"><div><h2>${d.name}</h2><div class="case-caption">${d.meta}</div></div><span class="phase" id="mode-${d.k}">INIT</span></div>
+ <div class="canvas-wrap"><canvas id="canvas-${d.k}" aria-label="Świat fizyczny i aktualny odczyt P0: ${d.name}"></canvas></div>
+ <div class="data">
+ <div class="data-col"><div class="dtitle">ACTOR PRIVATE</div><div class="readout inset" id="private-${d.k}">Loading…</div></div>
+ <div class="data-col"><div class="dtitle">MICROSCOPE ONLY</div><div class="readout inset" id="world-${d.k}">Loading…</div></div>
+ </div>`;
+ cases.append(panel);
+}
+const status=document.querySelector('#boot-error'), seek=document.querySelector('#seek'),time=document.querySelector('#time');
+const play=document.querySelector('#play'),reset=document.querySelector('#reset'),speed=document.querySelector('#speed');
+let campaign=null, tick=0,playing=false,lastTs=0,carry=0;
+const fmt=(x,n=2)=>x===null||x===undefined?'—':Number(x).toFixed(n);
+function draw(canvas, trace, at, descriptor){
+ const ctx=canvas.getContext('2d');
+ const rect=canvas.getBoundingClientRect();
+ const w=Math.max(220,rect.width),h=Math.max(130,rect.height),dpr=Math.min(devicePixelRatio||1,2);
+ if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){
+   canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
+ }
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ ctx.clearRect(0,0,w,h);
+ const scale=Math.min((w-32)/12,(h-26)/7);
+ const X=x=>w/2+(x-1)*scale,Y=y=>h/2-(y-.5)*scale;
+ // A reference grid is research-world instrumentation.
+ ctx.strokeStyle='#1e2f45';ctx.lineWidth=.7;
+ for(let x=-5;x<=7;x++){ctx.beginPath();ctx.moveTo(X(x),0);ctx.lineTo(X(x),h);ctx.stroke();}
+ for(let y=-3;y<=4;y++){ctx.beginPath();ctx.moveTo(0,Y(y));ctx.lineTo(w,Y(y));ctx.stroke();}
+ ctx.fillStyle='#31465f';ctx.fillRect(X(-.16),Y(1.5),.32*scale,3*scale);
+ ctx.strokeStyle='#60758e';ctx.lineWidth=1.2;ctx.strokeRect(X(-.16),Y(1.5),.32*scale,3*scale);
+ // World-trajectory trace (research-only, not actor belief).
+ ctx.strokeStyle='rgba(147,185,255,.22)';ctx.lineWidth=1.5;
+ ctx.beginPath();for(let i=0;i<=at;i++){let p=trace[i].actor; i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y));}ctx.stroke();
+ const r=trace[at];
+ const target=r.target,actor=r.actor;
+ // The physical target is always rendered in researcher World view.
+ ctx.beginPath();ctx.arc(X(target.x),Y(target.y),.35*scale,0,Math.PI*2);
+ ctx.fillStyle='#72e5e0';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle='#215c68';ctx.stroke();
+ if(r.externalImpulseApplied){
+   ctx.fillStyle='#f6a4b5';ctx.font='bold 11px system-ui';ctx.fillText('WORLD IMPULSE',X(target.x)+13,Y(target.y)-16);
+ }
+ const blob=r.privateFrame.blobs[0];
+ if(blob){
+   ctx.beginPath();ctx.moveTo(X(actor.x),Y(actor.y));
+   const a=actor.rotation+blob.bearing;
+   ctx.lineTo(X(actor.x+Math.cos(a)*blob.range),Y(actor.y+Math.sin(a)*blob.range));
+   ctx.strokeStyle='#ffd08a';ctx.lineWidth=2;ctx.setLineDash([7,4]);ctx.stroke();ctx.setLineDash([]);
+ }
+ ctx.beginPath();ctx.arc(X(actor.x),Y(actor.y),1*scale,0,Math.PI*2);
+ ctx.fillStyle='#223e64';ctx.fill();ctx.strokeStyle='#93b9ff';ctx.lineWidth=2.4;ctx.stroke();
+ ctx.beginPath();ctx.moveTo(X(actor.x),Y(actor.y));ctx.lineTo(X(actor.x+Math.cos(actor.rotation)*.9),Y(actor.y+Math.sin(actor.rotation)*.9));
+ ctx.strokeStyle='#dce9ff';ctx.lineWidth=3;ctx.stroke();
+ ctx.font='bold 11px system-ui';ctx.fillStyle='#d5e6fb';ctx.fillText('B0',X(actor.x)-9,Y(actor.y)+4);
+ ctx.fillStyle='#7d91ac';ctx.font='10px system-ui';ctx.fillText('RESEARCH / WORLD VIEW',12,15);
+}
+function paint(){
+ if(!campaign)return;
+ time.textContent=String(tick).padStart(3,'0')+' / '+C01_TOTAL_TICKS;
+ seek.value=String(tick);
+ for(const d of descriptors){
+  const run=campaign[d.k],r=run.trace[tick],m=r.privateState,blob=r.privateFrame.blobs[0];
+  const age=m.lastSeen?m.privateTick-m.lastSeen.privateTick:null;
+  const badge=document.querySelector('#mode-'+d.k);badge.textContent=m.mode;badge.className='phase '+m.mode;
+  const statusText=blob?'LIVE P0 · range '+fmt(blob.range):'NO LIVE EXTERNAL BLOB';
+  document.querySelector('#private-'+d.k).innerHTML=
+   '<strong>'+statusText+'</strong><br>'+
+   'last legal tick: <strong>'+(m.lastSeen?m.lastSeen.privateTick:'—')+'</strong> · age: <strong>'+(age??'—')+'</strong><br>'+
+   'self-odom: '+fmt(m.bodyOdom)+' · motor: '+fmt(r.demand,0);
+  const applied=run.worldEventTick===null?'none':run.worldEventTick<=tick?('tick '+run.worldEventTick+' · happened'):'tick '+run.worldEventTick+' · future';
+  document.querySelector('#world-'+d.k).innerHTML=
+   'target pos: <strong>('+fmt(r.target.x)+', '+fmt(r.target.y)+')</strong><br>'+
+   'hidden impulse: <strong>'+applied+'</strong><br>'+
+   'first CHECK: <strong>'+(run.firstCheckTick!==null&&tick>=run.firstCheckTick?run.firstCheckTick:'—')+'</strong> · new blob: '+(run.firstReobservedTick!==null&&tick>=run.firstReobservedTick?run.firstReobservedTick:'—');
+  draw(document.querySelector('#canvas-'+d.k),run.trace,tick,d);
+ }
+}
+function setPlay(value){playing=value;play.textContent=value?'Ⅱ Pause':'▶ Play';lastTs=0;carry=0;}
+function advance(dt){
+ if(!playing||!campaign)return;
+ carry+=Math.min(dt,150)*40*Number(speed.value)/1000;
+ const steps=Math.floor(carry);carry-=steps;
+ if(steps>0){tick=Math.min(C01_TOTAL_TICKS,tick+steps);paint();}
+ if(tick>=C01_TOTAL_TICKS)setPlay(false);
+}
+function frame(ts){if(lastTs!==0)advance(ts-lastTs);lastTs=ts;requestAnimationFrame(frame);}
+play.addEventListener('click',()=>{if(tick===C01_TOTAL_TICKS)tick=0;setPlay(!playing);paint();});
+reset.addEventListener('click',()=>{setPlay(false);tick=0;paint();});
+seek.addEventListener('input',()=>{setPlay(false);tick=Number(seek.value);paint();});
+window.addEventListener('resize',()=>{if(campaign)paint();});
+try {
+ await initE0Rapier();
+ campaign=runC01Campaign(true);
+ if(campaign.outcome!=='PASS')throw new Error('The frozen scientific replay did not PASS: '+campaign.reasons.join(' · '));
+ paint();requestAnimationFrame(frame);setPlay(true);
+}catch(e){
+ status.style.display='block';status.textContent='Nie można uruchomić replay: '+String(e);
+ play.disabled=true;seek.disabled=true;
+}
+</script>
+</body>
+</html>

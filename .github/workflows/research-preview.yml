@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - experiment/organism-recovery-v0
+      - research/pre-o0-foundations-campaign
   workflow_dispatch:
 
 permissions:
@@ -25,6 +26,63 @@ jobs:
           node-version: 22
       - run: yarn install --non-interactive
       - run: yarn run check
+      - name: Protect the existing Pages root before adding a separate playmat
+        run: |
+          test -f dist/index.html
+          test -f dist/probes/owner-field-lab.html
+          test ! -e dist/playmat-s0
+          sha256sum dist/index.html dist/probes/owner-field-lab.html > /tmp/rb-original-page-hashes
+      - name: Checkout exact frozen lightweight S0 playmat donor (read-only)
+        uses: actions/checkout@v4
+        with:
+          ref: 6aa5612c24ecd485829488997b1fcb2ca312a5bb
+          path: _s0_source
+          persist-credentials: false
+      - name: Install only the isolated demo dependencies
+        working-directory: _s0_source/playmat-lite
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Compile the static demo separately
+        working-directory: _s0_source/playmat-lite
+        run: npm run check
+      - name: Add S0 beneath /playmat-s0 without changing other Pages routes
+        run: |
+          mkdir -p dist/playmat-s0
+          cp -R _s0_source/playmat-lite/dist/. dist/playmat-s0/
+          sha256sum -c /tmp/rb-original-page-hashes
+          test -f dist/playmat-s0/index.html
+          test -n "$(find dist/playmat-s0/assets -type f -name '*.js' -print -quit)"
+          if grep -E 'src/living-organism|\.\./evidence|/probes/material-organism.html' dist/playmat-s0/index.html; then
+            echo "Static bundle still depends on the source corpus"; exit 1
+          fi
+          echo "Existing root SHA preserved; additive S0 static bundle is ready."
+      - name: Protect all existing published files before adding a separate WORLD-only D1 demo
+        run: |
+          test -f dist/index.html
+          test -f dist/playmat-s0/index.html
+          test -f dist/probes/owner-field-lab.html
+          test ! -e dist/world-d1
+          find dist -type f -print0 | sort -z | xargs -0 sha256sum > /tmp/old-public-files
+      - name: Checkout pinned isolated WORLD D1 research donor
+        uses: actions/checkout@v4
+        with:
+          ref: 7ae501483974181b25516dee4c7ffbf273c94811
+          path: _d1_source
+          persist-credentials: false
+      - name: Build D1 research donor independently, with existing S0 untouched
+        working-directory: _d1_source
+        run: |
+          yarn install --non-interactive
+          yarn run build
+          test -f dist/probes/world-ecology-d1.html
+      - name: Add WORLD D1 under its own public route and enforce existing file checksum parity
+        run: |
+          mkdir -p dist/world-d1
+          cp _d1_source/dist/probes/world-ecology-d1.html dist/world-d1/index.html
+          cp -R _d1_source/dist/assets/. dist/assets/
+          sha256sum -c /tmp/old-public-files
+          test -f dist/world-d1/index.html
+          grep -q '../assets/' dist/world-d1/index.html
+          echo "All pre-existing Pages bytes unchanged; D1 is purely additive."
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
@@ -40,3 +98,28 @@ jobs:
       - name: Deploy branch preview
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify public S0 path without conflating it with runtime quality
+        run: |
+          URL="https://jozzpoly.github.io/ReflexBrain-Lab/playmat-s0/"
+          echo "Checking public Pages route: $URL"
+          for i in {1..30}; do
+            if curl --fail --silent --show-error "$URL" -o /tmp/rb-s0-public-index.html &&
+               grep -q 'REFLEXBRAIN' /tmp/rb-s0-public-index.html; then
+              echo "Static public route confirmed"; exit 0
+            fi
+            sleep 4
+          done
+          echo "Pages published but independent public readback did not qualify."
+          exit 1
+      - name: Check separate public WORLD D1 mechanics-only preview readback
+        run: |
+          URL="https://jozzpoly.github.io/ReflexBrain-Lab/world-d1/"
+          for i in {1..30}; do
+            if curl --fail --silent --show-error "$URL" -o /tmp/rb-d1-public-index.html &&
+               grep -q 'WORLD D1' /tmp/rb-d1-public-index.html; then
+              echo "Public mechanics-only D1 HTML readback PASS"; exit 0
+            fi
+            sleep 4
+          done
+          echo "Cannot validate public D1 HTML readback"
+          exit 1

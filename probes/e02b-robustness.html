@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ReflexBrain OCTRL-E02b — Robustness Qualification</title>
+<style>
+html,body{margin:0;min-height:100%;background:#0d1117;color:#d8e0e8;font:14px/1.45 system-ui,sans-serif}
+main{max-width:1120px;margin:0 auto;padding:28px}
+h1{font-size:20px;margin:0 0 8px} p{color:#aebbc8}
+.good{color:#89e39f}.bad{color:#ff8f8f}
+table{width:100%;border-collapse:collapse;margin-top:18px;background:#111820}
+th,td{padding:9px 10px;border:1px solid #2a333e;text-align:right;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+th{background:#18212a;color:#c8d5e0}
+code{background:#171d25;padding:2px 5px;border-radius:4px}
+pre{white-space:pre-wrap;background:#0b1015;border:1px solid #28323c;padding:12px;border-radius:6px}
+</style>
+</head>
+<body>
+<main>
+<h1>OCTRL-E02b — Composition Robustness / Anti-Fixture</h1>
+<p>Frozen E02a mechanism. Predeclared initial blocker-position cases only. No retuning, no new dynamics.</p>
+<div id="status">Running frozen qualification…</div>
+<table>
+<thead>
+<tr>
+<th>case</th><th>start x</th><th>start y</th><th>held-out</th><th>PASS</th><th>det.</th><th>contact</th><th>open</th><th>no-contact</th><th>disp.</th><th>persist OPEN</th>
+</tr>
+</thead>
+<tbody id="rows"></tbody>
+</table>
+<h2>Campaign summary</h2>
+<pre id="summary"></pre>
+<script type="module">
+import { initE02bRapier, runE02bCampaign } from '../src/e02b-robustness.ts';
+
+await initE02bRapier();
+const result=runE02bCampaign();
+const rows=document.querySelector('#rows');
+for(const c of result.cases){
+  const p=c.run.blockerAtPersistence;
+  const disp=p?Math.hypot(p.x-c.start.x,p.y-c.start.y):NaN;
+  const tr=document.createElement('tr');
+  tr.innerHTML=[
+    '<td>'+c.id+'</td>',
+    '<td>'+c.start.x.toFixed(2)+'</td>',
+    '<td>'+c.start.y.toFixed(2)+'</td>',
+    '<td>'+(c.heldOut?'yes':'no')+'</td>',
+    '<td class="'+(c.pass?'good':'bad')+'">'+(c.pass?'PASS':'FAIL')+'</td>',
+    '<td>'+(c.deterministic?'PASS':'FAIL')+'</td>',
+    '<td>'+c.run.firstBlockerContactTick+'</td>',
+    '<td>'+c.run.firstOpenTick+'</td>',
+    '<td>'+c.run.postContactNoContactTicks+'</td>',
+    '<td>'+(Number.isFinite(disp)?disp.toFixed(3):'null')+'</td>',
+    '<td>'+c.run.persistenceOpen+'</td>'
+  ].join('');
+  rows.appendChild(tr);
+}
+const status=document.querySelector('#status');
+status.className=result.pass?'good':'bad';
+status.textContent='E02b '+(result.pass?'PASS':'FAIL')+' — held-out '+result.heldOutPassCount+'/'+result.heldOutTotal;
+document.querySelector('#summary').textContent=[
+  'baselinePass='+result.baselinePass,
+  'heldOutPassCount='+result.heldOutPassCount,
+  'heldOutTotal='+result.heldOutTotal,
+  'campaignPass='+result.pass,
+  result.reasons.length?'reasons:\n- '+result.reasons.join('\n- '):'reasons: none'
+].join('\n');
+</script>
+</main>
+</body>
+</html>
