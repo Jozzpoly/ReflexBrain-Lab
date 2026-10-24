@@ -1,4 +1,40 @@
-# CONTINUE HERE — ReflexBrain Pre-O0 — 2026-10-06
+# CONTINUE HERE — ReflexBrain | stan po 24 października 2026
+
+> **24 OCTOBER 2026 — VERIFIED DAY CLOSE.** To jest bieżący punkt wejścia dla agentów. Poniższy wielostronicowy zapis 6–23 października jest **historią i źródłem dowodów**, nie listą dzisiejszych zadań. Nie kontynuuj starszych instrukcji „next run” bez ponownej weryfikacji aktualnego stanu.
+
+## Co jest prawdą
+
+**Misja:** szukamy małego, taniego mechanizmu uczącego się *znaczenia dla konkretnego aktora* na podstawie legalnego, prywatnego doświadczenia — ale w świecie, gdzie jego działalność ma rzeczywiste konsekwencje. Oddzielamy: (A) uczoną interpretację od (B) pełnego, zróżnicowanego, materialnego życia. Nie rozwijać (A) jako klasyfikatora etykiet badacza ani (B) jako wiecznie udoskonalanego czteromanewrowego sterownika. „Żywe” doświadczenie podlega weryfikacji Ownera, a nie zielonemu CI.
+
+**Repo:** `main` to historyczne R0 (SHA `75b95725292fb73d9c8e322bce05bd285aeec237`), nie aktualny baseline. Na koniec audytu **38 otwartych PR-ów, 38 draftów**, różne izolowane i często stosowane na siebie gałęzie. Nie scalać, masowo zamykać, wdrażać do Pages ani modyfikować Jaskini dla pozornego porządku. Nie zakładać, że PR z numerem większym ma mocniejszy naukowo wynik.
+
+**Podłoża i testy:**
+- [R3 — PR #3](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/3): po *już wykonanej* naprawie geometrii, [214/214 PASS](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/36504519068), 17 autorską polityką wykonanych uzupełnień dla każdej z dwóch struktur celu i 33 przejścia stanów. **Rzeczywiste materiały i konsekwencje, ale znaczenie celu jest wpisane w parametry polityki, nie wyuczone przez Idę.**
+- [R3/A1–A1B — PR #97](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/97): [ostatni pełny CI na HEAD — PASS](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/40051686999), **217/217 testów**. W 5400 krokach Ida ślepo uruchamia 24 uzupełnienia, otrzymuje 23 PRAWDZIWE komunikaty o półce; w 22/23 źródło jest wtedy niepełne, **w 0/23 Ida widzi stan źródła**. W natywnym eksperymencie przy t407 źródło ma 2/3; nakazany przez badacza marsz ujawnia Idzie 2/3 przy t415, natomiast auto-regeneracja przy t416 przywraca 3/3. **Możliwy legalny ogląd, nie samodzielna potrzeba sprawdzenia ani uczenie znaczenia. A1/A1B ZAMKNIĘTE.**
+- [R8 — PR #89](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/89): rzeczywiście fizyczny, interaktywny workbench z Rapier, niezależnie sprawdzony Chrome/source. **Nie ma Owner-kwalifikacji doświadczenia ani pewnego publicznego adresu testowego.** R13 [PR #95](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/95) w oryginalnym podłożu wykazał, że O-DEV uczy się ruchu, ale do 30s ucieka poza świat materiałów; późniejszy fork nie ma warunków sprawdzenia rozpoznawania już zmienionej materii. **Nie wznawiać strojenia czterech manewrów.**
+- [Zewnętrzny LIFE/P96 — PR #96](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/96): źródłowy test zgodny z kodem dostawcy wykazał przyczynowy wpływ zmian somatycznych na zachowanie, ale **bez wykazanej przewagi dla dalszego życia**. Krytyczna korekta: bufor soma może zawierać *naśladowane* wagi, a „stop learning” wyłącza tylko Hebba, nie naśladowanie; hash obejmuje dużą część, ale nie całe serializowane state. Dokładne zastrzeżenia [w raporcie P96](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/96#issuecomment-6377573973).
+- [R6/Lenia, R9, Flow-Lenia, OpenPraparat — PR #87/#91/#92/#93](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/87): **donory i zamknięte mikrobadania**, nie nowa gotowa istota. ALIEN i zewnętrzny LIFE są ciekawymi obserwacyjnymi laboratoriami, nie automatycznymi zależnościami/implementacjami projektu.
+
+## Co dzisiaj rozstrzygnęliśmy
+
+**PASS techniczny:** prawdziwe wykonanie źródła, prywatna percepcja i fizyczny skutek, różnica działania przy historycznie zmienionym stanie. **Nieudowodnione:** własne znaczenie celu, niecykliczna indywidualna działalność w ciągłym świecie, przewaga doświadczenia nad dobrym tanim odruchem, generalizacja i jakość życia według Ownera.
+
+**Rozstrzygnięcie o błędnej nagrodzie:** „półka uzupełniona” może być prawdą i zarazem szkodzić własnej rezerwie. Ujemny skutek może być widoczny dla aktora tylko przez krótki czas. Nie uczyć z potwierdzenia akcji jako uniwersalnego „dobrze”, nie traktować późniejszej pełnej rezerwy jako dowodu braku wcześniejszej straty. Nie wymuszać sukcesu wydłużaniem zegara źródła.
+
+## Następny samodzielny ruch — nie scheduler
+
+**Priorytet 1: doświadczenie i rzeczywisty świat.** Najpierw wybrać istniejącą kwalifikowaną fizyczną gałąź (R8 lub lepszy donor), odzyskać możliwość *bezpiecznego Owner hands-on*, a potem szukać **jednej trwałej, ponownie dostępnej, faktycznie konsekwentnej relacji aktor–materia**. Zanim napiszesz nowy silnik lub nowy controller, zapytaj: co się stanie z możliwościami istoty, jeśli coś zmieni, odejdzie, wróci, a świat dalej istnieje? Krytyczne, tanie alternatywy obowiązkowe. Nie narzucać survival-bara i magicznego przyciągania do skrzynki.
+
+**Priorytet 2: ReflexBrain właściwy.** Jeżeli istnieją realne możliwości odmiennego działania zależne od prywatnej historii i trosk aktora, sprawdzić legalność sygnału *poźniejszej własnej konsekwencji* i jego znaczenie wobec innych trwających aktywności. Prosty checker/stanowa pamięć/typowany fakt są kontrolami, nie wrogiem. Model dopiero gdy wnosi coś nieredukowalnego do tych baz.
+
+**STOP:** Nie dokładać A1C, P97 reward-tuningu, kolejnych kroków R13, P96 seed sweep ani mikroskopów PP/Lenia bez nowego pytania wywołanego rzeczywistą luką. Nowy eksperyment musi poprawiać **observability / causal leverage / Owner-visible behavior**, nie liczbę testów. Nie ruszać `main`, Pages, Jaskini ani R8 pretest bez osobnej uzasadnionej decyzji.
+
+**Właściciel decyzji:** Owner ocenia jakość życia i kierunek; agent autonomicznie prowadzi source auditing, falsyfikacje i implementację w izolacji; Codex/repo-native wykonawca przy repo-native potrzebie, nie jako domyślny scheduler. Po każdej nowej materialnej obserwacji aktualizować **ten pierwszy ekran**, zamiast dopisywać kolejną chronologiczną ścianę. Przekazywać stan w formacie: *wynik → granica → ryzyko → następny ruch*.
+
+---
+
+## Archiwum dawnej kampanii Pre-O0 (nie odczytywać jako aktualnego planu)
+
 
 > **21.10.2026 · LIFE/L1 WYKONANE, nie tylko zaplanowane.** [PR #84](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/84), oparty na **konkretnym** PR #81 SHA `010531a0d5996ad70bba25a8b60b8324ec1c77cb`, ma rzeczywisty headless Rapier 120Hz, prywatne zmysły 30Hz, bezstratny zapis, kontrolę integralności, bezpieczny plik bez nadpisywania i kontynuację pełnego stanu po restarcie w **nowym procesie**. Przebiegi split-vs-uninterrupted 977+1440 kroków dla B0/B1 i obu światów dały identyczny pełny checkpoint. [CI #39655228548](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/39655228548) potwierdziło **2 godziny symulacji / 864 000 kroków / dwa procesy, real Chrome przyjmujący i eksportujący plik LIFE/L1 **po prawdziwym przesunięciu materii i ręcznym sterowaniu**, a nowy Node wznawia z tego pliku; pełne testy PASS**. Co 1 sekundę mierzony ruch luźnej materii wystąpił w **2/60 minut pierwszej godziny i 0/60 drugiej**, mimo ~4839 jednostek próbkowanej drogi aktora i 2400 nowych aktualizacji w drugiej godzinie. **Inżynieria L1 PASS; organizm/życiowa kompetencja nadal FAIL/niezakwalifikowane.** Zamknięty proces nie doświadcza czasu; browser nie jest serwerem 24h, a wczytywanie zapisu dostępne jest tylko na badawczej gałęzi, nie na publicznej Jaskini. Następne działanie to krytyczna Kampania II: rzeczywiste współzmieniające się procesy materialne i działalność mająca własną kontynuację, nie dalsze tunowanie czterech manewrów ani wydłużanie identycznej jałowej historii. Pre-O0 i runnable branch mają rozbieżne historie; bez merge/deploy z rozpędu. 
 >
