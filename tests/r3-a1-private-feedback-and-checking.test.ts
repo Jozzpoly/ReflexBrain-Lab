@@ -107,7 +107,7 @@ describe('R3/A1: source-native private feedback vs genuine concern evidence',()=
     worldSourceStockPassive:homeCount,worldSourceStockActive:seekCount});
    if(k===12)break;
    noMove.world.step(new Map());
-   seek.world.step(new Map([[ID,{kind:'move_to',target:source}]]));
+   seek.world.step(new Map([[ID,{kind:'move_to' as const,target:source}]]));
   }
   const hiddenStockEmpty=auditAlias(false);
   const hiddenStockProbe=auditAlias(true);
