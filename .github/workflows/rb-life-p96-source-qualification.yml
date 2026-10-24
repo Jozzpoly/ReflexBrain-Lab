@@ -1,0 +1,51 @@
+name: RB LIFE P96 external-source somatic fork (research only)
+
+on:
+  pull_request:
+    paths:
+      - 'research/donors/life/**'
+      - '.github/workflows/rb-life-p96-source-qualification.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  source-qualification:
+    name: pinned LIFE source and controlled individual memory fork
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout ReflexBrain isolated research files
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Checkout external LIFE code pinned to audited exact SHA
+        uses: actions/checkout@v4
+        with:
+          repository: dominikvytisk/life-simulation
+          ref: 92f6b7aa359ce4fff0b725d282654cc930452da5
+          path: external/life
+          persist-credentials: false
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned donor dependencies without lifecycle scripts
+        working-directory: external/life
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run donor original native tests for inference and physics
+        working-directory: external/life
+        run: ./node_modules/.bin/vitest run src/sim/prediction.test.ts src/sim/simulation.test.ts
+      - name: Bundle research-only probe against original unchanged donor TypeScript
+        working-directory: external/life
+        run: ./node_modules/.bin/esbuild ../../research/donors/life/p96-probe.ts --bundle --format=esm --platform=node --outfile=../../research/donors/life/results/p96-probe.mjs
+      - name: Execute frozen A/B/C/D fork and save exact source observation
+        run: node research/donors/life/results/p96-probe.mjs
+      - name: Upload bounded run JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rb-life-p96-donor-native
+          path: research/donors/life/results/P96_RESULT.json
+          if-no-files-found: ignore
+          retention-days: 14
