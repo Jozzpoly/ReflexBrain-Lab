@@ -51,8 +51,21 @@ for(let t=1;t<=N;t++){
  }
 }
 const actions=[...actors.values()];
+const allLifeRecords=[...A.genealogy.values()];
+const admittedBirths=allLifeRecords.length-config.initialPopulation;
+const generatedBirths=A.totalBirths;
+const newbornsNotAdmitted=generatedBirths-admittedBirths;
+const deathCauses={};
+const deadRecords=allLifeRecords.filter(x=>x.deathTick!==null);
+for(const d of deadRecords){const cause=String(d.causeOfDeath||'unknown');
+ const group=cause.startsWith('killed by')?'killed by another organism':cause;
+ deathCauses[group]=(deathCauses[group]||0)+1;
+}
+assert.equal(config.initialPopulation+admittedBirths-A.totalDeaths,A.organisms.size,'genealogy-based population conservation failed');
+assert.equal(deadRecords.length,A.totalDeaths,'native reported deaths differ from genealogy deaths');
+assert.ok(newbornsNotAdmitted>=0,'more admitted than generated');
 console.log('RB_C2_EVO_NATIVE_EPOCH '+JSON.stringify({
- source:'Ayanokoji12786/EVO',sourceSHA:'106f2dd478945debae0e03b237ba7e610a6d80ca',originalUnmodified:true,config,steps:N,independentTwinMatched:true,
+ source:'Ayanokoji12786/EVO',sourceSHA:'106f2dd478945debae0e03b237ba7e610a6d80ca',originalUnmodified:true,config,steps:N,independentTwinMatched:true,counterIntegrity:{generatedBirths,admittedBirths,newbornsNotAdmitted,deathCauses,deadGenealogyRecords:deadRecords.length,sourceReportedDeaths:A.totalDeaths,populationBalance:true},
  summary:{naturalKills:kills.length,distinctKilledBy: new Set(kills.map(k=>k.cause)).size,sourceCarcassesBorn:bornCarcasses.length,sourceCarcassesExpired:expired,nonExpiryCarcassDisappeared:disappeared,uniquelyAttributableCarcassConsumption:qualifiedEaters.length,ambiguousCarcassDisappearances:uncertainDisappearance.length,actorCountWithFoodAndKill:actions.filter(o=>o.food>0&&o.kills>0).length,actorCountWithFoodAndBirth:actions.filter(o=>o.food>0&&o.births>0).length,sameTickMultipleEffects:multiEvents,sameTickFoodKill:foodKillSame,sameTickFoodBirth:foodBirthSame,sameTickKillBirth:killBirthSame,finalPopulation:A.organisms.size,finalBirths:A.totalBirths,finalDeaths:A.totalDeaths},
  firstKills:kills.slice(0,15),firstCarcasses:bornCarcasses.slice(0,15),firstQualifiedCarcassEaters:qualifiedEaters.slice(0,15),firstAmbiguous:uncertainDisappearance.slice(0,8),checkpoints,
  limits:'One precommitted unforced epoch. Corpse consumption inferred only if exactly one food disappears and one organism eats in the native tick. Global actor policy may perform actions without a costly choice; no learned meaning, predator initiative or special scavenging strategy qualified. Twin digest includes substantial observed state and RNG state but not all internal hidden state or cached Gaussian.'
