@@ -20,8 +20,36 @@ function state(w){
 }
 assert.equal(sha(state(A)),sha(state(B)),'native seeded worlds initially differ');
 const actors=new Map(),kills=[],bornCarcasses=[],qualifiedEaters=[],uncertainDisappearance=[],checkpoints=[];
+const lastFoodEaten=new Map();
+const exactCarcassMeals=[];
+const nonExpiryDeletionAmbiguity=[];
+const physicalDeathsByExpiry=[];
+let hostObservedNativeMeals=0;
+let monitoredTick=0;
+const originalDelete=A.food.items.delete.bind(A.food.items);
+A.food.items.delete=function(id) {
+ const item=A.food.items.get(id);
+ const changed=[];
+ for(const individual of A.organisms.values()){
+  const previous=lastFoodEaten.get(individual.id)||0;
+  if(individual.foodEaten>previous){
+   changed.push({id:individual.id,increment:individual.foodEaten-previous,kills:individual.kills});
+   lastFoodEaten.set(individual.id,individual.foodEaten);
+  }
+ }
+ const expiredItem=item?.kind==='carcass'&&item.expiresAtTick!==undefined&&A.tick>=item.expiresAtTick;
+ if(item){
+  if(expiredItem)physicalDeathsByExpiry.push({tick:monitoredTick,item:id});
+  else if(changed.length===1&&changed[0].increment===1){
+   hostObservedNativeMeals++;
+   if(item.kind==='carcass')exactCarcassMeals.push({tick:monitoredTick,carcass:id,consumer:changed[0].id,energy:item.energy,originBornAt:item.expiresAtTick-150});
+  }else nonExpiryDeletionAmbiguity.push({tick:monitoredTick,item:id,kind:item.kind,changed});
+ }
+ return originalDelete(id);
+};
 let multiEvents=0,foodKillSame=0,foodBirthSame=0,killBirthSame=0,expired=0,disappeared=0;
 for(let t=1;t<=N;t++){
+ monitoredTick=t;
  const oldOrg=new Map([...A.organisms.values()].map(o=>[o.id,{food:o.foodEaten,kills:o.kills,children:o.offspringIds.length}]));
  const oldFood=new Map(A.food.items),priorDeath=new Set([...A.genealogy.values()].filter(g=>g.deathTick!==null).map(g=>g.id));
  stepWorld(A,1);stepWorld(B,1);
@@ -55,6 +83,12 @@ for(let t=1;t<=N;t++){
  }
 }
 const actions=[...actors.values()];
+assert.equal(nonExpiryDeletionAmbiguity.length,0,'native non-expiry Map deletions without exactly one source foodEaten increment');
+const consumerCounts=new Map();
+for(const m of exactCarcassMeals){consumerCounts.set(m.consumer,(consumerCounts.get(m.consumer)||0)+1);}
+const killersById=new Set(kills.map(k=>Number(String(k.cause).match(/EVO-(\d+)/)?.[1])).filter(Number.isFinite));
+const eaterKillers=[...consumerCounts.keys()].filter(id=>killersById.has(id));
+
 const allLifeRecords=[...A.genealogy.values()];
 const admittedBirths=allLifeRecords.length-config.initialPopulation;
 const generatedBirths=A.totalBirths;
@@ -70,6 +104,7 @@ assert.equal(deadRecords.length,A.totalDeaths,'native reported deaths differ fro
 assert.ok(newbornsNotAdmitted>=0,'more admitted than generated');
 console.log('RB_C2_EVO_NATIVE_EPOCH '+JSON.stringify({
  source:'Ayanokoji12786/EVO',sourceSHA:'106f2dd478945debae0e03b237ba7e610a6d80ca',originalUnmodified:true,mode,config,steps:N,independentTwinMatched:true,counterIntegrity:{generatedBirths,admittedBirths,newbornsNotAdmitted,deathCauses,deadGenealogyRecords:deadRecords.length,sourceReportedDeaths:A.totalDeaths,populationBalance:true},
+ preciseHostDeletionObservation:{allOriginalNativeMeals:hostObservedNativeMeals,sourceCarcassMeals:exactCarcassMeals.length,sourceCarcassDistinctEaters:consumerCounts.size,corpsesExpiredObserved:physicalDeathsByExpiry.length,unattributableNonExpiryDeletions:nonExpiryDeletionAmbiguity.length,actorsKnownBothAsKillerAndCarcassEater:eaterKillers.length,firstCarcassMeals:exactCarcassMeals.slice(0,15),firstMultiactionActorIds:eaterKillers.slice(0,15)},
  summary:{naturalKills:kills.length,distinctKilledBy: new Set(kills.map(k=>k.cause)).size,sourceCarcassesBorn:bornCarcasses.length,sourceCarcassesExpired:expired,nonExpiryCarcassDisappeared:disappeared,uniquelyAttributableCarcassConsumption:qualifiedEaters.length,ambiguousCarcassDisappearances:uncertainDisappearance.length,actorCountWithFoodAndKill:actions.filter(o=>o.food>0&&o.kills>0).length,actorCountWithFoodAndBirth:actions.filter(o=>o.food>0&&o.births>0).length,sameTickMultipleEffects:multiEvents,sameTickFoodKill:foodKillSame,sameTickFoodBirth:foodBirthSame,sameTickKillBirth:killBirthSame,finalPopulation:A.organisms.size,finalBirths:A.totalBirths,finalDeaths:A.totalDeaths},
  firstKills:kills.slice(0,15),firstCarcasses:bornCarcasses.slice(0,15),firstQualifiedCarcassEaters:qualifiedEaters.slice(0,15),firstAmbiguous:uncertainDisappearance.slice(0,8),checkpoints,
  limits:'One precommitted unforced epoch. Corpse consumption inferred only if exactly one food disappears and one organism eats in the native tick. Global actor policy may perform actions without a costly choice; no learned meaning, predator initiative or special scavenging strategy qualified. Twin digest includes substantial observed state and RNG state but not all internal hidden state or cached Gaussian.'
