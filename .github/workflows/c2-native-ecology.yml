@@ -35,7 +35,7 @@ jobs:
           set -euo pipefail
           mkdir -p .c2_tmp
           printf "%s\n" "export { createWorld, stepWorld } from '../.c2_external_evo/src/simulation/engine.ts';" > .c2_tmp/entry.ts
-          ./node_modules/.bin/esbuild .c2_tmp/entry.ts --bundle --platform=node --format=esm --target=node22 --outfile=.c2_tmp/original-evo.mjs
+          npm exec --yes --package=esbuild@0.25.12 -- esbuild .c2_tmp/entry.ts --bundle --platform=node --format=esm --target=node22 --outfile=.c2_tmp/original-evo.mjs
       - name: Original source epoch; deterministic noninterference and natural event trace
         shell: bash
         run: |
