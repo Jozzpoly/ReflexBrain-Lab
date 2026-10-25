@@ -6,7 +6,11 @@ import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 
 const {createWorld,stepWorld}=await import(pathToFileURL(resolve(process.argv[2])).href);
-const config={seed:'reflexbrain-c2-20261025',worldSize:600,gridResolution:32,initialPopulation:60,foodAbundance:1,mutationRate:0.05,climate:'temperate'};
+const mode=process.argv[3]||'small_stress';
+assert.ok(mode==='small_stress'||mode==='ui_default','unsupported frozen test mode');
+const config=mode==='ui_default'
+ ? {seed:'reflexbrain-c2-20261025',worldSize:3200,gridResolution:178,initialPopulation:400,foodAbundance:1,mutationRate:0.04,climate:'temperate',initialTemperatureC:15,initialRainfall:1}
+ : {seed:'reflexbrain-c2-20261025',worldSize:600,gridResolution:32,initialPopulation:60,foodAbundance:1,mutationRate:0.05,climate:'temperate'};
 const A=createWorld(config),B=createWorld(config),N=1200;
 const sha=o=>createHash('sha256').update(JSON.stringify(o)).digest('hex');
 function state(w){
@@ -65,7 +69,7 @@ assert.equal(config.initialPopulation+admittedBirths-A.totalDeaths,A.organisms.s
 assert.equal(deadRecords.length,A.totalDeaths,'native reported deaths differ from genealogy deaths');
 assert.ok(newbornsNotAdmitted>=0,'more admitted than generated');
 console.log('RB_C2_EVO_NATIVE_EPOCH '+JSON.stringify({
- source:'Ayanokoji12786/EVO',sourceSHA:'106f2dd478945debae0e03b237ba7e610a6d80ca',originalUnmodified:true,config,steps:N,independentTwinMatched:true,counterIntegrity:{generatedBirths,admittedBirths,newbornsNotAdmitted,deathCauses,deadGenealogyRecords:deadRecords.length,sourceReportedDeaths:A.totalDeaths,populationBalance:true},
+ source:'Ayanokoji12786/EVO',sourceSHA:'106f2dd478945debae0e03b237ba7e610a6d80ca',originalUnmodified:true,mode,config,steps:N,independentTwinMatched:true,counterIntegrity:{generatedBirths,admittedBirths,newbornsNotAdmitted,deathCauses,deadGenealogyRecords:deadRecords.length,sourceReportedDeaths:A.totalDeaths,populationBalance:true},
  summary:{naturalKills:kills.length,distinctKilledBy: new Set(kills.map(k=>k.cause)).size,sourceCarcassesBorn:bornCarcasses.length,sourceCarcassesExpired:expired,nonExpiryCarcassDisappeared:disappeared,uniquelyAttributableCarcassConsumption:qualifiedEaters.length,ambiguousCarcassDisappearances:uncertainDisappearance.length,actorCountWithFoodAndKill:actions.filter(o=>o.food>0&&o.kills>0).length,actorCountWithFoodAndBirth:actions.filter(o=>o.food>0&&o.births>0).length,sameTickMultipleEffects:multiEvents,sameTickFoodKill:foodKillSame,sameTickFoodBirth:foodBirthSame,sameTickKillBirth:killBirthSame,finalPopulation:A.organisms.size,finalBirths:A.totalBirths,finalDeaths:A.totalDeaths},
  firstKills:kills.slice(0,15),firstCarcasses:bornCarcasses.slice(0,15),firstQualifiedCarcassEaters:qualifiedEaters.slice(0,15),firstAmbiguous:uncertainDisappearance.slice(0,8),checkpoints,
  limits:'One precommitted unforced epoch. Corpse consumption inferred only if exactly one food disappears and one organism eats in the native tick. Global actor policy may perform actions without a costly choice; no learned meaning, predator initiative or special scavenging strategy qualified. Twin digest includes substantial observed state and RNG state but not all internal hidden state or cached Gaussian.'
