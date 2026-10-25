@@ -1,0 +1,15 @@
+# ReflexBrain / Kampania II — frozen external native EVO trial (25 Oct 2026)
+
+**Precommitted before source code or CI experiment**, not a replacement ReflexBrain engine. The original public source `Ayanokoji12786/EVO` exact SHA `106f2dd478945debae0e03b237ba7e610a6d80ca` is **read-only**: no discovered root LICENSE. The GitHub Actions study clones pinned source ephemerally, executes it without modification and never commits, distributes or imports donor code to project source. No deployment; draft study only.
+
+## Exact single ordinary epoch
+`createWorld({seed:'reflexbrain-c2-20261025',worldSize:600,gridResolution:32,initialPopulation:60,foodAbundance:1,mutationRate:0.05,climate:'temperate'})`. Run native `stepWorld(world,1)` exactly 1200 ticks. No hand-placed death/food, no genome edits, no energy top-up, no alternative seed or longer horizon after result. Native author `TICKS_PER_DAY=50`. Offline container cannot access GitHub; GitHub Actions may clone publicly accessible pinned donor; network failure => INCONCLUSIVE not success.
+
+## Observations and strict interpretations
+Record actual organism *source counters* (kills, foodEaten, offspring), genealogical natural kills, natural carcass creation and subsequent disappearance, source decay vs possible consumption (assign eater only if exactly one source food loss and one foodEaten increment in same tick, otherwise unknown), and how many distinct **same individuals** actually do more than one activity in life. Count simultaneous multiple effect events per native tick if present; source `senseAndDecide` can emit eat, attack, reproduce gates in same decision, engine resolves sequentially. No label from researcher fed to any actor. The 10-dimensional inherited network lacks food kind; there is no demonstrated actor-relative learned meaning.
+
+Execute independently seeded *identical twin* under the exact same original World laws; compare sorted actor/food/genealogy state and available RNG state/digest at regular checkpoints. This qualifies observational non-interference but does not establish biological life. No tailored heuristic, learning or quantitative success threshold trained to the fixture.
+
+**Prior-stop logic**: Real kills without third-party carcass use still only show predation. Carcass use by other actor after natural kill is world ecology, NOT necessarily learned scavenging. Multiple food/attack/birth outputs do not necessarily constitute competing practices when one source actor can do all. If there is no genuine endogenous interaction in 1200 ticks, record negative rather than increasing aggression/food/seed. No source donor copying beyond temporary clone, no main/R8/Jaskinia/Pages merge. STOP R2 after one bounded execution and grounded report, then decide whether any new experiment is earned.
+
+This trial follows [R1 Gloop natural-death cheap null](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6#issuecomment-6400881038) (real death->other actor food but generic forage/plant identical), and does **not** repeat earlier R3/A1, P96, R9 one-object puzzles.
