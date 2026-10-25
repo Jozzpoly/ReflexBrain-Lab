@@ -1,0 +1,50 @@
+name: C2 Native Ecological Observation (external read-only)
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/c2-native-ecology.yml'
+      - 'research/c2-evo/**'
+      - 'docs/research/RB_C2_EVO_NATIVE_ECOLOGY_PRECOMMIT_2026-10-25.md'
+
+permissions:
+  contents: read
+
+jobs:
+  source-native-ecology:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: yarn install --non-interactive
+      - name: Fetch EXACT original external EVO source for ephemeral research
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --quiet https://github.com/Ayanokoji12786/EVO.git .c2_external_evo
+          git -C .c2_external_evo checkout --quiet --detach 106f2dd478945debae0e03b237ba7e610a6d80ca
+          actual="$(git -C .c2_external_evo rev-parse HEAD)"
+          test "$actual" = 106f2dd478945debae0e03b237ba7e610a6d80ca
+          echo "RB_C2_EXTERNAL_SOURCE_SHA=$actual"
+      - name: Bundle unmodified original source with ephemeral research-only entrypoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .c2_tmp
+          printf "%s\n" "export { createWorld, stepWorld } from '../.c2_external_evo/src/simulation/engine.ts';" > .c2_tmp/entry.ts
+          ./node_modules/.bin/esbuild .c2_tmp/entry.ts --bundle --platform=node --format=esm --target=node22 --outfile=.c2_tmp/original-evo.mjs
+      - name: Original source epoch; deterministic noninterference and natural event trace
+        shell: bash
+        run: |
+          set -euo pipefail
+          node research/c2-evo/native-epoch.mjs .c2_tmp/original-evo.mjs | tee .c2_tmp/c2-results.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rb-c2-native-ecology-research
+          path: .c2_tmp/c2-results.log
+          if-no-files-found: ignore
+          retention-days: 7
