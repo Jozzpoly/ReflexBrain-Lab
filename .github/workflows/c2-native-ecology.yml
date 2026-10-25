@@ -40,11 +40,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node research/c2-evo/native-epoch.mjs .c2_tmp/original-evo.mjs | tee .c2_tmp/c2-results.log
+          node research/c2-evo/native-epoch.mjs .c2_tmp/original-evo.mjs ui_default | tee .c2_tmp/c2-ui-default-results.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rb-c2-native-ecology-research
-          path: .c2_tmp/c2-results.log
+          name: rb-c2-native-ecology-ui-default
+          path: .c2_tmp/c2-ui-default-results.log
           if-no-files-found: ignore
           retention-days: 7
