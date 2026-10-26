@@ -15,11 +15,13 @@
 
 **Status and HEAD are not copied here** because they change during atomic research. Before continuing, check the latest PR comments, actual active branch/CI and the date of any referenced checkpoint; **no single mutable document is guaranteed to be current**.
 
-## Project North Star
+## Project questions (parallel, not a frozen architecture)
 
-Can a small, cheap, local learned organ extract useful actor-relative meaning from the temporal **private experience of a continuing embodied actor**, without becoming World authority, factual memory, the whole planner or motor controller?
+**Living resident:** can a materially embodied resident develop genuinely different, continuing ways of life and affect its world without the Owner or a hidden author-defined task as its heartbeat? Owner-observed experience can falsify machine-only PASS.
 
-The physical substrate research is only a prerequisite. Its machine PASSes do not establish autonomous organism life or override Owner-observed experiential FAILs. Past Proto-Life / Persistent Playground are phenomenon and donor evidence, **not an architecture to reinstall**.
+**ReflexBrain proper:** can a small, cheap, actor-private learned organ gain usable significance from its lawful personal sensorimotor history, beyond cheap present-state and finite-state controls, without becoming omniscient World authority, factual memory, or the whole planner and motor controller?
+
+These lines can inform each other but neither must wait indefinitely for the other. Self-chosen play and exploration are **research possibilities**, not mandatory game mechanics or a settled third subsystem. Past Proto-Life / Persistent Playground are evidence and potential donors, **not an architecture to reinstall**.
 
 ## Historical R0 baseline
 
