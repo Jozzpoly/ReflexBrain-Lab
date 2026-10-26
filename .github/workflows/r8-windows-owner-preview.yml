@@ -96,6 +96,39 @@ jobs:
             if($proc -and -not $proc.HasExited){ Stop-Process -Id $proc.Id -Force }
           }
 
+      - name: Full real Chrome R8 interactive QA against PACKAGED local Windows preview
+        shell: pwsh
+        run: |
+          yarn add --dev --ignore-scripts playwright-core@1.56.0
+          if ($LASTEXITCODE -ne 0) { throw 'Playwright client install failed' }
+          $base=(Resolve-Path 'portable/ReflexBrain-R8').Path
+          $script=(Join-Path $base 'r8-freeplay-local.ps1')
+          $log=(Join-Path $env:RUNNER_TEMP 'r8-chrome-e2e.log')
+          $serverLog=(Join-Path $env:RUNNER_TEMP 'r8-chrome-server.log')
+          $serverErr=(Join-Path $env:RUNNER_TEMP 'r8-chrome-server.err')
+          $proc=Start-Process powershell.exe -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"' + $script + '"'),'-Port','4187','-NoBrowser') -PassThru -RedirectStandardOutput $serverLog -RedirectStandardError $serverErr
+          try {
+            $url='http://127.0.0.1:4187/probes/material-workbench-r8.html'
+            $ok=$false
+            for($i=0;$i -lt 30;$i++){
+              Start-Sleep -Seconds 1
+              try {
+                $response=Invoke-WebRequest -UseBasicParsing -Uri $url -TimeoutSec 2
+                if($response.StatusCode -eq 200){$ok=$true;break}
+              } catch {}
+            }
+            if(-not $ok) { throw 'Packaged server did not respond for actual Chrome test' }
+            node tests/browser/r8-workbench.e2e.mjs > $log 2>&1
+            if($LASTEXITCODE -ne 0){
+              Get-Content $log -Tail 80
+              throw 'Real Chrome R8 interaction QA failed on portable Windows bundle'
+            }
+            Write-Host 'REAL CHROME R8 PACKAGED WINDOWS INTERACTION QA PASS'
+            Get-Content $log -Tail 12 | ForEach-Object { if($_.Length -lt 450) { Write-Host $_ } }
+          } finally {
+            if($proc -and -not $proc.HasExited){ Stop-Process -Id $proc.Id -Force }
+          }
+
       - name: Store portable artifact for Owner (no hosting/deploy)
         uses: actions/upload-artifact@v4
         with:
