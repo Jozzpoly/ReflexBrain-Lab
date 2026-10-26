@@ -1,0 +1,42 @@
+name: C5-G0 exact Node replay (archival evidence only)
+
+on:
+  push:
+    branches:
+      - evidence/reflexbrain-2026-10-26-replay-and-handoff
+    paths:
+      - evidence/2026-10-26/replay-c5-g0.cjs
+      - evidence/2026-10-26/replay-workflow.md
+      - .github/workflows/c5-g0-source-replay.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout isolated evidence branch only
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Obtain exact pinned original Gloop sources (read only)
+        run: |
+          git clone --quiet --no-checkout https://github.com/Jozzpoly/Gloopipelago.git /tmp/rb-pinned-gloop
+          git -C /tmp/rb-pinned-gloop checkout --quiet 91d924842cb2d3f460336f4147fa8b72f122da5b
+          test "$(git -C /tmp/rb-pinned-gloop rev-parse HEAD)" = "91d924842cb2d3f460336f4147fa8b72f122da5b"
+      - name: Execute source-blob-guarded six-arm replay (5 seeds)
+        run: |
+          node evidence/2026-10-26/replay-c5-g0.cjs             /tmp/rb-pinned-gloop/src/core/v1-mirror.mjs             /tmp/rb-pinned-gloop/src/core/m4-ecological-mosaic.mjs             > /tmp/rb-c5-g0-results.json
+          node -e 'const a=require("/tmp/rb-c5-g0-results.json"); const expected=[441,483,242,466,null]; if(a.report.length!==5 || a.report.some((r,i)=>!r.originalVsAllowParity600 || r.firstHistoryDivergence!==expected[i])) process.exit(1); console.log("SOURCE NODE CLI PASS: five 600-step six-arm forks; null parity and exact divergence verified")'
+      - name: Assert evidence workflow has no deployment capability
+        run: |
+          test ! -e dist
+          test ! -e site
+          echo "Evidence-only computation, no Pages upload/deploy"
