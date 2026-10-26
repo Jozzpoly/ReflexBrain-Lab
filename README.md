@@ -4,14 +4,14 @@
 
 > **This `main` branch is a historical R0 baseline, not the current ReflexBrain experiment.** The active research has deliberately remained on qualified experimental branches; the repository entrypoint was not maintained until this correction. The R0 code on `main` has not been merged with, or replaced by, the new experiments.
 
-## Current research
+## Research discovery (verify current status)
 
-- **Active research branch:** [`research/pre-o0-foundations-campaign`](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/research/pre-o0-foundations-campaign)
-- **Continuity / draft research PR:** [PR #6](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6)
-- **Recover first:** [`docs/CONTINUE_HERE.md`](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/pre-o0-foundations-campaign/docs/CONTINUE_HERE.md)
+- **Earlier research coordination branch (not the combined current runtime):** [`research/pre-o0-foundations-campaign`](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/research/pre-o0-foundations-campaign)
+- **Continuity / evidence discussion (still draft):** [PR #6](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6)
+- **24 Oct historical recovery entrypoint:** [`docs/CONTINUE_HERE.md`](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/pre-o0-foundations-campaign/docs/CONTINUE_HERE.md)
 - **Historical 11 Oct state (not currently authoritative):** [`docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md`](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/pre-o0-foundations-campaign/docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md)
 - **Source methodology:** [`docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md`](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/pre-o0-foundations-campaign/docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md)
-- **Live research preview:** https://jozzpoly.github.io/ReflexBrain-Lab/
+- **Published historical research preview (not the latest organism or an Owner-life PASS):** https://jozzpoly.github.io/ReflexBrain-Lab/
 
 **Status and HEAD are not copied here** because they change during atomic research. Before continuing, check the latest PR comments, actual active branch/CI and the date of any referenced checkpoint; **no single mutable document is guaranteed to be current**.
 
