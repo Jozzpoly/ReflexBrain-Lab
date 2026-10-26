@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: 0  # require real R8 ancestry for strict source-integrity gate
 
       - name: Prove frozen R8 implementation was not modified
         shell: pwsh
