@@ -31,3 +31,15 @@ Do not equate green CI, motor activity, a physics checkpoint, the number of evol
 - Branch references may be archived as **verified lightweight Git tags** before pruning. A SHA written in JSON is *not* object preservation. Never delete an archival tag until another verified Git ref or offline bundle protects the same history.
 - Do not expose private workspace data or paste hidden credentials into this public repository. No AI-provider-specific handoff, authentication secret, or assumptions about proprietary agent memory belong here.
 - Prefer real, autonomous experimental progress to repeated status reports, but don't convert a frozen research finding into product requirements through enthusiasm.
+
+## Repository hygiene after the 100-branch archive
+
+This repository accumulated 115 branches because experiments, CI delivery, scientific records, PR review, and branch retention were repeatedly conflated. Avoid repeating that pattern:
+
+- **Create a branch for a real executable change**, not a new status update or a fresh handoff. A draft PR is appropriate when it genuinely enables review/CI, not automatically for every negative thought experiment.
+- **Close completed research PRs promptly** with a clear final result and exact code/CI links. "Closed" means the specific investigation stopped, **not** that it passed, was merged, or became unimportant.
+- Prefer a **shallow, justified source lineage**. Do not base every new idea on the most recently created PR; choose a pinned, demonstrated substrate and isolate genuinely competing hypotheses.
+- At meaningful scientific transitions only, update [BADANIA.md](BADANIA.md) (what succeeded, what failed, what remains unknown) so the next provider does not have to scan years of PR discussions.
+- Before deleting any research branch, inventory active PR heads/bases, preserve its exact commit under a **verified Git ref or bundle**, verify read-back, then prune. Never turn on blanket automatic branch deletion while stacked PRs exist. A Git SHA in prose is not an archive.
+- Archive cleanup scripts should be **one-off, fail-closed and retired** after proving their result; do not build a permanent management tool or require the Owner to operate it.
+- Keep scientific specimen code and Owner-created content safe, but let provisional implementations be replaced radically if better evidence warrants it. Engineering procedure must remain proportional to actual risk and reversibility.
