@@ -20,7 +20,7 @@ Do not equate green CI, motor activity, a physics checkpoint, the number of evol
 ## Restarting actual research
 
 1. Choose the smallest genuinely relevant original experiment; do not rebuild from chat summaries.
-2. For the October R8 physics-workbench donor, checkout exact `329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6` (not `main`), run `npm ci`, `npm run check`, then `npm run dev` and open `probes/material-workbench-r8.html`.
+2. For the October R8 physics-workbench donor, checkout exact `329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6` (not `main`), run `yarn install --non-interactive`, `yarn run check`, then `yarn run dev` and open `probes/material-workbench-r8.html`.
 3. The current R8 `Occupant` is an authored turquoise-target/exploration controller, **not** a learned living resident. R8 already has 120 s source-native movement/material-contact diagnostics; merely rerunning them is not a new result.
 4. If doing new research, use a **new, clearly named isolated branch** from an exact donor SHA. Maintain a concise falsifiable question, a known cheap null, reproducible source/test command, and explicit statements of what has *not* been demonstrated.
 5. Report results as `observed / falsified / unknown`. A future new AI may contradict older conclusions, but must explain evidence and provenance rather than rewriting the past.
