@@ -78,10 +78,18 @@ for(const row of candidates){
  const name=manifest.archiveTagPrefix+row.name;
  const path='/git/ref/tags/'+name;
  let tag=await gh('GET',path,undefined,true);
- if(!tag)tag=await gh('POST','/git/refs',{ref:'refs/tags/'+name,sha:row.sha});
- if(tag.object?.sha!==row.sha)throw Error('ABORT archive tag mismatch: '+name);
- const checked=await gh('GET',path);
- if(checked.object?.sha!==row.sha)throw Error('ABORT archive tag read-back mismatch: '+name);
+ if(!tag){
+  try{tag=await gh('POST','/git/refs',{ref:'refs/tags/'+name,sha:row.sha});}
+  catch(error){if(!String(error).includes(': 422:'))throw error;} // concurrent eventual visibility
+ }
+ if(tag&&tag.object?.sha!==row.sha)throw Error('ABORT archive tag mismatch: '+name);
+ let checked=null;
+ for(let attempt=0;attempt<10;attempt++){
+  checked=await gh('GET',path,undefined,true);
+  if(checked)break;
+  await new Promise(resolve=>setTimeout(resolve,200*(attempt+1)));
+ }
+ if(!checked||checked.object?.sha!==row.sha)throw Error('ABORT archive tag read-back mismatch: '+name);
  verified.add(row.name);
  console.log('ARCHIVED '+row.name+' @ '+row.sha);
 }
@@ -96,7 +104,12 @@ for(const row of candidates){
  if(!current)throw Error('ABORT source branch disappeared unexpectedly: '+row.name);
  if(current.object?.sha!==row.sha)throw Error('ABORT concurrent source branch update: '+row.name);
  await gh('DELETE','/git/refs/heads/'+row.name);
- const after=await gh('GET',refPath,undefined,true);
+ let after=null;
+ for(let attempt=0;attempt<10;attempt++){
+  after=await gh('GET',refPath,undefined,true);
+  if(!after)break;
+  await new Promise(resolve=>setTimeout(resolve,200*(attempt+1)));
+ }
  if(after)throw Error('ABORT branch still exists after delete: '+row.name);
  deleted++;
  console.log('PRUNED '+row.name);
