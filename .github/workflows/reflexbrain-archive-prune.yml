@@ -1,5 +1,6 @@
 name: ReflexBrain archived-branch cleanup (one time)
 # Corrected: already-merged PR heads also require tag-first archiving.
+# Second preview after closing completed/scout research PRs; no deletion yet.
 on:
   push:
     branches: [main]
