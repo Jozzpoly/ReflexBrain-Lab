@@ -1,0 +1,1105 @@
+{
+  "version": 1,
+  "snapshotDate": "2026-11-10",
+  "repository": "Jozzpoly/ReflexBrain-Lab",
+  "manifestPurpose": "Audited branch refs before archival cleanup; SHA alone does NOT preserve unreachable Git objects. Create immutable lightweight refs/tags before any branch deletion.",
+  "archiveTagPrefix": "archive/reflexbrain-2026-11-10/",
+  "policy": "Never delete main, protected branches, open-PR heads/bases, or any branch whose SHA changed. Archive tags must be confirmed before deleting a closed PR branch.",
+  "counts": {
+    "branches": 115,
+    "openPr": 39,
+    "closedPr": 59,
+    "closedPrHeadPruneCandidates": 59
+  },
+  "branches": [
+    {
+      "name": "archive/pre-o0-full-lab-2026-10-06",
+      "sha": "98f4fe1cee50573d1516c7b20e4f1b65003a8b2d",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/archive/pre-o0-full-lab-2026-10-06"
+    },
+    {
+      "name": "audit/living-organism-runtime-a-2026-10-10",
+      "sha": "e8f564466899b216c63aa21e0fb2365f82e5b6fa",
+      "role": "closed-pr-head",
+      "pr": 47,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/audit/living-organism-runtime-a-2026-10-10"
+    },
+    {
+      "name": "delivery/r8-private-windows-playtest-2026-10-26",
+      "sha": "65a9259578b5465478291b451be116a3471951e5",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/delivery/r8-private-windows-playtest-2026-10-26"
+    },
+    {
+      "name": "docs/f3a-qualified-handoff-update-2026-10-11",
+      "sha": "eb487ae90d22f64f1bc8ec1a1d1232476fb4ae09",
+      "role": "closed-pr-head",
+      "pr": 57,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/docs/f3a-qualified-handoff-update-2026-10-11"
+    },
+    {
+      "name": "docs/material-owner-playmat-qualified-2026-10-11",
+      "sha": "8b359c3e2a152cb96cef6aafa2a68a5e8ab74ab9",
+      "role": "closed-pr-head",
+      "pr": 65,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/docs/material-owner-playmat-qualified-2026-10-11"
+    },
+    {
+      "name": "docs/pages-additive-s0-preview-2026-10-11",
+      "sha": "2e1bea4e5e38c64682b8ffa9a0796b5b9137e218",
+      "role": "closed-pr-head",
+      "pr": 66,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/docs/pages-additive-s0-preview-2026-10-11"
+    },
+    {
+      "name": "docs/pages-playmat-live-discovery-2026-10-11",
+      "sha": "66eb38e844342490e8d637d574e60035fb8da7d5",
+      "role": "closed-pr-head",
+      "pr": 67,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/docs/pages-playmat-live-discovery-2026-10-11"
+    },
+    {
+      "name": "docs/pages-s0-robustness-pinned-2026-10-11",
+      "sha": "3fe70c12d6e6d07b48acb0767570fe3e2e0edd26",
+      "role": "closed-pr-head",
+      "pr": 68,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/docs/pages-s0-robustness-pinned-2026-10-11"
+    },
+    {
+      "name": "docs/pages-world-d1-additive-2026-10-11",
+      "sha": "1b66706af9b8d3f34c519810f3ffa83a824f8ee7",
+      "role": "closed-pr-head",
+      "pr": 73,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/docs/pages-world-d1-additive-2026-10-11"
+    },
+    {
+      "name": "docs/rb-ol0-audit-recovery-2026-10-11",
+      "sha": "7620873165e1ed575152d247edb5b3804a8408d2",
+      "role": "closed-pr-head",
+      "pr": 59,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/docs/rb-ol0-audit-recovery-2026-10-11"
+    },
+    {
+      "name": "docs/reflexbrain-m1-restore-material-organism-direction-2026-10-11",
+      "sha": "c3b76750782fc8e21abc8b04981b33225fee44a1",
+      "role": "closed-pr-head",
+      "pr": 61,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/docs/reflexbrain-m1-restore-material-organism-direction-2026-10-11"
+    },
+    {
+      "name": "docs/reflexbrain-material-s0-recovery-2026-10-11",
+      "sha": "afc06db376dfdacd44b40f3cf2613db24b796db5",
+      "role": "closed-pr-head",
+      "pr": 63,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/docs/reflexbrain-material-s0-recovery-2026-10-11"
+    },
+    {
+      "name": "docs/s0-owner-video-fail-world-reframe-2026-10-11",
+      "sha": "d36545e4a2b6efe234b1cdfb873eedd6085af485",
+      "role": "closed-pr-head",
+      "pr": 69,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/docs/s0-owner-video-fail-world-reframe-2026-10-11"
+    },
+    {
+      "name": "docs/world-d0-negative-ecology-next-direction-2026-10-11",
+      "sha": "3d4c4ab15d2771303fa3992d752504ab461abd17",
+      "role": "closed-pr-head",
+      "pr": 71,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/docs/world-d0-negative-ecology-next-direction-2026-10-11"
+    },
+    {
+      "name": "docs/world-d1-public-qualified-handoff-2026-10-11",
+      "sha": "699a9e0a48df3fe6585a3df77f7f36d0ec5eb4bc",
+      "role": "closed-pr-head",
+      "pr": 75,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/docs/world-d1-public-qualified-handoff-2026-10-11"
+    },
+    {
+      "name": "evidence/reflexbrain-2026-10-26-replay-and-handoff",
+      "sha": "ba3123c25e57e4f6d70587fcac36f0d7efa55e65",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/evidence/reflexbrain-2026-10-26-replay-and-handoff"
+    },
+    {
+      "name": "experiment/o0-persistent-micro-ecology-v0",
+      "sha": "ad2ce37eb1189e9f09ef4747f97a45604374759e",
+      "role": "open-pr-head",
+      "pr": 5,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/o0-persistent-micro-ecology-v0"
+    },
+    {
+      "name": "experiment/organism-recovery-v0",
+      "sha": "65ab25928387e59b3cd525445573e41c1dcdcc48",
+      "role": "open-pr-head",
+      "pr": 4,
+      "baseForOpenPr": [
+        6,
+        5
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/organism-recovery-v0"
+    },
+    {
+      "name": "experiment/r0-semantic-shadow-bootstrap",
+      "sha": "c5d937095ecc563a30d8334c6bb7e076ff7991bd",
+      "role": "open-pr-head",
+      "pr": 1,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r0-semantic-shadow-bootstrap"
+    },
+    {
+      "name": "experiment/r1-cognition-supervision-breadth-v1",
+      "sha": "1b575bbfc86df8f744b45793998fa4a38ede3ef2",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r1-cognition-supervision-breadth-v1"
+    },
+    {
+      "name": "experiment/r1-expanded-representation-ab-v1",
+      "sha": "9ce5ec32e7eba8df6c0464e88a890652e94ff5d9",
+      "role": "open-pr-base",
+      "pr": null,
+      "baseForOpenPr": [
+        3
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r1-expanded-representation-ab-v1"
+    },
+    {
+      "name": "experiment/r1-factorized-oracle-v1",
+      "sha": "a79629e4e5c164132cd2deb2d3401d7ff8c92cce",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r1-factorized-oracle-v1"
+    },
+    {
+      "name": "experiment/r1-isolated-embedding-v1",
+      "sha": "bf47681de658db66913e13832dc7197a8b4c1fa1",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r1-isolated-embedding-v1"
+    },
+    {
+      "name": "experiment/r1-linear-ranking-head-v1",
+      "sha": "f141b2b23268e48e21b33269da45be14d90e62c6",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r1-linear-ranking-head-v1"
+    },
+    {
+      "name": "experiment/r1-ood-red-team-v1",
+      "sha": "e01675ba044983c3df58fbde371cbba290d9fa85",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r1-ood-red-team-v1"
+    },
+    {
+      "name": "experiment/r1-paired-reason-head-v1",
+      "sha": "232ca2de8e21dfc9d96aa87ece67949eb60ee18b",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r1-paired-reason-head-v1"
+    },
+    {
+      "name": "experiment/r1-prototype-bank-head-v1",
+      "sha": "2c58c8d33ed62501bbf8a4d1568912cc43ff35f8",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r1-prototype-bank-head-v1"
+    },
+    {
+      "name": "experiment/r1-relation-geometry-audit-v1",
+      "sha": "e33969a80ca3029e3b5e98d3fe73d8231ec0758e",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r1-relation-geometry-audit-v1"
+    },
+    {
+      "name": "experiment/r1-semantic-supervision-breadth-v1",
+      "sha": "248163d3c541cc95741610ea1674c2b7b39c995e",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r1-semantic-supervision-breadth-v1"
+    },
+    {
+      "name": "experiment/r1-train-coherence-evidence-v1",
+      "sha": "98307a8d2dff2b8f0fc857e312dcd9fb2734df92",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r1-train-coherence-evidence-v1"
+    },
+    {
+      "name": "experiment/r2-causal-organism-campaign-v0",
+      "sha": "1f16faead3e8363f2e2ed559e9832f5727f95c68",
+      "role": "closed-pr-head",
+      "pr": 2,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r2-causal-organism-campaign-v0"
+    },
+    {
+      "name": "experiment/r3-autonomous-life-pressure-v0",
+      "sha": "04f2835c2aec6a6e82248b2ff5744e89bd7b54e8",
+      "role": "open-pr-head",
+      "pr": 3,
+      "baseForOpenPr": [
+        98,
+        97,
+        4
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/experiment/r3-autonomous-life-pressure-v0"
+    },
+    {
+      "name": "fix/pages-world-d1-asset-readback-2026-10-11",
+      "sha": "6f61b6b6925120cefb60615cf4771c98cddf91bc",
+      "role": "closed-pr-head",
+      "pr": 74,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/fix/pages-world-d1-asset-readback-2026-10-11"
+    },
+    {
+      "name": "main",
+      "sha": "160d82d2c0cd7e942d753f791c72994a69e746e4",
+      "role": "default",
+      "pr": null,
+      "baseForOpenPr": [
+        96,
+        1
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/main"
+    },
+    {
+      "name": "medium/continuity-dynamic-bindings-r2c",
+      "sha": "9b48dc331c478477f104baf5f7e9835f8f85a1e3",
+      "role": "open-pr-head",
+      "pr": 27,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/continuity-dynamic-bindings-r2c"
+    },
+    {
+      "name": "medium/continuity-host-binding-r3",
+      "sha": "40fa3f71a3cacf35a8a670d0da309e7f5ff581ac",
+      "role": "closed-pr-head",
+      "pr": 30,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/continuity-host-binding-r3"
+    },
+    {
+      "name": "medium/continuity-p0-reconstruct-r2a",
+      "sha": "9df3f617576029f538164865d968f26f2c3cee7d",
+      "role": "closed-pr-head",
+      "pr": 25,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/continuity-p0-reconstruct-r2a"
+    },
+    {
+      "name": "medium/continuity-snapshot-r0",
+      "sha": "be5d12d8bb02a77896d4476165c223891973e2e3",
+      "role": "closed-pr-head",
+      "pr": 23,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/continuity-snapshot-r0"
+    },
+    {
+      "name": "medium/continuity-state-boundary-r1",
+      "sha": "e3b9f551bf7b79eac1f0535c5a57bdc620042c49",
+      "role": "closed-pr-head",
+      "pr": 24,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/continuity-state-boundary-r1"
+    },
+    {
+      "name": "medium/experiment-moment-r4",
+      "sha": "3b5e22dd3eaacf7e09e1dbdc0be4b1fe1d384da7",
+      "role": "closed-pr-head",
+      "pr": 31,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/experiment-moment-r4"
+    },
+    {
+      "name": "medium/field-findings-routing-r2",
+      "sha": "ecf4b31741f2bb19371eb679498a9ea3d0c70932",
+      "role": "closed-pr-head",
+      "pr": 26,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/field-findings-routing-r2"
+    },
+    {
+      "name": "medium/field-integrity-soak-r1",
+      "sha": "9c7d42bead00fa35f9de211e869f6ef40569b4a2",
+      "role": "open-pr-head",
+      "pr": 21,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/field-integrity-soak-r1"
+    },
+    {
+      "name": "medium/field-v0-r1-honesty",
+      "sha": "4a5f2c36869b81df89c8500b381974214f59875d",
+      "role": "closed-pr-head",
+      "pr": 22,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/field-v0-r1-honesty"
+    },
+    {
+      "name": "medium/interaction-takeover-archaeology-r2",
+      "sha": "66984dbe8959ef04fefb0d0ece48745dc9fe1748",
+      "role": "closed-pr-head",
+      "pr": 29,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/interaction-takeover-archaeology-r2"
+    },
+    {
+      "name": "medium/medium-c-r5-occupant-sidecar",
+      "sha": "3dedae3114196fb7bc7a073a7266ade11a1f2407",
+      "role": "closed-pr-head",
+      "pr": 32,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/medium-c-r5-occupant-sidecar"
+    },
+    {
+      "name": "medium/medium-d-r0-experiment-grammar",
+      "sha": "4a22e9a682ba23748e62a42bd75cb141fc5f140a",
+      "role": "closed-pr-head",
+      "pr": 33,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/medium-d-r0-experiment-grammar"
+    },
+    {
+      "name": "medium/medium-d-r1-grammar-microprobe",
+      "sha": "bb6a71da6576e04b7efde50fc07b3b464d084ed5",
+      "role": "closed-pr-head",
+      "pr": 34,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/medium-d-r1-grammar-microprobe"
+    },
+    {
+      "name": "medium/medium-d-r2-interaction-shape",
+      "sha": "63a23484ec77c0f7c8f35689d96d0c82a807cee0",
+      "role": "closed-pr-head",
+      "pr": 35,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/medium-d-r2-interaction-shape"
+    },
+    {
+      "name": "medium/medium-d-r3a-close",
+      "sha": "22dd0463ad9decb6bf2f1ec2d7d0719c71261b93",
+      "role": "closed-pr-head",
+      "pr": 37,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/medium-d-r3a-close"
+    },
+    {
+      "name": "medium/medium-d-r3a-material-interaction-shape",
+      "sha": "2f4e007737ef1f32d63a2c17965c38cbc73f198f",
+      "role": "closed-pr-head",
+      "pr": 36,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/medium-d-r3a-material-interaction-shape"
+    },
+    {
+      "name": "medium/medium-d-r3b-shadow-mark",
+      "sha": "4446184055f47f3efadc19a53a1bff0abf5672e9",
+      "role": "closed-pr-head",
+      "pr": 38,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/medium-d-r3b-shadow-mark"
+    },
+    {
+      "name": "medium/medium-d-r3c-browser-verdict",
+      "sha": "77d295d0bb4bce7594deea86f795a402dceaf620",
+      "role": "closed-pr-head",
+      "pr": 40,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/medium-d-r3c-browser-verdict"
+    },
+    {
+      "name": "medium/medium-d-r3c-shadow-ui",
+      "sha": "6e36e9e44b10ddf9bacf5d88fef18e567bfa5128",
+      "role": "closed-pr-head",
+      "pr": 39,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/medium-d-r3c-shadow-ui"
+    },
+    {
+      "name": "medium/medium-d-r3d-spatial-interaction-surface",
+      "sha": "5052d20f8753159328982e45f6c7d4cf79573106",
+      "role": "closed-pr-head",
+      "pr": 41,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/medium-d-r3d-spatial-interaction-surface"
+    },
+    {
+      "name": "medium/medium-d-r3e-spatial-proxy",
+      "sha": "bba24c2461d6885b7b783318b2e662aea4c3168b",
+      "role": "closed-pr-head",
+      "pr": 42,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/medium-d-r3e-spatial-proxy"
+    },
+    {
+      "name": "medium/medium-d-r3f-browser-pointer-e2e",
+      "sha": "ba0048d61e99dc60e8c657caeb9ef01bc87d8101",
+      "role": "closed-pr-head",
+      "pr": 43,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/medium-d-r3f-browser-pointer-e2e"
+    },
+    {
+      "name": "medium/medium-d-r3g-runtime-clean-pointer",
+      "sha": "2cd7ee450e771c8a378c9089a624acb2d407ba41",
+      "role": "closed-pr-head",
+      "pr": 44,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/medium-d-r3g-runtime-clean-pointer"
+    },
+    {
+      "name": "medium/owner-field-v0",
+      "sha": "e4ead954d43d5caaa1b800ba566e0fa577759322",
+      "role": "closed-pr-head",
+      "pr": 19,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/owner-field-v0"
+    },
+    {
+      "name": "medium/owner-field-v0.2",
+      "sha": "e7c16db6bcf908e70093da2ec2600d938d519204",
+      "role": "closed-pr-head",
+      "pr": 20,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/owner-field-v0.2"
+    },
+    {
+      "name": "medium/r2c-binding-honesty",
+      "sha": "4dc144e56108696720b88b1d26b475cd547c039b",
+      "role": "closed-pr-head",
+      "pr": 28,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/medium/r2c-binding-honesty"
+    },
+    {
+      "name": "probe/e0-authoritative-body-2026-10-05",
+      "sha": "78052f22f4808fe5b83496a56a9c9f8b63ea9930",
+      "role": "unreferenced-branch",
+      "pr": null,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/probe/e0-authoritative-body-2026-10-05"
+    },
+    {
+      "name": "research/competence-vision-f3f4-reconciliation-2026-10-11",
+      "sha": "9c55d75ecd3a6207ee9c8eaa71fad5b686f8ee9c",
+      "role": "closed-pr-head",
+      "pr": 55,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/competence-vision-f3f4-reconciliation-2026-10-11"
+    },
+    {
+      "name": "research/continuous-private-actuation-learning-2026-10-11",
+      "sha": "76fdc0df66b7e4b61b93b6be5fb52a13dd36d53d",
+      "role": "open-pr-head",
+      "pr": 58,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/continuous-private-actuation-learning-2026-10-11"
+    },
+    {
+      "name": "research/living-organism-runtime-a-2026-10-08",
+      "sha": "cb03fcd1ca668baac36e87e90252514ba40179af",
+      "role": "open-pr-base",
+      "pr": null,
+      "baseForOpenPr": [
+        70,
+        62,
+        60,
+        58,
+        54
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/living-organism-runtime-a-2026-10-08"
+    },
+    {
+      "name": "research/material-organism-owner-view-2026-10-11",
+      "sha": "6aa5612c24ecd485829488997b1fcb2ca312a5bb",
+      "role": "open-pr-head",
+      "pr": 64,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/material-organism-owner-view-2026-10-11"
+    },
+    {
+      "name": "research/material-relation-organism-slice-2026-10-11",
+      "sha": "0611717bbde1c01dc14de07cb22180b92d44fe84",
+      "role": "open-pr-head",
+      "pr": 62,
+      "baseForOpenPr": [
+        64
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/material-relation-organism-slice-2026-10-11"
+    },
+    {
+      "name": "research/medium-w-world-view-fork-2026-10-21",
+      "sha": "65e1ce12f67b94e21f442a5ebb54d749340729bb",
+      "role": "open-pr-head",
+      "pr": 85,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/medium-w-world-view-fork-2026-10-21"
+    },
+    {
+      "name": "research/octrl-g5-independent-ecology-pressure",
+      "sha": "7c15a1271698c72886e102a3d0ca4fe52ee36fac",
+      "role": "closed-pr-head",
+      "pr": 45,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/octrl-g5-independent-ecology-pressure"
+    },
+    {
+      "name": "research/organism-private-memory-material-value-2026-10-11",
+      "sha": "277da95c73d024b87836c676a969445a32b70eb0",
+      "role": "open-pr-head",
+      "pr": 60,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/organism-private-memory-material-value-2026-10-11"
+    },
+    {
+      "name": "research/pre-o0-foundations-campaign",
+      "sha": "d0da632ded732619c979b8b58b5456b6975d154b",
+      "role": "open-pr-head",
+      "pr": 6,
+      "baseForOpenPr": [
+        56,
+        53,
+        27,
+        21
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/pre-o0-foundations-campaign"
+    },
+    {
+      "name": "research/r3-a1-feedback-versus-owned-outcome-2026-10-24",
+      "sha": "44d6f0f87400f952cb36cab82f9e869c98df2588",
+      "role": "open-pr-head",
+      "pr": 97,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/r3-a1-feedback-versus-owned-outcome-2026-10-24"
+    },
+    {
+      "name": "research/rb-active-evidence-p0-2026-10-21",
+      "sha": "1902b04ef8dd6f7a2e73fc495f17485f4600f3cc",
+      "role": "open-pr-head",
+      "pr": 82,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-active-evidence-p0-2026-10-21"
+    },
+    {
+      "name": "research/rb-affordance-a1-hidden-backstop-2026-10-20",
+      "sha": "24d6e52838697766ab7139e922b569a1986435d3",
+      "role": "open-pr-head",
+      "pr": 77,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-affordance-a1-hidden-backstop-2026-10-20"
+    },
+    {
+      "name": "research/rb-body-b1-material-affordance-2026-10-21",
+      "sha": "0db860345f4834f0e75a39beed99d08b7070c3c3",
+      "role": "open-pr-head",
+      "pr": 79,
+      "baseForOpenPr": [
+        80
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-body-b1-material-affordance-2026-10-21"
+    },
+    {
+      "name": "research/rb-c2-native-relational-ecology-2026-10-25",
+      "sha": "440c94570132c8a58d20568e241f5fff5da1999d",
+      "role": "open-pr-head",
+      "pr": 98,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-c2-native-relational-ecology-2026-10-25"
+    },
+    {
+      "name": "research/rb-cross-host-life-discrimination-2026-10-23",
+      "sha": "0236d059e76a6bc6636ea48d7c57fb9b6e0c689c",
+      "role": "open-pr-head",
+      "pr": 90,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-cross-host-life-discrimination-2026-10-23"
+    },
+    {
+      "name": "research/rb-experience-contract-2026-10-21",
+      "sha": "9ec81204abfb4e8fc651cb644264be2923481e9a",
+      "role": "open-pr-head",
+      "pr": 80,
+      "baseForOpenPr": [
+        81
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-experience-contract-2026-10-21"
+    },
+    {
+      "name": "research/rb-f3-d0-private-alias-relevance",
+      "sha": "e9a815b19ca654c6f182bfabea676d11669f3c92",
+      "role": "closed-pr-head",
+      "pr": 52,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-f3-d0-private-alias-relevance"
+    },
+    {
+      "name": "research/rb-host-x0-world-transfer-null-2026-10-20",
+      "sha": "2b01ae0a8cde3a440b30a6ed11d03137c3a51983",
+      "role": "open-pr-head",
+      "pr": 76,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-host-x0-world-transfer-null-2026-10-20"
+    },
+    {
+      "name": "research/rb-life-l1-durable-process-2026-10-21",
+      "sha": "5d8ca8f83094968920a66336fa6d848d4c7787b4",
+      "role": "open-pr-head",
+      "pr": 84,
+      "baseForOpenPr": [
+        89,
+        88,
+        87,
+        86,
+        85
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-life-l1-durable-process-2026-10-21"
+    },
+    {
+      "name": "research/rb-life-l2-coupled-ontogeny-2026-10-21",
+      "sha": "29d45066e26a81fb0894f82b201112a495951106",
+      "role": "open-pr-head",
+      "pr": 86,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-life-l2-coupled-ontogeny-2026-10-21"
+    },
+    {
+      "name": "research/rb-lived-pressure-audit-2026-10-21",
+      "sha": "6a21b0c1522aeb93963cf05933f78d3e969bd18d",
+      "role": "open-pr-head",
+      "pr": 83,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-lived-pressure-audit-2026-10-21"
+    },
+    {
+      "name": "research/rb-odev-first-resident-2026-10-21",
+      "sha": "010531a0d5996ad70bba25a8b60b8324ec1c77cb",
+      "role": "open-pr-head",
+      "pr": 81,
+      "baseForOpenPr": [
+        84,
+        83,
+        82
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-odev-first-resident-2026-10-21"
+    },
+    {
+      "name": "research/rb-original-flowlenia-closed-loop-2026-10-23",
+      "sha": "3083cb4d585e3068faabd24b1b23d3c773f531cc",
+      "role": "open-pr-head",
+      "pr": 92,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-original-flowlenia-closed-loop-2026-10-23"
+    },
+    {
+      "name": "research/rb-own-action-credit-pilot-2026-10-21",
+      "sha": "3e33f0b46cc2acd43a7f2152a03c53ef0ea34eec",
+      "role": "open-pr-head",
+      "pr": 78,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-own-action-credit-pilot-2026-10-21"
+    },
+    {
+      "name": "research/rb-p96-life-source-somatic-fork-2026-10-24",
+      "sha": "cb5fb3def317f867a708ec48f0c05cab33793092",
+      "role": "open-pr-head",
+      "pr": 96,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-p96-life-source-somatic-fork-2026-10-24"
+    },
+    {
+      "name": "research/rb-praparat-source-exemplar-audit-2026-10-23",
+      "sha": "51b57e11a6db99091428bcd04bc19cd6a8a3d46d",
+      "role": "open-pr-head",
+      "pr": 93,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-praparat-source-exemplar-audit-2026-10-23"
+    },
+    {
+      "name": "research/rb-r6-developmental-substrates-2026-10-22",
+      "sha": "27acb522b0f36536b85c0b9d49f803b386d16715",
+      "role": "open-pr-head",
+      "pr": 87,
+      "baseForOpenPr": [
+        93,
+        92
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-r6-developmental-substrates-2026-10-22"
+    },
+    {
+      "name": "research/rb-r7-dormant-affordance-preflight-2026-10-22",
+      "sha": "b4f6d7fd824f58fce8a07e9d86a1a1477dcff327",
+      "role": "open-pr-head",
+      "pr": 88,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-r7-dormant-affordance-preflight-2026-10-22"
+    },
+    {
+      "name": "research/rb-r8-open-material-workbench-2026-10-22",
+      "sha": "329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6",
+      "role": "open-pr-head",
+      "pr": 89,
+      "baseForOpenPr": [
+        95,
+        94,
+        91,
+        90
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-r8-open-material-workbench-2026-10-22"
+    },
+    {
+      "name": "research/rb-r9-embodied-material-coupling-2026-10-23",
+      "sha": "cef4e91124b53a7adc86747c2fe304d33576c5cd",
+      "role": "open-pr-head",
+      "pr": 91,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-r9-embodied-material-coupling-2026-10-23"
+    },
+    {
+      "name": "research/rb-r12-material-value-mismatch-2026-10-24",
+      "sha": "3640c878bd8e5d12cac48b8befa6ca165d5f53ed",
+      "role": "open-pr-head",
+      "pr": 94,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-r12-material-value-mismatch-2026-10-24"
+    },
+    {
+      "name": "research/rb-r13-private-history-material-return-2026-10-24",
+      "sha": "163de81ac2c168db37a60d1f7a316383bb6d647d",
+      "role": "open-pr-head",
+      "pr": 95,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/rb-r13-private-history-material-return-2026-10-24"
+    },
+    {
+      "name": "research/reflexbrain-competence-r1-living-audit-2026-10-10",
+      "sha": "27ecf7775a847c2c7986d7e868fe055f43c220be",
+      "role": "closed-pr-head",
+      "pr": 48,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/reflexbrain-competence-r1-living-audit-2026-10-10"
+    },
+    {
+      "name": "research/reflexbrain-competence-r2-frontier-selection-2026-10-10",
+      "sha": "1a637337d5cf337942687922bd83d22c87a96f0d",
+      "role": "closed-pr-head",
+      "pr": 49,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/reflexbrain-competence-r2-frontier-selection-2026-10-10"
+    },
+    {
+      "name": "research/reflexbrain-competence-reconciliation-2026-10-10",
+      "sha": "a6d3761bc573ca08983811fdb36707466c1f9524",
+      "role": "closed-pr-head",
+      "pr": 46,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/reflexbrain-competence-reconciliation-2026-10-10"
+    },
+    {
+      "name": "research/vision-embodied-experience-2026-10-10",
+      "sha": "fa2f870ad3bae747fa1576276f38bfdbcda9a1fd",
+      "role": "open-pr-head",
+      "pr": 53,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/vision-embodied-experience-2026-10-10"
+    },
+    {
+      "name": "research/vision-lived-retina-loop-2026-10-10",
+      "sha": "3ed883c3362cc2ae05a8c41fc54f0b005c7065b6",
+      "role": "open-pr-head",
+      "pr": 54,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/vision-lived-retina-loop-2026-10-10"
+    },
+    {
+      "name": "research/world-ecology-d0-2026-10-11",
+      "sha": "659e9bedd962b0a287bce6be249833198c726683",
+      "role": "open-pr-head",
+      "pr": 70,
+      "baseForOpenPr": [
+        72
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/world-ecology-d0-2026-10-11"
+    },
+    {
+      "name": "research/world-ecology-d1-coupled-affordance-2026-10-11",
+      "sha": "7caa9e89acad7ad67ac49a2b838ea92d6cb4f0d1",
+      "role": "open-pr-head",
+      "pr": 72,
+      "baseForOpenPr": [
+        79,
+        78,
+        77,
+        76
+      ],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/research/world-ecology-d1-coupled-affordance-2026-10-11"
+    },
+    {
+      "name": "run/octrl-b01a-e0-body-seam-parity",
+      "sha": "0e94d9fe769372b89300dc86aa714aa96494fad5",
+      "role": "closed-pr-head",
+      "pr": 10,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/octrl-b01a-e0-body-seam-parity"
+    },
+    {
+      "name": "run/octrl-b01b-b0-scale-passage",
+      "sha": "d4aa949a572142ff15ac3f64dff28284ace7f3ff",
+      "role": "closed-pr-head",
+      "pr": 11,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/octrl-b01b-b0-scale-passage"
+    },
+    {
+      "name": "run/octrl-b01c-actual-b0-effectivity",
+      "sha": "1fe899b0e2c638595358c99dc1ff57570c7b800e",
+      "role": "closed-pr-head",
+      "pr": 12,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/octrl-b01c-actual-b0-effectivity"
+    },
+    {
+      "name": "run/octrl-b01d-actor-relative-resistance",
+      "sha": "daad4c78dbf6fcc74397a5adc7ff3563c7300d8c",
+      "role": "closed-pr-head",
+      "pr": 13,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/octrl-b01d-actor-relative-resistance"
+    },
+    {
+      "name": "run/octrl-c01-actor-clock-monitoring",
+      "sha": "0dccb1459c4436b5cc5dd95ae9a037f400588f6e",
+      "role": "closed-pr-head",
+      "pr": 18,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/octrl-c01-actor-clock-monitoring"
+    },
+    {
+      "name": "run/octrl-e01-independent-mechanical-process",
+      "sha": "be3868fab4e2a79944661032d85581f1da1c4f5d",
+      "role": "closed-pr-head",
+      "pr": 7,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/octrl-e01-independent-mechanical-process"
+    },
+    {
+      "name": "run/octrl-e02a-passage-composition",
+      "sha": "00087d04bfcd9bf690870d1b2432da4fb88080f5",
+      "role": "closed-pr-head",
+      "pr": 8,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/octrl-e02a-passage-composition"
+    },
+    {
+      "name": "run/octrl-e02b-composition-robustness",
+      "sha": "f98b9100379e5a2100fa2ee813a95f7d5c638863",
+      "role": "closed-pr-head",
+      "pr": 9,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/octrl-e02b-composition-robustness"
+    },
+    {
+      "name": "run/octrl-g5a-independent-ecology-value",
+      "sha": "13b1a1da0ea332786ff47709f2b0a4fcb9855341",
+      "role": "closed-pr-head",
+      "pr": 50,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/octrl-g5a-independent-ecology-value"
+    },
+    {
+      "name": "run/octrl-h01-private-history-check",
+      "sha": "5fbd777428f808b734dbb4408dd00498d86c1951",
+      "role": "closed-pr-head",
+      "pr": 17,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/octrl-h01-private-history-check"
+    },
+    {
+      "name": "run/octrl-p01a-private-proprioceptive-effectivity",
+      "sha": "4f8e2d92d2efc5676a34cf6dc069667f3e85083b",
+      "role": "closed-pr-head",
+      "pr": 14,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/octrl-p01a-private-proprioceptive-effectivity"
+    },
+    {
+      "name": "run/octrl-p02a-private-occlusion",
+      "sha": "1041e214b93d9d07bd8b5d4d098da0dab1e0b92f",
+      "role": "closed-pr-head",
+      "pr": 15,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/octrl-p02a-private-occlusion"
+    },
+    {
+      "name": "run/octrl-p02b-embodied-occlusion-transition",
+      "sha": "5215ced9459b5dc0590af90c442714797889a974",
+      "role": "closed-pr-head",
+      "pr": 16,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/octrl-p02b-embodied-occlusion-transition"
+    },
+    {
+      "name": "run/rb-f2-p0-private-competence-reliability",
+      "sha": "3300692846f93949fe243531be03c7664a36dc2e",
+      "role": "closed-pr-head",
+      "pr": 51,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/rb-f2-p0-private-competence-reliability"
+    },
+    {
+      "name": "run/rb-f3a-action-touch-relation",
+      "sha": "25b4fe148e9949ef5be7049cfbb656ca3960411a",
+      "role": "open-pr-head",
+      "pr": 56,
+      "baseForOpenPr": [],
+      "protected": false,
+      "archiveTag": "archive/reflexbrain-2026-11-10/run/rb-f3a-action-touch-relation"
+    }
+  ]
+}
