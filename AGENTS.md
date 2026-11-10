@@ -1,6 +1,6 @@
 # ReflexBrain Lab — instructions for any research agent (10 Nov 2026)
 
-Read [README.md](README.md) first, then [archive/branch-inventory-2026-11-10.json](archive/branch-inventory-2026-11-10.json) when tracing a historical branch. These files are sufficient to orient without access to any particular chat, AI vendor, personal memory, or connected app.
+Read [README.md](README.md) and the [verified cleanup report](archive/CLEANUP_2026-11-10.md) first, then [archive/branch-inventory-2026-11-10.json](archive/branch-inventory-2026-11-10.json) when tracing a historical branch. These files are sufficient to orient without access to any particular chat, AI vendor, personal memory, or connected app.
 
 ## Research purpose
 
