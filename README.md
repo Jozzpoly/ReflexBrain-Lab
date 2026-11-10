@@ -4,6 +4,8 @@
 
 > **UWAGA: gałąź `main` jest tylko indeksem i historycznym R0. Nie zawiera aktualnego, uruchamialnego ReflexBrain.** Badania nigdy nie zostały scalone do jednego programu. Nie utożsamiaj domyślnego branche'a z najnowszą nauką i nie scalaj eksperymentów hurtowo, aby to „naprawić”.
 
+**Stan po krytycznym sprzątaniu:** **15 gałęzi**, **10 otwartych PR-ów**, **100 zweryfikowanych tagów archiwalnych**. [Pełny raport, lista zachowanych gałęzi i sposób odtworzenia historycznych eksperymentów](archive/CLEANUP_2026-11-10.md). Archiwizacja nie oznacza akceptacji naukowej ani scalenia kodu.
+
 ## Po co istnieje ReflexBrain
 
 Dwa powiązane, lecz odrębne problemy badawcze:
