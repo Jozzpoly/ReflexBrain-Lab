@@ -4,7 +4,7 @@
 
 > **UWAGA: gałąź `main` jest tylko indeksem i historycznym R0. Nie zawiera aktualnego, uruchamialnego ReflexBrain.** Badania nigdy nie zostały scalone do jednego programu. Nie utożsamiaj domyślnego branche'a z najnowszą nauką i nie scalaj eksperymentów hurtowo, aby to „naprawić”.
 
-**Stan po krytycznym sprzątaniu:** **15 gałęzi**, **10 otwartych PR-ów**, **100 zweryfikowanych tagów archiwalnych**. [Pełny raport, lista zachowanych gałęzi i sposób odtworzenia historycznych eksperymentów](archive/CLEANUP_2026-11-10.md). Archiwizacja nie oznacza akceptacji naukowej ani scalenia kodu.
+**Stan po krytycznym sprzątaniu:** **15 gałęzi**, **10 otwartych PR-ów**, **100 zweryfikowanych tagów archiwalnych**. Zacznij od **[MAPY BADAŃ — wyniki, obalone hipotezy, źródła](BADANIA.md)**, potem [raportu porządków i instrukcji odzyskania historycznych eksperymentów](archive/CLEANUP_2026-11-10.md). Archiwizacja nie oznacza akceptacji naukowej ani scalenia kodu.
 
 ## Po co istnieje ReflexBrain
 
@@ -33,13 +33,15 @@ Dwa powiązane, lecz odrębne problemy badawcze:
 ```sh
 git clone https://github.com/Jozzpoly/ReflexBrain-Lab.git
 cd ReflexBrain-Lab
-git switch -c investigate-r8 329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6
+git fetch --tags
+git worktree add -b investigate-r8 ../ReflexBrain-R8 329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6
+cd ../ReflexBrain-R8
 yarn install --non-interactive
 yarn run check
 yarn run dev
 ```
 
-Wersja R8 nie posiada lockfile'a; polecenia wyżej odpowiadają historycznemu CI (Node 22 / Yarn). Otwórz lokalną stronę `/probes/material-workbench-r8.html`. To przypięta, niemergowana wersja badawcza; nie publikuj jej jako nowego oficjalnego ReflexBrain bez oceny. Źródła są pod [dokładnym commitem R8](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6).
+**Ważne dla nowych agentów:** `git worktree` pozostawia `README.md`, `AGENTS.md` i `BADANIA.md` dostępne w pierwszym katalogu, obok oddzielnej kopii kodu R8. Samo `git switch` w katalogu głównym spowodowałoby zniknięcie tych instrukcji ze starej gałęzi. Nowy agent powinien pracować w oddzielnym katalogu z kodem, a główny traktować jako czytelną mapę. Wersja R8 nie posiada lockfile'a; polecenia wyżej odpowiadają historycznemu CI (Node 22 / Yarn Classic). Otwórz lokalną stronę `/probes/material-workbench-r8.html`. To przypięta, niemergowana wersja badawcza; nie publikuj jej jako nowego oficjalnego ReflexBrain bez oceny. Źródła są pod [dokładnym commitem R8](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6).
 
 Dla użytkownika Windows istnieje [odrębnie zweryfikowana paczka lokalna z Actions](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/40330314009) (artefakt wygaśnie **25 listopada 2026**); [branch do jej odtworzenia](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/delivery/r8-private-windows-playtest-2026-10-26) jest osobny.
 
