@@ -1,6 +1,7 @@
 name: ReflexBrain archived-branch cleanup (one time)
 # Corrected: already-merged PR heads also require tag-first archiving.
 # Apply retry after read-after-write indexing delay was observed; tag-check now retries before any deletion.
+# Final scoped pass: archive the 12 historical orphan R1/E0 branch refs, never the delivery or evidence donors.
 on:
   push:
     branches: [main]
