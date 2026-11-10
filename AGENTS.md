@@ -27,6 +27,8 @@ Do not equate green CI, motor activity, a physics checkpoint, the number of evol
 
 ## Protection during the Owner's absence
 
+**Verified repository-setting gap (11 Nov 2026):** GitHub reports `main.protected=false` and **zero active rulesets**. This text is not enforcement. Before an unfamiliar AI is given broad write access, prefer a GitHub branch ruleset preventing force pushes/deletion of `main`, and a **tag ruleset preventing update/deletion** of `archive/reflexbrain-2026-11-10/**/*`. Avoid a mandatory-PR rule unless its extra Owner friction is deliberately accepted. No such settings were changed during this audit.
+
 - Do not merge/rebase/force-push historical research branches, delete unique evidence, rewrite data, publish a new public Pages/Jaskinia default, or change credentials without an explicit current directive.
 - Branch references may be archived as **verified lightweight Git tags** before pruning. A SHA written in JSON is *not* object preservation. Never delete an archival tag until another verified Git ref or offline bundle protects the same history.
 - Do not expose private workspace data or paste hidden credentials into this public repository. No AI-provider-specific handoff, authentication secret, or assumptions about proprietary agent memory belong here.
