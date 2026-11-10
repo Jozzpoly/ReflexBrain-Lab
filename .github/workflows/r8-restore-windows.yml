@@ -1,0 +1,142 @@
+name: ReflexBrain R8 - manual Windows recovery (no deployment)
+
+# Manual rebuild registered on default main. Source + packaging are pinned to
+# the independently qualified Oct-26 exact commit, not any mutable branch.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/r8-restore-windows.yml
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-smoke:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout isolated frozen R8 workbench and packaging
+        uses: actions/checkout@v4
+        with:
+          ref: 65a9259578b5465478291b451be116a3471951e5
+          persist-credentials: false
+          fetch-depth: 0  # require real R8 ancestry for strict source-integrity gate
+
+      - name: Prove frozen R8 implementation was not modified
+        shell: pwsh
+        run: |
+          git merge-base --is-ancestor 329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6 HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'R8 base ancestor missing' }
+          $changed = @(git diff --name-only 329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6 HEAD)
+          foreach ($f in $changed) {
+            if ($f -notmatch '^(tools/(r8-freeplay-local.ps1|START_R8.cmd|R8_README_PL.txt)|.github/workflows/r8-windows-owner-preview.yml)$') {
+              throw "Unauthorized R8 source or unrelated change: $f"
+            }
+          }
+          Write-Host "Only packaging files changed: $($changed.Count)"
+
+      - name: Node 22 build tooling only (not needed by Owner)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build exact R8 static site and native project checks
+        shell: pwsh
+        run: |
+          corepack enable
+          yarn install --frozen-lockfile --non-interactive
+          if ($LASTEXITCODE -ne 0) { throw 'install failed' }
+          yarn run check
+          if ($LASTEXITCODE -ne 0) { throw 'check failed' }
+          if (-not (Test-Path 'dist/probes/material-workbench-r8.html')) {
+            throw 'Real R8 material workbench entry not compiled'
+          }
+
+      - name: Package standalone Windows free-play folder (no Node installation)
+        shell: pwsh
+        run: |
+          $base='portable/ReflexBrain-R8'
+          New-Item -ItemType Directory -Path $base -Force | Out-Null
+          Copy-Item -Recurse dist (Join-Path $base 'dist')
+          Copy-Item tools/START_R8.cmd (Join-Path $base 'START_R8.cmd')
+          Copy-Item tools/r8-freeplay-local.ps1 (Join-Path $base 'r8-freeplay-local.ps1')
+          Copy-Item tools/R8_README_PL.txt (Join-Path $base 'R8_README_PL.txt')
+          if (-not (Test-Path (Join-Path $base 'dist/probes/material-workbench-r8.html'))) { throw 'Package incomplete' }
+
+      - name: Independent Windows PowerShell loopback HTTP smoke
+        shell: pwsh
+        run: |
+          $base=(Resolve-Path 'portable/ReflexBrain-R8').Path
+          $script=(Join-Path $base 'r8-freeplay-local.ps1')
+          $log=(Join-Path $env:RUNNER_TEMP 'r8-local.log')
+          $err=(Join-Path $env:RUNNER_TEMP 'r8-local.err')
+          $proc=Start-Process powershell.exe -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"' + $script + '"'),'-Port','18765','-NoBrowser') -PassThru -RedirectStandardOutput $log -RedirectStandardError $err
+          try {
+            $url='http://127.0.0.1:18765/probes/material-workbench-r8.html'
+            $ok=$false
+            for($i=0;$i -lt 30;$i++){
+              Start-Sleep -Seconds 1
+              if($proc.HasExited){ break }
+              try {
+                $response=Invoke-WebRequest -UseBasicParsing -Uri $url -TimeoutSec 2
+                if($response.StatusCode -eq 200 -and $response.Content -match 'module'){ $ok=$true;break }
+              } catch {}
+            }
+            if(-not $ok){
+              if(Test-Path $log){Get-Content $log}
+              if(Test-Path $err){Get-Content $err}
+              throw 'Windows local HTML failed HTTP + JS check'
+            }
+            $response=Invoke-WebRequest -UseBasicParsing -Uri $url -TimeoutSec 5
+            $assets=[regex]::Matches($response.Content,'\.\./assets/[^"\s]+\.js')
+            if($assets.Count -lt 1){ throw 'R8 Vite compiled module reference missing' }
+            $asset='http://127.0.0.1:18765/' + ($assets[0].Value -replace '^\.\./','')
+            $module=Invoke-WebRequest -UseBasicParsing -Uri $asset -TimeoutSec 10
+            if($module.StatusCode -ne 200 -or $module.RawContentLength -lt 1000){ throw 'Compiled R8 module failed loopback HTTP' }
+            Write-Host "LOCAL WINDOWS BUNDLE PASS: HTML + JS fetched from 127.0.0.1 on native PowerShell"
+          } finally {
+            if($proc -and -not $proc.HasExited){ Stop-Process -Id $proc.Id -Force }
+          }
+
+      - name: Full real Chrome R8 interactive QA against PACKAGED local Windows preview
+        shell: pwsh
+        run: |
+          yarn add --dev --ignore-scripts playwright-core@1.56.0
+          if ($LASTEXITCODE -ne 0) { throw 'Playwright client install failed' }
+          $base=(Resolve-Path 'portable/ReflexBrain-R8').Path
+          $script=(Join-Path $base 'r8-freeplay-local.ps1')
+          $log=(Join-Path $env:RUNNER_TEMP 'r8-chrome-e2e.log')
+          $serverLog=(Join-Path $env:RUNNER_TEMP 'r8-chrome-server.log')
+          $serverErr=(Join-Path $env:RUNNER_TEMP 'r8-chrome-server.err')
+          $proc=Start-Process powershell.exe -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"' + $script + '"'),'-Port','4187','-NoBrowser') -PassThru -RedirectStandardOutput $serverLog -RedirectStandardError $serverErr
+          try {
+            $url='http://127.0.0.1:4187/probes/material-workbench-r8.html'
+            $ok=$false
+            for($i=0;$i -lt 30;$i++){
+              Start-Sleep -Seconds 1
+              try {
+                $response=Invoke-WebRequest -UseBasicParsing -Uri $url -TimeoutSec 2
+                if($response.StatusCode -eq 200){$ok=$true;break}
+              } catch {}
+            }
+            if(-not $ok) { throw 'Packaged server did not respond for actual Chrome test' }
+            node tests/browser/r8-workbench.e2e.mjs > $log 2>&1
+            if($LASTEXITCODE -ne 0){
+              Get-Content $log -Tail 80
+              throw 'Real Chrome R8 interaction QA failed on portable Windows bundle'
+            }
+            Write-Host 'REAL CHROME R8 PACKAGED WINDOWS INTERACTION QA PASS'
+            Get-Content $log -Tail 12 | ForEach-Object { if($_.Length -lt 450) { Write-Host $_ } }
+          } finally {
+            if($proc -and -not $proc.HasExited){ Stop-Process -Id $proc.Id -Force }
+          }
+
+      - name: Store portable artifact for Owner (no hosting/deploy)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ReflexBrain-R8-Windows-Freeplay-Research
+          path: portable/ReflexBrain-R8/
+          if-no-files-found: error
+          retention-days: 30
