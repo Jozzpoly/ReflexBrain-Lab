@@ -42,13 +42,23 @@ const [open,closed,branches]=await Promise.all([
 const active=new Set(open.flatMap(p=>[p.head.ref,p.base.ref]));
 const closedByHead=new Map(closed.map(p=>[p.head.ref,p]));
 const branchesByName=new Map(branches.map(b=>[b.name,b]));
+const preservedStandalone=new Set([
+ 'delivery/r8-private-windows-playtest-2026-10-26',
+ 'evidence/reflexbrain-2026-10-26-replay-and-handoff'
+]);
 const candidates=[];
 const alreadyGone=[];
 for(const row of manifest.branches){
- if(row.role!=='closed-pr-head'&&row.role!=='open-pr-head')continue;
+ const prHead=row.role==='closed-pr-head'||row.role==='open-pr-head';
+ const orphan=row.role==='unreferenced-branch'&&!preservedStandalone.has(row.name);
+ if(!prHead&&!orphan)continue;
  if(row.name==='main'||row.protected||active.has(row.name))continue;
- const pr=closedByHead.get(row.name);
- if(!pr||pr.number!==row.pr)continue;
+ if(prHead){
+  const pr=closedByHead.get(row.name);
+  if(!pr||pr.number!==row.pr)continue;
+ }else if(row.pr!==null||closedByHead.has(row.name)){
+  throw Error('ABORT allegedly unreferenced branch has PR: '+row.name);
+ }
  const now=branchesByName.get(row.name);
  if(!now){alreadyGone.push(row);continue;}
  if(now.protected||now.commit.sha!==row.sha)throw Error('ABORT branch drift/protection: '+row.name);
@@ -60,7 +70,7 @@ const summary=[
  'mode: '+(apply?'APPLY':'DRY RUN'),
  'PRs: '+open.length+' open / '+closed.length+' closed',
  'remote branches: '+branches.length,
- 'safe closed-PR branch candidates: '+candidates.length,
+ 'safe historical branch candidates: '+candidates.length,
  'already missing from branch inventory: '+alreadyGone.length,
  'other branches intentionally untouched: '+(branches.length-candidates.length)
 ];
