@@ -1,4 +1,5 @@
 name: ReflexBrain archived-branch cleanup (one time)
+# Corrected: already-merged PR heads also require tag-first archiving.
 on:
   push:
     branches: [main]
