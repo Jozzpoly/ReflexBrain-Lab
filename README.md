@@ -32,12 +32,12 @@ Dwa powiązane, lecz odrębne problemy badawcze:
 git clone https://github.com/Jozzpoly/ReflexBrain-Lab.git
 cd ReflexBrain-Lab
 git switch -c investigate-r8 329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6
-npm ci
-npm run check
-npm run dev
+yarn install --non-interactive
+yarn run check
+yarn run dev
 ```
 
-Otwórz lokalną stronę `/probes/material-workbench-r8.html`. To przypięta, niemergowana wersja badawcza; nie publikuj jej jako nowego oficjalnego ReflexBrain bez oceny. Źródła są pod [dokładnym commitem R8](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6).
+Wersja R8 nie posiada lockfile'a; polecenia wyżej odpowiadają historycznemu CI (Node 22 / Yarn). Otwórz lokalną stronę `/probes/material-workbench-r8.html`. To przypięta, niemergowana wersja badawcza; nie publikuj jej jako nowego oficjalnego ReflexBrain bez oceny. Źródła są pod [dokładnym commitem R8](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6).
 
 Dla użytkownika Windows istnieje [odrębnie zweryfikowana paczka lokalna z Actions](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/40330314009) (artefakt wygaśnie **25 listopada 2026**); [branch do jej odtworzenia](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/delivery/r8-private-windows-playtest-2026-10-26) jest osobny.
 
