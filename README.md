@@ -1,32 +1,53 @@
-# ReflexBrain Lab — repository entrypoint
+# ReflexBrain Lab — start here / wejście dla każdego agenta
 
-> **26 October 2026 — recovery routing (not a new canonical runtime).** The dated `PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md` was last substantively updated **11 October**, and `docs/CONTINUE_HERE.md` starts with **24 October**; neither is automatically current. For the later independently verified research and its limitations, use the [source-pinned 26 October evidence capsule](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/9a9c0acec3075255d38ce37d06fec4605e1f6a6a/evidence/2026-10-26/README.md) and [most recent PR #6 comments](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6). This is a **discovery pointer, not a new architecture, merged codebase or Owner life PASS**. Other research PRs can independently supersede its findings; verify fresh branch/CI/Owner evidence before acting.
+**Stan badań: 10 listopada 2026.** Ten plik i [AGENTS.md](AGENTS.md) są niezależne od ChatGPT, Clauda, Codexa, Groka i pamięci rozmów. Właściciel może przez pewien czas nie korzystać z GPT. **Nie wymagaj od niego ręcznego odtwarzania historii projektu.**
 
-> **This `main` branch is a historical R0 baseline, not the current ReflexBrain experiment.** The active research has deliberately remained on qualified experimental branches; the repository entrypoint was not maintained until this correction. The R0 code on `main` has not been merged with, or replaced by, the new experiments.
+> **UWAGA: gałąź `main` jest tylko indeksem i historycznym R0. Nie zawiera aktualnego, uruchamialnego ReflexBrain.** Badania nigdy nie zostały scalone do jednego programu. Nie utożsamiaj domyślnego branche'a z najnowszą nauką i nie scalaj eksperymentów hurtowo, aby to „naprawić”.
 
-## Research discovery (verify current status)
+## Po co istnieje ReflexBrain
 
-- **Earlier research coordination branch (not the combined current runtime):** [`research/pre-o0-foundations-campaign`](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/research/pre-o0-foundations-campaign)
-- **Continuity / evidence discussion (still draft):** [PR #6](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6)
-- **R8 physical material workshop (isolated, not merged):** [PR #89](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/89) at frozen source `329e1d99`; [6 Nov native causality finding](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/89#issuecomment-6674491039) proved that dynamic workshop `part` bodies were ignored by a load-plate mechanism despite real physical overlap. A one-guard transient repair restored this specific chain; **R8 source remains unchanged**, and the plate is not directly available in the resident's legal retina/touch. **No autonomous resident discovery, learning or Owner-life PASS.**
-- **Owner-accessible R8 Windows research build (not public Pages):** [packaged Windows/Chrome PASS, GitHub Actions #40330314009](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/40330314009), artifact `ReflexBrain-R8-Windows-Freeplay-Research` (GitHub artifact expires **25 Nov 2026**). It is rebuildable from the isolated [delivery branch](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/delivery/r8-private-windows-playtest-2026-10-26); it is **not** the Jaskinia "Play" version, which still reaches the historical S0 public experiment. Do not silently promote, publish or overwrite S0.
-- **24 Oct historical recovery entrypoint:** [`docs/CONTINUE_HERE.md`](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/pre-o0-foundations-campaign/docs/CONTINUE_HERE.md)
-- **Historical 11 Oct state (not currently authoritative):** [`docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md`](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/pre-o0-foundations-campaign/docs/PRE_O0_CAMPAIGN_CURRENT_STATE_2026-10-06.md)
-- **Source methodology:** [`docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md`](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/research/pre-o0-foundations-campaign/docs/REFLEXBRAIN_RUN_BASED_EXECUTION_2026-10-06.md)
-- **Published historical research preview (not the latest organism or an Owner-life PASS):** https://jozzpoly.github.io/ReflexBrain-Lab/
+Dwa powiązane, lecz odrębne problemy badawcze:
 
-**Status and HEAD are not copied here** because they change during atomic research. Before continuing, check the latest PR comments, actual active branch/CI and the date of any referenced checkpoint; **no single mutable document is guaranteed to be current**.
+1. **Żyjący mieszkaniec:** czy materialnie ucieleśniona istota potrafi rozwijać własne, różnorodne i ciągłe sposoby działania w świecie, zamiast wykonywać scenariusz badacza?
+2. **Tani prywatny mózg:** czy mały mechanizm uczenia może z rzeczywiście dostępnej mu historii zmysłowo-ruchowej odkrywać przydatne znaczenie, lepiej niż proste odruchy i automaty stanów?
 
-## Project questions (parallel, not a frozen architecture)
+**Stan dowodów:** istnieją prawdziwe eksperymenty fizyczne, ekologiczne, sensoryczne i pamięciowe, również nieudane. **Nie udowodniono trwałego rozwoju własnych praktyk mieszkańca, ani przewagi uczącego się mózgu w takim życiu. Nie ma akceptacji jakości życia przez Ownera.**
 
-**Living resident:** can a materially embodied resident develop genuinely different, continuing ways of life and affect its world without the Owner or a hidden author-defined task as its heartbeat? Owner-observed experience can falsify machine-only PASS.
+## Gdzie jest rzeczywisty dorobek
 
-**ReflexBrain proper:** can a small, cheap, actor-private learned organ gain usable significance from its lawful personal sensorimotor history, beyond cheap present-state and finite-state controls, without becoming omniscient World authority, factual memory, or the whole planner and motor controller?
+| Punkt | Rola | Status |
+| --- | --- | --- |
+| [PR #6 — indeks badań i krytyczne korekty](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6) | Punkt odzyskania historii, [wspólne badanie „biografii świata i organizmu”](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6#issuecomment-6754317044) | Nie jest runtime ani schedulerem |
+| [PR #3 — R3](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/3) | Causal pressure, authored-world donor | Nie jest żywym organizmem |
+| [PR #84 — LIFE/L1](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/84) | Przerwanie i wznowienie wykonywania symulacji, rzeczywista fizyka | Ciągłość wykonania ≠ wartość życia |
+| [PR #89 — R8](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/89) | Najbardziej bezpośredni otwarty warsztat materii, ciała i prywatnych zmysłów | Testy fizyczne i Chrome PASS, **nie** life PASS |
+| [Audyt R8 z 6 XI](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/89#issuecomment-6674491039) | Brakujące połączenie: `part` → płyta → brama | Poprawiono **tylko wariant testowy**, nie oryginalny R8 |
+| [Archiwalny inwentarz wszystkich 115 branchy](archive/branch-inventory-2026-11-10.json) | SHA, stary PR, zależności, pochodzenie przed sprzątaniem | Historyczny snapshot, nie live GitHub |
 
-These lines can inform each other but neither must wait indefinitely for the other. Self-chosen play and exploration are **research possibilities**, not mandatory game mechanics or a settled third subsystem. Past Proto-Life / Persistent Playground are evidence and potential donors, **not an architecture to reinstall**.
+**Uwaga:** fizyczne współdziałanie mechanizmów, zapis symulacji i prywatne doświadczenie mieszkańca są **różnymi** poziomami dowodu. W R8 sterownik `Occupant` pozostaje autorskim śledzeniem turkusowych obiektów; Owner może ręcznie zmieniać świat, ale nie jest to działanie AI.
 
-## Historical R0 baseline
+## Jak uruchomić działający egzemplarz R8
 
-This default branch is an historical entrypoint, not a repository-wide current runtime. Its previous R0 README is preserved at [R0 README @ `6ecb6b0ed6`](https://github.com/Jozzpoly/ReflexBrain-Lab/blob/6ecb6b0ed6ae2ca8de84209c139205641af78c65/README.md).
+```sh
+git clone https://github.com/Jozzpoly/ReflexBrain-Lab.git
+cd ReflexBrain-Lab
+git switch -c investigate-r8 329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6
+npm ci
+npm run check
+npm run dev
+```
 
-**Do not use R0 on `main` as a source of current experiment status, and do not force-merge the active campaign into `main` to make the repository look up to date.** Any eventual default-branch normalization should be a separate reviewed operation.
+Otwórz lokalną stronę `/probes/material-workbench-r8.html`. To przypięta, niemergowana wersja badawcza; nie publikuj jej jako nowego oficjalnego ReflexBrain bez oceny. Źródła są pod [dokładnym commitem R8](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6).
+
+Dla użytkownika Windows istnieje [odrębnie zweryfikowana paczka lokalna z Actions](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/40330314009) (artefakt wygaśnie **25 listopada 2026**); [branch do jej odtworzenia](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/delivery/r8-private-windows-playtest-2026-10-26) jest osobny.
+
+**Publiczna [strona Pages](https://jozzpoly.github.io/ReflexBrain-Lab/) prowadzi do starego S0**, znanego jako niezadowalający eksperyment; **nie** jest publicznym adresem R8. Jaskinia nie jest prerequisite do badania ReflexBrain.
+
+## Jeśli przejmujesz projekt jako nowy AI
+
+1. Przeczytaj [AGENTS.md](AGENTS.md) i ten README; wybierz rzeczywiste źródło ze wskazanym SHA. Nie zakładaj dostępu do dawnych rozmów.
+2. Zajrzyj do [inwentarza branchy](archive/branch-inventory-2026-11-10.json). Jeśli gałąź zniknęła w porządkach, sprawdź jej znacznik `refs/tags/archive/reflexbrain-2026-11-10/<oryginalna-nazwa-brancha>` na GitHubie. **Sam SHA bez znacznika nie gwarantuje zachowania historii Git.**
+3. Następne wartościowe badanie: **samodzielny kontakt → fizyczna zmiana świata → późniejsze, legalne zetknięcie z konsekwencją → ewentualna zmiana praktyki dzięki własnej pamięci**. Nie odtwarzaj w kółko 120-sekundowego testu ruchu R8; ten już istnieje.
+4. Nowe wykonanie prowadź na osobnej, jasno nazwanej gałęzi; dołącz odtwarzalny test, tanią kontrolę i granice interpretacji. Zostaw historyczne źródła bez zmian, zachowaj możliwość błyskawicznego Owner-testu.
+
+**Przed przebudową:** ochrona prawdziwych danych i unikalnych wyników jest ważniejsza niż liczba PR-ów czy zielonych testów. Nie przenoś prywatnych rozmów, tokenów ani tajnych materiałów do publicznego repo. **Nie zamieniaj eksperymentalnego kodu lub planu w obowiązującą architekturę z samego faktu, że istnieje.**
