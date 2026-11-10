@@ -1,0 +1,31 @@
+name: ReflexBrain archived-branch cleanup (one time)
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/reflexbrain-archive-prune.yml
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  audit:
+    if: github.repository == 'Jozzpoly/ReflexBrain-Lab'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check archival script syntax
+        run: node --check tools/archive-closed-pr-branches.mjs
+      - name: Check frozen branch inventory
+        run: node -e "const m=require('./archive/branch-inventory-2026-11-10.json');if(m.branches.length!==115||m.counts.closedPrHeadPruneCandidates!==59)process.exit(1);"
+      - name: Dry-run against current repository (NO deletions)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node tools/archive-closed-pr-branches.mjs
