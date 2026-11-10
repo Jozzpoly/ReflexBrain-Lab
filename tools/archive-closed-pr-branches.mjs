@@ -48,7 +48,7 @@ for(const row of manifest.branches){
  if(row.role!=='closed-pr-head'&&row.role!=='open-pr-head')continue;
  if(row.name==='main'||row.protected||active.has(row.name))continue;
  const pr=closedByHead.get(row.name);
- if(!pr||pr.number!==row.pr||pr.merged_at)continue;
+ if(!pr||pr.number!==row.pr)continue;
  const now=branchesByName.get(row.name);
  if(!now){alreadyGone.push(row);continue;}
  if(now.protected||now.commit.sha!==row.sha)throw Error('ABORT branch drift/protection: '+row.name);
@@ -71,7 +71,7 @@ if(!apply){
  process.exit(0);
 }
 
-// Phase 1: durable refs for EVERY candidate, before deleting ANY branch.
+// Phase 1: durable refs for EVERY candidate (including already-merged PR heads), before deleting ANY branch.
 // All tags are lightweight and point directly at the original commit object.
 const verified=new Set();
 for(const row of candidates){
