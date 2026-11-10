@@ -27,7 +27,8 @@ jobs:
         run: node --check tools/archive-closed-pr-branches.mjs
       - name: Check frozen branch inventory
         run: node -e "const m=require('./archive/branch-inventory-2026-11-10.json');if(m.branches.length!==115||m.counts.closedPrHeadPruneCandidates!==59)process.exit(1);"
-      - name: Dry-run against current repository (NO deletions)
+      - name: Verified archive tags, then remove completed PR branch refs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node tools/archive-closed-pr-branches.mjs
+          CONFIRM_ARCHIVE_PRUNE: ARCHIVE_BEFORE_DELETE
+        run: node tools/archive-closed-pr-branches.mjs --apply
