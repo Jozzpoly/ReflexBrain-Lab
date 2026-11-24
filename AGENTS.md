@@ -1,47 +1,37 @@
-# ReflexBrain Lab — instructions for any research agent (10 Nov 2026)
+# ReflexBrain Lab — protokół wejścia dla każdego agenta
 
-Read [README.md](README.md), then the **[research evidence map](BADANIA.md)** and [verified cleanup report](archive/CLEANUP_2026-11-10.md). Consult the [branch inventory](archive/branch-inventory-2026-11-10.json) when tracing any historical result. The map preserves the key distinctions without assuming access to a chat, AI vendor, personal memory or connector; **it cannot replace source-native verification**.
+Ten plik działa niezależnie od modelu, dostawcy i pamięci poprzednich rozmów (Opus, Fable, Argon, Neon, Browser GPT, Codex). **Nie wymagaj od Właściciela odtwarzania historii projektu.**
 
-## Research purpose
+## 1. Wejście na zimno (4 kroki przed pierwszą edycją)
 
-Study *continuing, varied, self-directed activities* of materially embodied residents, and separately whether a **small, inexpensive, actor-private learning mechanism** discovers useful significance from lawful sensorimotor history. The two questions are complementary but neither proves the other.
+1. Przeczytaj [README.md](README.md) i [WIEDZA.md](WIEDZA.md) — albo uruchom `npm run brief` (zawiera pełny skrót linii, werdyktów Właściciela, kanonu negatywnego i napięć).
+2. Zweryfikuj żywy stan Git (`git status`, `git branch -a`, aktualne SHA) — **żywy Git i uruchomiony kod zawsze wygrywają ze starszą prozą**.
+3. Przejrzyj w [WIEDZA.md](WIEDZA.md) sekcje **Kanon wyników negatywnych** i **Twarde blokady (`doNotRepeat`)**. Aby otworzyć historyczną linię oznaczoną jako `archive-tag` (lub dowolny ze 100 archiwalnych tagów), wykonaj wcześniej `git fetch --tags`, a następnie użyj `git worktree` lub `git show <SHA>:<ścieżka>` — nie zgaduj z pamięci.
+4. Jeśli pracujesz w powłoce, ustaw jednorazowo hak strażnika: `git config core.hooksPath .githooks`.
 
-Do not equate green CI, motor activity, a physics checkpoint, the number of evolved generations, a host-defined reward, a private bit programmed by a researcher, or convincingly staged scenes with life or autonomously acquired meaning. The Owner has NOT accepted an organism-quality/life result. Preserve negative findings.
+## 2. Drabina dowodowa (nie mieszaj pięter!)
 
-## Truth and provenance
+Każde twierdzenie oznaczaj jawnie jednym z 5 poziomów zdefiniowanych kanonicznie w [WIEDZA.md](WIEDZA.md) (`KOD`, `TEST`, `SWIAT`, `OWNER`, `HIPOTEZA`). **Żadne zielone CI nie nadpisuje bezpośredniego werdyktu `OWNER` z ręki.**
 
-- `main` is an **orientation-only historical R0 index**, not the latest playable code. Do not run `npm` there and report that the repository is broken; select an exact research SHA first.
-- Every research branch is a **specimen**, not a production line. Most have never been merged. Stacked PRs depend on their original bases; never assume an old PR is safely mergeable into `main`.
-- Distinguish the world's authoritative state, a physical action that the actor actually caused, an actor's lawful 96RGB/touch/proprio observation, its private remembered state, a researcher's interpretation, and the Owner's experience.
-- A paused/hidden browser iframe is not automatically running a simulation. A restored world snapshot is not the same as a continuous lived private history.
-- The historical public [Pages](https://jozzpoly.github.io/ReflexBrain-Lab/) entry shows an S0-stage experiment; it is NOT the R8 workshop or a qualified artificial-life demo.
-- Important scientific evidence is attached to original [research PR #6](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6) and [physical R8 PR #89](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/89). Source code and replay tests are on their specific historical refs.
+Nie deklaruj FPS, czasu rolloutów, emergencji ani przewagi pamięci bez powtarzalnego pomiaru i uczciwych kontroli (bezpamięciowej, zamrożonego uczenia, przetasowanej historii, kontroli koincydencji `yoked`, rozdzielonych seedów `held-out`).
 
-## Restarting actual research
+## 3. Jeden fakt = jeden właściciel i niska ceremonia
 
-1. Choose the smallest genuinely relevant original experiment; do not rebuild from chat summaries.
-2. For the October R8 physics-workbench donor, use **a separate Git worktree** from exact `329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6`; see the commands in README. Keep the original `main` worktree readable because its `AGENTS.md` and `BADANIA.md` are **absent from frozen historical source branches**. In the R8 worktree use Node 22 / Yarn Classic, `yarn install --non-interactive`, `yarn run check`, `yarn run dev`, then `probes/material-workbench-r8.html`.
-3. The current R8 `Occupant` is an authored turquoise-target/exploration controller, **not** a learned living resident. R8 already has 120 s source-native movement/material-contact diagnostics; merely rerunning them is not a new result.
-4. If doing new research, use a **new, clearly named isolated branch** from an exact donor SHA. Maintain a concise falsifiable question, a known cheap null, reproducible source/test command, and explicit statements of what has *not* been demonstrated.
-5. Report results as `observed / falsified / unknown`. A future new AI may contradict older conclusions, but must explain evidence and provenance rather than rewriting the past.
+- **Strefa swobodnych prób ([proby/](proby/README.md)):** tu wolno eksperymentować dziko i szybko bez biurokracji. Próba nie staje się fundamentem z automatu.
+- **Opcjonalna aparatura ([kernel/](kernel/README.md)):** możesz wpiąć swój świat i organ pod `seam.mjs`, `fork-microscope.mjs` i `lens-ui.mjs`, żeby od ręki dostać strażnika przecieków `obs`, gramatykę `MARK → FORK → INTERVENE → RELEASE → RUN → COMPARE` i klikalny podgląd HTML. Jeśli Twój eksperyment wymaga innego języka lub silnika (np. Rapier/TS, Python), **nie musisz** używać `kernel/` — obowiązuje Cię tylko ten sam rygor dowodowy.
+- **Awans wyniku (pozytywnego lub negatywnego):** dopisujesz pojedynczy, zwięzły wpis do [lab/state.json](lab/state.json), regenerujesz wszystkie widoki jednym poleceniem (`npm run render`) i weryfikujesz całość (`npm run check:all`). **Nie edytuj ręcznie `WIEDZA.md`, `DROGI.md` ani `proby/*/dist/*.html`** — wszystkie trzy mają automatyczną bramkę dryfu.
+- **Nie używaj jednego PR** jednocześnie jako eksperymentu, dziennika, testu CI i kandydata do scalenia (lekcja `N14`).
 
-## Protection during the Owner's absence
+## 4. Granica publiczne / prywatne i ochrona historii
 
-**Verified repository-setting gap (11 Nov 2026):** GitHub reports `main.protected=false` and **zero active rulesets**. This text is not enforcement. Before an unfamiliar AI is given broad write access, prefer a GitHub branch ruleset preventing force pushes/deletion of `main`, and a **tag ruleset preventing update/deletion** of `archive/reflexbrain-2026-11-10/**/*`. Avoid a mandatory-PR rule unless its extra Owner friction is deliberately accepted. No such settings were changed during this audit.
+- To repozytorium jest **publiczne**. Nigdy nie umieszczaj tu sekretów, tokenów, lokalnych ścieżek dyskowych, prywatnych rozmów ani nazw prywatnych repozytoriów Właściciela. Przed commitem działa `node tools/straznik.mjs --staged` (`.githooks/pre-commit`), a `npm run check:all` skanuje całe bieżące drzewo robocze (`--working`).
+- **Uwaga o cudzysłowach:** `tools/straznik.mjs` wyświetla ostrzeżenie dla polskich cudzysłowów drukarskich, ponieważ w ekosystemie Właściciela często oznaczają wklejony cytat z prywatnej rozmowy; w publicznej dokumentacji technicznej używaj zwykłych znaków albo backticków.
+- **Nie usuwaj** 100 archiwalnych tagów `archive/reflexbrain-2026-11-10/*`, katalogu `archive/` ani historycznych gałęzi bez wyraźnej decyzji Właściciela.
+- **Nie modyfikuj `main`** ani publicznego GitHub Pages bez akceptacji Właściciela. Pracuj na własnej, jasno nazwanej gałęzi badawczej.
 
-- Do not merge/rebase/force-push historical research branches, delete unique evidence, rewrite data, publish a new public Pages/Jaskinia default, or change credentials without an explicit current directive.
-- Branch references may be archived as **verified lightweight Git tags** before pruning. A SHA written in JSON is *not* object preservation. Never delete an archival tag until another verified Git ref or offline bundle protects the same history.
-- Do not expose private workspace data or paste hidden credentials into this public repository. No AI-provider-specific handoff, authentication secret, or assumptions about proprietary agent memory belong here.
-- Prefer real, autonomous experimental progress to repeated status reports, but don't convert a frozen research finding into product requirements through enthusiasm.
+## 5. Jak oddać działający okaz Właścicielowi
 
-## Repository hygiene after the 100-branch archive
-
-This repository accumulated 115 branches because experiments, CI delivery, scientific records, PR review, and branch retention were repeatedly conflated. Avoid repeating that pattern:
-
-- **Create a branch for a real executable change**, not a new status update or a fresh handoff. A draft PR is appropriate when it genuinely enables review/CI, not automatically for every negative thought experiment.
-- **Close completed research PRs promptly** with a clear final result and exact code/CI links. "Closed" means the specific investigation stopped, **not** that it passed, was merged, or became unimportant.
-- Prefer a **shallow, justified source lineage**. Do not base every new idea on the most recently created PR; choose a pinned, demonstrated substrate and isolate genuinely competing hypotheses.
-- At meaningful scientific transitions only, update [BADANIA.md](BADANIA.md) (what succeeded, what failed, what remains unknown) so the next provider does not have to scan years of PR discussions.
-- Before deleting any research branch, inventory active PR heads/bases, preserve its exact commit under a **verified Git ref or bundle**, verify read-back, then prune. Never turn on blanket automatic branch deletion while stacked PRs exist. A Git SHA in prose is not an archive.
-- Archive cleanup scripts should be **one-off, fail-closed and retired** after proving their result; do not build a permanent management tool or require the Owner to operate it.
-- Keep scientific specimen code and Owner-created content safe, but let provisional implementations be replaced radically if better evidence warrants it. Engineering procedure must remain proportional to actual risk and reversibility.
+Właściciel ocenia żywe zjawiska **z ręki w przeglądarce**, nie przez grzebanie w logach CI ani ręczne budowanie w terminalu:
+- Preferuj samodzielny plik HTML działający z `file://` po dwukliku (z domyślnym trybem `WATCH`, bez ściany suwaków zasłaniającej świat).
+- Gotowy, sprawdzony przez Ciebie okaz (z działającym publicznym adresem HTTPS) możesz zgłosić na pasek **Do obejrzenia** w [Jaskini](https://github.com/Jozzpoly/Jaskinia) zgodnie z jej publicznym sitem zgłoszeń (przez PR, po sprawdzeniu, czy podobne już nie było).
+- Dla historycznego warsztatu R8 nadal działają instrukcje `git worktree` opisane w [BADANIA.md](BADANIA.md) i [archive/CLEANUP_2026-11-10.md](archive/CLEANUP_2026-11-10.md).

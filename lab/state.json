@@ -1,0 +1,344 @@
+{
+  "schema": "reflexbrain-lab-state/v1",
+  "updatedAt": "2026-11-24",
+  "repository": "Jozzpoly/ReflexBrain-Lab",
+  "status": "PROBA_SRODOWISKA_V2",
+  "authorityRule": "Żywy Git, uruchamialne testy i bezpośredni werdykt Właściciela mają pierwszeństwo przed prozą. Ten plik jest jedynym źródłem prawdy dla linii badawczych, wyników negatywnych, napięć i dawców; WIEDZA.md jest z niego generowana deterministycznie.",
+  "coreMission": {
+    "twoQuestions": [
+      "Żyjący mieszkaniec: czy materialnie ucieleśniona istota potrafi rozwijać własne, ciągłe i zróżnicowane praktyki w świecie zamiast wykonywać scenariusz badacza?",
+      "Tani prywatny organ znaczenia: czy mały, lokalny mechanizm potrafi z legalnej historii zmysłowo-ruchowej nadawać sytuacjom prywatne znaczenie zmieniające późniejsze możliwości i działanie?"
+    ],
+    "longHorizon": "W dalekiej perspektywie ReflexBrain ma też służyć jako szybki, ucieleśniony układ nerwowy pozwalający agentom AI wspólnie z Właścicielem doświadczać i grać w jego światach. Dziś linia LLM pozostaje świadomie odcięta od jądra badań.",
+    "ownerLifePassEarned": false
+  },
+  "evidenceLadder": [
+    { "code": "KOD", "meaning": "Wynika bezpośrednio z przeczytanego kodu źródłowego pod dokładnym 40-znakowym SHA." },
+    { "code": "TEST", "meaning": "Potwierdzone przez uruchomiony, deterministyczny test lub falsyfikator w podanym zakresie." },
+    { "code": "SWIAT", "meaning": "Zaobserwowane w działającej symulacji lub przeglądarce; nie dowodzi samo przez się uczenia ani sensu." },
+    { "code": "OWNER", "meaning": "Bezpośrednia ocena Właściciela z ręki (nagranie/playtest). Żadna zielona tabela CI jej nie nadpisuje." },
+    { "code": "HIPOTEZA", "meaning": "Interpretacja, plan lub pytanie badawcze przed rozstrzygnięciem." }
+  ],
+  "ownerVerdicts": [
+    {
+      "id": "OV-1",
+      "date": "2026-10-06",
+      "target": "Persistent Playground v1",
+      "verdict": "KIERUNEK_WARTY_DRAZENIA",
+      "scope": "Pozytywny sygnał dla kierunku trwałego ucieleśnionego organizmu; NIE akceptacja starego learnera, 54 regionów ani architektury.",
+      "sourceSha": "ad2ce37eb1189e9f09ef4747f97a45604374759e",
+      "sourcePath": "docs/ORGANISM_RECOVERY_CURRENT_TRUTH_2026-10-06.md",
+      "sourceBasis": "zapis w dokumencie odzysku O0"
+    },
+    {
+      "id": "OV-2",
+      "date": "2026-10-06",
+      "target": "E0.0 (probe/e0-authoritative-body-2026-10-05)",
+      "verdict": "ORGANISM_FAIL / BODY_SUBSTRATE_DONOR",
+      "scope": "Arena zbyt mała na organizm; ciało Rapier i mikroskop zachowane jako dawca podłoża, czucie sterowania nierozstrzygnięte.",
+      "sourceSha": "ad2ce37eb1189e9f09ef4747f97a45604374759e",
+      "sourcePath": "docs/ORGANISM_RECOVERY_CURRENT_TRUTH_2026-10-06.md",
+      "sourceBasis": "zapis w dokumencie odzysku O0"
+    },
+    {
+      "id": "OV-3",
+      "date": "2026-10-11",
+      "target": "S0 public Pages preview",
+      "verdict": "OWNER_LIFE_FAIL",
+      "scope": "Sterownik nie utrzymywał materialnej relacji; negatywne doświadczenie Właściciela nie zostało obalone przez późniejsze zielone testy.",
+      "sourceSha": "277d3d511eea6a009d8cbbe26540ab6af71ae886",
+      "sourcePath": "BADANIA.md",
+      "sourceBasis": "indeks główny z 11 XI"
+    },
+    {
+      "id": "OV-4",
+      "date": "2026-11-23",
+      "target": "Neon V3 (research/neon-living-biome-v3)",
+      "verdict": "OTWARTE / DAWCA_BEZ_LIFE_PASS",
+      "scope": "Kierunek biomu, ergonomii Gracza i malowanej materii uznany przez Właściciela za materiał wart dalszej konsumpcji; przed kolejnymi eksperymentami priorytetem jest przebudowa środowiska badawczego i rozliczenie błędów metodologicznych V3.",
+      "sourceSha": "7824bec8cda06a7f6990d7e6d3f1bf6123fc1e45",
+      "sourcePath": "experiments/neon-living-biome-v3/docs/REFLEXBRAIN_V3_EXPERIMENT.md",
+      "sourceBasis": "commit ocenianego okazu (werdykt Właściciela z sesji 23-24 XI)"
+    }
+  ],
+  "lineages": [
+    {
+      "id": "L-R0-R1",
+      "name": "R0/R1 — Cień semantyczny i zamrożone reprezentacje",
+      "status": "HISTORICAL_DONOR",
+      "refKind": "active-branch",
+      "ref": "experiment/r1-expanded-representation-ab-v1",
+      "sha": "9ce5ec32e7eba8df6c0464e88a890652e94ff5d9",
+      "evidenceClass": "TEST",
+      "whatSurvived": "Granica zero-authority shadow; izolowane osadzanie (batch=1 usuwa artefakt układu); rozdzielenie kanałów strukturalnych od tekstu; kontrprzykłady leksykalne i OOD jako falsyfikator (OOD v2 18/18, OOD v3 21/26).",
+      "whatFailedOrRejected": "Mały model generatywny jako bezpośredni odruch (R0); stała ontologia 5 skalarnych osi oceny; założenie, że warstwę semantyczną da się rozwiązać przed presją żyjącego organizmu.",
+      "donorBoundary": "Odzyskać wzorzec izolacji i OOD dopiero wtedy, gdy będzie istniał żywy konsument znaczenia."
+    },
+    {
+      "id": "L-R2-R3",
+      "name": "R2/R3/A1B — Przyczynowy konsument semantyczny i prywatna sprawa",
+      "status": "HISTORICAL_AUTHORITY",
+      "refKind": "active-branch",
+      "ref": "experiment/r3-autonomous-life-pressure-v0",
+      "sha": "04f2835c2aec6a6e82248b2ff5744e89bd7b54e8",
+      "secondaryRefs": [
+        { "label": "R3-A1B real deficit inquiry (archive-tag)", "sha": "44d6f0f87400f952cb36cab82f9e869c98df2588" }
+      ],
+      "evidenceClass": "TEST",
+      "whatSurvived": "Rozdział World truth != private evidence != interpretation != policy != authority; 2x2 falsyfikator relacji prywatna sprawa x bieżący sygnał (wyrocznia 1.000 vs stała powierzchnia 0.500, redukcja niepotrzebnych reakcji ze 150 do 50); sprawdzenie nieobecności (checked absence); odkrycie nietrwałości dowodu w R3-A1B (okno 1 ticka t415 przed auto-uzupełnieniem).",
+      "whatFailedOrRejected": "R2 jako ręcznie klikana zabawka; ruch move_to bez fizyki ciała; brak wytrenowanego organu zastępującego wyrocznię; auto-regeneracja ukrywająca własny błąd przed aktorem.",
+      "donorBoundary": "Najlepszy wzorzec falsyfikacji relacyjnego znaczenia (same-id flip, konsument przed treningiem)."
+    },
+    {
+      "id": "L-PREO0-E0",
+      "name": "Pre-O0 / O0 / E0 — Odzysk organizmu i deterministyczne ciało Rapier",
+      "status": "FROZEN_DONOR",
+      "refKind": "active-branch",
+      "ref": "research/pre-o0-foundations-campaign",
+      "sha": "d0da632ded732619c979b8b58b5456b6975d154b",
+      "secondaryRefs": [
+        { "label": "O0 current truth (archive-tag)", "sha": "ad2ce37eb1189e9f09ef4747f97a45604374759e" },
+        { "label": "E0 body substrate (archive-tag)", "sha": "78052f22f4808fe5b83496a56a9c9f8b63ea9930" }
+      ],
+      "evidenceClass": "TEST",
+      "whatSurvived": "Karta projektu i dekonstrukcja ukrytych założeń (normatywność, odróżnienie ja-świat, pamięć prywatna); lekcje z Proto-Life/L0 (złożone przełączanie != życie; etykieta kontynuacji != materialna ciągłość); deterministyczny szew ciała E0 z replayem.",
+      "whatFailedOrRejected": "E0.0 jako okaz organizmu (za mała arena, Właściciel robi całą akcję); traktowanie etykiet kontynuacji lub liczników jako życia; mnożenie kilkudziesięciu dokumentów PRE_O0 przed pierwszym żywym testem.",
+      "donorBoundary": "Brać jako źródło inwariantów pojęciowych i szwu ciała, nie jako monolityczny plan."
+    },
+    {
+      "id": "L-MEDIUM-D",
+      "name": "MEDIUM-C/D — Gramatyka eksperymentu Właściciela i pierwszy rozjazd",
+      "status": "ACTIVE_CONCEPT_DONOR",
+      "refKind": "archive-tag",
+      "ref": "archive/reflexbrain-2026-11-10/medium/medium-d-r0-experiment-grammar",
+      "sha": "4a22e9a682ba23748e62a42bd75cb141fc5f140a",
+      "evidenceClass": "KOD",
+      "whatSurvived": "Domyślny stan WATCH (obserwacja nie jest komendą); gramatyka MARK -> FORK -> INTERVENE(warstwa) -> RELEASE -> RUN -> COMPARE; 5 jawnych warstw interwencji (MATERIAL, MOTOR_AUTHORITY, PRIVATE_RESEARCH_CUT, WORLD_REPLACEMENT, OCCUPANT_REPLACEMENT); drabina pierwszego rozjazdu (First-Divergence Ladder).",
+      "whatFailedOrRejected": "Pozostało dotąd głównie specyfikacją i fragmentarycznymi próbkami rozproszonymi po 15 gałęziach medium/*.",
+      "donorBoundary": "Bezpośrednia inspiracja dla lekkiego jądra kernel/fork-microscope.mjs i mikroskopu w tym środowisku."
+    },
+    {
+      "id": "L-R8-R13",
+      "name": "D0/D1 -> O-DEV -> L1/L2 -> R5a -> R8 -> X2 -> R13 — Materialny warsztat i twarde falsyfikacje",
+      "status": "FROZEN_SPECIMEN_AND_NEGATIVE_CANON",
+      "refKind": "active-branch",
+      "ref": "research/rb-r8-open-material-workbench-2026-10-22",
+      "sha": "329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6",
+      "secondaryRefs": [
+        { "label": "D1 coupled affordance (active-branch)", "sha": "7caa9e89acad7ad67ac49a2b838ea92d6cb4f0d1" },
+        { "label": "O-DEV first non-cyan resident (active-branch)", "sha": "010531a0d5996ad70bba25a8b60b8324ec1c77cb" },
+        { "label": "R5a falsification (archive-tag)", "sha": "29d45066e26a81fb0894f82b201112a495951106" },
+        { "label": "X2 seed sensitivity (archive-tag)", "sha": "0236d059e76a6bc6636ea48d7c57fb9b6e0c689c" },
+        { "label": "R13 private history return (archive-tag)", "sha": "163de81ac2c168db37a60d1f7a316383bb6d647d" },
+        { "label": "C2 native relational ecology (archive-tag)", "sha": "440c94570132c8a58d20568e241f5fff5da1999d" }
+      ],
+      "evidenceClass": "TEST",
+      "whatSurvived": "Prawdziwa fizyka Rapier 120Hz, legalna 96RGB siatkówka i dotyk, 2-godzinna ciągłość zapisu/wznowienia L1, otwarty warsztat materii R8, twarda metodologia preregistracji ARMED -> RESULT przed kodem.",
+      "whatFailedOrRejected": "R8 Occupant nadal śledzi autorski turkus; O-DEV przegrywa w przesuniętym układzie z losem; R5a (zajętość oka != kontakt, szyna nasyca materię); X2 (powrót losowy tylko 1/4 seedów); R13 (fork po 30s gdy aktor uciekł na X=55.6 poza scenę -> 0 kontaktów); sterylny wygląd artefaktu inżynierskiego.",
+      "donorBoundary": "Cenne jako dawca fizyki i kanon negatywnych falsyfikacji; nie uruchamiać kolejnych 120s re-testów w sterylnym R8 bez nowego powodu powrotu do materii."
+    },
+    {
+      "id": "L-NEON-V3",
+      "name": "Neon V3 — Przestrzenny żywy biom i 1-krokowy predyktor skutków akcji",
+      "status": "ISOLATED_SPECIMEN_DONOR",
+      "refKind": "active-branch",
+      "ref": "research/neon-living-biome-v3",
+      "sha": "7824bec8cda06a7f6990d7e6d3f1bf6123fc1e45",
+      "evidenceClass": "TEST",
+      "whatSurvived": "Płynny biom 3200x2200 (Sanktuarium -> Półmrok -> Dzicz) bez męczącej globalnej katastrofy; malowana materia spoza palety; łagodny kontakt (0 dmg) vs celowy dash; ergonomia ciała Gracza (E toggle + Spacja rzut); szczelność obs i samodzielny plik HTML.",
+      "whatFailedOrRejected": "Krytyczny bug isRockRay na interpolowanym niebie Półmrok->Dzicz (zmierzone 36/36 promieni widmowej skały w r=1460..1580); Test 0.6 mierzył korelację, nie sprawczość; PlaceGraph zremisował 8/16; viability/population karało narodziny; timer 420 ticków zamiast rewizji przekonań (41.9% paraliżu po odwróceniu); 1-krokowy predyktor kolor->wartość nie przekracza progu relacyjnego znaczenia.",
+      "donorBoundary": "Dawca biomu, malowanej materii, ergonomii i katalogu 5 pułapek metodologicznych. NIE fundament pod monolityczne V4."
+    }
+  ],
+  "negativeCanon": [
+    {
+      "id": "N1",
+      "lesson": "Złożone przełączanie stanów, chaos lub aktywność motoru nie są życiem ani sprawczością.",
+      "source": "Proto-Life / O0 Donor Audit",
+      "sha": "ad2ce37eb1189e9f09ef4747f97a45604374759e",
+      "evidenceClass": "TEST"
+    },
+    {
+      "id": "N2",
+      "lesson": "Etykieta kontynuacji (np. continuation=left) nad przeliczanym co klatkę ruchem nie tworzy materialnej ciągłości, a zwiększanie jej autorytetu rodzi upartą głupotę.",
+      "source": "L0 / O0 Donor Audit",
+      "sha": "ad2ce37eb1189e9f09ef4747f97a45604374759e",
+      "evidenceClass": "TEST"
+    },
+    {
+      "id": "N3",
+      "lesson": "Mały model generatywny jako bezpośredni odruch (R0) zawodzi pod zmianą kolejności/etykiet, a batch>1 przy embeddingach (R1) tworzy ukryty artefakt układu.",
+      "source": "R0 / R1 Consolidated State",
+      "sha": "9ce5ec32e7eba8df6c0464e88a890652e94ff5d9",
+      "evidenceClass": "TEST"
+    },
+    {
+      "id": "N4",
+      "lesson": "Wyrocznia semantyczna (R3: 1.000 vs 0.500) dowodzi tylko wartości konsumenta relacji — nie jest etykietą treningową ani dowodem możliwości wyuczenia.",
+      "source": "R3 Semantic Consumer Oracle",
+      "sha": "04f2835c2aec6a6e82248b2ff5744e89bd7b54e8",
+      "evidenceClass": "TEST"
+    },
+    {
+      "id": "N5",
+      "lesson": "Auto-uzupełnianie zasobów w tle potrafi w 1 tick wymazać jedyny legalnie obserwowalny dowód deficytu (R3-A1B: okno t415 znika w t416).",
+      "source": "R3-A1B Real Deficit Inquiry",
+      "sha": "44d6f0f87400f952cb36cab82f9e869c98df2588",
+      "evidenceClass": "TEST"
+    },
+    {
+      "id": "N6",
+      "lesson": "Model uczony na historii przegrywa w zamkniętej pętli z samą kalibracją motoru (7/12 scen), gdy zadanie nie wymaga historii.",
+      "source": "living-organism ACTION_CONDITIONED_RESULTS",
+      "sha": "329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6",
+      "evidenceClass": "TEST"
+    },
+    {
+      "id": "N7",
+      "lesson": "Sama ciągłość wykonania (L1: 2h save/restore) i sama zajętość siatkówki (R5a: 3004 klatki widzenia, 0 kontaktów) nie dowodzą użytecznego doświadczenia.",
+      "source": "L1 / R5a Full Falsification",
+      "sha": "29d45066e26a81fb0894f82b201112a495951106",
+      "evidenceClass": "TEST"
+    },
+    {
+      "id": "N8",
+      "lesson": "Pojedynczy udany seed (X1) jest złudzeniem: X2 wykazał losowe powroty do materii tylko w 1 z 4 seedów w obu układach.",
+      "source": "RB/LIFE-X2",
+      "sha": "0236d059e76a6bc6636ea48d7c57fb9b6e0c689c",
+      "evidenceClass": "TEST"
+    },
+    {
+      "id": "N9",
+      "lesson": "Fork pamięci zrobiony po tym, jak aktor opuścił scenę (R13: X=55.6 przy zasięgu wzroku 12), udowadnia tylko zmianę motoru — daje 0 kontaktów i nie testuje użyteczności pamięci.",
+      "source": "RB-R13",
+      "sha": "163de81ac2c168db37a60d1f7a316383bb6d647d",
+      "evidenceClass": "TEST"
+    },
+    {
+      "id": "N10",
+      "lesson": "Testowanie klasyfikatora sensorycznego tylko na czystych kolorach palety ukrywa katastrofalne artefakty na sygnałach interpolowanych (V3: isRockRay uznał 36/36 promieni pustego nieba w r=1460..1580 za skałę).",
+      "source": "Neon V3 Audit (zweryfikowane uruchomieniowo 2026-11-24)",
+      "sha": "7824bec8cda06a7f6990d7e6d3f1bf6123fc1e45",
+      "evidenceClass": "TEST"
+    },
+    {
+      "id": "N11",
+      "lesson": "Współwystępowanie jedzenia obok aktora bez kontroli martwego obiektu i kontroli yoked mierzy warunkowanie korelacyjne, a nie rozpoznanie sprawczości (V3 Test 0.6).",
+      "source": "Neon V3 Audit",
+      "sha": "7824bec8cda06a7f6990d7e6d3f1bf6123fc1e45",
+      "evidenceClass": "KOD"
+    },
+    {
+      "id": "N12",
+      "lesson": "Dzielenie skumulowanych metryk przez końcową populację przy włączonym rozmnażaniu (V3 viability) sztucznie karze narodziny; należy normalizować przez aliveTicks (per-1k) i ekspozycję.",
+      "source": "Neon V3 Audit",
+      "sha": "7824bec8cda06a7f6990d7e6d3f1bf6123fc1e45",
+      "evidenceClass": "KOD"
+    },
+    {
+      "id": "N13",
+      "lesson": "Timer wygaszania strachu (V3 sincePain > 420) nie jest rewizją przekonań ani śledzeniem zmienności; ponad 41% osobników nadal pozostało sparaliżowanych po odwróceniu chemii.",
+      "source": "Neon V3 Audit",
+      "sha": "7824bec8cda06a7f6990d7e6d3f1bf6123fc1e45",
+      "evidenceClass": "TEST"
+    },
+    {
+      "id": "N14",
+      "lesson": "Używanie PR jednocześnie jako eksperymentu, dziennika, testu CI i kandydata do merge'a wyprodukowało 115 gałęzi i dokumenty rosnące szybciej niż eksperymenty.",
+      "source": "CLEANUP_2026-11-10 + Shared-Work-Medium U20",
+      "sha": "277d3d511eea6a009d8cbbe26540ab6af71ae886",
+      "evidenceClass": "KOD"
+    },
+    {
+      "id": "N15",
+      "lesson": "Tania kalibracja znaku sterowania (OL0: 6/6 vs 2/6) i pamięć ostatniego kierunku (M1: 4/4 z pamięcią i bez) pokazują granice autorskich zadań: bogatszy model albo sama pamięć kierunku nie dają tu dodatkowej sprawczości.",
+      "source": "OL0 (#58) / M1 (#60) wg BADANIA.md",
+      "sha": "76fdc0df66b7e4b61b93b6be5fb52a13dd36d53d",
+      "evidenceClass": "KOD"
+    },
+    {
+      "id": "N16",
+      "lesson": "Zdolność wynikająca ze zmiany geometrii ciała (B1) nie jest nabytą umiejętnością, a trwały ślad ingerencji w materii (R7) nie oznacza sam przez się dostępnego przyszłego działania.",
+      "source": "B1 (#79) / R7 (#88) wg BADANIA.md",
+      "sha": "0db860345f4834f0e75a39beed99d08b7070c3c3",
+      "evidenceClass": "KOD"
+    },
+    {
+      "id": "N17",
+      "lesson": "Oryginalny R8 ignorował kolider part przy obciążaniu płyty (audyt 6 XI), a płyta nie była bezpośrednio widoczna dla siatkówki; poprawka trafiła tylko do izolowanego testu, nie do R8.",
+      "source": "R8 / audyt płyty (PR #89) wg BADANIA.md",
+      "sha": "329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6",
+      "evidenceClass": "KOD"
+    },
+    {
+      "id": "N18",
+      "lesson": "Więcej kontaktu i ładunku (R9) nie jest rozwiniętą praktyką, a prosty wynik za mobilność (R12) potrafi preferować cofanie zamiast przesuwania ciężkiej materii.",
+      "source": "R9 (#91) / R12 (#94) wg BADANIA.md",
+      "sha": "3640c878bd8e5d12cac48b8befa6ca165d5f53ed",
+      "evidenceClass": "KOD"
+    },
+    {
+      "id": "N19",
+      "lesson": "Zależności troficzne w zewnętrznym symulatorze (C2/EVO), samopodtrzymujące pola (FL0/PP0-PP6) i zaprojektowany bit fazy (C5/G0) nie wykazują jeszcze osobniczej autobiografii ani nabytego znaczenia.",
+      "source": "C2 (#98) / FL0 (#92) / PP0-PP6 (#93) / C5 wg BADANIA.md",
+      "sha": "440c94570132c8a58d20568e241f5fff5da1999d",
+      "evidenceClass": "KOD"
+    }
+  ],
+  "openTensions": [
+    {
+      "id": "T1",
+      "title": "Od słownika cech (V3) do relacyjnego znaczenia (R3 x O0)",
+      "question": "Jak sprawić, by ta sama sytuacja sensoryczna w tym samym świecie miała różne prywatne znaczenie dla dwóch osobników z różną historią — bez sprowadzania tego do 1-krokowej tabeli kolor->wartość (symetria 50/50 dla pojedynczych cech)?"
+    },
+    {
+      "id": "T2",
+      "title": "Dlaczego mieszkaniec wraca do własnych śladów i relacji materialnych (luka R13/R5a)",
+      "question": "Jak zbudować odnawialną ekologię lub ucieleśnioną zależność, w której własne działanie otwiera późniejszą zmysłowo dostępną możliwość — bez sztucznego licznika punktów za wracanie i bez znikania dowodu jak w R3-A1B?"
+    },
+    {
+      "id": "T3",
+      "title": "Sprawczość kontra koincydencja i problem ciągłości obiektu",
+      "question": "Czy lokalny organ potrafi odróżnić przyczynowy wpływ własny lub innego uczestnika od zbiegu okoliczności (kontrola yoked), oraz jaka jest różnica między surową siatkówką, nietrwałym trackletId i diagnostycznym entityId?"
+    },
+    {
+      "id": "T4",
+      "title": "Rewizja przekonań bez łaty zegarowej",
+      "question": "Jak rozdzielić brak danych, szum lokalny i realną zmianę reguł świata bez globalnego timera wygaszania pamięci?"
+    },
+    {
+      "id": "T5",
+      "title": "Ciało i mikroskop godne ręki Właściciela",
+      "question": "Jak łączyć surowy rygor falsyfikacji (MARK -> FORK -> INTERVENE -> FIRST-DIVERGENCE) z żywym, czytelnym, niesterylnym doświadczeniem w przeglądarce, bez budowania ciężkiej aplikacji zarządzającej?"
+    }
+  ],
+  "doNotRepeat": [
+    "Nie budować monolitycznego 'ReflexBrain V4' sklejającego percepcję obiektową, model przejść, graf topologiczny, uczenie społeczne i planowanie w jeden silnik NPC.",
+    "Nie podpinać LLM do jądra obecnych eksperymentów — to osobna, świadomie odłożona linia.",
+    "Nie powtarzać 120-sekundowych testów samego kontaktu lub pamięci w sterylnym R8 bez mechanizmu realnego ponownego spotkania z materią.",
+    "Nie uznawać testów na czystych próbkach palety za dowód poprawności percepcji w żywym świecie z interpolacją i okluzją.",
+    "Nie uznawać korelacji bez kontroli martwego obiektu i kontroli yoked za dowód rozpoznania sprawczości.",
+    "Nie traktować zielonego CI ani własnej narracji jako zastępstwa dla bezpośredniego werdyktu Właściciela.",
+    "Nie kasować 100 archiwalnych tagów archive/reflexbrain-2026-11-10/* ani nie mergować historycznych PR hurtowo do main."
+  ],
+  "neighbors": [
+    { "name": "Jaskinia", "url": "https://github.com/Jozzpoly/Jaskinia", "role": "Główny wspólny dom i pasek Do obejrzenia dla Właściciela" },
+    { "name": "Shared-Work-Medium-Lab", "url": "https://github.com/Jozzpoly/Shared-Work-Medium-Lab", "role": "Badania nad wspólnym medium pracy agentów i drabiną osiągalności" },
+    { "name": "PROJECT-ANVIL", "url": "https://github.com/Jozzpoly/PROJECT-ANVIL-Machine-Matter-Physical-Fabric-Laboratory", "role": "Laboratorium fizycznej materii maszynowej i dyscypliny jeden-fakt-jeden-właściciel" },
+    { "name": "Gloopipelago", "url": "https://github.com/Jozzpoly/Gloopipelago", "role": "Obserwatorium żywej ewolucji: świat jest pierwszorzędny, aparatura jest narzędziem" }
+  ],
+  "apparatusCalibrators": [
+    {
+      "id": "P00-kalibrator-mikroskopu",
+      "path": "proby/00-kalibrator-mikroskopu/README.md",
+      "kind": "apparatus-calibrator",
+      "scientificClaim": false,
+      "status": "PROBA_APARATURY",
+      "verifyCmd": "node tests/kalibrator-smoke.test.mjs",
+      "htmlBuildCmd": "node proby/00-kalibrator-mikroskopu/build-html.mjs",
+      "htmlArtifact": "proby/00-kalibrator-mikroskopu/dist/kalibrator-mikroskopu.html",
+      "note": "Weryfikuje wyłącznie szew prywatności, determinizm forka, 5 warstw interwencji i mikroskop HTML. NIE stanowi wyniku badawczego o życiu ani uczeniu."
+    }
+  ],
+  "scientificProbes": []
+}

@@ -1,3 +1,5 @@
+> **Uwaga (24 XI 2026):** poniższy tekst jest zachowanym historycznym indeksem z 11 listopada 2026 (bez usuwania ani przepisywania). Aktualna, maszynowo weryfikowana mapa wszystkich linii, wyników negatywnych i otwartych napięć (w tym rozliczenie Neon V3) znajduje się w **[WIEDZA.md](WIEDZA.md)** (generowanej z [lab/state.json](lab/state.json)).
+
 # ReflexBrain — mapa rzeczywistych wyników (11 listopada 2026)
 
 **To jest indeks odkryć, nie lista funkcji i nie roadmapa.** Dla przyszłego agenta dowolnego dostawcy: zacznij od [README](README.md) i [AGENTS](AGENTS.md). `main` zawiera wyłącznie dokumentację; kod i dokładne testy są w przypiętych eksperymentach. Zamknięcie PR **nie oznacza**, że jego wynik jest nieistotny albo że kod scalono. Przy każdym cytowaniu rozdziel **fizyczną możliwość**, **legalne doświadczenie mieszkańca**, **uczenie**, **rzeczywistą przydatność praktyki** i **ocenę Ownera**.

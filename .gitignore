@@ -1,0 +1,8 @@
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
+# Uwaga: proby/*/dist/*.html sa swiadomie sledzone i sprawdzane przez `--check`,
+# aby Wlasciciel mogl otworzyc samodzielny okaz dwuklikiem bez budowania.

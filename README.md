@@ -1,57 +1,43 @@
-# ReflexBrain Lab — start here / wejście dla każdego agenta
+# ReflexBrain Lab — środowisko badawcze
 
-**Stan badań: 10 listopada 2026.** Ten plik i [AGENTS.md](AGENTS.md) są niezależne od ChatGPT, Clauda, Codexa, Groka i pamięci rozmów. Właściciel może przez pewien czas nie korzystać z GPT. **Nie wymagaj od niego ręcznego odtwarzania historii projektu.**
+Otwarte laboratorium badawcze szukające odpowiedzi na dwa powiązane, ale rozdzielne pytania:
 
-> **UWAGA: gałąź `main` jest tylko indeksem i historycznym R0. Nie zawiera aktualnego, uruchamialnego ReflexBrain.** Badania nigdy nie zostały scalone do jednego programu. Nie utożsamiaj domyślnego branche'a z najnowszą nauką i nie scalaj eksperymentów hurtowo, aby to „naprawić”.
+1. **Żyjący mieszkaniec:** czy materialnie ucieleśniona istota potrafi rozwijać własne, ciągłe i zróżnicowane praktyki w świecie zamiast wykonywać scenariusz badacza?
+2. **Tani prywatny organ znaczenia:** czy mały, lokalny mechanizm potrafi z legalnej historii zmysłowo-ruchowej nadawać sytuacjom prywatne znaczenie, które realnie zmienia późniejsze możliwości i działanie?
 
-**Stan po krytycznym sprzątaniu:** **15 gałęzi**, **10 otwartych PR-ów**, **100 zweryfikowanych tagów archiwalnych**. Zacznij od **[MAPY BADAŃ — wyniki, obalone hipotezy, źródła](BADANIA.md)**, potem [raportu porządków i instrukcji odzyskania historycznych eksperymentów](archive/CLEANUP_2026-11-10.md). Archiwizacja nie oznacza akceptacji naukowej ani scalenia kodu.
+*Daleki horyzont:* w przyszłości taki szybki, ucieleśniony układ nerwowy ma też pozwolić agentom AI wspólnie z Właścicielem doświadczać i grać w jego światach. Dziś linia LLM pozostaje świadomie odcięta od jądra badań.
 
-## Po co istnieje ReflexBrain
+> **Uczciwy stan prawdy:** do dziś **nie wykazano** samorozwijającego się żyjącego mieszkańca ani autonomicznie wyuczonego prywatnego znaczenia wykraczającego poza proste skojarzenia cech. **Nie ma akceptacji jakości życia przez Właściciela** — bieżące statusy i werdykty są w [WIEDZA.md](WIEDZA.md).
 
-Dwa powiązane, lecz odrębne problemy badawcze:
+## Drzwi wejściowe (zacznij tutaj)
 
-1. **Żyjący mieszkaniec:** czy materialnie ucieleśniona istota potrafi rozwijać własne, różnorodne i ciągłe sposoby działania w świecie, zamiast wykonywać scenariusz badacza?
-2. **Tani prywatny mózg:** czy mały mechanizm uczenia może z rzeczywiście dostępnej mu historii zmysłowo-ruchowej odkrywać przydatne znaczenie, lepiej niż proste odruchy i automaty stanów?
+- **[WIEDZA.md](WIEDZA.md)** — jedyna aktualna mapa wszystkich konkurujących linii, kanonu wyników negatywnych, otwartych napięć, werdyktów Właściciela i blokad `doNotRepeat` (generowana deterministycznie z [lab/state.json](lab/state.json)).
+- **[AGENTS.md](AGENTS.md)** — krótki protokół wejścia na zimno dla każdego silnika AI (Opus, Fable, Argon, Neon, Browser GPT, Codex) oraz zasady oddawania okazów Właścicielowi.
+- **[kernel/README.md](kernel/README.md)** — lekka, opcjonalna aparatura laboratoryjna (`seam.mjs`, `fork-microscope.mjs`, `lens-ui.mjs`): szew prywatności `obs`, gramatyka `MARK → FORK → INTERVENE → RELEASE → RUN → COMPARE` i trwała drabina pierwszego rozjazdu.
+- **[proby/README.md](proby/README.md)** — strefa swobodnego eksperymentowania bez biurokracji (w tym [kalibrator mikroskopu P00](proby/00-kalibrator-mikroskopu/README.md) z gotowym plikiem HTML).
+- **[TYMCZASOWE.md](TYMCZASOWE.md)** — co jest aktualną próbą i kiedy wracamy do oceny.
+- **[DROGI.md](DROGI.md)** — wynik automatycznego sprawdzenia osiągalności wszystkich dokumentów od tych drzwi.
 
-**Stan dowodów:** istnieją prawdziwe eksperymenty fizyczne, ekologiczne, sensoryczne i pamięciowe, również nieudane. **Nie udowodniono trwałego rozwoju własnych praktyk mieszkańca, ani przewagi uczącego się mózgu w takim życiu. Nie ma akceptacji jakości życia przez Ownera.**
+## Historia i archiwum (nienaruszone)
 
-## Gdzie jest rzeczywisty dorobek
+- **[BADANIA.md](BADANIA.md)** — zachowany historyczny indeks wyników z 11 listopada 2026 (skonsumowany do [WIEDZA.md](WIEDZA.md)).
+- **[archive/CLEANUP_2026-11-10.md](archive/CLEANUP_2026-11-10.md)** oraz [inwentarz 115 gałęzi](archive/branch-inventory-2026-11-10.json) — raport z archiwizacji i dokładne SHA dla 100 zweryfikowanych tagów `archive/reflexbrain-2026-11-10/*`.
 
-| Punkt | Rola | Status |
-| --- | --- | --- |
-| [PR #6 — indeks badań i krytyczne korekty](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6) | Punkt odzyskania historii, [wspólne badanie „biografii świata i organizmu”](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/6#issuecomment-6754317044) | Nie jest runtime ani schedulerem |
-| [PR #3 — R3](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/3) | Causal pressure, authored-world donor | Nie jest żywym organizmem |
-| [PR #84 — LIFE/L1](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/84) | Przerwanie i wznowienie wykonywania symulacji, rzeczywista fizyka | Ciągłość wykonania ≠ wartość życia |
-| [PR #89 — R8](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/89) | Najbardziej bezpośredni otwarty warsztat materii, ciała i prywatnych zmysłów | Testy fizyczne i Chrome PASS, **nie** life PASS |
-| [Audyt R8 z 6 XI](https://github.com/Jozzpoly/ReflexBrain-Lab/pull/89#issuecomment-6674491039) | Brakujące połączenie: `part` → płyta → brama | Poprawiono **tylko wariant testowy**, nie oryginalny R8 |
-| [Archiwalny inwentarz wszystkich 115 branchy](archive/branch-inventory-2026-11-10.json) | SHA, stary PR, zależności, pochodzenie przed sprzątaniem | Historyczny snapshot, nie live GitHub |
-
-**Uwaga:** fizyczne współdziałanie mechanizmów, zapis symulacji i prywatne doświadczenie mieszkańca są **różnymi** poziomami dowodu. W R8 sterownik `Occupant` pozostaje autorskim śledzeniem turkusowych obiektów; Owner może ręcznie zmieniać świat, ale nie jest to działanie AI.
-
-## Jak uruchomić działający egzemplarz R8
+## Szybkie polecenia (Node >= 20, zero `npm install`)
 
 ```sh
-git clone https://github.com/Jozzpoly/ReflexBrain-Lab.git
-cd ReflexBrain-Lab
-git fetch --tags
-git worktree add -b investigate-r8 ../ReflexBrain-R8 329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6
-cd ../ReflexBrain-R8
-yarn install --non-interactive
-yarn run check
-yarn run dev
+npm run brief       # samowystarczalny skrót na zimno (linie, werdykty, kanon negatywny, napięcia, blokady)
+npm run check:all   # pełna weryfikacja: dryf WIEDZA/DROGI/HTML, strażnik na working tree, wszystkie testy
+npm run render      # regeneruje WIEDZA.md, DROGI.md i samodzielny plik HTML kalibratora P00
 ```
 
-**Ważne dla nowych agentów:** `git worktree` pozostawia `README.md`, `AGENTS.md` i `BADANIA.md` dostępne w pierwszym katalogu, obok oddzielnej kopii kodu R8. Samo `git switch` w katalogu głównym spowodowałoby zniknięcie tych instrukcji ze starej gałęzi. Nowy agent powinien pracować w oddzielnym katalogu z kodem, a główny traktować jako czytelną mapę. Wersja R8 nie posiada lockfile'a; polecenia wyżej odpowiadają historycznemu CI (Node 22 / Yarn Classic). Otwórz lokalną stronę `/probes/material-workbench-r8.html`. To przypięta, niemergowana wersja badawcza; nie publikuj jej jako nowego oficjalnego ReflexBrain bez oceny. Źródła są pod [dokładnym commitem R8](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/329e1d99e6c2f78c052fdd25e7bf22dc3d219ec6).
+## Sąsiednie repozytoria ekosystemu
 
-**Windows, bez ręcznego budowania:** [nowy zweryfikowany przebieg R8](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/42926063551) zawiera gotową paczkę lokalną (ważna do **10 grudnia 2026**). Po wygaśnięciu: [Actions → „ReflexBrain R8 - manual Windows recovery”](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/workflows/r8-restore-windows.yml) → **Run workflow** na `main`. Workflow jest na domyślnej gałęzi, opiera się na zamrożonym `65a9259578b5465478291b451be116a3471951e5` i został zweryfikowany na prawdziwym Windows/Chrome przy pierwszym uruchomieniu z `push`; **sam przycisk `Run workflow` nie był osobno kliknięty w tym audycie**. Nie wdraża Pages/Jaskini. Wcześniejsza [paczka z 26 października](https://github.com/Jozzpoly/ReflexBrain-Lab/actions/runs/40330314009) wygasa 25 listopada; [oryginalna gałąź dostawy](https://github.com/Jozzpoly/ReflexBrain-Lab/tree/delivery/r8-private-windows-playtest-2026-10-26) pozostaje nienaruszona.
+| Projekt | Adres | Rola obok ReflexBrain |
+| --- | --- | --- |
+| **Jaskinia** | [Jozzpoly/Jaskinia](https://github.com/Jozzpoly/Jaskinia) | Wspólny dom Właściciela, strażnicy (`straznik`, `drogi`) i pasek Do obejrzenia |
+| **Shared-Work-Medium-Lab** | [Jozzpoly/Shared-Work-Medium-Lab](https://github.com/Jozzpoly/Shared-Work-Medium-Lab) | Badania nad wspólnym medium pracy agentów i drabiną osiągalności |
+| **PROJECT-ANVIL** | [Jozzpoly/PROJECT-ANVIL-Machine-Matter-Physical-Fabric-Laboratory](https://github.com/Jozzpoly/PROJECT-ANVIL-Machine-Matter-Physical-Fabric-Laboratory) | Laboratorium materii maszynowej i dyscyplina jeden-fakt-jeden-właściciel |
+| **Gloopipelago** | [Jozzpoly/Gloopipelago](https://github.com/Jozzpoly/Gloopipelago) | Obserwatorium żywej ewolucji: żywy świat jest pierwszorzędny, aparatura służy jemu |
 
-**Publiczna [strona Pages](https://jozzpoly.github.io/ReflexBrain-Lab/) prowadzi do starego S0**, znanego jako niezadowalający eksperyment; **nie** jest publicznym adresem R8. Jaskinia nie jest prerequisite do badania ReflexBrain.
-
-## Jeśli przejmujesz projekt jako nowy AI
-
-1. Przeczytaj [AGENTS.md](AGENTS.md) i ten README; wybierz rzeczywiste źródło ze wskazanym SHA. Nie zakładaj dostępu do dawnych rozmów.
-2. Zajrzyj do [inwentarza branchy](archive/branch-inventory-2026-11-10.json). Jeśli gałąź zniknęła w porządkach, sprawdź jej znacznik `refs/tags/archive/reflexbrain-2026-11-10/<oryginalna-nazwa-brancha>` na GitHubie. **Sam SHA bez znacznika nie gwarantuje zachowania historii Git.**
-3. Następne wartościowe badanie: **samodzielny kontakt → fizyczna zmiana świata → późniejsze, legalne zetknięcie z konsekwencją → ewentualna zmiana praktyki dzięki własnej pamięci**. Nie odtwarzaj w kółko 120-sekundowego testu ruchu R8; ten już istnieje.
-4. Nowe wykonanie prowadź na osobnej, jasno nazwanej gałęzi; dołącz odtwarzalny test, tanią kontrolę i granice interpretacji. Zostaw historyczne źródła bez zmian, zachowaj możliwość błyskawicznego Owner-testu.
-
-**Przed przebudową:** ochrona prawdziwych danych i unikalnych wyników jest ważniejsza niż liczba PR-ów czy zielonych testów. Nie przenoś prywatnych rozmów, tokenów ani tajnych materiałów do publicznego repo. **Nie zamieniaj eksperymentalnego kodu lub planu w obowiązującą architekturę z samego faktu, że istnieje.**
+Prywatne notatki i rozmowy Właściciela żyją poza tym publicznym repozytorium.

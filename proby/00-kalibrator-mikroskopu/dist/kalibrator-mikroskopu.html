@@ -1,0 +1,1545 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ReflexBrain Lab — Kalibrator Mikroskopu (P00)</title>
+  <style>
+    :root { color-scheme: dark; --bg: #0b1017; --panel: #121a24; --line: rgba(148,175,204,0.18); --txt: #e5eef8; --muted: #8ea2b8; --acc: #4ad8c4; --warn: #f5a54a; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--txt); font: 14px/1.45 system-ui, -apple-system, sans-serif; }
+    .rb-wrap { min-height: 100vh; display: flex; flex-direction: column; }
+    .rb-top, .rb-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; background: var(--panel); border-bottom: 1px solid var(--line); }
+    .rb-bar { border-bottom: 0; border-top: 1px solid var(--line); }
+    .rb-brand, .rb-top-right, .rb-group { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .rb-pill { padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; background: rgba(74,216,196,0.16); color: var(--acc); border: 1px solid rgba(74,216,196,0.35); }
+    .rb-pill-cal { background: rgba(245,165,74,0.14); color: var(--warn); border-color: rgba(245,165,74,0.35); }
+    .rb-meta, .rb-hint, .rb-label { color: var(--muted); font-size: 12px; }
+    .rb-stage { position: relative; flex: 1; display: grid; place-items: center; padding: 12px; }
+    .rb-canvas { width: min(100%, 1080px); height: auto; aspect-ratio: 960 / 560; border: 1px solid var(--line); border-radius: 10px; background: #0d131b; cursor: grab; }
+    .rb-btn { background: #192433; color: var(--txt); border: 1px solid var(--line); border-radius: 7px; padding: 6px 11px; font-size: 13px; cursor: pointer; }
+    .rb-btn:hover:not(:disabled) { border-color: var(--acc); }
+    .rb-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .rb-btn-acc { background: rgba(74,216,196,0.15); border-color: rgba(74,216,196,0.45); color: var(--acc); }
+    .rb-btn-warn { background: rgba(245,165,74,0.18); border-color: rgba(245,165,74,0.55); color: var(--warn); }
+    .rb-btn-sm { padding: 3px 8px; font-size: 12px; }
+    .rb-div-badge { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); padding: 5px 12px; border-radius: 999px; font: 12px/1.3 monospace; pointer-events: none; border: 1px solid var(--line); }
+    .rb-div-same { background: rgba(18,26,36,0.88); color: var(--muted); }
+    .rb-div-diff { background: rgba(245,165,74,0.16); border-color: rgba(245,165,74,0.45); color: #ffd6a1; }
+    .rb-verdict-drawer { position: absolute; right: 20px; top: 20px; width: min(440px, calc(100% - 40px)); background: #101822; border: 1px solid var(--line); border-radius: 10px; padding: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.45); }
+    .rb-drawer-head, .rb-drawer-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+    .rb-drawer-row input, .rb-drawer-row select { flex: 1; background: #0b1017; color: var(--txt); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; }
+    .rb-verdict-out { margin: 0; max-height: 200px; overflow: auto; font-size: 11px; background: #080c12; padding: 8px; border-radius: 6px; color: #b9cde2; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+(() => {
+  'use strict';
+  const __seam = (() => {
+// kernel/seam.mjs — twardy szew prywatnosci obs, ablacja percepcji, PRNG i uczciwe metryki.
+// Czysty ESM (Node >= 20 i przegladarka), zero zewnetrznych zaleznosci.
+const PERCEPTION_MODES = Object.freeze({
+  RAW: 'raw',
+  TRACKLET: 'tracklet',
+  ENTITY_ORACLE: 'entity-oracle',
+});
+const DEFAULT_FORBIDDEN_OBS_KEYS = Object.freeze([
+  'id',
+  'x',
+  'y',
+  'z',
+  'pos',
+  'position',
+  'posx',
+  'posy',
+  'coords',
+  'theta',
+  'heading',
+  'worldx',
+  'worldy',
+  'zone',
+  'type',
+  'kind',
+  'label',
+  'class',
+  'tag',
+  'archetype',
+  'chemistry',
+  'worldid',
+  'objectid',
+  'agentid',
+  'foodid',
+  'entityid',
+  'trackletid',
+  'isplayer',
+  'isfood',
+  'ispoison',
+  'goal',
+  'reward',
+  'rewardlabel',
+  'agents',
+  'objects',
+  'truecause',
+  'intervention',
+  'provenance',
+]);
+
+// Mulberry32 dziala poprawnie rowniez dla seed=0 (najpierw dodaje 0x6d2b79f5).
+function createRng(seed = 1) {
+  let state = seed >>> 0;
+  return {
+    next() {
+      state = (state + 0x6d2b79f5) >>> 0;
+      let t = Math.imul(state ^ (state >>> 15), 1 | state);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    },
+    getState() {
+      return state;
+    },
+    setState(s) {
+      state = s >>> 0;
+    },
+  };
+}
+function deepClone(value) {
+  if (typeof structuredClone === 'function') return structuredClone(value);
+  return JSON.parse(JSON.stringify(value));
+}
+
+// Bezpieczne zamrazanie: pomija ArrayBuffer/TypedArray (w V8 Object.freeze na TypedArray rzuca TypeError!)
+// oraz chroni przed cyklami przez WeakSet.
+function deepFreeze(obj, seen = new WeakSet()) {
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (seen.has(obj)) return obj;
+  seen.add(obj);
+  if (ArrayBuffer.isView(obj) || obj instanceof ArrayBuffer) return obj;
+  if (obj instanceof Map) {
+    for (const [k, v] of obj.entries()) {
+      deepFreeze(k, seen);
+      deepFreeze(v, seen);
+    }
+    return Object.freeze(obj);
+  }
+  if (obj instanceof Set) {
+    for (const v of obj.values()) deepFreeze(v, seen);
+    return Object.freeze(obj);
+  }
+  if (!Object.isFrozen(obj)) Object.freeze(obj);
+  for (const key of Object.keys(obj)) {
+    deepFreeze(obj[key], seen);
+  }
+  return obj;
+}
+
+function canonicalize(value, seen = new WeakSet()) {
+  if (value === undefined) return '"__undef__"';
+  if (value === null) return 'null';
+  const t = typeof value;
+  if (t === 'number') {
+    if (Number.isNaN(value)) return '"__NaN__"';
+    if (value === Infinity) return '"__Inf__"';
+    if (value === -Infinity) return '"__-Inf__"';
+    return String(Object.is(value, -0) ? 0 : value);
+  }
+  if (t === 'boolean') return value ? 'true' : 'false';
+  if (t === 'string') return JSON.stringify(value);
+  if (t === 'bigint') return `"__BigInt__:${value.toString()}"`;
+  if (t === 'symbol') return `"__Sym__:${String(value)}"`;
+  if (t === 'function') return '"__Fn__"';
+
+  if (seen.has(value)) return '"__Cycle__"';
+  seen.add(value);
+  try {
+    if (ArrayBuffer.isView(value)) {
+      const ctor = value.constructor ? value.constructor.name : 'TypedArray';
+      const arr = Array.from(value, (v) => canonicalize(v, seen));
+      return `{"__typed__":"${ctor}","d":[${arr.join(',')}]}`;
+    }
+    if (Array.isArray(value)) {
+      return `[${value.map((v) => canonicalize(v, seen)).join(',')}]`;
+    }
+    if (value instanceof Map) {
+      const entries = [...value.entries()]
+        .map(([k, v]) => `[${canonicalize(k, seen)},${canonicalize(v, seen)}]`)
+        .sort();
+      return `{"__map__":[${entries.join(',')}]}`;
+    }
+    if (value instanceof Set) {
+      const items = [...value.values()].map((v) => canonicalize(v, seen)).sort();
+      return `{"__set__":[${items.join(',')}]}`;
+    }
+    const keys = Object.keys(value).sort();
+    const parts = keys.map((k) => `${JSON.stringify(k)}:${canonicalize(value[k], seen)}`);
+    return `{${parts.join(',')}}`;
+  } finally {
+    seen.delete(value);
+  }
+}
+
+// Deterministyczny skrot niezalezny od kolejnosci kluczy, odporny na NaN/Infinity/undefined/Map/Set/TypedArray/cykle.
+function stableDigest(value) {
+  const str = canonicalize(value);
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619) >>> 0;
+  }
+  return h.toString(16).padStart(8, '0');
+}
+
+// Audyt szczelnosci obserwacji obs (case-insensitive, obsluguje Map/Set i chroni przed cyklami).
+// W trybie 'tracklet' dopuszcza wylacznie nietrwaly trackletId; w 'entity-oracle' dopuszcza diagnostyczny entityId.
+function auditObservation(obs, options = {}) {
+  const mode = options.perceptionMode || PERCEPTION_MODES.RAW;
+  const allowed = new Set((options.extraAllowedKeys || []).map((k) => String(k).toLowerCase()));
+  if (mode === PERCEPTION_MODES.TRACKLET) allowed.add('trackletid');
+  if (mode === PERCEPTION_MODES.ENTITY_ORACLE) {
+    allowed.add('trackletid');
+    allowed.add('entityid');
+  }
+  const forbidden = new Set(DEFAULT_FORBIDDEN_OBS_KEYS.filter((k) => !allowed.has(k)));
+  const leaks = [];
+  const seen = new WeakSet();
+
+  function walk(node, path) {
+    if (node === null || typeof node !== 'object') return;
+    if (seen.has(node)) return;
+    seen.add(node);
+    if (ArrayBuffer.isView(node) || node instanceof ArrayBuffer) return;
+    if (Array.isArray(node)) {
+      for (let i = 0; i < node.length; i++) walk(node[i], `${path}[${i}]`);
+      return;
+    }
+    if (node instanceof Map) {
+      let idx = 0;
+      for (const [k, v] of node.entries()) {
+        if (typeof k === 'string' && forbidden.has(k.toLowerCase())) {
+          leaks.push({ path: `${path}.Map(${k})`, key: k });
+        }
+        walk(v, `${path}.Map[${idx++}]`);
+      }
+      return;
+    }
+    if (node instanceof Set) {
+      let idx = 0;
+      for (const v of node.values()) walk(v, `${path}.Set[${idx++}]`);
+      return;
+    }
+    for (const key of Object.keys(node)) {
+      const nextPath = path ? `${path}.${key}` : key;
+      if (forbidden.has(key.toLowerCase())) leaks.push({ path: nextPath, key });
+      walk(node[key], nextPath);
+    }
+  }
+
+  walk(obs, 'obs');
+  return { ok: leaks.length === 0, mode, leaks };
+}
+function sealObservation(rawObs, options = {}) {
+  const audit = auditObservation(rawObs, options);
+  if (!audit.ok && options.strict !== false) {
+    const desc = audit.leaks.map((l) => `${l.path} (${l.key})`).join(', ');
+    throw new Error(`Seam privacy violation [${audit.mode}]: ${desc}`);
+  }
+  return deepFreeze(deepClone(rawObs));
+}
+
+// Uczciwa normalizacja metryk (lekcja N12): nigdy nie dzieli skumulowanych statystyk przez koncowa populacje.
+// Przy zerowym mianowniku zwraca null (nigdy nie maskuje 0 zywych tickow jako '0 bledow/1k').
+function normalizeExposureMetrics(records = []) {
+  let totalAliveTicks = 0;
+  let totalExposures = 0;
+  const totals = {};
+
+  for (const r of records) {
+    totalAliveTicks += Math.max(0, r.aliveTicks || 0);
+    totalExposures += Math.max(0, r.exposures || 0);
+    for (const [k, v] of Object.entries(r.events || {})) {
+      totals[k] = (totals[k] || 0) + (v || 0);
+    }
+  }
+
+  const per1kAliveTicks = {};
+  const per100Exposures = {};
+  for (const [k, sum] of Object.entries(totals)) {
+    per1kAliveTicks[k] = totalAliveTicks > 0 ? (sum * 1000) / totalAliveTicks : null;
+    per100Exposures[k] = totalExposures > 0 ? (sum * 100) / totalExposures : null;
+  }
+
+  return {
+    agentCount: records.length,
+    totalAliveTicks,
+    totalExposures,
+    totals,
+    per1kAliveTicks,
+    per100Exposures,
+  };
+}
+
+  return { PERCEPTION_MODES, createRng, deepClone, deepFreeze, stableDigest, auditObservation, sealObservation, normalizeExposureMetrics };
+})();
+  const __fork = (() => {
+  const { PERCEPTION_MODES, deepClone, sealObservation, stableDigest } = __seam;
+// kernel/fork-microscope.mjs — realizacja gramatyki MEDIUM-D/R0:
+// WATCH -> MARK -> FORK -> INTERVENE(warstwa) -> RELEASE -> RUN -> COMPARE (trwala Drabina Pierwszego Rozjazdu).
+// Czysty ESM (Node >= 20 i przegladarka), zero zaleznosci.
+const INTERVENTION_LAYERS = Object.freeze({
+  MATERIAL: 'MATERIAL',
+  MOTOR_AUTHORITY: 'MOTOR_AUTHORITY',
+  PRIVATE_RESEARCH_CUT: 'PRIVATE_RESEARCH_CUT',
+  WORLD_REPLACEMENT: 'WORLD_REPLACEMENT',
+  OCCUPANT_REPLACEMENT: 'OCCUPANT_REPLACEMENT',
+});
+
+const VALID_LAYERS = new Set(Object.values(INTERVENTION_LAYERS));
+
+function makeBranch({ label, world, worldFactory, minds, mindFactories, defaultMindFactory, perceptionMode, strictSeam, startTick, forkSeed }) {
+  return {
+    label,
+    world,
+    worldFactory,
+    minds,
+    mindFactories,
+    defaultMindFactory,
+    perceptionMode,
+    strictSeam,
+    forkSeed,
+    tick: startTick || 0,
+    provenance: [],
+    trace: [],
+    traceTruncated: false,
+    motorOverrides: new Map(), // actorId -> fn(obs, defaultAction) | actionObj
+  };
+}
+
+// Trwaly rejestrator Pierwszego Rozjazdu o pamieci O(1): nigdy nie traci najwczesniejszego ticku,
+// nawet gdy bieg trwa tysiace tickow i okno trace zostanie przyciete!
+function createDivergenceTracker(startTick = 0) {
+  const firstByLayer = {
+    observation: null,
+    privateState: null,
+    action: null,
+    worldAfterstate: null,
+  };
+  let earliest = null;
+  let comparedTicks = 0;
+
+  function recordPair(frameA, frameB) {
+    if (!frameA || !frameB || frameA.tick !== frameB.tick) return;
+    comparedTicks += 1;
+    const checks = [
+      ['observation', frameA.obsDigest !== frameB.obsDigest],
+      ['privateState', frameA.privateDigest !== frameB.privateDigest],
+      ['action', frameA.actionDigest !== frameB.actionDigest],
+      ['worldAfterstate', frameA.worldDigest !== frameB.worldDigest],
+    ];
+    for (const [layer, diff] of checks) {
+      if (diff && firstByLayer[layer] === null) {
+        firstByLayer[layer] = frameA.tick;
+        if (!earliest) earliest = { tick: frameA.tick, layer };
+      }
+    }
+  }
+
+  function summary(branchA = null, branchB = null) {
+    return {
+      startTick,
+      comparedTicks,
+      diverged: earliest !== null,
+      earliest: earliest ? { ...earliest } : null,
+      firstByLayer: { ...firstByLayer },
+      interventionsA: branchA ? branchA.provenance.slice() : [],
+      interventionsB: branchB ? branchB.provenance.slice() : [],
+    };
+  }
+
+  return { recordPair, summary };
+}
+function createLabSession({
+  createWorld,
+  createMind,
+  seed = 1,
+  perceptionMode = PERCEPTION_MODES.RAW,
+  strictSeam = true,
+  extraAllowedObsKeys = [],
+}) {
+  const world = createWorld(seed);
+  const actorIds = world.getActorIds ? world.getActorIds() : ['actor-0'];
+  const minds = new Map();
+  const mindFactories = new Map();
+  for (let i = 0; i < actorIds.length; i++) {
+    const id = actorIds[i];
+    minds.set(id, createMind(id, seed * 31 + i));
+    mindFactories.set(id, createMind);
+  }
+
+  const main = makeBranch({
+    label: 'A (oryginal)',
+    world,
+    worldFactory: createWorld,
+    minds,
+    mindFactories,
+    defaultMindFactory: createMind,
+    perceptionMode,
+    strictSeam,
+    startTick: 0,
+    forkSeed: seed,
+  });
+
+  function syncDynamicActors(branch) {
+    const ids = branch.world.getActorIds ? branch.world.getActorIds() : [...branch.minds.keys()];
+    const activeSet = new Set(ids);
+    for (let i = 0; i < ids.length; i++) {
+      const id = ids[i];
+      if (!branch.minds.has(id)) {
+        const factory = branch.mindFactories.get(id) || branch.defaultMindFactory;
+        const actorSeed = ((branch.forkSeed * 31 + branch.tick * 13 + i) >>> 0);
+        branch.minds.set(id, factory(id, actorSeed));
+        branch.mindFactories.set(id, factory);
+      }
+    }
+    for (const existingId of [...branch.minds.keys()]) {
+      if (!activeSet.has(existingId)) {
+        branch.minds.delete(existingId);
+        branch.mindFactories.delete(existingId);
+        branch.motorOverrides.delete(existingId);
+      }
+    }
+    return ids;
+  }
+
+  function stepBranch(branch, externalInput = null, options = {}) {
+    const maxTrace = options.maxTrace ?? 600;
+    const recordTrace = options.recordTrace !== false;
+    const auditSeam = options.auditSeam !== false;
+
+    const ids = syncDynamicActors(branch);
+    const obsByActor = {};
+    const mindDigestByActor = {};
+    const appraisalByActor = {};
+    const predictionByActor = {};
+    const actionsForWorld = {};
+    const actionDigests = {};
+
+    for (const id of ids) {
+      const rawObs = branch.world.observe(id, branch.perceptionMode);
+      const obs = auditSeam
+        ? sealObservation(rawObs, {
+            perceptionMode: branch.perceptionMode,
+            strict: branch.strictSeam,
+            extraAllowedKeys: extraAllowedObsKeys,
+          })
+        : rawObs;
+
+      if (recordTrace) obsByActor[id] = stableDigest(obs);
+
+      const mind = branch.minds.get(id);
+      const out = mind ? mind.step(obs) : { action: {} };
+      let action = out && out.action !== undefined ? out.action : out;
+
+      // Jawne przejecie autorytetu motoru (MOTOR_AUTHORITY) — host wie, umysl nie dostaje etykiety
+      if (branch.motorOverrides.has(id)) {
+        const ov = branch.motorOverrides.get(id);
+        action = typeof ov === 'function' ? ov(obs, action) : deepClone(ov);
+      }
+
+      // Klonujemy i hashujemy akcje PRZED world.step(), zeby swiat nie mogl zmutowac actionDigest ani stanu umyslu!
+      const clonedAction = deepClone(action);
+      actionsForWorld[id] = clonedAction;
+      if (recordTrace) {
+        actionDigests[id] = stableDigest(clonedAction);
+        appraisalByActor[id] = out && out.appraisal !== undefined ? stableDigest(out.appraisal) : null;
+        predictionByActor[id] = out && out.prediction !== undefined ? stableDigest(out.prediction) : null;
+        mindDigestByActor[id] = mind && mind.digest ? mind.digest() : stableDigest(mind ? mind.snapshot() : null);
+      }
+    }
+
+    branch.world.step(actionsForWorld, externalInput);
+    branch.tick += 1;
+
+    if (!recordTrace) return { tick: branch.tick };
+
+    const frame = {
+      tick: branch.tick,
+      obsDigest: stableDigest(obsByActor),
+      privateDigest: stableDigest({ mindDigestByActor, appraisalByActor, predictionByActor }),
+      actionDigest: stableDigest(actionDigests),
+      worldDigest: branch.world.digest ? branch.world.digest() : stableDigest(branch.world.snapshot()),
+    };
+    branch.trace.push(frame);
+    if (branch.trace.length > maxTrace) {
+      branch.trace.shift();
+      branch.traceTruncated = true;
+    }
+    return frame;
+  }
+
+  function mark(branch = main, label = 'mark') {
+    const mindSnaps = {};
+    const factoriesRef = new Map();
+    for (const [id, m] of branch.minds.entries()) {
+      mindSnaps[id] = deepClone(m.snapshot());
+      factoriesRef.set(id, branch.mindFactories.get(id) || branch.defaultMindFactory);
+    }
+    return {
+      label,
+      tick: branch.tick,
+      perceptionMode: branch.perceptionMode,
+      worldSnap: deepClone(branch.world.snapshot()),
+      worldFactory: branch.worldFactory,
+      mindSnaps,
+      mindFactories: factoriesRef,
+      defaultMindFactory: branch.defaultMindFactory,
+    };
+  }
+
+  function fork(capturedMark, labels = ['A (kontrola)', 'B (interwencja)']) {
+    return labels.map((label) => {
+      const wf = capturedMark.worldFactory || createWorld;
+      const w = wf(seed);
+      w.restore(deepClone(capturedMark.worldSnap));
+      const ms = new Map();
+      const mf = new Map();
+      const ids = w.getActorIds ? w.getActorIds() : Object.keys(capturedMark.mindSnaps);
+      for (let i = 0; i < ids.length; i++) {
+        const id = ids[i];
+        const factory = (capturedMark.mindFactories && capturedMark.mindFactories.get(id)) || capturedMark.defaultMindFactory || createMind;
+        const m = factory(id, seed * 31 + i);
+        if (capturedMark.mindSnaps[id] !== undefined) m.restore(deepClone(capturedMark.mindSnaps[id]));
+        ms.set(id, m);
+        mf.set(id, factory);
+      }
+      return makeBranch({
+        label,
+        world: w,
+        worldFactory: wf,
+        minds: ms,
+        mindFactories: mf,
+        defaultMindFactory: capturedMark.defaultMindFactory || createMind,
+        perceptionMode: capturedMark.perceptionMode,
+        strictSeam,
+        startTick: capturedMark.tick,
+        forkSeed: seed,
+      });
+    });
+  }
+
+  function intervene(branch, { layer, description = '', apply }) {
+    if (!VALID_LAYERS.has(layer)) {
+      throw new Error(`Unknown intervention layer: ${layer}. Allowed: ${[...VALID_LAYERS].join(', ')}`);
+    }
+    // Najpierw wykonujemy apply(); jesli rzuci blad, nie zasmiecamy proweniencji falszywym wpisem!
+    if (typeof apply === 'function') {
+      apply({
+        world: branch.world,
+        minds: branch.minds,
+        setMotorOverride: (actorId, fnOrAction) => branch.motorOverrides.set(actorId, fnOrAction),
+        resetMind: (actorId) => {
+          const m = branch.minds.get(actorId);
+          if (m && typeof m.reset === 'function') m.reset();
+        },
+        replaceWorld: (newWorld, newWorldFactory = null) => {
+          branch.world = newWorld;
+          if (newWorldFactory) branch.worldFactory = newWorldFactory;
+        },
+        replaceMind: (actorId, newMind, newMindFactory = null) => {
+          branch.minds.set(actorId, newMind);
+          if (newMindFactory) branch.mindFactories.set(actorId, newMindFactory);
+        },
+      });
+    }
+    const event = { kind: 'INTERVENE', tick: branch.tick, layer, description };
+    branch.provenance.push(event);
+    return event;
+  }
+
+  function release(
+    branch,
+    { layer = INTERVENTION_LAYERS.MOTOR_AUTHORITY, description = 'zwolnienie autorytetu', actorId = null, apply = null } = {}
+  ) {
+    if (!VALID_LAYERS.has(layer)) throw new Error(`Unknown release layer: ${layer}`);
+    if (layer === INTERVENTION_LAYERS.MOTOR_AUTHORITY) {
+      if (actorId !== null) branch.motorOverrides.delete(actorId);
+      else branch.motorOverrides.clear();
+    }
+    if (typeof apply === 'function') apply({ world: branch.world, minds: branch.minds });
+    const event = { kind: 'RELEASE', tick: branch.tick, layer, description };
+    branch.provenance.push(event);
+    return event;
+  }
+
+  // Synchronizowany bieg A i B z trwalym trackerem O(1) (nigdy nie gubi pierwszego rozjazdu po 600 tickach!).
+  function runSync(branchA, branchB, steps, options = {}) {
+    const tracker = options.tracker || createDivergenceTracker(branchA.tick);
+    const inputA = options.inputA || null;
+    const inputB = options.inputB || null;
+    const sharedInput = options.sharedInput || null;
+
+    for (let s = 0; s < steps; s++) {
+      const aIn = typeof inputA === 'function' ? inputA(s, branchA) : sharedInput ? deepClone(sharedInput) : inputA;
+      const bIn = typeof inputB === 'function' ? inputB(s, branchB) : sharedInput ? deepClone(sharedInput) : inputB;
+      const fa = stepBranch(branchA, aIn, options);
+      const fb = stepBranch(branchB, bIn, options);
+      tracker.recordPair(fa, fb);
+    }
+    return tracker.summary(branchA, branchB);
+  }
+
+  return { main, stepBranch, mark, fork, intervene, release, runSync };
+}
+
+// Bezposrednie porownanie buforow (gdy nie uzyto trwalego trackera). Jawnie raportuje `windowTruncated`.
+function findFirstDivergence(branchA, branchB, tracker = null) {
+  if (tracker) return tracker.summary(branchA, branchB);
+  const byTickB = new Map(branchB.trace.map((f) => [f.tick, f]));
+  const tmp = createDivergenceTracker(branchA.trace[0]?.tick ?? branchA.tick);
+  for (const fa of branchA.trace) {
+    const fb = byTickB.get(fa.tick);
+    if (fb) tmp.recordPair(fa, fb);
+  }
+  return {
+    ...tmp.summary(branchA, branchB),
+    windowTruncated: Boolean(branchA.traceTruncated || branchB.traceTruncated),
+  };
+}
+function formatOwnerVerdictCard({
+  probeId,
+  verdict = 'OTWARTE',
+  markTick = null,
+  divergence = null,
+  note = '',
+}) {
+  return {
+    schema: 'reflexbrain-owner-verdict/v1',
+    timestamp: new Date().toISOString(),
+    probeId,
+    verdict,
+    markTick,
+    firstDivergence: divergence && divergence.earliest ? divergence.earliest : null,
+    firstByLayer: divergence ? divergence.firstByLayer : null,
+    interventionsB: divergence ? divergence.interventionsB : [],
+    note,
+  };
+}
+
+  return { INTERVENTION_LAYERS, createDivergenceTracker, createLabSession, findFirstDivergence, formatOwnerVerdictCard };
+})();
+  const __ui = (() => {
+  const { INTERVENTION_LAYERS, createDivergenceTracker, formatOwnerVerdictCard } = __fork;
+// kernel/lens-ui.mjs — cichy, reuzywalny mikroskop przegladarkowy dla gramatyki MEDIUM-D/R0.
+// Domyslny stan to WATCH (swiat zyje, interfejs nie zaslania). Zero zewnetrznych zaleznosci.
+const FIXED_DT = 1 / 60;
+function defaultMapKeysToAction(keys) {
+  let thrust = 0;
+  let turn = 0;
+  if (keys.has('KeyW') || keys.has('ArrowUp')) thrust += 1;
+  if (keys.has('KeyS') || keys.has('ArrowDown')) thrust -= 0.7;
+  if (keys.has('KeyA') || keys.has('ArrowLeft')) turn -= 1;
+  if (keys.has('KeyD') || keys.has('ArrowRight')) turn += 1;
+  return { thrust, turn };
+}
+
+function fitRect(boxX, boxY, boxW, boxH, worldW, worldH) {
+  const scale = Math.min(boxW / worldW, boxH / worldH);
+  const w = worldW * scale;
+  const h = worldH * scale;
+  return { x: boxX + (boxW - w) * 0.5, y: boxY + (boxH - h) * 0.5, w, h, scale };
+}
+function mountMicroscope({
+  root,
+  session,
+  probeId = 'proba',
+  bannerText = 'OKAZ BADAWCZY',
+  isCalibrator = false,
+  actorId = 'actor-0',
+  materialHint = 'Przeciagnij obiekt mysza w B = MATERIAL',
+  mapKeysToAction = defaultMapKeysToAction,
+}) {
+  let mode = 'WATCH'; // 'WATCH' | 'FORK'
+  let viewLayout = 'GHOST'; // 'GHOST' | 'SPLIT'
+  let paused = false;
+  let capturedMark = null;
+  let forkOriginTick = null;
+  let branchA = session.main;
+  let branchB = null;
+  let divTracker = null;
+  let motorTakeoverActive = false;
+  let draggingBodyId = null;
+  let accum = 0;
+  let lastTs = null;
+  let rafId = null;
+  let destroyed = false;
+  const keys = new Set();
+
+  root.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'rb-wrap';
+  wrap.innerHTML = `
+    <header class="rb-top">
+      <div class="rb-brand">
+        <span class="rb-pill" data-role="banner"></span>
+        <span class="rb-meta" data-role="meta">WATCH · tick 0</span>
+      </div>
+      <div class="rb-top-right">
+        <button class="rb-btn" data-act="pause">Pauza</button>
+        <button class="rb-btn" data-act="verdict">Werdykt Ownera</button>
+      </div>
+    </header>
+    <main class="rb-stage">
+      <canvas class="rb-canvas" width="960" height="560"></canvas>
+      <div class="rb-div-badge" data-role="divbadge" style="display:none"></div>
+      <section class="rb-verdict-drawer" data-role="drawer" style="display:none">
+        <div class="rb-drawer-head">
+          <strong>Karta werdyktu Ownera</strong>
+          <button class="rb-btn rb-btn-sm" data-act="close-verdict">Zamknij</button>
+        </div>
+        <div class="rb-drawer-row">
+          <select data-role="verdict-select">
+            <option value="OTWARTE">OTWARTE</option>
+            <option value="KIERUNEK_WARTY_DRAZENIA">KIERUNEK_WARTY_DRAZENIA</option>
+            <option value="APARATURA_OK">APARATURA_OK</option>
+            <option value="OWNER_LIFE_FAIL">OWNER_LIFE_FAIL</option>
+          </select>
+          <input type="text" data-role="verdict-note" placeholder="Krotka notatka z reki..." />
+          <button class="rb-btn rb-btn-acc" data-act="export-verdict">Kopiuj JSON</button>
+        </div>
+        <div class="rb-meta" data-role="copy-status"></div>
+        <pre class="rb-verdict-out" data-role="verdict-out"></pre>
+      </section>
+    </main>
+    <footer class="rb-bar">
+      <div class="rb-group">
+        <button class="rb-btn rb-btn-acc" data-act="mark" title="Klawisz M">MARK (zamroz moment)</button>
+        <button class="rb-btn" data-act="fork" disabled title="Klawisz F">FORK A/B</button>
+        <button class="rb-btn" data-act="layout" style="display:none">Widok: Duch A+B</button>
+        <button class="rb-btn" data-act="exit-fork" style="display:none">Wroc do WATCH</button>
+      </div>
+      <div class="rb-group" data-role="interventions" style="display:none">
+        <span class="rb-label">Interwencje w B:</span>
+        <button class="rb-btn" data-act="cut-mem" title="PRIVATE_RESEARCH_CUT (R)">Wyzeruj pamiec B</button>
+        <button class="rb-btn" data-act="takeover" title="MOTOR_AUTHORITY (T + WASD)">Przejmij WASD w B</button>
+        <span class="rb-hint" data-role="mat-hint"></span>
+      </div>
+    </footer>
+  `;
+  root.appendChild(wrap);
+
+  const canvas = wrap.querySelector('canvas');
+  const ctx = canvas.getContext('2d');
+  const bannerEl = wrap.querySelector('[data-role="banner"]');
+  const metaEl = wrap.querySelector('[data-role="meta"]');
+  const divBadge = wrap.querySelector('[data-role="divbadge"]');
+  const intGroup = wrap.querySelector('[data-role="interventions"]');
+  const matHintEl = wrap.querySelector('[data-role="mat-hint"]');
+  const btnMark = wrap.querySelector('[data-act="mark"]');
+  const btnFork = wrap.querySelector('[data-act="fork"]');
+  const btnLayout = wrap.querySelector('[data-act="layout"]');
+  const btnExitFork = wrap.querySelector('[data-act="exit-fork"]');
+  const btnPause = wrap.querySelector('[data-act="pause"]');
+  const btnTakeover = wrap.querySelector('[data-act="takeover"]');
+  const drawer = wrap.querySelector('[data-role="drawer"]');
+  const verdictOut = wrap.querySelector('[data-role="verdict-out"]');
+  const verdictSelect = wrap.querySelector('[data-role="verdict-select"]');
+  const verdictNote = wrap.querySelector('[data-role="verdict-note"]');
+  const copyStatus = wrap.querySelector('[data-role="copy-status"]');
+
+  bannerEl.textContent = bannerText;
+  if (isCalibrator && bannerEl.classList && bannerEl.classList.add) bannerEl.classList.add('rb-pill-cal');
+  matHintEl.textContent = materialHint;
+
+  function currentDivergence() {
+    return mode === 'FORK' && branchB && divTracker ? divTracker.summary(branchA, branchB) : null;
+  }
+
+  function refreshVerdictPreview() {
+    const card = formatOwnerVerdictCard({
+      probeId,
+      verdict: verdictSelect.value,
+      markTick: mode === 'FORK' ? forkOriginTick : capturedMark ? capturedMark.tick : session.main.tick,
+      divergence: currentDivergence(),
+      note: verdictNote.value,
+    });
+    const text = JSON.stringify(card, null, 2);
+    verdictOut.textContent = text;
+    return text;
+  }
+
+  function updateControls() {
+    const inFork = mode === 'FORK' && branchB !== null;
+    btnMark.disabled = inFork;
+    btnFork.disabled = !capturedMark;
+    intGroup.style.display = inFork ? 'flex' : 'none';
+    btnLayout.style.display = inFork ? 'inline-flex' : 'none';
+    btnExitFork.style.display = inFork ? 'inline-flex' : 'none';
+    divBadge.style.display = inFork ? 'block' : 'none';
+    btnLayout.textContent = viewLayout === 'GHOST' ? 'Widok: Duch A+B' : 'Widok: Obok siebie A | B';
+    btnPause.textContent = paused ? 'Wznow' : 'Pauza';
+    btnTakeover.textContent = motorTakeoverActive ? 'RELEASE (oddaj sterowanie B)' : 'Przejmij WASD w B';
+    btnTakeover.classList.toggle('rb-btn-warn', motorTakeoverActive);
+  }
+
+  function doMark() {
+    if (mode === 'FORK') return; // w FORK zachowujemy niezmienny punkt startowy forkOriginTick
+    capturedMark = session.mark(session.main, `mark@${session.main.tick}`);
+    updateControls();
+  }
+
+  function doFork() {
+    if (!capturedMark) capturedMark = session.mark(session.main, `mark@${session.main.tick}`);
+    draggingBodyId = null;
+    const [a, b] = session.fork(capturedMark, ['A (kontrola)', 'B (interwencja)']);
+    branchA = a;
+    branchB = b;
+    forkOriginTick = capturedMark.tick;
+    divTracker = createDivergenceTracker(forkOriginTick);
+    mode = 'FORK';
+    motorTakeoverActive = false;
+    updateControls();
+  }
+
+  function exitFork() {
+    draggingBodyId = null;
+    mode = 'WATCH';
+    branchA = session.main;
+    branchB = null;
+    divTracker = null;
+    forkOriginTick = null;
+    motorTakeoverActive = false;
+    updateControls();
+  }
+
+  function setViewLayout(nextLayout) {
+    viewLayout = nextLayout === 'SPLIT' ? 'SPLIT' : 'GHOST';
+    updateControls();
+  }
+
+  function doCutMemoryB() {
+    if (mode !== 'FORK' || !branchB) return;
+    session.intervene(branchB, {
+      layer: INTERVENTION_LAYERS.PRIVATE_RESEARCH_CUT,
+      description: 'reczny reset prywatnej pamieci w B',
+      apply: ({ resetMind }) => resetMind(actorId),
+    });
+  }
+
+  function toggleTakeoverB() {
+    if (mode !== 'FORK' || !branchB) return;
+    if (!motorTakeoverActive) {
+      motorTakeoverActive = true;
+      session.intervene(branchB, {
+        layer: INTERVENTION_LAYERS.MOTOR_AUTHORITY,
+        description: 'przejecie sterowania WASD przez Ownera w B',
+        apply: ({ setMotorOverride }) => {
+          setMotorOverride(actorId, () => mapKeysToAction(keys));
+        },
+      });
+    } else {
+      motorTakeoverActive = false;
+      session.release(branchB, {
+        layer: INTERVENTION_LAYERS.MOTOR_AUTHORITY,
+        actorId,
+        description: 'RELEASE: powrot autonomicznego organu w B',
+      });
+    }
+    updateControls();
+  }
+
+  function getViewRects() {
+    const w = (branchB || branchA).world;
+    const worldW = w.width || 960;
+    const worldH = w.height || 560;
+    if (mode === 'FORK' && viewLayout === 'SPLIT') {
+      const half = canvas.width * 0.5;
+      return {
+        rectA: fitRect(0, 0, half, canvas.height, worldW, worldH),
+        rectB: fitRect(half, 0, half, canvas.height, worldW, worldH),
+        worldW,
+        worldH,
+      };
+    }
+    const full = fitRect(0, 0, canvas.width, canvas.height, worldW, worldH);
+    return { rectA: full, rectB: full, worldW, worldH };
+  }
+
+  function canvasToWorldB(ev) {
+    const rect = canvas.getBoundingClientRect();
+    const cx = ((ev.clientX - rect.left) / Math.max(1, rect.width)) * canvas.width;
+    const cy = ((ev.clientY - rect.top) / Math.max(1, rect.height)) * canvas.height;
+    const { rectB, worldW, worldH } = getViewRects();
+    if (cx < rectB.x || cx > rectB.x + rectB.w || cy < rectB.y || cy > rectB.y + rectB.h) return null;
+    return {
+      x: ((cx - rectB.x) / rectB.w) * worldW,
+      y: ((cy - rectB.y) / rectB.h) * worldH,
+    };
+  }
+
+  const onPointerDown = (ev) => {
+    if (mode !== 'FORK' || !branchB || typeof branchB.world.pickMovable !== 'function') return;
+    const pt = canvasToWorldB(ev);
+    if (!pt) return;
+    const id = branchB.world.pickMovable(pt.x, pt.y);
+    if (id !== null) {
+      draggingBodyId = id;
+      if (canvas.setPointerCapture && ev.pointerId !== undefined) {
+        try { canvas.setPointerCapture(ev.pointerId); } catch {}
+      }
+      session.intervene(branchB, {
+        layer: INTERVENTION_LAYERS.MATERIAL,
+        description: `przesuniecie obiektu #${id} w B`,
+        apply: ({ world }) => world.moveMovable(id, pt.x, pt.y),
+      });
+    }
+  };
+
+  const onPointerMove = (ev) => {
+    if (draggingBodyId === null || mode !== 'FORK' || !branchB) return;
+    const pt = canvasToWorldB(ev);
+    if (pt) branchB.world.moveMovable(draggingBodyId, pt.x, pt.y);
+  };
+
+  const endDrag = () => {
+    if (draggingBodyId !== null && mode === 'FORK' && branchB) {
+      session.release(branchB, {
+        layer: INTERVENTION_LAYERS.MATERIAL,
+        description: `puszczenie obiektu #${draggingBodyId} w B`,
+      });
+    }
+    draggingBodyId = null;
+  };
+
+  canvas.addEventListener('pointerdown', onPointerDown);
+  canvas.addEventListener('pointermove', onPointerMove);
+  canvas.addEventListener('pointerup', endDrag);
+  canvas.addEventListener('pointercancel', endDrag);
+  canvas.addEventListener('pointerleave', endDrag);
+
+  verdictSelect.addEventListener('change', refreshVerdictPreview);
+  verdictNote.addEventListener('input', refreshVerdictPreview);
+
+  wrap.addEventListener('click', (ev) => {
+    const btn = ev.target && ev.target.closest ? ev.target.closest('[data-act]') : null;
+    if (!btn) return;
+    const act = btn.dataset.act;
+    if (act === 'mark') doMark();
+    else if (act === 'fork') doFork();
+    else if (act === 'exit-fork') exitFork();
+    else if (act === 'layout') setViewLayout(viewLayout === 'GHOST' ? 'SPLIT' : 'GHOST');
+    else if (act === 'pause') {
+      paused = !paused;
+      updateControls();
+    } else if (act === 'cut-mem') doCutMemoryB();
+    else if (act === 'takeover') toggleTakeoverB();
+    else if (act === 'verdict') {
+      drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
+      copyStatus.textContent = '';
+      refreshVerdictPreview();
+    } else if (act === 'close-verdict') {
+      drawer.style.display = 'none';
+    } else if (act === 'export-verdict') {
+      const text = refreshVerdictPreview();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard
+          .writeText(text)
+          .then(() => { copyStatus.textContent = 'Skopiowano JSON do schowka.'; })
+          .catch(() => { copyStatus.textContent = 'Schowek zablokowany (file://) — skopiuj recznie z pola ponizej.'; });
+      } else {
+        copyStatus.textContent = 'Skopiuj JSON recznie z pola ponizej.';
+      }
+    }
+  });
+
+  const onKeyDown = (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const tag = e.target && e.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    if (motorTakeoverActive && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
+      if (e.preventDefault) e.preventDefault();
+    }
+    keys.add(e.code);
+    if (e.repeat) return;
+    if (e.code === 'KeyM') doMark();
+    if (e.code === 'KeyF') doFork();
+    if (e.code === 'KeyR' && mode === 'FORK') doCutMemoryB();
+    if (e.code === 'KeyT' && mode === 'FORK') toggleTakeoverB();
+  };
+  const onKeyUp = (e) => keys.delete(e.code);
+  const onBlur = () => keys.clear();
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    window.addEventListener('blur', onBlur);
+  }
+
+  function stepOneTick() {
+    if (mode === 'FORK' && branchB) {
+      const fa = session.stepBranch(branchA);
+      const fb = session.stepBranch(branchB);
+      if (divTracker) divTracker.recordPair(fa, fb);
+    } else {
+      // W trybie WATCH nie budujemy pelnych digestow co tick — oszczedza CPU!
+      session.stepBranch(session.main, null, { recordTrace: false, auditSeam: true });
+    }
+  }
+
+  function renderFrame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const { rectA, rectB } = getViewRects();
+    if (mode === 'FORK' && branchB) {
+      if (viewLayout === 'SPLIT') {
+        const half = canvas.width * 0.5;
+        ctx.fillStyle = '#080c12';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.save();
+        ctx.beginPath(); ctx.rect(rectA.x, rectA.y, rectA.w, rectA.h); ctx.clip();
+        branchA.world.render(ctx, { x: rectA.x, y: rectA.y, w: rectA.w, h: rectA.h, tint: 'A', ghost: false, label: 'A (kontrola)' });
+        ctx.restore();
+
+        ctx.save();
+        ctx.beginPath(); ctx.rect(rectB.x, rectB.y, rectB.w, rectB.h); ctx.clip();
+        branchB.world.render(ctx, { x: rectB.x, y: rectB.y, w: rectB.w, h: rectB.h, tint: 'B', ghost: false, label: 'B (interwencja)' });
+        ctx.restore();
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(half, 0); ctx.lineTo(half, canvas.height); ctx.stroke();
+      } else {
+        branchA.world.render(ctx, { x: rectA.x, y: rectA.y, w: rectA.w, h: rectA.h, tint: 'A', ghost: true, label: 'Duch A (turkus)' });
+        branchB.world.render(ctx, { x: rectB.x, y: rectB.y, w: rectB.w, h: rectB.h, tint: 'B', ghost: false, overlay: true, label: 'Zywy B (bursztyn)' });
+      }
+
+      const div = currentDivergence();
+      metaEl.textContent = `FORK od tick ${forkOriginTick} · teraz ${branchA.tick}`;
+      if (!div || !div.diverged) {
+        divBadge.textContent = 'A i B identyczne co do bitu — wykonaj interwencje w B';
+        divBadge.className = 'rb-div-badge rb-div-same';
+      } else {
+        const l = div.firstByLayer;
+        divBadge.textContent = `Pierwszy rozjazd: tick ${div.earliest.tick} (${div.earliest.layer}) | obs:${l.observation ?? '-'} · pamiec:${l.privateState ?? '-'} · akcja:${l.action ?? '-'} · swiat:${l.worldAfterstate ?? '-'}`;
+        divBadge.className = 'rb-div-badge rb-div-diff';
+      }
+    } else {
+      session.main.world.render(ctx, { x: rectA.x, y: rectA.y, w: rectA.w, h: rectA.h, tint: 'A', ghost: false, label: 'WATCH' });
+      metaEl.textContent = `WATCH · tick ${session.main.tick}${capturedMark ? ` · MARK @ ${capturedMark.tick}` : ''}`;
+    }
+  }
+
+  function advanceByMs(deltaMs) {
+    if (destroyed) return;
+    const dtSec = Math.min(0.1, Math.max(0, deltaMs / 1000));
+    if (!paused) {
+      accum += dtSec;
+      while (accum >= FIXED_DT - 1e-9) {
+        stepOneTick();
+        accum -= FIXED_DT;
+      }
+    }
+    renderFrame();
+  }
+
+  function rafLoop(ts) {
+    if (destroyed) return;
+    if (lastTs === null) lastTs = ts;
+    const d = ts - lastTs;
+    lastTs = ts;
+    advanceByMs(d);
+    if (typeof requestAnimationFrame === 'function') rafId = requestAnimationFrame(rafLoop);
+  }
+
+  function destroy() {
+    destroyed = true;
+    if (rafId !== null && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(rafId);
+    if (typeof window !== 'undefined' && window.removeEventListener) {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+      window.removeEventListener('blur', onBlur);
+    }
+    keys.clear();
+  }
+
+  updateControls();
+  renderFrame();
+  if (typeof requestAnimationFrame === 'function') rafId = requestAnimationFrame(rafLoop);
+
+  return {
+    advanceByMs,
+    doMark,
+    doFork,
+    exitFork,
+    setViewLayout,
+    doCutMemoryB,
+    toggleTakeoverB,
+    destroy,
+    getState: () => ({
+      mode,
+      viewLayout,
+      paused,
+      motorTakeoverActive,
+      tick: mode === 'FORK' && branchB ? branchA.tick : session.main.tick,
+      markTick: capturedMark ? capturedMark.tick : null,
+      forkOriginTick,
+      divergence: currentDivergence(),
+    }),
+  };
+}
+
+  return { FIXED_DT, defaultMapKeysToAction, mountMicroscope };
+})();
+  const __world = (() => {
+  const { PERCEPTION_MODES, createRng, deepClone, stableDigest } = __seam;
+// proby/00-kalibrator-mikroskopu/world.mjs — deterministyczny stol kalibracyjny aparatury.
+// UWAGA: to NIE jest eksperyment naukowy o uczeniu ani zyciu (scientificClaim = false).
+// Sluzy wylacznie do weryfikacji kernel/seam.mjs, kernel/fork-microscope.mjs i kernel/lens-ui.mjs.
+
+
+const WORLD_W = 960;
+const WORLD_H = 560;
+const RAYS = 24;
+const FOV = Math.PI * 1.15;
+const VIEW_RANGE = 280;
+
+function clamp(v, lo, hi) {
+  return v < lo ? lo : v > hi ? hi : v;
+}
+
+function wrapAngle(a) {
+  while (a > Math.PI) a -= 2 * Math.PI;
+  while (a < -Math.PI) a += 2 * Math.PI;
+  return a;
+}
+
+function rayCircle(ox, oy, dx, dy, cx, cy, r, maxT) {
+  const fx = ox - cx;
+  const fy = oy - cy;
+  const b = fx * dx + fy * dy;
+  if (b > r) return Infinity;
+  const c = fx * fx + fy * fy - r * r;
+  if (c <= 0) return 0.01;
+  const disc = b * b - c;
+  if (disc < 0) return Infinity;
+  const t = -b - Math.sqrt(disc);
+  return t > 0 && t < maxT ? t : Infinity;
+}
+function createCalibratorWorld(seed = 1) {
+  const rng = createRng(seed);
+  let tick = 0;
+
+  let actor = {
+    x: WORLD_W * 0.28,
+    y: WORLD_H * 0.52,
+    vx: 0,
+    vy: 0,
+    theta: -0.22,
+    omega: 0,
+    radius: 17,
+    trail: [],
+  };
+
+  let pucks = [
+    { id: 1, x: WORLD_W * 0.56, y: WORLD_H * 0.34, vx: 0, vy: 0, radius: 22, rgb: [0.28, 0.82, 0.72] },
+    { id: 2, x: WORLD_W * 0.64, y: WORLD_H * 0.68, vx: 0, vy: 0, radius: 26, rgb: [0.92, 0.62, 0.26] },
+    { id: 3, x: WORLD_W * 0.44, y: WORLD_H * 0.66, vx: 0, vy: 0, radius: 19, rgb: [0.58, 0.68, 0.94] },
+  ];
+
+  // Nietrwale lokalne sledzenie (tracklets): aktualizowane wylacznie w trybie TRACKLET.
+  let nextTrackletId = 1;
+  let visibleTracklets = new Map();
+
+  function getActorIds() {
+    return ['actor-0'];
+  }
+
+  function observe(_actorId, perceptionMode = PERCEPTION_MODES.RAW) {
+    const retina = [];
+    const seenNow = new Set();
+    let touchFront = 0;
+    let touchLeft = 0;
+    let touchRight = 0;
+
+    for (let i = 0; i < RAYS; i++) {
+      const frac = i / (RAYS - 1) - 0.5;
+      const ang = actor.theta + frac * FOV;
+      const dx = Math.cos(ang);
+      const dy = Math.sin(ang);
+      let bestT = VIEW_RANGE;
+      let hitPuck = null;
+
+      for (const p of pucks) {
+        const t = rayCircle(actor.x, actor.y, dx, dy, p.x, p.y, p.radius, bestT);
+        if (t < bestT) {
+          bestT = t;
+          hitPuck = p;
+        }
+      }
+
+      if (hitPuck) {
+        seenNow.add(hitPuck.id);
+        const atten = 1 - clamp((bestT / VIEW_RANGE) * 0.55, 0, 0.55);
+        const sample = {
+          rgb: [hitPuck.rgb[0] * atten, hitPuck.rgb[1] * atten, hitPuck.rgb[2] * atten],
+          proximity: clamp(1 - bestT / VIEW_RANGE, 0, 1),
+        };
+        if (perceptionMode === PERCEPTION_MODES.TRACKLET) {
+          if (!visibleTracklets.has(hitPuck.id)) visibleTracklets.set(hitPuck.id, nextTrackletId++);
+          sample.trackletId = visibleTracklets.get(hitPuck.id);
+        } else if (perceptionMode === PERCEPTION_MODES.ENTITY_ORACLE) {
+          sample.entityId = `oracle-puck-${hitPuck.id}`;
+        }
+        retina.push(sample);
+      } else {
+        retina.push({ rgb: [0.06, 0.08, 0.11], proximity: 0 });
+      }
+    }
+
+    // Czyscimy tracklety obiektow spoza pola widzenia wylacznie w trybie TRACKLET (brak efektu ubocznego w RAW!)
+    if (perceptionMode === PERCEPTION_MODES.TRACKLET) {
+      for (const key of [...visibleTracklets.keys()]) {
+        if (!seenNow.has(key)) visibleTracklets.delete(key);
+      }
+    }
+
+    for (const p of pucks) {
+      const dx = p.x - actor.x;
+      const dy = p.y - actor.y;
+      const d = Math.hypot(dx, dy);
+      const overlap = actor.radius + p.radius + 3 - d;
+      if (overlap > 0) {
+        const rel = wrapAngle(Math.atan2(dy, dx) - actor.theta);
+        const f = clamp(overlap / 8, 0, 1);
+        if (Math.abs(rel) < 0.7) touchFront = Math.max(touchFront, f);
+        else if (rel < 0) touchLeft = Math.max(touchLeft, f);
+        else touchRight = Math.max(touchRight, f);
+      }
+    }
+
+    const cosT = Math.cos(actor.theta);
+    const sinT = Math.sin(actor.theta);
+    return {
+      retina,
+      touch: { front: touchFront, left: touchLeft, right: touchRight },
+      proprio: {
+        vxBody: actor.vx * cosT + actor.vy * sinT,
+        vyBody: -actor.vx * sinT + actor.vy * cosT,
+        omega: actor.omega,
+      },
+    };
+  }
+
+  function step(actions) {
+    tick += 1;
+    const act = (actions && actions['actor-0']) || { thrust: 0, turn: 0 };
+    const thrust = clamp(act.thrust || 0, -0.8, 1.0);
+    const turn = clamp(act.turn || 0, -1.0, 1.0);
+
+    actor.omega = actor.omega * 0.76 + turn * 0.036;
+    actor.theta = wrapAngle(actor.theta + actor.omega);
+    actor.vx = actor.vx * 0.88 + Math.cos(actor.theta) * thrust * 0.42;
+    actor.vy = actor.vy * 0.88 + Math.sin(actor.theta) * thrust * 0.42;
+    actor.x += actor.vx;
+    actor.y += actor.vy;
+
+    // 1. Zderzenia aktor <-> krazki i ruch krazkow
+    for (const p of pucks) {
+      const dx = p.x - actor.x;
+      const dy = p.y - actor.y;
+      const d = Math.hypot(dx, dy) || 1e-4;
+      const minD = actor.radius + p.radius;
+      if (d < minD) {
+        const nx = dx / d;
+        const ny = dy / d;
+        const pen = minD - d;
+        actor.x -= nx * pen * 0.45;
+        actor.y -= ny * pen * 0.45;
+        p.x += nx * pen * 0.55;
+        p.y += ny * pen * 0.55;
+        p.vx += nx * 0.85 + actor.vx * 0.35;
+        p.vy += ny * 0.85 + actor.vy * 0.35;
+        actor.vx -= nx * 0.4;
+        actor.vy -= ny * 0.4;
+      }
+      p.vx *= 0.92;
+      p.vy *= 0.92;
+      p.x += p.vx;
+      p.y += p.vy;
+    }
+
+    // 2. Zderzenia krazek <-> krazek
+    for (let i = 0; i < pucks.length; i++) {
+      for (let j = i + 1; j < pucks.length; j++) {
+        const a = pucks[i];
+        const b = pucks[j];
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const d = Math.hypot(dx, dy) || 1e-4;
+        const minD = a.radius + b.radius;
+        if (d < minD) {
+          const nx = dx / d;
+          const ny = dy / d;
+          const pen = (minD - d) * 0.5;
+          a.x -= nx * pen; a.y -= ny * pen;
+          b.x += nx * pen; b.y += ny * pen;
+        }
+      }
+    }
+
+    // 3. Ostateczne przyciecie do band stolu PO rozwiazaniu wszystkich kolizji
+    const pad = actor.radius + 14;
+    if (actor.x < pad) { actor.x = pad; actor.vx = Math.abs(actor.vx) * 0.5; actor.theta = wrapAngle(actor.theta + 0.35); }
+    if (actor.x > WORLD_W - pad) { actor.x = WORLD_W - pad; actor.vx = -Math.abs(actor.vx) * 0.5; actor.theta = wrapAngle(actor.theta + 0.35); }
+    if (actor.y < pad) { actor.y = pad; actor.vy = Math.abs(actor.vy) * 0.5; actor.theta = wrapAngle(actor.theta + 0.35); }
+    if (actor.y > WORLD_H - pad) { actor.y = WORLD_H - pad; actor.vy = -Math.abs(actor.vy) * 0.5; actor.theta = wrapAngle(actor.theta + 0.35); }
+
+    for (const p of pucks) {
+      p.x = clamp(p.x, p.radius + 14, WORLD_W - p.radius - 14);
+      p.y = clamp(p.y, p.radius + 14, WORLD_H - p.radius - 14);
+    }
+
+    if (tick % 3 === 0) {
+      actor.trail.push([actor.x, actor.y]);
+      if (actor.trail.length > 75) actor.trail.shift();
+    }
+    rng.next();
+  }
+
+  function pickMovable(wx, wy) {
+    for (const p of pucks) {
+      if (Math.hypot(p.x - wx, p.y - wy) <= p.radius + 10) return p.id;
+    }
+    return null;
+  }
+
+  function moveMovable(id, wx, wy) {
+    const p = pucks.find((x) => x.id === id);
+    if (!p) return;
+    p.x = clamp(wx, p.radius + 14, WORLD_W - p.radius - 14);
+    p.y = clamp(wy, p.radius + 14, WORLD_H - p.radius - 14);
+    p.vx = 0;
+    p.vy = 0;
+  }
+
+  function snapshot() {
+    return deepClone({
+      tick,
+      rngState: rng.getState(),
+      actor,
+      pucks,
+      nextTrackletId,
+      visibleTracklets: [...visibleTracklets.entries()],
+    });
+  }
+
+  function restore(snap) {
+    const s = deepClone(snap);
+    tick = s.tick;
+    rng.setState(s.rngState);
+    actor = s.actor;
+    pucks = s.pucks;
+    nextTrackletId = s.nextTrackletId;
+    visibleTracklets = new Map(s.visibleTracklets || []);
+  }
+
+  function digest() {
+    return stableDigest({
+      tick,
+      actor: [actor.x, actor.y, actor.vx, actor.vy, actor.theta, actor.omega],
+      pucks: pucks.map((p) => [p.id, p.x, p.y, p.vx, p.vy]),
+    });
+  }
+
+  function render(ctx, view) {
+    const sx = view.w / WORLD_W;
+    const sy = view.h / WORLD_H;
+    const tx = (x) => view.x + x * sx;
+    const ty = (y) => view.y + y * sy;
+    const sr = (r) => r * Math.min(sx, sy);
+
+    if (!view.overlay) {
+      ctx.fillStyle = '#0d131b';
+      ctx.fillRect(view.x, view.y, view.w, view.h);
+      ctx.strokeStyle = 'rgba(148,175,204,0.08)';
+      ctx.lineWidth = 1;
+      for (let gx = 80; gx < WORLD_W; gx += 80) {
+        ctx.beginPath(); ctx.moveTo(tx(gx), view.y); ctx.lineTo(tx(gx), view.y + view.h); ctx.stroke();
+      }
+      for (let gy = 80; gy < WORLD_H; gy += 80) {
+        ctx.beginPath(); ctx.moveTo(view.x, ty(gy)); ctx.lineTo(view.x + view.w, ty(gy)); ctx.stroke();
+      }
+    }
+
+    const alpha = view.ghost ? 0.42 : 0.96;
+    const accent = view.tint === 'B' ? '#f5a54a' : '#4ad8c4';
+
+    // Slad trajektorii
+    if (actor.trail.length > 1) {
+      ctx.save();
+      ctx.globalAlpha = view.ghost ? 0.35 : 0.65;
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      actor.trail.forEach((pt, idx) => {
+        if (idx === 0) ctx.moveTo(tx(pt[0]), ty(pt[1]));
+        else ctx.lineTo(tx(pt[0]), ty(pt[1]));
+      });
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Luzne krazki
+    for (const p of pucks) {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      const r = Math.round(p.rgb[0] * 255);
+      const g = Math.round(p.rgb[1] * 255);
+      const b = Math.round(p.rgb[2] * 255);
+      ctx.fillStyle = `rgb(${r},${g},${b})`;
+      ctx.beginPath();
+      ctx.arc(tx(p.x), ty(p.y), sr(p.radius), 0, Math.PI * 2);
+      ctx.fill();
+      if (view.ghost) {
+        ctx.strokeStyle = accent;
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Cialo zwiadowcy + wierny stozek wzroku (100% VIEW_RANGE, bez zafalszowania skali!)
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = view.tint === 'B' ? 'rgba(245,165,74,0.07)' : 'rgba(74,216,196,0.07)';
+    ctx.beginPath();
+    ctx.moveTo(tx(actor.x), ty(actor.y));
+    ctx.arc(tx(actor.x), ty(actor.y), sr(VIEW_RANGE), actor.theta - FOV * 0.5, actor.theta + FOV * 0.5);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = view.tint === 'B' ? 'rgba(245,165,74,0.18)' : 'rgba(74,216,196,0.18)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.arc(tx(actor.x), ty(actor.y), sr(actor.radius), 0, Math.PI * 2);
+    ctx.fill();
+
+    // Kierunek spojrzenia
+    const eyeX = actor.x + Math.cos(actor.theta) * actor.radius * 0.62;
+    const eyeY = actor.y + Math.sin(actor.theta) * actor.radius * 0.62;
+    ctx.fillStyle = '#0b1017';
+    ctx.beginPath();
+    ctx.arc(tx(eyeX), ty(eyeY), sr(4.2), 0, Math.PI * 2);
+    ctx.fill();
+
+    if (view.label) {
+      ctx.globalAlpha = 0.85;
+      ctx.fillStyle = accent;
+      ctx.font = '12px monospace';
+      ctx.fillText(view.label, view.x + 12, view.y + (view.overlay ? 36 : 20));
+    }
+    ctx.restore();
+  }
+
+  return {
+    width: WORLD_W,
+    height: WORLD_H,
+    getActorIds,
+    observe,
+    step,
+    pickMovable,
+    moveMovable,
+    snapshot,
+    restore,
+    digest,
+    render,
+  };
+}
+
+// Jawnie zaprogramowany sterownik kalibracyjny z krotka pamiecia ostatniego kierunku (NIE wynik AI!).
+function createCalibratorMind(_actorId, seed = 1) {
+  const rng = createRng(seed);
+  let state = {
+    steps: 0,
+    recentTurnBias: 0,
+    touchMemory: 0,
+  };
+
+  function step(obs) {
+    state.steps += 1;
+    const ret = obs.retina || [];
+    let pullL = 0;
+    let pullR = 0;
+    for (let i = 0; i < ret.length; i++) {
+      const p = ret[i].proximity || 0;
+      if (p <= 0.02) continue;
+      if (i < ret.length / 2) pullL += p;
+      else pullR += p;
+    }
+
+    const visualSignal = clamp((pullR - pullL) * 0.45, -1, 1);
+    const touchSignal = (obs.touch.left - obs.touch.right) * 0.9;
+    if (obs.touch.front > 0.1 || obs.touch.left > 0.1 || obs.touch.right > 0.1) {
+      state.touchMemory = clamp(state.touchMemory + 0.35, 0, 2.0);
+    } else {
+      state.touchMemory *= 0.97;
+    }
+
+    state.recentTurnBias = clamp(state.recentTurnBias * 0.94 + visualSignal * 0.14 + touchSignal * 0.2, -0.85, 0.85);
+    const jitter = (rng.next() - 0.5) * 0.08;
+    const turn = clamp(visualSignal * 0.55 + state.recentTurnBias * 0.65 + touchSignal + jitter, -1, 1);
+    const thrust = obs.touch.front > 0.25 ? -0.35 : clamp(0.74 - state.touchMemory * 0.18, 0.25, 0.82);
+
+    return {
+      action: { thrust, turn },
+      appraisal: { touchMemory: Number(state.touchMemory.toFixed(4)) },
+      prediction: { expectedTurnBias: Number(state.recentTurnBias.toFixed(4)) },
+    };
+  }
+
+  return {
+    step,
+    reset() {
+      state = { steps: 0, recentTurnBias: 0, touchMemory: 0 };
+    },
+    snapshot() {
+      return deepClone({ state, rngState: rng.getState() });
+    },
+    restore(snap) {
+      const s = deepClone(snap);
+      state = s.state;
+      rng.setState(s.rngState);
+    },
+    digest() {
+      return stableDigest(state);
+    },
+  };
+}
+
+  return { createCalibratorWorld, createCalibratorMind };
+})();
+
+  const session = __fork.createLabSession({
+    createWorld: __world.createCalibratorWorld,
+    createMind: __world.createCalibratorMind,
+    seed: 7,
+    perceptionMode: __seam.PERCEPTION_MODES.RAW,
+    strictSeam: true,
+  });
+
+  window.__RB_MICROSCOPE__ = __ui.mountMicroscope({
+    root: document.getElementById('app'),
+    session,
+    probeId: 'P00-kalibrator-mikroskopu',
+    bannerText: 'KALIBRATOR APARATURY (P00) · NIE WYNIK AI',
+    isCalibrator: true,
+    actorId: 'actor-0',
+    materialHint: 'Przeciagnij krazek mysza w B = MATERIAL',
+  });
+})();
+  </script>
+</body>
+</html>

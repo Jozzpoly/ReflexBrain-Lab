@@ -1,0 +1,3 @@
+#!/bin/sh
+# Pre-commit hook: uruchamia straznika granicy publiczne/prywatne na plikach w indeksie Git.
+exec node tools/straznik.mjs --staged
