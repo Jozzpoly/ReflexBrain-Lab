@@ -25,6 +25,8 @@ function createIsolatedInstance() {
   const ctx = {
     clearRect() { canvasCalls++; },
     fillRect() { canvasCalls++; },
+    strokeRect() { canvasCalls++; },
+    setTransform() { canvasCalls++; },
     beginPath() { canvasCalls++; },
     moveTo() { canvasCalls++; },
     lineTo() { canvasCalls++; },
@@ -58,7 +60,8 @@ function createIsolatedInstance() {
       appendChild(child) { this.children.push(child); return child; },
       addEventListener() {},
       querySelector(sel) {
-        if (sel === 'canvas') return canvasEl;
+        if (sel === 'canvas' || sel === '[data-role="main-canvas"]') return canvasEl;
+        if (sel === '[data-role="xray-canvas"]') return xrayCanvasEl;
         if (!bySel.has(sel)) bySel.set(sel, makeEl('button'));
         return bySel.get(sel);
       },
@@ -68,6 +71,9 @@ function createIsolatedInstance() {
   }
 
   const canvasEl = makeEl('canvas');
+  const xrayCanvasEl = makeEl('canvas');
+  xrayCanvasEl.width = 960;
+  xrayCanvasEl.height = 128;
   const appRoot = makeEl('div');
   const sandbox = {
     console, Math, Number, String, Boolean, Array, Object, Map, Set, WeakSet,
@@ -125,7 +131,13 @@ assert.equal(div.diverged, true);
 assert.equal(div.earliest.layer, 'privateState', `Po >600 tickach w UI pierwszy rozjazd musi pozostac privateState, wyszlo ${div.earliest.layer}`);
 assert.equal(div.earliest.tick, 111);
 
-// 4. Widok SPLIT + takeover + RELEASE + destroy() zwalniajacy listenery
+// 4. Szuflada Oko i wnetrze (I) w FORK + widok SPLIT + +1 tick + takeover/RELEASE + destroy()
+api.toggleXray(true);
+assert.equal(api.getState().xrayOpen, true);
+const prevTick = api.getState().tick;
+api.stepOneTick();
+assert.equal(api.getState().tick, prevTick + 1, '+1 tick musi posunac symulacje dokladnie o 1 krok');
+
 api.setViewLayout('SPLIT');
 api.advanceByMs(1000 / 60);
 assert.equal(api.getState().viewLayout, 'SPLIT');
@@ -141,4 +153,4 @@ assert.ok(inst.getCanvasCalls() > 500);
 api.destroy();
 assert.equal(inst.getWinListeners(), 0, 'destroy() musi wyczyscic wszystkie listenery window');
 
-console.log(`[PASS] kalibrator-smoke.test.mjs (60Hz=${ticks60}, 144Hz=${ticks144}, firstDiv=${div.earliest.layer}@${div.earliest.tick} po +620t, SPLIT+RELEASE+destroy OK)`);
+console.log(`[PASS] kalibrator-smoke.test.mjs (60Hz=${ticks60}, 144Hz=${ticks144}, firstDiv=${div.earliest.layer}@${div.earliest.tick} po +620t, Xray+SPLIT+step1+RELEASE+destroy OK)`);

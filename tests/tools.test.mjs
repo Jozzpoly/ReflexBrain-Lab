@@ -5,10 +5,12 @@ import { mkdtempSync, writeFileSync, mkdirSync, rmSync, readFileSync } from 'nod
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import vm from 'node:vm';
 
 import { scanText, scanWorkingTree, parsePatterns, hashTerm, resolvePatternsPath } from '../tools/straznik.mjs';
 import { sprawdzDrogi, renderujRaportDrog } from '../tools/drogi.mjs';
 import { validateState, renderWiedza, renderBrief } from '../tools/sprawdz-lab.mjs';
+import { renderAtlasHtml } from '../tools/render-atlas.mjs';
 
 const ROOT = resolve(fileURLToPath(new URL('..', import.meta.url)));
 
@@ -95,5 +97,24 @@ console.log('=== TEST 3: sprawdz-lab.mjs ===');
   assert.ok(md.includes('L-NEON-V3') && md.includes('N19') && md.includes('Granica użycia dawcy') && md.includes('archive-tag'));
   const brief = renderBrief(state);
   assert.ok(brief.includes('WERDYKTY OWNERA') && brief.includes('KANON NEGATYWNY') && brief.includes('[N10 |'));
-  console.log('[PASS] sprawdz-lab.mjs (walidacja zerowego SHA, WIEDZA.md z donorBoundary/refKind, kompletny --brief)');
+  const atlas = renderAtlasHtml(state);
+  assert.ok(atlas.includes('id="rb-lab-state"') && atlas.includes('P00-kalibrator-mikroskopu') && atlas.includes('T1'));
+  // Realne wykonanie wbudowanego skryptu atlas.html (gwarancja 0 bledow skladni i runtime w przegladarce!)
+  const jsonMatch = atlas.match(/<script id="rb-lab-state" type="application\/json">([\s\S]*?)<\/script>/);
+  const scriptMatches = [...atlas.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+  assert.ok(jsonMatch && scriptMatches.length === 1, 'atlas.html musi miec dokladnie jeden blok JSON i jeden skrypt');
+  const atlasRoot = { innerHTML: '', querySelectorAll: () => [] };
+  const dummyEl = { onclick: null, oninput: null, value: '', textContent: '', click() {} };
+  const atlasSandbox = {
+    JSON, Date, Array, Object, String, Number, Boolean, URL: { createObjectURL: () => 'blob:x', revokeObjectURL() {} },
+    Blob: class {}, setTimeout() {}, localStorage: { getItem: () => '', setItem() {} },
+    document: {
+      body: { classList: { contains: () => false, toggle() {} } },
+      getElementById: (id) => (id === 'rb-lab-state' ? { textContent: jsonMatch[1] } : id === 'atlas-root' ? atlasRoot : dummyEl),
+      createElement: () => dummyEl,
+    },
+  };
+  vm.runInNewContext(scriptMatches[0][1], atlasSandbox, { filename: 'atlas.html' });
+  assert.ok(atlasRoot.innerHTML.includes('ReflexBrain Lab') && atlasRoot.innerHTML.includes('LIFE PASS OWNERA: BRAK') && atlasRoot.innerHTML.includes('N19'));
+  console.log('[PASS] sprawdz-lab.mjs + render-atlas.mjs (walidacja, WIEDZA.md, --brief, uruchomienie JS atlas.html)');
 }

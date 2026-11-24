@@ -11,9 +11,10 @@ Otwarte laboratorium badawcze szukające odpowiedzi na dwa powiązane, ale rozdz
 
 ## Drzwi wejściowe (zacznij tutaj)
 
-- **[WIEDZA.md](WIEDZA.md)** — jedyna aktualna mapa wszystkich konkurujących linii, kanonu wyników negatywnych, otwartych napięć, werdyktów Właściciela i blokad `doNotRepeat` (generowana deterministycznie z [lab/state.json](lab/state.json)).
-- **[AGENTS.md](AGENTS.md)** — krótki protokół wejścia na zimno dla każdego silnika AI (Opus, Fable, Argon, Neon, Browser GPT, Codex) oraz zasady oddawania okazów Właścicielowi.
-- **[kernel/README.md](kernel/README.md)** — lekka, opcjonalna aparatura laboratoryjna (`seam.mjs`, `fork-microscope.mjs`, `lens-ui.mjs`): szew prywatności `obs`, gramatyka `MARK → FORK → INTERVENE → RELEASE → RUN → COMPARE` i trwała drabina pierwszego rozjazdu.
+- **[atlas.html](atlas.html)** — spokojny, statyczny **Atlas Stołu Okazów dla ręki Właściciela** (działa po dwukliku z `file://`, generowany 1:1 z [lab/state.json](lab/state.json), z krzyżowym podświetlaniem linii/napięć/raf, szkicownikiem werdyktów `.verdict.json` i wbudowanym blokiem `#rb-lab-state` dla Jaskini).
+- **[WIEDZA.md](WIEDZA.md)** — tekstowa mapa wszystkich konkurujących linii, kanonu wyników negatywnych, otwartych napięć, werdyktów Właściciela i blokad `doNotRepeat` (generowana deterministycznie z [lab/state.json](lab/state.json)).
+- **[AGENTS.md](AGENTS.md)** — krótki protokół wejścia na zimno dla każdego silnika AI (Opus, Fable, Argon, Carbon, Neon, Browser GPT, Codex) oraz zasady oddawania okazów Właścicielowi.
+- **[kernel/README.md](kernel/README.md)** — lekka, opcjonalna aparatura laboratoryjna (`seam.mjs`, `fork-microscope.mjs`, `harness.mjs`, `lens-ui.mjs`): szew prywatności `obs`, sonda interpolacji przeciw `N10`, gramatyka `MARK → FORK → INTERVENE → RELEASE`, test `Divergence + Perturbed Re-convergence` oraz mikroskop HTML z podglądem `Oko i wnętrze`.
 - **[proby/README.md](proby/README.md)** — strefa swobodnego eksperymentowania bez biurokracji (w tym [kalibrator mikroskopu P00](proby/00-kalibrator-mikroskopu/README.md) z gotowym plikiem HTML).
 - **[TYMCZASOWE.md](TYMCZASOWE.md)** — co jest aktualną próbą i kiedy wracamy do oceny.
 - **[DROGI.md](DROGI.md)** — wynik automatycznego sprawdzenia osiągalności wszystkich dokumentów od tych drzwi.

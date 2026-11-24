@@ -1,21 +1,22 @@
 {
   "name": "reflexbrain-lab-environment",
-  "version": "0.1.0-probe",
+  "version": "0.2.0-probe",
   "private": true,
   "type": "module",
   "engines": {
     "node": ">=20"
   },
-  "description": "Metabolizujace srodowisko badawcze i lekki mikroskop przyczynowy dla ReflexBrain Lab (zero zewnetrznych zaleznosci, Node >= 20).",
+  "description": "Metabolizujace srodowisko badawcze, Atlas Stolu Okazow i lekki mikroskop przyczynowy dla ReflexBrain Lab (zero zewnetrznych zaleznosci, Node >= 20).",
   "scripts": {
     "straznik": "node tools/straznik.mjs --working",
     "straznik:head": "node tools/straznik.mjs --tree HEAD",
     "drogi": "node tools/drogi.mjs --raport DROGI.md",
+    "atlas": "node tools/render-atlas.mjs",
     "build:kalibrator": "node proby/00-kalibrator-mikroskopu/build-html.mjs",
-    "render": "node tools/sprawdz-lab.mjs --render-wiedza && node tools/drogi.mjs --raport DROGI.md && node proby/00-kalibrator-mikroskopu/build-html.mjs",
+    "render": "node tools/sprawdz-lab.mjs --render-wiedza && node tools/render-atlas.mjs && node tools/drogi.mjs --raport DROGI.md && node proby/00-kalibrator-mikroskopu/build-html.mjs",
     "brief": "node tools/sprawdz-lab.mjs --brief",
     "sprawdz": "node tools/sprawdz-lab.mjs --check",
     "test": "node tests/tools.test.mjs && node tests/kernel.test.mjs && node tests/kalibrator-smoke.test.mjs",
-    "check:all": "node tools/sprawdz-lab.mjs --check && node tools/drogi.mjs --check-raport DROGI.md && node proby/00-kalibrator-mikroskopu/build-html.mjs --check && node tools/straznik.mjs --working && node tests/tools.test.mjs && node tests/kernel.test.mjs && node tests/kalibrator-smoke.test.mjs"
+    "check:all": "node tools/sprawdz-lab.mjs --check && node tools/render-atlas.mjs --check && node tools/drogi.mjs --check-raport DROGI.md && node proby/00-kalibrator-mikroskopu/build-html.mjs --check && node tools/straznik.mjs --working && node tests/tools.test.mjs && node tests/kernel.test.mjs && node tests/kalibrator-smoke.test.mjs"
   }
 }

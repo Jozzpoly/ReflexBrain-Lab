@@ -1,4 +1,4 @@
-// kernel/seam.mjs — twardy szew prywatnosci obs, ablacja percepcji, PRNG i uczciwe metryki.
+// kernel/seam.mjs — twardy szew prywatnosci obs, ablacja percepcji, PRNG, sonda ciaglosci N10 i uczciwe metryki.
 // Czysty ESM (Node >= 20 i przegladarka), zero zewnetrznych zaleznosci.
 
 export const PERCEPTION_MODES = Object.freeze({
@@ -72,6 +72,12 @@ export function deepClone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+export function shallowCopyAction(action) {
+  if (action === null || typeof action !== 'object') return action;
+  if (Array.isArray(action)) return action.slice();
+  return { ...action };
+}
+
 // Bezpieczne zamrazanie: pomija ArrayBuffer/TypedArray (w V8 Object.freeze na TypedArray rzuca TypeError!)
 // oraz chroni przed cyklami przez WeakSet.
 export function deepFreeze(obj, seen = new WeakSet()) {
@@ -142,7 +148,6 @@ function canonicalize(value, seen = new WeakSet()) {
   }
 }
 
-// Deterministyczny skrot niezalezny od kolejnosci kluczy, odporny na NaN/Infinity/undefined/Map/Set/TypedArray/cykle.
 export function stableDigest(value) {
   const str = canonicalize(value);
   let h = 2166136261 >>> 0;
@@ -153,8 +158,6 @@ export function stableDigest(value) {
   return h.toString(16).padStart(8, '0');
 }
 
-// Audyt szczelnosci obserwacji obs (case-insensitive, obsluguje Map/Set i chroni przed cyklami).
-// W trybie 'tracklet' dopuszcza wylacznie nietrwaly trackletId; w 'entity-oracle' dopuszcza diagnostyczny entityId.
 export function auditObservation(obs, options = {}) {
   const mode = options.perceptionMode || PERCEPTION_MODES.RAW;
   const allowed = new Set((options.extraAllowedKeys || []).map((k) => String(k).toLowerCase()));
@@ -211,8 +214,71 @@ export function sealObservation(rawObs, options = {}) {
   return deepFreeze(deepClone(rawObs));
 }
 
-// Uczciwa normalizacja metryk (lekcja N12): nigdy nie dzieli skumulowanych statystyk przez koncowa populacje.
-// Przy zerowym mianowniku zwraca null (nigdy nie maskuje 0 zywych tickow jako '0 bledow/1k').
+function interpolateValue(a, b, t) {
+  if (typeof a === 'number' && typeof b === 'number') return a + (b - a) * t;
+  if (Array.isArray(a) && Array.isArray(b) && a.length === b.length) {
+    return a.map((v, i) => interpolateValue(v, b[i], t));
+  }
+  if (ArrayBuffer.isView(a) && ArrayBuffer.isView(b) && a.length === b.length && a.constructor === b.constructor) {
+    const out = new a.constructor(a.length);
+    for (let i = 0; i < a.length; i++) out[i] = a[i] + (b[i] - a[i]) * t;
+    return out;
+  }
+  if (a && b && typeof a === 'object' && typeof b === 'object') {
+    const out = {};
+    for (const k of Object.keys(a)) {
+      out[k] = k in b ? interpolateValue(a[k], b[k], t) : deepClone(a[k]);
+    }
+    return out;
+  }
+  return t < 0.5 ? deepClone(a) : deepClone(b);
+}
+
+// Sonda ciaglosci sygnalu (szczepionka przeciw N10 — np. isRockRay widzacy 36/36 skal na interpolowanym niebie!).
+// Przepuszcza przez czysty klasyfikator lub fabryke umyslu ciagly gradient miedzy probkami A i B
+// i wykrywa nagly falszywy pik / zalamanie (np. wartosc posrednia przekraczajaca oba krance albo skok > maxJump).
+export function sweepSensoryGradient(evaluator, sampleA, sampleB, options = {}) {
+  const steps = Math.max(4, options.steps ?? 32);
+  const maxJump = options.maxJump ?? 0.45;
+  const scoreFn = options.scoreFn || ((out) => (typeof out === 'number' ? out : typeof out === 'boolean' ? (out ? 1 : 0) : 0));
+  const series = [];
+  const spikes = [];
+
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const obs = interpolateValue(sampleA, sampleB, t);
+    const raw = evaluator(obs, t);
+    const score = Number(scoreFn(raw));
+    series.push({ t, score, raw });
+  }
+
+  const endMin = Math.min(series[0].score, series[series.length - 1].score);
+  const endMax = Math.max(series[0].score, series[series.length - 1].score);
+  const overshootTol = options.overshootTolerance ?? 0.25;
+
+  for (let i = 1; i < series.length; i++) {
+    const jump = Math.abs(series[i].score - series[i - 1].score);
+    const overshoot = series[i].score < endMin - overshootTol || series[i].score > endMax + overshootTol;
+    if (jump > maxJump || overshoot) {
+      spikes.push({
+        index: i,
+        t: series[i].t,
+        score: series[i].score,
+        jump,
+        overshoot,
+      });
+    }
+  }
+
+  return {
+    ok: spikes.length === 0,
+    steps,
+    endpointRange: [endMin, endMax],
+    spikes,
+    series,
+  };
+}
+
 export function normalizeExposureMetrics(records = []) {
   let totalAliveTicks = 0;
   let totalExposures = 0;

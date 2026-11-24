@@ -2,7 +2,7 @@
 // WATCH -> MARK -> FORK -> INTERVENE(warstwa) -> RELEASE -> RUN -> COMPARE (trwala Drabina Pierwszego Rozjazdu).
 // Czysty ESM (Node >= 20 i przegladarka), zero zaleznosci.
 
-import { PERCEPTION_MODES, deepClone, sealObservation, stableDigest } from './seam.mjs';
+import { PERCEPTION_MODES, deepClone, shallowCopyAction, sealObservation, stableDigest } from './seam.mjs';
 
 export const INTERVENTION_LAYERS = Object.freeze({
   MATERIAL: 'MATERIAL',
@@ -29,12 +29,13 @@ function makeBranch({ label, world, worldFactory, minds, mindFactories, defaultM
     provenance: [],
     trace: [],
     traceTruncated: false,
+    lastStep: null, // O(1) bezpieczna migawka ostatniego kroku dla podgladu Oko/Wnetrze (bez wywolywania observe w renderze!)
     motorOverrides: new Map(), // actorId -> fn(obs, defaultAction) | actionObj
   };
 }
 
 // Trwaly rejestrator Pierwszego Rozjazdu o pamieci O(1): nigdy nie traci najwczesniejszego ticku,
-// nawet gdy bieg trwa tysiace tickow i okno trace zostanie przyciete!
+// nawet gdy bieg trwa tysiace tickow i okno trace zostanie przyciete.
 export function createDivergenceTracker(startTick = 0) {
   const firstByLayer = {
     observation: null,
@@ -110,6 +111,15 @@ export function createLabSession({
 
   function syncDynamicActors(branch) {
     const ids = branch.world.getActorIds ? branch.world.getActorIds() : [...branch.minds.keys()];
+    // Szybka sciezka bez alokacji Set, gdy liczba i kolejnosc aktorow sie nie zmienila (wieloseedowe rollouty!)
+    if (ids.length === branch.minds.size) {
+      let same = true;
+      for (let i = 0; i < ids.length; i++) {
+        if (!branch.minds.has(ids[i])) { same = false; break; }
+      }
+      if (same) return ids;
+    }
+
     const activeSet = new Set(ids);
     for (let i = 0; i < ids.length; i++) {
       const id = ids[i];
@@ -134,16 +144,19 @@ export function createLabSession({
     const maxTrace = options.maxTrace ?? 600;
     const recordTrace = options.recordTrace !== false;
     const auditSeam = options.auditSeam !== false;
+    const captureLastStep = options.captureLastStep !== false;
 
     const ids = syncDynamicActors(branch);
-    const obsByActor = {};
-    const mindDigestByActor = {};
-    const appraisalByActor = {};
-    const predictionByActor = {};
+    const obsByActor = recordTrace ? {} : null;
+    const mindDigestByActor = recordTrace ? {} : null;
+    const appraisalByActor = recordTrace ? {} : null;
+    const predictionByActor = recordTrace ? {} : null;
+    const actionDigests = recordTrace ? {} : null;
     const actionsForWorld = {};
-    const actionDigests = {};
+    const stepSnapshotByActor = captureLastStep ? {} : null;
 
-    for (const id of ids) {
+    for (let i = 0; i < ids.length; i++) {
+      const id = ids[i];
       const rawObs = branch.world.observe(id, branch.perceptionMode);
       const obs = auditSeam
         ? sealObservation(rawObs, {
@@ -158,18 +171,30 @@ export function createLabSession({
       const mind = branch.minds.get(id);
       const out = mind ? mind.step(obs) : { action: {} };
       let action = out && out.action !== undefined ? out.action : out;
+      const motorOverridden = branch.motorOverrides.has(id);
 
       // Jawne przejecie autorytetu motoru (MOTOR_AUTHORITY) — host wie, umysl nie dostaje etykiety
-      if (branch.motorOverrides.has(id)) {
+      if (motorOverridden) {
         const ov = branch.motorOverrides.get(id);
-        action = typeof ov === 'function' ? ov(obs, action) : deepClone(ov);
+        action = typeof ov === 'function' ? ov(obs, action) : shallowCopyAction(ov);
       }
 
-      // Klonujemy i hashujemy akcje PRZED world.step(), zeby swiat nie mogl zmutowac actionDigest ani stanu umyslu!
-      const clonedAction = deepClone(action);
-      actionsForWorld[id] = clonedAction;
+      // W szybkim trybie (auditSeam=false, recordTrace=false) unikamy ciezkiego structuredClone co tick
+      const safeAction = auditSeam || recordTrace ? deepClone(action) : shallowCopyAction(action);
+      actionsForWorld[id] = safeAction;
+
+      if (captureLastStep) {
+        stepSnapshotByActor[id] = {
+          obs,
+          appraisal: out && out.appraisal !== undefined ? out.appraisal : null,
+          prediction: out && out.prediction !== undefined ? out.prediction : null,
+          action: safeAction,
+          motorOverridden,
+        };
+      }
+
       if (recordTrace) {
-        actionDigests[id] = stableDigest(clonedAction);
+        actionDigests[id] = stableDigest(safeAction);
         appraisalByActor[id] = out && out.appraisal !== undefined ? stableDigest(out.appraisal) : null;
         predictionByActor[id] = out && out.prediction !== undefined ? stableDigest(out.prediction) : null;
         mindDigestByActor[id] = mind && mind.digest ? mind.digest() : stableDigest(mind ? mind.snapshot() : null);
@@ -178,6 +203,10 @@ export function createLabSession({
 
     branch.world.step(actionsForWorld, externalInput);
     branch.tick += 1;
+
+    if (captureLastStep) {
+      branch.lastStep = { tick: branch.tick, byActor: stepSnapshotByActor };
+    }
 
     if (!recordTrace) return { tick: branch.tick };
 
@@ -250,7 +279,6 @@ export function createLabSession({
     if (!VALID_LAYERS.has(layer)) {
       throw new Error(`Unknown intervention layer: ${layer}. Allowed: ${[...VALID_LAYERS].join(', ')}`);
     }
-    // Najpierw wykonujemy apply(); jesli rzuci blad, nie zasmiecamy proweniencji falszywym wpisem!
     if (typeof apply === 'function') {
       apply({
         world: branch.world,
@@ -290,7 +318,6 @@ export function createLabSession({
     return event;
   }
 
-  // Synchronizowany bieg A i B z trwalym trackerem O(1) (nigdy nie gubi pierwszego rozjazdu po 600 tickach!).
   function runSync(branchA, branchB, steps, options = {}) {
     const tracker = options.tracker || createDivergenceTracker(branchA.tick);
     const inputA = options.inputA || null;
@@ -310,7 +337,6 @@ export function createLabSession({
   return { main, stepBranch, mark, fork, intervene, release, runSync };
 }
 
-// Bezposrednie porownanie buforow (gdy nie uzyto trwalego trackera). Jawnie raportuje `windowTruncated`.
 export function findFirstDivergence(branchA, branchB, tracker = null) {
   if (tracker) return tracker.summary(branchA, branchB);
   const byTickB = new Map(branchB.trace.map((f) => [f.tick, f]));
@@ -331,6 +357,9 @@ export function formatOwnerVerdictCard({
   markTick = null,
   divergence = null,
   note = '',
+  commitSha = null,
+  publicUrl = null,
+  controlsPassed = null,
 }) {
   return {
     schema: 'reflexbrain-owner-verdict/v1',
@@ -338,6 +367,9 @@ export function formatOwnerVerdictCard({
     probeId,
     verdict,
     markTick,
+    commitSha,
+    publicUrl,
+    controlsPassed,
     firstDivergence: divergence && divergence.earliest ? divergence.earliest : null,
     firstByLayer: divergence ? divergence.firstByLayer : null,
     interventionsB: divergence ? divergence.interventionsB : [],

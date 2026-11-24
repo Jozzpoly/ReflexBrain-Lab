@@ -21,12 +21,12 @@ export function renderCalibratorHtml() {
   const seamMod = wrapModule(
     readFileSync(join(ROOT, 'kernel', 'seam.mjs'), 'utf8'),
     '',
-    ['PERCEPTION_MODES', 'createRng', 'deepClone', 'deepFreeze', 'stableDigest', 'auditObservation', 'sealObservation', 'normalizeExposureMetrics']
+    ['PERCEPTION_MODES', 'createRng', 'deepClone', 'shallowCopyAction', 'deepFreeze', 'stableDigest', 'auditObservation', 'sealObservation', 'sweepSensoryGradient', 'normalizeExposureMetrics']
   );
 
   const forkMod = wrapModule(
     readFileSync(join(ROOT, 'kernel', 'fork-microscope.mjs'), 'utf8'),
-    'const { PERCEPTION_MODES, deepClone, sealObservation, stableDigest } = __seam;',
+    'const { PERCEPTION_MODES, deepClone, shallowCopyAction, sealObservation, stableDigest } = __seam;',
     ['INTERVENTION_LAYERS', 'createDivergenceTracker', 'createLabSession', 'findFirstDivergence', 'formatOwnerVerdictCard']
   );
 
@@ -56,21 +56,24 @@ export function renderCalibratorHtml() {
     .rb-top, .rb-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; background: var(--panel); border-bottom: 1px solid var(--line); }
     .rb-bar { border-bottom: 0; border-top: 1px solid var(--line); }
     .rb-brand, .rb-top-right, .rb-group { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .rb-seg { display: inline-flex; gap: 4px; padding: 2px; background: #0c121b; border: 1px solid var(--line); border-radius: 8px; }
     .rb-pill { padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; background: rgba(74,216,196,0.16); color: var(--acc); border: 1px solid rgba(74,216,196,0.35); }
     .rb-pill-cal { background: rgba(245,165,74,0.14); color: var(--warn); border-color: rgba(245,165,74,0.35); }
     .rb-meta, .rb-hint, .rb-label { color: var(--muted); font-size: 12px; }
-    .rb-stage { position: relative; flex: 1; display: grid; place-items: center; padding: 12px; }
-    .rb-canvas { width: min(100%, 1080px); height: auto; aspect-ratio: 960 / 560; border: 1px solid var(--line); border-radius: 10px; background: #0d131b; cursor: grab; }
+    .rb-stage { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 12px; }
+    .rb-canvas { width: min(100%, 1160px); max-height: 66vh; height: auto; border: 1px solid var(--line); border-radius: 10px; background: #0d131b; cursor: default; }
+    .rb-xray-box { width: min(100%, 1160px); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #090e14; }
+    .rb-xray-canvas { width: 100%; height: 128px; display: block; }
     .rb-btn { background: #192433; color: var(--txt); border: 1px solid var(--line); border-radius: 7px; padding: 6px 11px; font-size: 13px; cursor: pointer; }
     .rb-btn:hover:not(:disabled) { border-color: var(--acc); }
     .rb-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .rb-btn-acc { background: rgba(74,216,196,0.15); border-color: rgba(74,216,196,0.45); color: var(--acc); }
     .rb-btn-warn { background: rgba(245,165,74,0.18); border-color: rgba(245,165,74,0.55); color: var(--warn); }
     .rb-btn-sm { padding: 3px 8px; font-size: 12px; }
-    .rb-div-badge { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); padding: 5px 12px; border-radius: 999px; font: 12px/1.3 monospace; pointer-events: none; border: 1px solid var(--line); }
+    .rb-div-badge { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); padding: 5px 12px; border-radius: 999px; font: 12px/1.3 monospace; pointer-events: none; border: 1px solid var(--line); }
     .rb-div-same { background: rgba(18,26,36,0.88); color: var(--muted); }
     .rb-div-diff { background: rgba(245,165,74,0.16); border-color: rgba(245,165,74,0.45); color: #ffd6a1; }
-    .rb-verdict-drawer { position: absolute; right: 20px; top: 20px; width: min(440px, calc(100% - 40px)); background: #101822; border: 1px solid var(--line); border-radius: 10px; padding: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.45); }
+    .rb-verdict-drawer { position: absolute; right: 20px; top: 20px; width: min(440px, calc(100% - 40px)); background: #101822; border: 1px solid var(--line); border-radius: 10px; padding: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.45); z-index: 4; }
     .rb-drawer-head, .rb-drawer-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
     .rb-drawer-row input, .rb-drawer-row select { flex: 1; background: #0b1017; color: var(--txt); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; }
     .rb-verdict-out { margin: 0; max-height: 200px; overflow: auto; font-size: 11px; background: #080c12; padding: 8px; border-radius: 6px; color: #b9cde2; }

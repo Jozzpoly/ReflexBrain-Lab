@@ -7,6 +7,7 @@ import {
   auditObservation,
   sealObservation,
   stableDigest,
+  sweepSensoryGradient,
   normalizeExposureMetrics,
 } from '../kernel/seam.mjs';
 import {
@@ -14,6 +15,10 @@ import {
   createDivergenceTracker,
   createLabSession,
 } from '../kernel/fork-microscope.mjs';
+import {
+  runDivergenceAndReconvergence,
+  runCampaign,
+} from '../kernel/harness.mjs';
 import { createCalibratorWorld, createCalibratorMind } from '../proby/00-kalibrator-mikroskopu/world.mjs';
 
 console.log('=== TEST 1: seam.mjs — prywatnosc, TypedArray, stableDigest, createRng(0) ===');
@@ -198,4 +203,83 @@ console.log('=== TEST 3: fork-microscope.mjs — 5 warstw i trwalosc po >600 tic
   for (const id of idsBack) assert.ok(!ids1.has(id));
 
   console.log('[PASS] fork-microscope.mjs (5 warstw, >600 tickow, RELEASE, replace+fork, tracklets bez efektow ubocznych)');
+}
+
+console.log('=== TEST 4: sweepSensoryGradient (szczepionka N10) + kernel/harness.mjs ===');
+{
+  // 4a. Sonda ciaglosci sygnalu musi zlapac dokladnie artefakt klasy N10 (isRockRay na interpolacji TWILIGHT->WILDS!)
+  const twilightSky = [0.07, 0.09, 0.14];
+  const wildsSky = [0.14, 0.08, 0.11];
+  const buggyRockClassifier = (rgb) => {
+    const maxC = Math.max(...rgb);
+    const minC = Math.min(...rgb);
+    const sat = maxC > 1e-5 ? (maxC - minC) / maxC : 0;
+    return sat < 0.34; // oba krance maja sat > 0.42, ale interpolacja w srodku spada ponizej 0.34!
+  };
+  const badSweep = sweepSensoryGradient(buggyRockClassifier, twilightSky, wildsSky, { steps: 32 });
+  assert.equal(badSweep.ok, false, 'sweepSensoryGradient musi wylapac falszywy pik N10 w srodku interpolacji');
+  assert.ok(badSweep.spikes.length > 0);
+
+  const smoothClassifier = (rgb) => rgb[0] - rgb[2];
+  const goodSweep = sweepSensoryGradient(smoothClassifier, twilightSky, wildsSky, { steps: 32 });
+  assert.equal(goodSweep.ok, true, 'Gladka funkcja liniowa powinna przejsc sweepSensoryGradient');
+
+  // 4b. Dwuwarstwowy test Rozjazd Pamieci + Zbieznosc po Zaburzeniu (Perturbed Re-convergence)
+  const dr = runDivergenceAndReconvergence({
+    createWorld: createCalibratorWorld,
+    createMind: createCalibratorMind,
+    seed: 17,
+    minTick: 40,
+    maxWaitTicks: 200,
+    forkPredicate: (world) => {
+      const obs = world.observe('actor-0', PERCEPTION_MODES.RAW);
+      return obs.retina.some((r) => r.proximity > 0.15);
+    },
+    evalTicks: 50,
+    perturbPhysical: ({ world }) => world.moveMovable(1, 560, 210),
+    outcomeDistance: (wA, wB) => {
+      const a = wA.snapshot().actor;
+      const b = wB.snapshot().actor;
+      return Math.hypot(a.x - b.x, a.y - b.y);
+    },
+  });
+  assert.equal(dr.opportunityFound, true, 'Bramka forkPredicate powinna znalezc legalne spotkanie na siatkowce');
+  assert.equal(dr.memoryCut.diverged, true);
+  assert.equal(dr.perturbedReconvergence.diverged, true);
+  assert.ok(typeof dr.perturbedReconvergence.attractorRatio === 'number');
+
+  // 4c. runCampaign: zakaz pokrywania devSeeds i heldOutSeeds + sparowane porownanie
+  assert.throws(() => {
+    runCampaign({
+      name: 'bad-overlap',
+      createWorld: createCalibratorWorld,
+      controllers: { a: createCalibratorMind },
+      primaryController: 'a',
+      devSeeds: [1, 2],
+      heldOutSeeds: [2, 3],
+    });
+  }, /nie moga sie pokrywac/);
+
+  const camp = runCampaign({
+    name: 'smoke-campaign',
+    createWorld: createCalibratorWorld,
+    controllers: {
+      cal: createCalibratorMind,
+      zero: () => ({
+        step: () => ({ action: { thrust: 0, turn: 0 } }),
+        reset() {},
+        snapshot() { return {}; },
+        restore() {},
+        digest() { return '0'; },
+      }),
+    },
+    primaryController: 'cal',
+    devSeeds: [1, 2],
+    heldOutSeeds: [101, 102],
+    ticks: 60,
+    extractRecords: (world) => [{ aliveTicks: 60, exposures: 10, events: { move: Math.hypot(world.snapshot().actor.vx, world.snapshot().actor.vy) } }],
+    scoreMetric: (m) => m.per1kAliveTicks.move,
+  });
+  assert.equal(camp.heldOut.pairedVsPrimary.zero.total, 2);
+  console.log('[PASS] sweepSensoryGradient (lapiace N10) + harness.mjs (forkPredicate, reconvergence, dev/heldOut split)');
 }

@@ -46,6 +46,7 @@ export function createCalibratorWorld(seed = 1) {
     omega: 0,
     radius: 17,
     trail: [],
+    lastTouch: { front: 0, left: 0, right: 0 },
   };
 
   let pucks = [
@@ -53,6 +54,9 @@ export function createCalibratorWorld(seed = 1) {
     { id: 2, x: WORLD_W * 0.64, y: WORLD_H * 0.68, vx: 0, vy: 0, radius: 26, rgb: [0.92, 0.62, 0.26] },
     { id: 3, x: WORLD_W * 0.44, y: WORLD_H * 0.66, vx: 0, vy: 0, radius: 19, rgb: [0.58, 0.68, 0.94] },
   ];
+
+  // Kotwiczenie krazka trzymanego mysza w trybie MATERIAL (zeby aktor nie wyrywal go spod kursora)
+  let pinnedPuck = null; // { id, x, y } | null
 
   // Nietrwale lokalne sledzenie (tracklets): aktualizowane wylacznie w trybie TRACKLET.
   let nextTrackletId = 1;
@@ -62,12 +66,29 @@ export function createCalibratorWorld(seed = 1) {
     return ['actor-0'];
   }
 
-  function observe(_actorId, perceptionMode = PERCEPTION_MODES.RAW) {
-    const retina = [];
-    const seenNow = new Set();
+  function computeTouch() {
     let touchFront = 0;
     let touchLeft = 0;
     let touchRight = 0;
+    for (const p of pucks) {
+      const dx = p.x - actor.x;
+      const dy = p.y - actor.y;
+      const d = Math.hypot(dx, dy);
+      const overlap = actor.radius + p.radius + 3 - d;
+      if (overlap > 0) {
+        const rel = wrapAngle(Math.atan2(dy, dx) - actor.theta);
+        const f = clamp(overlap / 8, 0, 1);
+        if (Math.abs(rel) < 0.7) touchFront = Math.max(touchFront, f);
+        else if (rel < 0) touchLeft = Math.max(touchLeft, f);
+        else touchRight = Math.max(touchRight, f);
+      }
+    }
+    return { front: touchFront, left: touchLeft, right: touchRight };
+  }
+
+  function observe(_actorId, perceptionMode = PERCEPTION_MODES.RAW) {
+    const retina = [];
+    const seenNow = new Set();
 
     for (let i = 0; i < RAYS; i++) {
       const frac = i / (RAYS - 1) - 0.5;
@@ -104,32 +125,18 @@ export function createCalibratorWorld(seed = 1) {
       }
     }
 
-    // Czyscimy tracklety obiektow spoza pola widzenia wylacznie w trybie TRACKLET (brak efektu ubocznego w RAW!)
     if (perceptionMode === PERCEPTION_MODES.TRACKLET) {
       for (const key of [...visibleTracklets.keys()]) {
         if (!seenNow.has(key)) visibleTracklets.delete(key);
       }
     }
 
-    for (const p of pucks) {
-      const dx = p.x - actor.x;
-      const dy = p.y - actor.y;
-      const d = Math.hypot(dx, dy);
-      const overlap = actor.radius + p.radius + 3 - d;
-      if (overlap > 0) {
-        const rel = wrapAngle(Math.atan2(dy, dx) - actor.theta);
-        const f = clamp(overlap / 8, 0, 1);
-        if (Math.abs(rel) < 0.7) touchFront = Math.max(touchFront, f);
-        else if (rel < 0) touchLeft = Math.max(touchLeft, f);
-        else touchRight = Math.max(touchRight, f);
-      }
-    }
-
+    const touch = computeTouch();
     const cosT = Math.cos(actor.theta);
     const sinT = Math.sin(actor.theta);
     return {
       retina,
-      touch: { front: touchFront, left: touchLeft, right: touchRight },
+      touch,
       proprio: {
         vxBody: actor.vx * cosT + actor.vy * sinT,
         vyBody: -actor.vx * sinT + actor.vy * cosT,
@@ -151,8 +158,15 @@ export function createCalibratorWorld(seed = 1) {
     actor.x += actor.vx;
     actor.y += actor.vy;
 
-    // 1. Zderzenia aktor <-> krazki i ruch krazkow
+    // 1. Zderzenia aktor <-> krazki (z poszanowaniem zakotwiczonego krazka)
     for (const p of pucks) {
+      const isPinned = pinnedPuck && pinnedPuck.id === p.id;
+      if (isPinned) {
+        p.x = pinnedPuck.x;
+        p.y = pinnedPuck.y;
+        p.vx = 0;
+        p.vy = 0;
+      }
       const dx = p.x - actor.x;
       const dy = p.y - actor.y;
       const d = Math.hypot(dx, dy) || 1e-4;
@@ -161,19 +175,28 @@ export function createCalibratorWorld(seed = 1) {
         const nx = dx / d;
         const ny = dy / d;
         const pen = minD - d;
-        actor.x -= nx * pen * 0.45;
-        actor.y -= ny * pen * 0.45;
-        p.x += nx * pen * 0.55;
-        p.y += ny * pen * 0.55;
-        p.vx += nx * 0.85 + actor.vx * 0.35;
-        p.vy += ny * 0.85 + actor.vy * 0.35;
-        actor.vx -= nx * 0.4;
-        actor.vy -= ny * 0.4;
+        if (isPinned) {
+          actor.x -= nx * pen;
+          actor.y -= ny * pen;
+          actor.vx -= nx * 0.65;
+          actor.vy -= ny * 0.65;
+        } else {
+          actor.x -= nx * pen * 0.45;
+          actor.y -= ny * pen * 0.45;
+          p.x += nx * pen * 0.55;
+          p.y += ny * pen * 0.55;
+          p.vx += nx * 0.85 + actor.vx * 0.35;
+          p.vy += ny * 0.85 + actor.vy * 0.35;
+          actor.vx -= nx * 0.4;
+          actor.vy -= ny * 0.4;
+        }
       }
-      p.vx *= 0.92;
-      p.vy *= 0.92;
-      p.x += p.vx;
-      p.y += p.vy;
+      if (!isPinned) {
+        p.vx *= 0.92;
+        p.vy *= 0.92;
+        p.x += p.vx;
+        p.y += p.vy;
+      }
     }
 
     // 2. Zderzenia krazek <-> krazek
@@ -181,6 +204,8 @@ export function createCalibratorWorld(seed = 1) {
       for (let j = i + 1; j < pucks.length; j++) {
         const a = pucks[i];
         const b = pucks[j];
+        const pinA = pinnedPuck && pinnedPuck.id === a.id;
+        const pinB = pinnedPuck && pinnedPuck.id === b.id;
         const dx = b.x - a.x;
         const dy = b.y - a.y;
         const d = Math.hypot(dx, dy) || 1e-4;
@@ -188,25 +213,44 @@ export function createCalibratorWorld(seed = 1) {
         if (d < minD) {
           const nx = dx / d;
           const ny = dy / d;
-          const pen = (minD - d) * 0.5;
-          a.x -= nx * pen; a.y -= ny * pen;
-          b.x += nx * pen; b.y += ny * pen;
+          const pen = minD - d;
+          if (pinA && !pinB) { b.x += nx * pen; b.y += ny * pen; }
+          else if (pinB && !pinA) { a.x -= nx * pen; a.y -= ny * pen; }
+          else {
+            a.x -= nx * pen * 0.5; a.y -= ny * pen * 0.5;
+            b.x += nx * pen * 0.5; b.y += ny * pen * 0.5;
+          }
         }
       }
     }
 
-    // 3. Ostateczne przyciecie do band stolu PO rozwiazaniu wszystkich kolizji
+    // 3. Naturalne fizyczne odbicie od 4 scian stolu (zalezne od kata padania, nie sztywne +0.35 rad!)
     const pad = actor.radius + 14;
-    if (actor.x < pad) { actor.x = pad; actor.vx = Math.abs(actor.vx) * 0.5; actor.theta = wrapAngle(actor.theta + 0.35); }
-    if (actor.x > WORLD_W - pad) { actor.x = WORLD_W - pad; actor.vx = -Math.abs(actor.vx) * 0.5; actor.theta = wrapAngle(actor.theta + 0.35); }
-    if (actor.y < pad) { actor.y = pad; actor.vy = Math.abs(actor.vy) * 0.5; actor.theta = wrapAngle(actor.theta + 0.35); }
-    if (actor.y > WORLD_H - pad) { actor.y = WORLD_H - pad; actor.vy = -Math.abs(actor.vy) * 0.5; actor.theta = wrapAngle(actor.theta + 0.35); }
+    if (actor.x < pad) {
+      actor.x = pad;
+      actor.vx = Math.abs(actor.vx) * 0.65;
+      actor.theta = wrapAngle(Math.PI - actor.theta);
+    } else if (actor.x > WORLD_W - pad) {
+      actor.x = WORLD_W - pad;
+      actor.vx = -Math.abs(actor.vx) * 0.65;
+      actor.theta = wrapAngle(Math.PI - actor.theta);
+    }
+    if (actor.y < pad) {
+      actor.y = pad;
+      actor.vy = Math.abs(actor.vy) * 0.65;
+      actor.theta = wrapAngle(-actor.theta);
+    } else if (actor.y > WORLD_H - pad) {
+      actor.y = WORLD_H - pad;
+      actor.vy = -Math.abs(actor.vy) * 0.65;
+      actor.theta = wrapAngle(-actor.theta);
+    }
 
     for (const p of pucks) {
       p.x = clamp(p.x, p.radius + 14, WORLD_W - p.radius - 14);
       p.y = clamp(p.y, p.radius + 14, WORLD_H - p.radius - 14);
     }
 
+    actor.lastTouch = computeTouch();
     if (tick % 3 === 0) {
       actor.trail.push([actor.x, actor.y]);
       if (actor.trail.length > 75) actor.trail.shift();
@@ -230,12 +274,29 @@ export function createCalibratorWorld(seed = 1) {
     p.vy = 0;
   }
 
+  function pinMovable(id, wx, wy) {
+    const p = pucks.find((x) => x.id === id);
+    if (!p) return;
+    const cx = clamp(wx, p.radius + 14, WORLD_W - p.radius - 14);
+    const cy = clamp(wy, p.radius + 14, WORLD_H - p.radius - 14);
+    pinnedPuck = { id, x: cx, y: cy };
+    p.x = cx;
+    p.y = cy;
+    p.vx = 0;
+    p.vy = 0;
+  }
+
+  function unpinMovable() {
+    pinnedPuck = null;
+  }
+
   function snapshot() {
     return deepClone({
       tick,
       rngState: rng.getState(),
       actor,
       pucks,
+      pinnedPuck,
       nextTrackletId,
       visibleTracklets: [...visibleTracklets.entries()],
     });
@@ -247,6 +308,7 @@ export function createCalibratorWorld(seed = 1) {
     rng.setState(s.rngState);
     actor = s.actor;
     pucks = s.pucks;
+    pinnedPuck = s.pinnedPuck || null;
     nextTrackletId = s.nextTrackletId;
     visibleTracklets = new Map(s.visibleTracklets || []);
   }
@@ -297,7 +359,7 @@ export function createCalibratorWorld(seed = 1) {
       ctx.restore();
     }
 
-    // Luzne krazki
+    // Luzne krazki + delikatna obwodka hover w FORK
     for (const p of pucks) {
       ctx.save();
       ctx.globalAlpha = alpha;
@@ -313,11 +375,17 @@ export function createCalibratorWorld(seed = 1) {
         ctx.setLineDash([4, 4]);
         ctx.lineWidth = 1.5;
         ctx.stroke();
+      } else if (view.hoverId === p.id) {
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(tx(p.x), ty(p.y), sr(p.radius + 4), 0, Math.PI * 2);
+        ctx.stroke();
       }
       ctx.restore();
     }
 
-    // Cialo zwiadowcy + wierny stozek wzroku (100% VIEW_RANGE, bez zafalszowania skali!)
+    // Cialo zwiadowcy + wierny stozek wzroku (100% VIEW_RANGE)
     ctx.save();
     ctx.globalAlpha = alpha;
     ctx.fillStyle = view.tint === 'B' ? 'rgba(245,165,74,0.07)' : 'rgba(74,216,196,0.07)';
@@ -335,6 +403,28 @@ export function createCalibratorWorld(seed = 1) {
     ctx.beginPath();
     ctx.arc(tx(actor.x), ty(actor.y), sr(actor.radius), 0, Math.PI * 2);
     ctx.fill();
+
+    // Subtelny blysk obwodu przy realnym kontakcie dotykowym (front/left/right)
+    const lt = actor.lastTouch || {};
+    if (!view.ghost && (lt.front > 0.02 || lt.left > 0.02 || lt.right > 0.02)) {
+      ctx.strokeStyle = '#ffe0a3';
+      ctx.lineWidth = 3;
+      if (lt.front > 0.02) {
+        ctx.beginPath();
+        ctx.arc(tx(actor.x), ty(actor.y), sr(actor.radius + 3), actor.theta - 0.65, actor.theta + 0.65);
+        ctx.stroke();
+      }
+      if (lt.left > 0.02) {
+        ctx.beginPath();
+        ctx.arc(tx(actor.x), ty(actor.y), sr(actor.radius + 3), actor.theta - Math.PI * 0.85, actor.theta - 0.65);
+        ctx.stroke();
+      }
+      if (lt.right > 0.02) {
+        ctx.beginPath();
+        ctx.arc(tx(actor.x), ty(actor.y), sr(actor.radius + 3), actor.theta + 0.65, actor.theta + Math.PI * 0.85);
+        ctx.stroke();
+      }
+    }
 
     // Kierunek spojrzenia
     const eyeX = actor.x + Math.cos(actor.theta) * actor.radius * 0.62;
@@ -361,6 +451,8 @@ export function createCalibratorWorld(seed = 1) {
     step,
     pickMovable,
     moveMovable,
+    pinMovable,
+    unpinMovable,
     snapshot,
     restore,
     digest,
@@ -368,7 +460,6 @@ export function createCalibratorWorld(seed = 1) {
   };
 }
 
-// Jawnie zaprogramowany sterownik kalibracyjny z krotka pamiecia ostatniego kierunku (NIE wynik AI!).
 export function createCalibratorMind(_actorId, seed = 1) {
   const rng = createRng(seed);
   let state = {

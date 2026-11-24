@@ -12,21 +12,24 @@
     .rb-top, .rb-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; background: var(--panel); border-bottom: 1px solid var(--line); }
     .rb-bar { border-bottom: 0; border-top: 1px solid var(--line); }
     .rb-brand, .rb-top-right, .rb-group { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .rb-seg { display: inline-flex; gap: 4px; padding: 2px; background: #0c121b; border: 1px solid var(--line); border-radius: 8px; }
     .rb-pill { padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; background: rgba(74,216,196,0.16); color: var(--acc); border: 1px solid rgba(74,216,196,0.35); }
     .rb-pill-cal { background: rgba(245,165,74,0.14); color: var(--warn); border-color: rgba(245,165,74,0.35); }
     .rb-meta, .rb-hint, .rb-label { color: var(--muted); font-size: 12px; }
-    .rb-stage { position: relative; flex: 1; display: grid; place-items: center; padding: 12px; }
-    .rb-canvas { width: min(100%, 1080px); height: auto; aspect-ratio: 960 / 560; border: 1px solid var(--line); border-radius: 10px; background: #0d131b; cursor: grab; }
+    .rb-stage { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 12px; }
+    .rb-canvas { width: min(100%, 1160px); max-height: 66vh; height: auto; border: 1px solid var(--line); border-radius: 10px; background: #0d131b; cursor: default; }
+    .rb-xray-box { width: min(100%, 1160px); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #090e14; }
+    .rb-xray-canvas { width: 100%; height: 128px; display: block; }
     .rb-btn { background: #192433; color: var(--txt); border: 1px solid var(--line); border-radius: 7px; padding: 6px 11px; font-size: 13px; cursor: pointer; }
     .rb-btn:hover:not(:disabled) { border-color: var(--acc); }
     .rb-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .rb-btn-acc { background: rgba(74,216,196,0.15); border-color: rgba(74,216,196,0.45); color: var(--acc); }
     .rb-btn-warn { background: rgba(245,165,74,0.18); border-color: rgba(245,165,74,0.55); color: var(--warn); }
     .rb-btn-sm { padding: 3px 8px; font-size: 12px; }
-    .rb-div-badge { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); padding: 5px 12px; border-radius: 999px; font: 12px/1.3 monospace; pointer-events: none; border: 1px solid var(--line); }
+    .rb-div-badge { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); padding: 5px 12px; border-radius: 999px; font: 12px/1.3 monospace; pointer-events: none; border: 1px solid var(--line); }
     .rb-div-same { background: rgba(18,26,36,0.88); color: var(--muted); }
     .rb-div-diff { background: rgba(245,165,74,0.16); border-color: rgba(245,165,74,0.45); color: #ffd6a1; }
-    .rb-verdict-drawer { position: absolute; right: 20px; top: 20px; width: min(440px, calc(100% - 40px)); background: #101822; border: 1px solid var(--line); border-radius: 10px; padding: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.45); }
+    .rb-verdict-drawer { position: absolute; right: 20px; top: 20px; width: min(440px, calc(100% - 40px)); background: #101822; border: 1px solid var(--line); border-radius: 10px; padding: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.45); z-index: 4; }
     .rb-drawer-head, .rb-drawer-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
     .rb-drawer-row input, .rb-drawer-row select { flex: 1; background: #0b1017; color: var(--txt); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; }
     .rb-verdict-out { margin: 0; max-height: 200px; overflow: auto; font-size: 11px; background: #080c12; padding: 8px; border-radius: 6px; color: #b9cde2; }
@@ -38,7 +41,7 @@
 (() => {
   'use strict';
   const __seam = (() => {
-// kernel/seam.mjs — twardy szew prywatnosci obs, ablacja percepcji, PRNG i uczciwe metryki.
+// kernel/seam.mjs — twardy szew prywatnosci obs, ablacja percepcji, PRNG, sonda ciaglosci N10 i uczciwe metryki.
 // Czysty ESM (Node >= 20 i przegladarka), zero zewnetrznych zaleznosci.
 const PERCEPTION_MODES = Object.freeze({
   RAW: 'raw',
@@ -107,6 +110,11 @@ function createRng(seed = 1) {
 function deepClone(value) {
   if (typeof structuredClone === 'function') return structuredClone(value);
   return JSON.parse(JSON.stringify(value));
+}
+function shallowCopyAction(action) {
+  if (action === null || typeof action !== 'object') return action;
+  if (Array.isArray(action)) return action.slice();
+  return { ...action };
 }
 
 // Bezpieczne zamrazanie: pomija ArrayBuffer/TypedArray (w V8 Object.freeze na TypedArray rzuca TypeError!)
@@ -178,8 +186,6 @@ function canonicalize(value, seen = new WeakSet()) {
     seen.delete(value);
   }
 }
-
-// Deterministyczny skrot niezalezny od kolejnosci kluczy, odporny na NaN/Infinity/undefined/Map/Set/TypedArray/cykle.
 function stableDigest(value) {
   const str = canonicalize(value);
   let h = 2166136261 >>> 0;
@@ -189,9 +195,6 @@ function stableDigest(value) {
   }
   return h.toString(16).padStart(8, '0');
 }
-
-// Audyt szczelnosci obserwacji obs (case-insensitive, obsluguje Map/Set i chroni przed cyklami).
-// W trybie 'tracklet' dopuszcza wylacznie nietrwaly trackletId; w 'entity-oracle' dopuszcza diagnostyczny entityId.
 function auditObservation(obs, options = {}) {
   const mode = options.perceptionMode || PERCEPTION_MODES.RAW;
   const allowed = new Set((options.extraAllowedKeys || []).map((k) => String(k).toLowerCase()));
@@ -247,8 +250,70 @@ function sealObservation(rawObs, options = {}) {
   return deepFreeze(deepClone(rawObs));
 }
 
-// Uczciwa normalizacja metryk (lekcja N12): nigdy nie dzieli skumulowanych statystyk przez koncowa populacje.
-// Przy zerowym mianowniku zwraca null (nigdy nie maskuje 0 zywych tickow jako '0 bledow/1k').
+function interpolateValue(a, b, t) {
+  if (typeof a === 'number' && typeof b === 'number') return a + (b - a) * t;
+  if (Array.isArray(a) && Array.isArray(b) && a.length === b.length) {
+    return a.map((v, i) => interpolateValue(v, b[i], t));
+  }
+  if (ArrayBuffer.isView(a) && ArrayBuffer.isView(b) && a.length === b.length && a.constructor === b.constructor) {
+    const out = new a.constructor(a.length);
+    for (let i = 0; i < a.length; i++) out[i] = a[i] + (b[i] - a[i]) * t;
+    return out;
+  }
+  if (a && b && typeof a === 'object' && typeof b === 'object') {
+    const out = {};
+    for (const k of Object.keys(a)) {
+      out[k] = k in b ? interpolateValue(a[k], b[k], t) : deepClone(a[k]);
+    }
+    return out;
+  }
+  return t < 0.5 ? deepClone(a) : deepClone(b);
+}
+
+// Sonda ciaglosci sygnalu (szczepionka przeciw N10 — np. isRockRay widzacy 36/36 skal na interpolowanym niebie!).
+// Przepuszcza przez czysty klasyfikator lub fabryke umyslu ciagly gradient miedzy probkami A i B
+// i wykrywa nagly falszywy pik / zalamanie (np. wartosc posrednia przekraczajaca oba krance albo skok > maxJump).
+function sweepSensoryGradient(evaluator, sampleA, sampleB, options = {}) {
+  const steps = Math.max(4, options.steps ?? 32);
+  const maxJump = options.maxJump ?? 0.45;
+  const scoreFn = options.scoreFn || ((out) => (typeof out === 'number' ? out : typeof out === 'boolean' ? (out ? 1 : 0) : 0));
+  const series = [];
+  const spikes = [];
+
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const obs = interpolateValue(sampleA, sampleB, t);
+    const raw = evaluator(obs, t);
+    const score = Number(scoreFn(raw));
+    series.push({ t, score, raw });
+  }
+
+  const endMin = Math.min(series[0].score, series[series.length - 1].score);
+  const endMax = Math.max(series[0].score, series[series.length - 1].score);
+  const overshootTol = options.overshootTolerance ?? 0.25;
+
+  for (let i = 1; i < series.length; i++) {
+    const jump = Math.abs(series[i].score - series[i - 1].score);
+    const overshoot = series[i].score < endMin - overshootTol || series[i].score > endMax + overshootTol;
+    if (jump > maxJump || overshoot) {
+      spikes.push({
+        index: i,
+        t: series[i].t,
+        score: series[i].score,
+        jump,
+        overshoot,
+      });
+    }
+  }
+
+  return {
+    ok: spikes.length === 0,
+    steps,
+    endpointRange: [endMin, endMax],
+    spikes,
+    series,
+  };
+}
 function normalizeExposureMetrics(records = []) {
   let totalAliveTicks = 0;
   let totalExposures = 0;
@@ -279,10 +344,10 @@ function normalizeExposureMetrics(records = []) {
   };
 }
 
-  return { PERCEPTION_MODES, createRng, deepClone, deepFreeze, stableDigest, auditObservation, sealObservation, normalizeExposureMetrics };
+  return { PERCEPTION_MODES, createRng, deepClone, shallowCopyAction, deepFreeze, stableDigest, auditObservation, sealObservation, sweepSensoryGradient, normalizeExposureMetrics };
 })();
   const __fork = (() => {
-  const { PERCEPTION_MODES, deepClone, sealObservation, stableDigest } = __seam;
+  const { PERCEPTION_MODES, deepClone, shallowCopyAction, sealObservation, stableDigest } = __seam;
 // kernel/fork-microscope.mjs — realizacja gramatyki MEDIUM-D/R0:
 // WATCH -> MARK -> FORK -> INTERVENE(warstwa) -> RELEASE -> RUN -> COMPARE (trwala Drabina Pierwszego Rozjazdu).
 // Czysty ESM (Node >= 20 i przegladarka), zero zaleznosci.
@@ -311,12 +376,13 @@ function makeBranch({ label, world, worldFactory, minds, mindFactories, defaultM
     provenance: [],
     trace: [],
     traceTruncated: false,
+    lastStep: null, // O(1) bezpieczna migawka ostatniego kroku dla podgladu Oko/Wnetrze (bez wywolywania observe w renderze!)
     motorOverrides: new Map(), // actorId -> fn(obs, defaultAction) | actionObj
   };
 }
 
 // Trwaly rejestrator Pierwszego Rozjazdu o pamieci O(1): nigdy nie traci najwczesniejszego ticku,
-// nawet gdy bieg trwa tysiace tickow i okno trace zostanie przyciete!
+// nawet gdy bieg trwa tysiace tickow i okno trace zostanie przyciete.
 function createDivergenceTracker(startTick = 0) {
   const firstByLayer = {
     observation: null,
@@ -391,6 +457,15 @@ function createLabSession({
 
   function syncDynamicActors(branch) {
     const ids = branch.world.getActorIds ? branch.world.getActorIds() : [...branch.minds.keys()];
+    // Szybka sciezka bez alokacji Set, gdy liczba i kolejnosc aktorow sie nie zmienila (wieloseedowe rollouty!)
+    if (ids.length === branch.minds.size) {
+      let same = true;
+      for (let i = 0; i < ids.length; i++) {
+        if (!branch.minds.has(ids[i])) { same = false; break; }
+      }
+      if (same) return ids;
+    }
+
     const activeSet = new Set(ids);
     for (let i = 0; i < ids.length; i++) {
       const id = ids[i];
@@ -415,16 +490,19 @@ function createLabSession({
     const maxTrace = options.maxTrace ?? 600;
     const recordTrace = options.recordTrace !== false;
     const auditSeam = options.auditSeam !== false;
+    const captureLastStep = options.captureLastStep !== false;
 
     const ids = syncDynamicActors(branch);
-    const obsByActor = {};
-    const mindDigestByActor = {};
-    const appraisalByActor = {};
-    const predictionByActor = {};
+    const obsByActor = recordTrace ? {} : null;
+    const mindDigestByActor = recordTrace ? {} : null;
+    const appraisalByActor = recordTrace ? {} : null;
+    const predictionByActor = recordTrace ? {} : null;
+    const actionDigests = recordTrace ? {} : null;
     const actionsForWorld = {};
-    const actionDigests = {};
+    const stepSnapshotByActor = captureLastStep ? {} : null;
 
-    for (const id of ids) {
+    for (let i = 0; i < ids.length; i++) {
+      const id = ids[i];
       const rawObs = branch.world.observe(id, branch.perceptionMode);
       const obs = auditSeam
         ? sealObservation(rawObs, {
@@ -439,18 +517,30 @@ function createLabSession({
       const mind = branch.minds.get(id);
       const out = mind ? mind.step(obs) : { action: {} };
       let action = out && out.action !== undefined ? out.action : out;
+      const motorOverridden = branch.motorOverrides.has(id);
 
       // Jawne przejecie autorytetu motoru (MOTOR_AUTHORITY) — host wie, umysl nie dostaje etykiety
-      if (branch.motorOverrides.has(id)) {
+      if (motorOverridden) {
         const ov = branch.motorOverrides.get(id);
-        action = typeof ov === 'function' ? ov(obs, action) : deepClone(ov);
+        action = typeof ov === 'function' ? ov(obs, action) : shallowCopyAction(ov);
       }
 
-      // Klonujemy i hashujemy akcje PRZED world.step(), zeby swiat nie mogl zmutowac actionDigest ani stanu umyslu!
-      const clonedAction = deepClone(action);
-      actionsForWorld[id] = clonedAction;
+      // W szybkim trybie (auditSeam=false, recordTrace=false) unikamy ciezkiego structuredClone co tick
+      const safeAction = auditSeam || recordTrace ? deepClone(action) : shallowCopyAction(action);
+      actionsForWorld[id] = safeAction;
+
+      if (captureLastStep) {
+        stepSnapshotByActor[id] = {
+          obs,
+          appraisal: out && out.appraisal !== undefined ? out.appraisal : null,
+          prediction: out && out.prediction !== undefined ? out.prediction : null,
+          action: safeAction,
+          motorOverridden,
+        };
+      }
+
       if (recordTrace) {
-        actionDigests[id] = stableDigest(clonedAction);
+        actionDigests[id] = stableDigest(safeAction);
         appraisalByActor[id] = out && out.appraisal !== undefined ? stableDigest(out.appraisal) : null;
         predictionByActor[id] = out && out.prediction !== undefined ? stableDigest(out.prediction) : null;
         mindDigestByActor[id] = mind && mind.digest ? mind.digest() : stableDigest(mind ? mind.snapshot() : null);
@@ -459,6 +549,10 @@ function createLabSession({
 
     branch.world.step(actionsForWorld, externalInput);
     branch.tick += 1;
+
+    if (captureLastStep) {
+      branch.lastStep = { tick: branch.tick, byActor: stepSnapshotByActor };
+    }
 
     if (!recordTrace) return { tick: branch.tick };
 
@@ -531,7 +625,6 @@ function createLabSession({
     if (!VALID_LAYERS.has(layer)) {
       throw new Error(`Unknown intervention layer: ${layer}. Allowed: ${[...VALID_LAYERS].join(', ')}`);
     }
-    // Najpierw wykonujemy apply(); jesli rzuci blad, nie zasmiecamy proweniencji falszywym wpisem!
     if (typeof apply === 'function') {
       apply({
         world: branch.world,
@@ -571,7 +664,6 @@ function createLabSession({
     return event;
   }
 
-  // Synchronizowany bieg A i B z trwalym trackerem O(1) (nigdy nie gubi pierwszego rozjazdu po 600 tickach!).
   function runSync(branchA, branchB, steps, options = {}) {
     const tracker = options.tracker || createDivergenceTracker(branchA.tick);
     const inputA = options.inputA || null;
@@ -590,8 +682,6 @@ function createLabSession({
 
   return { main, stepBranch, mark, fork, intervene, release, runSync };
 }
-
-// Bezposrednie porownanie buforow (gdy nie uzyto trwalego trackera). Jawnie raportuje `windowTruncated`.
 function findFirstDivergence(branchA, branchB, tracker = null) {
   if (tracker) return tracker.summary(branchA, branchB);
   const byTickB = new Map(branchB.trace.map((f) => [f.tick, f]));
@@ -611,6 +701,9 @@ function formatOwnerVerdictCard({
   markTick = null,
   divergence = null,
   note = '',
+  commitSha = null,
+  publicUrl = null,
+  controlsPassed = null,
 }) {
   return {
     schema: 'reflexbrain-owner-verdict/v1',
@@ -618,6 +711,9 @@ function formatOwnerVerdictCard({
     probeId,
     verdict,
     markTick,
+    commitSha,
+    publicUrl,
+    controlsPassed,
     firstDivergence: divergence && divergence.earliest ? divergence.earliest : null,
     firstByLayer: divergence ? divergence.firstByLayer : null,
     interventionsB: divergence ? divergence.interventionsB : [],
@@ -630,7 +726,8 @@ function formatOwnerVerdictCard({
   const __ui = (() => {
   const { INTERVENTION_LAYERS, createDivergenceTracker, formatOwnerVerdictCard } = __fork;
 // kernel/lens-ui.mjs — cichy, reuzywalny mikroskop przegladarkowy dla gramatyki MEDIUM-D/R0.
-// Domyslny stan to WATCH (swiat zyje, interfejs nie zaslania). Zero zewnetrznych zaleznosci.
+// Domyslny stan: WATCH (swiat zyje, interfejs nie zaslania).
+// Opcjonalna szuflada "Oko i wnetrze (I)" czyta wylacznie bezpieczna migawke `branch.lastStep` (zero efektow ubocznych!).
 const FIXED_DT = 1 / 60;
 function defaultMapKeysToAction(keys) {
   let thrust = 0;
@@ -648,6 +745,128 @@ function fitRect(boxX, boxY, boxW, boxH, worldW, worldH) {
   const h = worldH * scale;
   return { x: boxX + (boxW - w) * 0.5, y: boxY + (boxH - h) * 0.5, w, h, scale };
 }
+
+function extractScalars(obj, prefix = '', out = []) {
+  if (!obj || typeof obj !== 'object') return out;
+  for (const k of Object.keys(obj)) {
+    const v = obj[k];
+    if (typeof v === 'number' && Number.isFinite(v)) {
+      out.push({ key: prefix ? `${prefix}.${k}` : k, val: v });
+    }
+    if (out.length >= 6) break;
+  }
+  return out;
+}
+
+function drawXrayRow(ctx, x, y, w, h, snap, accent, label) {
+  ctx.fillStyle = '#0c121a';
+  ctx.fillRect(x, y, w, h);
+  ctx.strokeStyle = 'rgba(148,175,204,0.14)';
+  ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+
+  ctx.fillStyle = accent;
+  ctx.font = '11px monospace';
+  ctx.fillText(label, x + 8, y + 14);
+
+  if (!snap || !snap.obs) {
+    ctx.fillStyle = '#7b8fa6';
+    ctx.fillText('brak probki kroku', x + 120, y + 14);
+    return;
+  }
+
+  // 1. Siatkowka 1D (lewa czesc)
+  const ret = Array.isArray(snap.obs.retina) ? snap.obs.retina : [];
+  const rx = x + 8;
+  const ry = y + 20;
+  const rw = Math.min(340, w * 0.38);
+  const rh = Math.max(16, h - 26);
+  ctx.fillStyle = '#070b10';
+  ctx.fillRect(rx, ry, rw, rh);
+  if (ret.length > 0) {
+    const cellW = rw / ret.length;
+    for (let i = 0; i < ret.length; i++) {
+      const s = ret[i];
+      const rgb = Array.isArray(s) ? s : s && Array.isArray(s.rgb) ? s.rgb : [0.08, 0.1, 0.14];
+      const prox = s && typeof s.proximity === 'number' ? s.proximity : 1;
+      const barH = Math.max(4, Math.min(1, prox * 0.85 + 0.15) * rh);
+      ctx.fillStyle = `rgb(${Math.round(Math.min(1, rgb[0]) * 255)},${Math.round(Math.min(1, rgb[1]) * 255)},${Math.round(Math.min(1, rgb[2]) * 255)})`;
+      ctx.fillRect(rx + i * cellW, ry + (rh - barH), Math.max(1, cellW - 0.5), barH);
+      if (s && (s.trackletId || s.entityId)) {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(rx + i * cellW + cellW * 0.3, ry + 1, Math.max(1.5, cellW * 0.4), 2.5);
+      }
+    }
+  }
+
+  // 2. Rozeta dotyku + wektor proprio (srodek)
+  const cx = rx + rw + 42;
+  const cy = y + h * 0.54;
+  const rad = Math.min(18, h * 0.34);
+  ctx.strokeStyle = 'rgba(148,175,204,0.32)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+  ctx.stroke();
+
+  const touch = snap.obs.touch || {};
+  const sectors = [
+    { val: touch.front || 0, a0: -Math.PI * 0.75, a1: -Math.PI * 0.25 },
+    { val: touch.right || 0, a0: -Math.PI * 0.25, a1: Math.PI * 0.5 },
+    { val: touch.left || 0, a0: Math.PI * 0.5, a1: Math.PI * 1.25 },
+  ];
+  for (const sec of sectors) {
+    if (sec.val > 0.02) {
+      ctx.strokeStyle = `rgba(245,165,74,${Math.min(1, 0.35 + sec.val * 0.65)})`;
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, rad + 2, sec.a0, sec.a1);
+      ctx.stroke();
+    }
+  }
+  const prop = snap.obs.proprio || {};
+  const vx = (prop.vxBody || 0) * 6;
+  const vy = (prop.vyBody || 0) * 6;
+  ctx.strokeStyle = accent;
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx + Math.max(-rad, Math.min(rad, vy)), cy - Math.max(-rad, Math.min(rad, vx)));
+  ctx.stroke();
+
+  // 3. Prywatne wnetrze (appraisal / prediction / action)
+  const sx = cx + rad + 24;
+  const sw = Math.max(120, x + w - sx - 10);
+  const scalars = [
+    ...extractScalars(snap.appraisal, 'ocena'),
+    ...extractScalars(snap.prediction, 'pred'),
+    ...extractScalars(snap.action, 'akt'),
+  ].slice(0, 5);
+
+  const barStep = Math.max(12, Math.floor((h - 14) / Math.max(1, scalars.length)));
+  ctx.font = '10px monospace';
+  scalars.forEach((item, idx) => {
+    const by = y + 18 + idx * barStep;
+    ctx.fillStyle = '#9bb0c7';
+    ctx.fillText(item.key.slice(0, 18), sx, by);
+    const bx = sx + 122;
+    const bw = Math.max(40, sw - 165);
+    const mid = bx + bw * 0.5;
+    ctx.fillStyle = '#182230';
+    ctx.fillRect(bx, by - 8, bw, 7);
+    const clamped = Math.max(-1, Math.min(1, item.val));
+    ctx.fillStyle = clamped >= 0 ? accent : '#f07178';
+    const len = Math.abs(clamped) * (bw * 0.5);
+    ctx.fillRect(clamped >= 0 ? mid : mid - len, by - 8, len, 7);
+    ctx.fillStyle = '#d8e6f5';
+    ctx.fillText(item.val.toFixed(2), bx + bw + 5, by);
+  });
+
+  if (snap.motorOverridden) {
+    ctx.fillStyle = '#f5a54a';
+    ctx.font = 'bold 10px monospace';
+    ctx.fillText('WASD OVERRIDE', x + w - 96, y + 13);
+  }
+}
 function mountMicroscope({
   root,
   session,
@@ -657,10 +876,12 @@ function mountMicroscope({
   actorId = 'actor-0',
   materialHint = 'Przeciagnij obiekt mysza w B = MATERIAL',
   mapKeysToAction = defaultMapKeysToAction,
+  commitSha = null,
 }) {
   let mode = 'WATCH'; // 'WATCH' | 'FORK'
   let viewLayout = 'GHOST'; // 'GHOST' | 'SPLIT'
   let paused = false;
+  let xrayOpen = false;
   let capturedMark = null;
   let forkOriginTick = null;
   let branchA = session.main;
@@ -668,11 +889,24 @@ function mountMicroscope({
   let divTracker = null;
   let motorTakeoverActive = false;
   let draggingBodyId = null;
+  let hoverBodyId = null;
   let accum = 0;
   let lastTs = null;
   let rafId = null;
   let destroyed = false;
   const keys = new Set();
+
+  const verdictOptions = isCalibrator
+    ? [
+        ['OTWARTE', 'OTWARTE'],
+        ['APARATURA_OK', 'APARATURA_OK'],
+        ['APARATURA_DO_POPRAWY', 'APARATURA_DO_POPRAWY'],
+      ]
+    : [
+        ['OTWARTE', 'OTWARTE'],
+        ['KIERUNEK_WARTY_DRAZENIA', 'KIERUNEK_WARTY_DRAZENIA'],
+        ['OWNER_LIFE_FAIL', 'OWNER_LIFE_FAIL'],
+      ];
 
   root.innerHTML = '';
   const wrap = document.createElement('div');
@@ -684,27 +918,30 @@ function mountMicroscope({
         <span class="rb-meta" data-role="meta">WATCH · tick 0</span>
       </div>
       <div class="rb-top-right">
+        <button class="rb-btn" data-act="xray" title="Klawisz I">Oko i wnetrze (I)</button>
         <button class="rb-btn" data-act="pause">Pauza</button>
+        <button class="rb-btn" data-act="step1" style="display:none" title="Jeden krok do przodu">+1 tick</button>
         <button class="rb-btn" data-act="verdict">Werdykt Ownera</button>
       </div>
     </header>
     <main class="rb-stage">
-      <canvas class="rb-canvas" width="960" height="560"></canvas>
+      <canvas class="rb-canvas" data-role="main-canvas" width="960" height="540"></canvas>
       <div class="rb-div-badge" data-role="divbadge" style="display:none"></div>
+      <div class="rb-xray-box" data-role="xray-box" style="display:none">
+        <canvas class="rb-xray-canvas" data-role="xray-canvas" width="960" height="128"></canvas>
+      </div>
       <section class="rb-verdict-drawer" data-role="drawer" style="display:none">
         <div class="rb-drawer-head">
           <strong>Karta werdyktu Ownera</strong>
           <button class="rb-btn rb-btn-sm" data-act="close-verdict">Zamknij</button>
         </div>
         <div class="rb-drawer-row">
-          <select data-role="verdict-select">
-            <option value="OTWARTE">OTWARTE</option>
-            <option value="KIERUNEK_WARTY_DRAZENIA">KIERUNEK_WARTY_DRAZENIA</option>
-            <option value="APARATURA_OK">APARATURA_OK</option>
-            <option value="OWNER_LIFE_FAIL">OWNER_LIFE_FAIL</option>
-          </select>
+          <select data-role="verdict-select">${verdictOptions.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select>
           <input type="text" data-role="verdict-note" placeholder="Krotka notatka z reki..." />
-          <button class="rb-btn rb-btn-acc" data-act="export-verdict">Kopiuj JSON</button>
+        </div>
+        <div class="rb-drawer-row">
+          <button class="rb-btn rb-btn-acc" data-act="download-verdict">Pobierz .verdict.json</button>
+          <button class="rb-btn" data-act="export-verdict">Kopiuj JSON</button>
         </div>
         <div class="rb-meta" data-role="copy-status"></div>
         <pre class="rb-verdict-out" data-role="verdict-out"></pre>
@@ -712,9 +949,12 @@ function mountMicroscope({
     </main>
     <footer class="rb-bar">
       <div class="rb-group">
-        <button class="rb-btn rb-btn-acc" data-act="mark" title="Klawisz M">MARK (zamroz moment)</button>
-        <button class="rb-btn" data-act="fork" disabled title="Klawisz F">FORK A/B</button>
-        <button class="rb-btn" data-act="layout" style="display:none">Widok: Duch A+B</button>
+        <button class="rb-btn" data-act="mark" title="Klawisz M">MARK (zamroz moment)</button>
+        <button class="rb-btn rb-btn-acc" data-act="fork" title="Klawisz F — 1 klik robi MARK + FORK">FORK teraz (F)</button>
+        <div class="rb-seg" data-role="layout-seg" style="display:none">
+          <button class="rb-btn rb-btn-sm" data-act="layout-ghost">Duch A+B</button>
+          <button class="rb-btn rb-btn-sm" data-act="layout-split">Obok A|B</button>
+        </div>
         <button class="rb-btn" data-act="exit-fork" style="display:none">Wroc do WATCH</button>
       </div>
       <div class="rb-group" data-role="interventions" style="display:none">
@@ -727,8 +967,11 @@ function mountMicroscope({
   `;
   root.appendChild(wrap);
 
-  const canvas = wrap.querySelector('canvas');
+  const canvas = wrap.querySelector('[data-role="main-canvas"]');
   const ctx = canvas.getContext('2d');
+  const xrayBox = wrap.querySelector('[data-role="xray-box"]');
+  const xrayCanvas = wrap.querySelector('[data-role="xray-canvas"]');
+  const xrayCtx = xrayCanvas.getContext('2d');
   const bannerEl = wrap.querySelector('[data-role="banner"]');
   const metaEl = wrap.querySelector('[data-role="meta"]');
   const divBadge = wrap.querySelector('[data-role="divbadge"]');
@@ -736,15 +979,37 @@ function mountMicroscope({
   const matHintEl = wrap.querySelector('[data-role="mat-hint"]');
   const btnMark = wrap.querySelector('[data-act="mark"]');
   const btnFork = wrap.querySelector('[data-act="fork"]');
-  const btnLayout = wrap.querySelector('[data-act="layout"]');
+  const btnXray = wrap.querySelector('[data-act="xray"]');
+  const layoutSeg = wrap.querySelector('[data-role="layout-seg"]');
+  const btnGhost = wrap.querySelector('[data-act="layout-ghost"]');
+  const btnSplit = wrap.querySelector('[data-act="layout-split"]');
   const btnExitFork = wrap.querySelector('[data-act="exit-fork"]');
   const btnPause = wrap.querySelector('[data-act="pause"]');
+  const btnStep1 = wrap.querySelector('[data-act="step1"]');
   const btnTakeover = wrap.querySelector('[data-act="takeover"]');
   const drawer = wrap.querySelector('[data-role="drawer"]');
   const verdictOut = wrap.querySelector('[data-role="verdict-out"]');
   const verdictSelect = wrap.querySelector('[data-role="verdict-select"]');
   const verdictNote = wrap.querySelector('[data-role="verdict-note"]');
   const copyStatus = wrap.querySelector('[data-role="copy-status"]');
+
+  let logicalW = 960;
+  let logicalH = 540;
+  let dpr = 1;
+
+  function syncCanvasResolution() {
+    const nextDpr = typeof window !== 'undefined' && window.devicePixelRatio ? Math.min(2, window.devicePixelRatio) : 1;
+    const nextW = mode === 'FORK' && viewLayout === 'SPLIT' ? 1160 : 960;
+    const nextH = mode === 'FORK' && viewLayout === 'SPLIT' ? 400 : 540;
+    if (nextDpr !== dpr || nextW !== logicalW || nextH !== logicalH || canvas.width !== Math.round(nextW * nextDpr)) {
+      dpr = nextDpr;
+      logicalW = nextW;
+      logicalH = nextH;
+      canvas.width = Math.round(logicalW * dpr);
+      canvas.height = Math.round(logicalH * dpr);
+      if (ctx.setTransform) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+  }
 
   bannerEl.textContent = bannerText;
   if (isCalibrator && bannerEl.classList && bannerEl.classList.add) bannerEl.classList.add('rb-pill-cal');
@@ -761,6 +1026,7 @@ function mountMicroscope({
       markTick: mode === 'FORK' ? forkOriginTick : capturedMark ? capturedMark.tick : session.main.tick,
       divergence: currentDivergence(),
       note: verdictNote.value,
+      commitSha,
     });
     const text = JSON.stringify(card, null, 2);
     verdictOut.textContent = text;
@@ -770,19 +1036,25 @@ function mountMicroscope({
   function updateControls() {
     const inFork = mode === 'FORK' && branchB !== null;
     btnMark.disabled = inFork;
-    btnFork.disabled = !capturedMark;
+    btnFork.textContent = capturedMark ? `FORK od @${capturedMark.tick} (F)` : 'FORK teraz (F)';
     intGroup.style.display = inFork ? 'flex' : 'none';
-    btnLayout.style.display = inFork ? 'inline-flex' : 'none';
+    layoutSeg.style.display = inFork ? 'inline-flex' : 'none';
     btnExitFork.style.display = inFork ? 'inline-flex' : 'none';
     divBadge.style.display = inFork ? 'block' : 'none';
-    btnLayout.textContent = viewLayout === 'GHOST' ? 'Widok: Duch A+B' : 'Widok: Obok siebie A | B';
+    btnStep1.style.display = paused ? 'inline-flex' : 'none';
+    xrayBox.style.display = xrayOpen ? 'block' : 'none';
+    btnXray.classList.toggle('rb-btn-acc', xrayOpen);
+    btnGhost.classList.toggle('rb-btn-acc', viewLayout === 'GHOST');
+    btnSplit.classList.toggle('rb-btn-acc', viewLayout === 'SPLIT');
     btnPause.textContent = paused ? 'Wznow' : 'Pauza';
     btnTakeover.textContent = motorTakeoverActive ? 'RELEASE (oddaj sterowanie B)' : 'Przejmij WASD w B';
     btnTakeover.classList.toggle('rb-btn-warn', motorTakeoverActive);
+    if (!inFork) canvas.style.cursor = 'default';
+    syncCanvasResolution();
   }
 
   function doMark() {
-    if (mode === 'FORK') return; // w FORK zachowujemy niezmienny punkt startowy forkOriginTick
+    if (mode === 'FORK') return;
     capturedMark = session.mark(session.main, `mark@${session.main.tick}`);
     updateControls();
   }
@@ -790,6 +1062,7 @@ function mountMicroscope({
   function doFork() {
     if (!capturedMark) capturedMark = session.mark(session.main, `mark@${session.main.tick}`);
     draggingBodyId = null;
+    hoverBodyId = null;
     const [a, b] = session.fork(capturedMark, ['A (kontrola)', 'B (interwencja)']);
     branchA = a;
     branchB = b;
@@ -801,7 +1074,11 @@ function mountMicroscope({
   }
 
   function exitFork() {
+    if (draggingBodyId !== null && branchB && typeof branchB.world.unpinMovable === 'function') {
+      branchB.world.unpinMovable();
+    }
     draggingBodyId = null;
+    hoverBodyId = null;
     mode = 'WATCH';
     branchA = session.main;
     branchB = null;
@@ -814,6 +1091,12 @@ function mountMicroscope({
   function setViewLayout(nextLayout) {
     viewLayout = nextLayout === 'SPLIT' ? 'SPLIT' : 'GHOST';
     updateControls();
+  }
+
+  function toggleXray(forceState = null) {
+    xrayOpen = forceState !== null ? Boolean(forceState) : !xrayOpen;
+    updateControls();
+    renderFrame();
   }
 
   function doCutMemoryB() {
@@ -852,22 +1135,22 @@ function mountMicroscope({
     const worldW = w.width || 960;
     const worldH = w.height || 560;
     if (mode === 'FORK' && viewLayout === 'SPLIT') {
-      const half = canvas.width * 0.5;
+      const half = logicalW * 0.5;
       return {
-        rectA: fitRect(0, 0, half, canvas.height, worldW, worldH),
-        rectB: fitRect(half, 0, half, canvas.height, worldW, worldH),
+        rectA: fitRect(0, 0, half - 4, logicalH, worldW, worldH),
+        rectB: fitRect(half + 4, 0, half - 4, logicalH, worldW, worldH),
         worldW,
         worldH,
       };
     }
-    const full = fitRect(0, 0, canvas.width, canvas.height, worldW, worldH);
+    const full = fitRect(0, 0, logicalW, logicalH, worldW, worldH);
     return { rectA: full, rectB: full, worldW, worldH };
   }
 
   function canvasToWorldB(ev) {
     const rect = canvas.getBoundingClientRect();
-    const cx = ((ev.clientX - rect.left) / Math.max(1, rect.width)) * canvas.width;
-    const cy = ((ev.clientY - rect.top) / Math.max(1, rect.height)) * canvas.height;
+    const cx = ((ev.clientX - rect.left) / Math.max(1, rect.width)) * logicalW;
+    const cy = ((ev.clientY - rect.top) / Math.max(1, rect.height)) * logicalH;
     const { rectB, worldW, worldH } = getViewRects();
     if (cx < rectB.x || cx > rectB.x + rectB.w || cy < rectB.y || cy > rectB.y + rectB.h) return null;
     return {
@@ -883,31 +1166,54 @@ function mountMicroscope({
     const id = branchB.world.pickMovable(pt.x, pt.y);
     if (id !== null) {
       draggingBodyId = id;
+      canvas.style.cursor = 'grabbing';
       if (canvas.setPointerCapture && ev.pointerId !== undefined) {
         try { canvas.setPointerCapture(ev.pointerId); } catch {}
       }
       session.intervene(branchB, {
         layer: INTERVENTION_LAYERS.MATERIAL,
         description: `przesuniecie obiektu #${id} w B`,
-        apply: ({ world }) => world.moveMovable(id, pt.x, pt.y),
+        apply: ({ world }) => {
+          if (typeof world.pinMovable === 'function') world.pinMovable(id, pt.x, pt.y);
+          else world.moveMovable(id, pt.x, pt.y);
+        },
       });
     }
   };
 
   const onPointerMove = (ev) => {
-    if (draggingBodyId === null || mode !== 'FORK' || !branchB) return;
+    if (mode !== 'FORK' || !branchB) {
+      hoverBodyId = null;
+      canvas.style.cursor = 'default';
+      return;
+    }
     const pt = canvasToWorldB(ev);
-    if (pt) branchB.world.moveMovable(draggingBodyId, pt.x, pt.y);
+    if (draggingBodyId !== null) {
+      if (pt) {
+        if (typeof branchB.world.pinMovable === 'function') branchB.world.pinMovable(draggingBodyId, pt.x, pt.y);
+        else branchB.world.moveMovable(draggingBodyId, pt.x, pt.y);
+      }
+      return;
+    }
+    if (pt && typeof branchB.world.pickMovable === 'function') {
+      hoverBodyId = branchB.world.pickMovable(pt.x, pt.y);
+      canvas.style.cursor = hoverBodyId !== null ? 'grab' : 'default';
+    } else {
+      hoverBodyId = null;
+      canvas.style.cursor = 'default';
+    }
   };
 
   const endDrag = () => {
     if (draggingBodyId !== null && mode === 'FORK' && branchB) {
+      if (typeof branchB.world.unpinMovable === 'function') branchB.world.unpinMovable();
       session.release(branchB, {
         layer: INTERVENTION_LAYERS.MATERIAL,
         description: `puszczenie obiektu #${draggingBodyId} w B`,
       });
     }
     draggingBodyId = null;
+    canvas.style.cursor = hoverBodyId !== null && mode === 'FORK' ? 'grab' : 'default';
   };
 
   canvas.addEventListener('pointerdown', onPointerDown);
@@ -926,10 +1232,15 @@ function mountMicroscope({
     if (act === 'mark') doMark();
     else if (act === 'fork') doFork();
     else if (act === 'exit-fork') exitFork();
-    else if (act === 'layout') setViewLayout(viewLayout === 'GHOST' ? 'SPLIT' : 'GHOST');
+    else if (act === 'layout-ghost') setViewLayout('GHOST');
+    else if (act === 'layout-split') setViewLayout('SPLIT');
+    else if (act === 'xray') toggleXray();
     else if (act === 'pause') {
       paused = !paused;
       updateControls();
+    } else if (act === 'step1') {
+      stepOneTick();
+      renderFrame();
     } else if (act === 'cut-mem') doCutMemoryB();
     else if (act === 'takeover') toggleTakeoverB();
     else if (act === 'verdict') {
@@ -938,15 +1249,27 @@ function mountMicroscope({
       refreshVerdictPreview();
     } else if (act === 'close-verdict') {
       drawer.style.display = 'none';
+    } else if (act === 'download-verdict') {
+      const text = refreshVerdictPreview();
+      if (typeof Blob !== 'undefined' && typeof URL !== 'undefined' && URL.createObjectURL) {
+        const blob = new Blob([text], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${probeId}-verdict.json`;
+        if (a.click) a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        copyStatus.textContent = `Pobrano plik ${probeId}-verdict.json.`;
+      }
     } else if (act === 'export-verdict') {
       const text = refreshVerdictPreview();
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard
           .writeText(text)
           .then(() => { copyStatus.textContent = 'Skopiowano JSON do schowka.'; })
-          .catch(() => { copyStatus.textContent = 'Schowek zablokowany (file://) — skopiuj recznie z pola ponizej.'; });
+          .catch(() => { copyStatus.textContent = 'Schowek zablokowany — uzyj Pobierz .verdict.json.'; });
       } else {
-        copyStatus.textContent = 'Skopiuj JSON recznie z pola ponizej.';
+        copyStatus.textContent = 'Uzyj Pobierz .verdict.json lub skopiuj recznie.';
       }
     }
   });
@@ -962,6 +1285,7 @@ function mountMicroscope({
     if (e.repeat) return;
     if (e.code === 'KeyM') doMark();
     if (e.code === 'KeyF') doFork();
+    if (e.code === 'KeyI') toggleXray();
     if (e.code === 'KeyR' && mode === 'FORK') doCutMemoryB();
     if (e.code === 'KeyT' && mode === 'FORK') toggleTakeoverB();
   };
@@ -976,23 +1300,58 @@ function mountMicroscope({
 
   function stepOneTick() {
     if (mode === 'FORK' && branchB) {
-      const fa = session.stepBranch(branchA);
-      const fb = session.stepBranch(branchB);
+      const fa = session.stepBranch(branchA, null, { captureLastStep: true });
+      const fb = session.stepBranch(branchB, null, { captureLastStep: true });
       if (divTracker) divTracker.recordPair(fa, fb);
     } else {
-      // W trybie WATCH nie budujemy pelnych digestow co tick — oszczedza CPU!
-      session.stepBranch(session.main, null, { recordTrace: false, auditSeam: true });
+      session.stepBranch(session.main, null, { recordTrace: false, auditSeam: true, captureLastStep: true });
+    }
+  }
+
+  function renderXray() {
+    if (!xrayOpen) return;
+    const xw = xrayCanvas.width;
+    const xh = xrayCanvas.height;
+    xrayCtx.clearRect(0, 0, xw, xh);
+    if (mode === 'FORK' && branchB) {
+      const snapA = branchA.lastStep && branchA.lastStep.byActor[actorId];
+      const snapB = branchB.lastStep && branchB.lastStep.byActor[actorId];
+      const rowH = Math.floor((xh - 8) * 0.5);
+      drawXrayRow(xrayCtx, 0, 0, xw, rowH, snapA, '#4ad8c4', `OKO A (${actorId})`);
+      // Cienki pasek roznicy |A - B| na promieniach siatkowki
+      const retA = snapA && snapA.obs && Array.isArray(snapA.obs.retina) ? snapA.obs.retina : [];
+      const retB = snapB && snapB.obs && Array.isArray(snapB.obs.retina) ? snapB.obs.retina : [];
+      const rw = Math.min(340, xw * 0.38);
+      xrayCtx.fillStyle = '#070a0f';
+      xrayCtx.fillRect(0, rowH + 1, xw, 6);
+      if (retA.length && retA.length === retB.length) {
+        const cellW = rw / retA.length;
+        for (let i = 0; i < retA.length; i++) {
+          const a = retA[i].rgb || [0, 0, 0];
+          const b = retB[i].rgb || [0, 0, 0];
+          const diff = Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]);
+          if (diff > 0.01) {
+            xrayCtx.fillStyle = `rgba(245,165,74,${Math.min(1, 0.3 + diff * 2)})`;
+            xrayCtx.fillRect(8 + i * cellW, rowH + 1, Math.max(1.5, cellW - 0.5), 6);
+          }
+        }
+      }
+      drawXrayRow(xrayCtx, 0, rowH + 8, xw, rowH, snapB, '#f5a54a', `OKO B (${actorId})`);
+    } else {
+      const snap = session.main.lastStep && session.main.lastStep.byActor[actorId];
+      drawXrayRow(xrayCtx, 0, 0, xw, xh, snap, '#4ad8c4', `OKO I WNETRZE (${actorId} · tryb WATCH)`);
     }
   }
 
   function renderFrame() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    syncCanvasResolution();
+    ctx.clearRect(0, 0, logicalW, logicalH);
     const { rectA, rectB } = getViewRects();
     if (mode === 'FORK' && branchB) {
       if (viewLayout === 'SPLIT') {
-        const half = canvas.width * 0.5;
+        const half = logicalW * 0.5;
         ctx.fillStyle = '#080c12';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, logicalW, logicalH);
 
         ctx.save();
         ctx.beginPath(); ctx.rect(rectA.x, rectA.y, rectA.w, rectA.h); ctx.clip();
@@ -1001,15 +1360,21 @@ function mountMicroscope({
 
         ctx.save();
         ctx.beginPath(); ctx.rect(rectB.x, rectB.y, rectB.w, rectB.h); ctx.clip();
-        branchB.world.render(ctx, { x: rectB.x, y: rectB.y, w: rectB.w, h: rectB.h, tint: 'B', ghost: false, label: 'B (interwencja)' });
+        branchB.world.render(ctx, {
+          x: rectB.x, y: rectB.y, w: rectB.w, h: rectB.h, tint: 'B', ghost: false,
+          hoverId: draggingBodyId ?? hoverBodyId, label: 'B (interwencja)',
+        });
         ctx.restore();
 
         ctx.strokeStyle = 'rgba(255,255,255,0.22)';
         ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(half, 0); ctx.lineTo(half, canvas.height); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(half, 0); ctx.lineTo(half, logicalH); ctx.stroke();
       } else {
         branchA.world.render(ctx, { x: rectA.x, y: rectA.y, w: rectA.w, h: rectA.h, tint: 'A', ghost: true, label: 'Duch A (turkus)' });
-        branchB.world.render(ctx, { x: rectB.x, y: rectB.y, w: rectB.w, h: rectB.h, tint: 'B', ghost: false, overlay: true, label: 'Zywy B (bursztyn)' });
+        branchB.world.render(ctx, {
+          x: rectB.x, y: rectB.y, w: rectB.w, h: rectB.h, tint: 'B', ghost: false, overlay: true,
+          hoverId: draggingBodyId ?? hoverBodyId, label: 'Zywy B (bursztyn)',
+        });
       }
 
       const div = currentDivergence();
@@ -1026,6 +1391,7 @@ function mountMicroscope({
       session.main.world.render(ctx, { x: rectA.x, y: rectA.y, w: rectA.w, h: rectA.h, tint: 'A', ghost: false, label: 'WATCH' });
       metaEl.textContent = `WATCH · tick ${session.main.tick}${capturedMark ? ` · MARK @ ${capturedMark.tick}` : ''}`;
     }
+    renderXray();
   }
 
   function advanceByMs(deltaMs) {
@@ -1067,10 +1433,12 @@ function mountMicroscope({
 
   return {
     advanceByMs,
+    stepOneTick: () => { stepOneTick(); renderFrame(); },
     doMark,
     doFork,
     exitFork,
     setViewLayout,
+    toggleXray,
     doCutMemoryB,
     toggleTakeoverB,
     destroy,
@@ -1078,6 +1446,7 @@ function mountMicroscope({
       mode,
       viewLayout,
       paused,
+      xrayOpen,
       motorTakeoverActive,
       tick: mode === 'FORK' && branchB ? branchA.tick : session.main.tick,
       markTick: capturedMark ? capturedMark.tick : null,
@@ -1137,6 +1506,7 @@ function createCalibratorWorld(seed = 1) {
     omega: 0,
     radius: 17,
     trail: [],
+    lastTouch: { front: 0, left: 0, right: 0 },
   };
 
   let pucks = [
@@ -1144,6 +1514,9 @@ function createCalibratorWorld(seed = 1) {
     { id: 2, x: WORLD_W * 0.64, y: WORLD_H * 0.68, vx: 0, vy: 0, radius: 26, rgb: [0.92, 0.62, 0.26] },
     { id: 3, x: WORLD_W * 0.44, y: WORLD_H * 0.66, vx: 0, vy: 0, radius: 19, rgb: [0.58, 0.68, 0.94] },
   ];
+
+  // Kotwiczenie krazka trzymanego mysza w trybie MATERIAL (zeby aktor nie wyrywal go spod kursora)
+  let pinnedPuck = null; // { id, x, y } | null
 
   // Nietrwale lokalne sledzenie (tracklets): aktualizowane wylacznie w trybie TRACKLET.
   let nextTrackletId = 1;
@@ -1153,12 +1526,29 @@ function createCalibratorWorld(seed = 1) {
     return ['actor-0'];
   }
 
-  function observe(_actorId, perceptionMode = PERCEPTION_MODES.RAW) {
-    const retina = [];
-    const seenNow = new Set();
+  function computeTouch() {
     let touchFront = 0;
     let touchLeft = 0;
     let touchRight = 0;
+    for (const p of pucks) {
+      const dx = p.x - actor.x;
+      const dy = p.y - actor.y;
+      const d = Math.hypot(dx, dy);
+      const overlap = actor.radius + p.radius + 3 - d;
+      if (overlap > 0) {
+        const rel = wrapAngle(Math.atan2(dy, dx) - actor.theta);
+        const f = clamp(overlap / 8, 0, 1);
+        if (Math.abs(rel) < 0.7) touchFront = Math.max(touchFront, f);
+        else if (rel < 0) touchLeft = Math.max(touchLeft, f);
+        else touchRight = Math.max(touchRight, f);
+      }
+    }
+    return { front: touchFront, left: touchLeft, right: touchRight };
+  }
+
+  function observe(_actorId, perceptionMode = PERCEPTION_MODES.RAW) {
+    const retina = [];
+    const seenNow = new Set();
 
     for (let i = 0; i < RAYS; i++) {
       const frac = i / (RAYS - 1) - 0.5;
@@ -1195,32 +1585,18 @@ function createCalibratorWorld(seed = 1) {
       }
     }
 
-    // Czyscimy tracklety obiektow spoza pola widzenia wylacznie w trybie TRACKLET (brak efektu ubocznego w RAW!)
     if (perceptionMode === PERCEPTION_MODES.TRACKLET) {
       for (const key of [...visibleTracklets.keys()]) {
         if (!seenNow.has(key)) visibleTracklets.delete(key);
       }
     }
 
-    for (const p of pucks) {
-      const dx = p.x - actor.x;
-      const dy = p.y - actor.y;
-      const d = Math.hypot(dx, dy);
-      const overlap = actor.radius + p.radius + 3 - d;
-      if (overlap > 0) {
-        const rel = wrapAngle(Math.atan2(dy, dx) - actor.theta);
-        const f = clamp(overlap / 8, 0, 1);
-        if (Math.abs(rel) < 0.7) touchFront = Math.max(touchFront, f);
-        else if (rel < 0) touchLeft = Math.max(touchLeft, f);
-        else touchRight = Math.max(touchRight, f);
-      }
-    }
-
+    const touch = computeTouch();
     const cosT = Math.cos(actor.theta);
     const sinT = Math.sin(actor.theta);
     return {
       retina,
-      touch: { front: touchFront, left: touchLeft, right: touchRight },
+      touch,
       proprio: {
         vxBody: actor.vx * cosT + actor.vy * sinT,
         vyBody: -actor.vx * sinT + actor.vy * cosT,
@@ -1242,8 +1618,15 @@ function createCalibratorWorld(seed = 1) {
     actor.x += actor.vx;
     actor.y += actor.vy;
 
-    // 1. Zderzenia aktor <-> krazki i ruch krazkow
+    // 1. Zderzenia aktor <-> krazki (z poszanowaniem zakotwiczonego krazka)
     for (const p of pucks) {
+      const isPinned = pinnedPuck && pinnedPuck.id === p.id;
+      if (isPinned) {
+        p.x = pinnedPuck.x;
+        p.y = pinnedPuck.y;
+        p.vx = 0;
+        p.vy = 0;
+      }
       const dx = p.x - actor.x;
       const dy = p.y - actor.y;
       const d = Math.hypot(dx, dy) || 1e-4;
@@ -1252,19 +1635,28 @@ function createCalibratorWorld(seed = 1) {
         const nx = dx / d;
         const ny = dy / d;
         const pen = minD - d;
-        actor.x -= nx * pen * 0.45;
-        actor.y -= ny * pen * 0.45;
-        p.x += nx * pen * 0.55;
-        p.y += ny * pen * 0.55;
-        p.vx += nx * 0.85 + actor.vx * 0.35;
-        p.vy += ny * 0.85 + actor.vy * 0.35;
-        actor.vx -= nx * 0.4;
-        actor.vy -= ny * 0.4;
+        if (isPinned) {
+          actor.x -= nx * pen;
+          actor.y -= ny * pen;
+          actor.vx -= nx * 0.65;
+          actor.vy -= ny * 0.65;
+        } else {
+          actor.x -= nx * pen * 0.45;
+          actor.y -= ny * pen * 0.45;
+          p.x += nx * pen * 0.55;
+          p.y += ny * pen * 0.55;
+          p.vx += nx * 0.85 + actor.vx * 0.35;
+          p.vy += ny * 0.85 + actor.vy * 0.35;
+          actor.vx -= nx * 0.4;
+          actor.vy -= ny * 0.4;
+        }
       }
-      p.vx *= 0.92;
-      p.vy *= 0.92;
-      p.x += p.vx;
-      p.y += p.vy;
+      if (!isPinned) {
+        p.vx *= 0.92;
+        p.vy *= 0.92;
+        p.x += p.vx;
+        p.y += p.vy;
+      }
     }
 
     // 2. Zderzenia krazek <-> krazek
@@ -1272,6 +1664,8 @@ function createCalibratorWorld(seed = 1) {
       for (let j = i + 1; j < pucks.length; j++) {
         const a = pucks[i];
         const b = pucks[j];
+        const pinA = pinnedPuck && pinnedPuck.id === a.id;
+        const pinB = pinnedPuck && pinnedPuck.id === b.id;
         const dx = b.x - a.x;
         const dy = b.y - a.y;
         const d = Math.hypot(dx, dy) || 1e-4;
@@ -1279,25 +1673,44 @@ function createCalibratorWorld(seed = 1) {
         if (d < minD) {
           const nx = dx / d;
           const ny = dy / d;
-          const pen = (minD - d) * 0.5;
-          a.x -= nx * pen; a.y -= ny * pen;
-          b.x += nx * pen; b.y += ny * pen;
+          const pen = minD - d;
+          if (pinA && !pinB) { b.x += nx * pen; b.y += ny * pen; }
+          else if (pinB && !pinA) { a.x -= nx * pen; a.y -= ny * pen; }
+          else {
+            a.x -= nx * pen * 0.5; a.y -= ny * pen * 0.5;
+            b.x += nx * pen * 0.5; b.y += ny * pen * 0.5;
+          }
         }
       }
     }
 
-    // 3. Ostateczne przyciecie do band stolu PO rozwiazaniu wszystkich kolizji
+    // 3. Naturalne fizyczne odbicie od 4 scian stolu (zalezne od kata padania, nie sztywne +0.35 rad!)
     const pad = actor.radius + 14;
-    if (actor.x < pad) { actor.x = pad; actor.vx = Math.abs(actor.vx) * 0.5; actor.theta = wrapAngle(actor.theta + 0.35); }
-    if (actor.x > WORLD_W - pad) { actor.x = WORLD_W - pad; actor.vx = -Math.abs(actor.vx) * 0.5; actor.theta = wrapAngle(actor.theta + 0.35); }
-    if (actor.y < pad) { actor.y = pad; actor.vy = Math.abs(actor.vy) * 0.5; actor.theta = wrapAngle(actor.theta + 0.35); }
-    if (actor.y > WORLD_H - pad) { actor.y = WORLD_H - pad; actor.vy = -Math.abs(actor.vy) * 0.5; actor.theta = wrapAngle(actor.theta + 0.35); }
+    if (actor.x < pad) {
+      actor.x = pad;
+      actor.vx = Math.abs(actor.vx) * 0.65;
+      actor.theta = wrapAngle(Math.PI - actor.theta);
+    } else if (actor.x > WORLD_W - pad) {
+      actor.x = WORLD_W - pad;
+      actor.vx = -Math.abs(actor.vx) * 0.65;
+      actor.theta = wrapAngle(Math.PI - actor.theta);
+    }
+    if (actor.y < pad) {
+      actor.y = pad;
+      actor.vy = Math.abs(actor.vy) * 0.65;
+      actor.theta = wrapAngle(-actor.theta);
+    } else if (actor.y > WORLD_H - pad) {
+      actor.y = WORLD_H - pad;
+      actor.vy = -Math.abs(actor.vy) * 0.65;
+      actor.theta = wrapAngle(-actor.theta);
+    }
 
     for (const p of pucks) {
       p.x = clamp(p.x, p.radius + 14, WORLD_W - p.radius - 14);
       p.y = clamp(p.y, p.radius + 14, WORLD_H - p.radius - 14);
     }
 
+    actor.lastTouch = computeTouch();
     if (tick % 3 === 0) {
       actor.trail.push([actor.x, actor.y]);
       if (actor.trail.length > 75) actor.trail.shift();
@@ -1321,12 +1734,29 @@ function createCalibratorWorld(seed = 1) {
     p.vy = 0;
   }
 
+  function pinMovable(id, wx, wy) {
+    const p = pucks.find((x) => x.id === id);
+    if (!p) return;
+    const cx = clamp(wx, p.radius + 14, WORLD_W - p.radius - 14);
+    const cy = clamp(wy, p.radius + 14, WORLD_H - p.radius - 14);
+    pinnedPuck = { id, x: cx, y: cy };
+    p.x = cx;
+    p.y = cy;
+    p.vx = 0;
+    p.vy = 0;
+  }
+
+  function unpinMovable() {
+    pinnedPuck = null;
+  }
+
   function snapshot() {
     return deepClone({
       tick,
       rngState: rng.getState(),
       actor,
       pucks,
+      pinnedPuck,
       nextTrackletId,
       visibleTracklets: [...visibleTracklets.entries()],
     });
@@ -1338,6 +1768,7 @@ function createCalibratorWorld(seed = 1) {
     rng.setState(s.rngState);
     actor = s.actor;
     pucks = s.pucks;
+    pinnedPuck = s.pinnedPuck || null;
     nextTrackletId = s.nextTrackletId;
     visibleTracklets = new Map(s.visibleTracklets || []);
   }
@@ -1388,7 +1819,7 @@ function createCalibratorWorld(seed = 1) {
       ctx.restore();
     }
 
-    // Luzne krazki
+    // Luzne krazki + delikatna obwodka hover w FORK
     for (const p of pucks) {
       ctx.save();
       ctx.globalAlpha = alpha;
@@ -1404,11 +1835,17 @@ function createCalibratorWorld(seed = 1) {
         ctx.setLineDash([4, 4]);
         ctx.lineWidth = 1.5;
         ctx.stroke();
+      } else if (view.hoverId === p.id) {
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(tx(p.x), ty(p.y), sr(p.radius + 4), 0, Math.PI * 2);
+        ctx.stroke();
       }
       ctx.restore();
     }
 
-    // Cialo zwiadowcy + wierny stozek wzroku (100% VIEW_RANGE, bez zafalszowania skali!)
+    // Cialo zwiadowcy + wierny stozek wzroku (100% VIEW_RANGE)
     ctx.save();
     ctx.globalAlpha = alpha;
     ctx.fillStyle = view.tint === 'B' ? 'rgba(245,165,74,0.07)' : 'rgba(74,216,196,0.07)';
@@ -1426,6 +1863,28 @@ function createCalibratorWorld(seed = 1) {
     ctx.beginPath();
     ctx.arc(tx(actor.x), ty(actor.y), sr(actor.radius), 0, Math.PI * 2);
     ctx.fill();
+
+    // Subtelny blysk obwodu przy realnym kontakcie dotykowym (front/left/right)
+    const lt = actor.lastTouch || {};
+    if (!view.ghost && (lt.front > 0.02 || lt.left > 0.02 || lt.right > 0.02)) {
+      ctx.strokeStyle = '#ffe0a3';
+      ctx.lineWidth = 3;
+      if (lt.front > 0.02) {
+        ctx.beginPath();
+        ctx.arc(tx(actor.x), ty(actor.y), sr(actor.radius + 3), actor.theta - 0.65, actor.theta + 0.65);
+        ctx.stroke();
+      }
+      if (lt.left > 0.02) {
+        ctx.beginPath();
+        ctx.arc(tx(actor.x), ty(actor.y), sr(actor.radius + 3), actor.theta - Math.PI * 0.85, actor.theta - 0.65);
+        ctx.stroke();
+      }
+      if (lt.right > 0.02) {
+        ctx.beginPath();
+        ctx.arc(tx(actor.x), ty(actor.y), sr(actor.radius + 3), actor.theta + 0.65, actor.theta + Math.PI * 0.85);
+        ctx.stroke();
+      }
+    }
 
     // Kierunek spojrzenia
     const eyeX = actor.x + Math.cos(actor.theta) * actor.radius * 0.62;
@@ -1452,14 +1911,14 @@ function createCalibratorWorld(seed = 1) {
     step,
     pickMovable,
     moveMovable,
+    pinMovable,
+    unpinMovable,
     snapshot,
     restore,
     digest,
     render,
   };
 }
-
-// Jawnie zaprogramowany sterownik kalibracyjny z krotka pamiecia ostatniego kierunku (NIE wynik AI!).
 function createCalibratorMind(_actorId, seed = 1) {
   const rng = createRng(seed);
   let state = {
